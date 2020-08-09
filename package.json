@@ -61,5 +61,8 @@
     },
     "files": [
         "dist"
-    ]
+    ],
+    "dependencies": {
+        "tiny-invariant": "^1.1.0"
+    }
 }

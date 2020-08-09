@@ -1,10 +1,23 @@
 import React from 'react';
 
-import { ExampleComponent } from 'morfix';
-import 'morfix/dist/index.css';
+import Morfix from 'morfix';
 
 const App = () => {
-    return <ExampleComponent text="Create React Library Example 😄" />;
+    return (
+        <Morfix
+            initialValues={{
+                hello: 'It works!'
+            }}
+        >
+            {({ values }) => (
+                <React.Fragment>
+                    <h2>Hello world</h2>
+                    <p>this is Morfix example</p>
+                    <p>{values.hello}</p>
+                </React.Fragment>
+            )}
+        </Morfix>
+    );
 };
 
 export default App;
