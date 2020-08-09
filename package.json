@@ -23,7 +23,7 @@
         "predeploy": "cd example && npm install && npm run build",
         "deploy": "gh-pages -d example/build",
         "lint-fix": "eslint . --ext .ts,.tsx --fix",
-        "format": ""
+        "format": "prettier --write \"{src,example}/**/*.{css,scss,ts,tsx,js,jsx,json}\""
     },
     "peerDependencies": {
         "react": "^16.0.0"
