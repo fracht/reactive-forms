@@ -4,7 +4,6 @@ import Morfix, { useDefaultFieldContext } from 'morfix';
 
 const StringField = React.memo(({ name }: { name: string }) => {
     const [{ value }, { setValue }] = useDefaultFieldContext<string>(name);
-    console.log(`🔃 RERENDER ${name}`);
     return <input value={value} onChange={(e) => setValue(e.target.value)} />;
 });
 
