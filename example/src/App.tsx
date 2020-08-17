@@ -1,11 +1,6 @@
 import React from 'react';
 
-import Morfix, { useDefaultFieldContext } from 'morfix';
-
-const StringField = React.memo(({ name }: { name: string }) => {
-    const [{ value }, { setValue }] = useDefaultFieldContext<string>(name);
-    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
-});
+import Morfix, { Field } from 'morfix';
 
 const App = () => {
     return (
@@ -14,7 +9,7 @@ const App = () => {
                 hello: 'It works!',
                 test: {
                     deep: {
-                        value: 'This is deep value test'
+                        value: '1aasdf'
                     }
                 }
             }}
@@ -26,8 +21,18 @@ const App = () => {
                     <p>
                         {values.hello}, {values.test.deep.value}
                     </p>
-                    <StringField name="hello" />
-                    <StringField name="test.deep.value" />
+                    <Field name="hello" />
+                    <Field name="test.deep.value">
+                        {(field) => (
+                            <select {...field}>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>1aasdf</option>
+                            </select>
+                        )}
+                    </Field>
+                    {/* <StringField name="hello" />
+                    <StringField name="test.deep.value" /> */}
                 </React.Fragment>
             )}
         </Morfix>
