@@ -1,5 +1,6 @@
 export type MorfixContextType<Values extends MorfixValues> = {
     values: Values;
+    initialValues: Values;
 } & MorfixControl<Values>;
 
 export type MorfixShared<Values extends MorfixValues> = MorfixContextType<
@@ -20,6 +21,19 @@ export interface FieldHandlers<V> {
 
 export interface FieldMeta<T> {
     value: T;
+    initialValue: T;
 }
 
 export type FieldContext<T> = [FieldMeta<T>, FieldHandlers<T>];
+
+export interface SharedFieldConfig {
+    name: string;
+}
+
+export interface FieldProps {
+    name: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<{ value: string }>) => void;
+    onBlur?: (e: React.FocusEvent) => void;
+    onFocus?: (e: React.FocusEvent) => void;
+}

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Morfix, { Field } from 'morfix';
+import Morfix, { Field, RealtimeField } from 'morfix';
 
 const App = () => {
     return (
         <Morfix
             initialValues={{
-                hello: 'It works!',
+                hello: '',
                 test: {
                     deep: {
                         value: '1aasdf'
@@ -22,7 +22,9 @@ const App = () => {
                         {values.hello}, {values.test.deep.value}
                     </p>
                     <Field name="hello" />
-                    <Field name="test.deep.value">
+                    <Field name="hello" />
+                    <RealtimeField name="hello" />
+                    <RealtimeField name="test.deep.value">
                         {(field) => (
                             <select {...field}>
                                 <option>1</option>
@@ -30,7 +32,7 @@ const App = () => {
                                 <option>1aasdf</option>
                             </select>
                         )}
-                    </Field>
+                    </RealtimeField>
                     {/* <StringField name="hello" />
                     <StringField name="test.deep.value" /> */}
                 </React.Fragment>

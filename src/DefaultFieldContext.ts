@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { useCallback } from 'react';
 
 export const useDefaultFieldContext = <V>(name: string): FieldContext<V> => {
-    const { values, setFieldValue } = useMorfixContext();
+    const { values, initialValues, setFieldValue } = useMorfixContext();
 
     const setValue = useCallback((value: V) => setFieldValue(name, value), [
         name
@@ -18,7 +18,8 @@ export const useDefaultFieldContext = <V>(name: string): FieldContext<V> => {
 
     return [
         {
-            value: get(values, name)
+            value: get(values, name),
+            initialValue: get(initialValues, name)
         },
         { setValue, setDeepValue }
     ];
