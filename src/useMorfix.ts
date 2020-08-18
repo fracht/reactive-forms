@@ -14,5 +14,5 @@ export const useMorfix = <Values extends MorfixValues>({
         []
     );
 
-    return { values, setValues, setFieldValue };
+    return { values, setValues, setFieldValue, initialValues };
 };
