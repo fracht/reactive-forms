@@ -16,7 +16,6 @@ export interface MorfixControl<Values extends MorfixValues> {
 
 export interface FieldHandlers<V> {
     setValue: (value: V) => void;
-    setDeepValue: <T>(name: string, value: T) => void;
 }
 
 export interface FieldMeta<T> {

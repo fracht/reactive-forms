@@ -1,16 +1,30 @@
 import React from 'react';
 
-import Morfix, { Field, RealtimeField } from 'morfix';
+import Morfix, {
+    ObjectField,
+    ObjectFieldConfig,
+    ObjectFieldProps
+} from 'morfix';
+
+const TestField = (config: ObjectFieldConfig) => (
+    <ObjectField {...config}>
+        {({ setDeepValue, value }: ObjectFieldProps<{ hello: string }>) => (
+            <div>
+                <button onClick={() => setDeepValue<string>('hello', 'asdf')}>
+                    click me
+                </button>
+                {value.hello}
+            </div>
+        )}
+    </ObjectField>
+);
 
 const App = () => {
     return (
         <Morfix
             initialValues={{
-                hello: '',
-                test: {
-                    deep: {
-                        value: '1aasdf'
-                    }
+                testField: {
+                    hello: 'aaaa'
                 }
             }}
         >
@@ -18,21 +32,8 @@ const App = () => {
                 <React.Fragment>
                     <h2>Hello world</h2>
                     <p>this is Morfix example</p>
-                    <p>
-                        {values.hello}, {values.test.deep.value}
-                    </p>
-                    <Field name="hello" />
-                    <Field name="hello" />
-                    <RealtimeField name="hello" />
-                    <RealtimeField name="test.deep.value">
-                        {(field) => (
-                            <select {...field}>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>1aasdf</option>
-                            </select>
-                        )}
-                    </RealtimeField>
+                    {values.testField.hello}
+                    <TestField name="testField" />
                     {/* <StringField name="hello" />
                     <StringField name="test.deep.value" /> */}
                 </React.Fragment>

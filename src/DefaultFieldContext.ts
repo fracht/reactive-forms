@@ -10,17 +10,11 @@ export const useDefaultFieldContext = <V>(name: string): FieldContext<V> => {
         name
     ]);
 
-    const setDeepValue = useCallback(
-        <T>(deepName: string, value: T) =>
-            setFieldValue(`${name}.${deepName}`, value),
-        [name]
-    );
-
     return [
         {
             value: get(values, name),
             initialValue: get(initialValues, name)
         },
-        { setValue, setDeepValue }
+        { setValue }
     ];
 };
