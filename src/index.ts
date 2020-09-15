@@ -6,6 +6,6 @@ export * from './DefaultFieldContext';
 export * from './Field';
 export * from './RealtimeField';
 export * from './ObjectField';
+export * from './ArrayField';
 
-import { Morfix } from './Morfix';
-export default Morfix;
+export { Morfix as default } from './Morfix';
