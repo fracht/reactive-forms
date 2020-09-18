@@ -3,7 +3,7 @@ import { SharedFieldConfig } from './types';
 import { useCallback } from 'react';
 import { set } from 'lodash';
 
-export interface ObjectFieldConfig extends SharedFieldConfig {}
+export interface ObjectFieldConfig<T> extends SharedFieldConfig<T> {}
 
 export interface ObjectFieldProps<T extends Object> {
     value: T;
@@ -11,17 +11,17 @@ export interface ObjectFieldProps<T extends Object> {
     setDeepValue: <V>(name: string, value: V) => void;
 }
 
-export const useObjectField = <T extends Object>({
-    name
-}: SharedFieldConfig): ObjectFieldProps<T> => {
-    const [{ value }, { setValue }] = useDefaultFieldContext<T>(name);
+export const useObjectField = <T extends Object>(
+    config: ObjectFieldConfig<T>
+): ObjectFieldProps<T> => {
+    const [{ value }, { setValue }] = useDefaultFieldContext<T>(config);
 
     const setDeepValue = useCallback(
         <V,>(nestedName: string, newValue: V) => {
             const out = set(value, nestedName, newValue);
             setValue(out);
         },
-        [name]
+        [config.name]
     );
 
     return {
@@ -34,7 +34,7 @@ export const useObjectField = <T extends Object>({
 export const ObjectField = <T,>({
     children,
     ...config
-}: ObjectFieldConfig & {
+}: ObjectFieldConfig<T> & {
     children: (props: ObjectFieldProps<T>) => React.ReactElement;
 }) => {
     const field = useObjectField<T>(config);

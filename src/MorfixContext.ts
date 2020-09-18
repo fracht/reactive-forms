@@ -10,9 +10,9 @@ export const MorfixContext = createContext<MorfixContextType<any>>(
 export const useMorfixContext = <
     Values extends MorfixValues
 >(): MorfixContextType<Values> => {
-    const context: MorfixContextType<Values> | undefined = useContext<
-        MorfixContextType<Values>
-    >(MorfixContext);
+    const context = useContext(MorfixContext) as
+        | MorfixContextType<Values>
+        | undefined;
 
     invariant(
         context,
