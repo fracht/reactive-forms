@@ -2,10 +2,14 @@ import React from 'react';
 import { useDefaultFieldContext } from './DefaultFieldContext';
 import { SharedFieldConfig, FieldProps } from './types';
 
-export interface RealtimeFieldConfig extends SharedFieldConfig {}
+export interface RealtimeFieldConfig<T> extends SharedFieldConfig<T> {}
 
-export const useRealtimeField = ({ name }: RealtimeFieldConfig): FieldProps => {
-    const [{ value }, { setValue }] = useDefaultFieldContext<string>(name);
+export const useRealtimeField = (
+    config: RealtimeFieldConfig<string>
+): FieldProps => {
+    const [{ value }, { setValue }] = useDefaultFieldContext<string>(config);
+
+    const { name } = config;
 
     return {
         name,
@@ -15,7 +19,7 @@ export const useRealtimeField = ({ name }: RealtimeFieldConfig): FieldProps => {
 };
 
 export const RealtimeField = (
-    config: RealtimeFieldConfig & {
+    config: RealtimeFieldConfig<string> & {
         children?: (props: FieldProps) => React.ReactElement;
     }
 ) => {

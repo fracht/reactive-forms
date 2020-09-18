@@ -3,7 +3,7 @@ import { useDefaultFieldContext } from './DefaultFieldContext';
 import invariant from 'tiny-invariant';
 import { SharedFieldConfig, FieldProps } from './types';
 
-export interface FieldConfig<T> extends SharedFieldConfig {
+export interface FieldConfig<T> extends SharedFieldConfig<T> {
     valueToString?: (value: T) => string;
     stringToValue?: (typed: string) => T;
 }
@@ -20,12 +20,14 @@ const identityConverter = {
 };
 
 export const useField = <T,>({
-    name,
     valueToString = identityConverter.valueToString,
-    stringToValue = identityConverter.stringToValue as (value: string) => T
+    stringToValue = identityConverter.stringToValue as (value: string) => T,
+    ...config
 }: FieldConfig<T>): FieldProps => {
+    const { name } = config;
+
     const [{ value, initialValue }, { setValue }] = useDefaultFieldContext<T>(
-        name
+        config
     );
 
     const [typedValue, setTypedValue] = useState(valueToString(initialValue));
