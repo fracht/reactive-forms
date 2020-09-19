@@ -4,17 +4,13 @@ export type MorfixContextType<Values extends MorfixValues> = {
     initialValues: Values;
 } & MorfixControl<Values>;
 
-export type MorfixShared<Values extends MorfixValues> = MorfixContextType<
-    Values
->;
+export type MorfixShared<Values extends MorfixValues> = MorfixContextType<Values>;
 
 export type MorfixValues = object;
 
 export interface FieldError {
     message: string;
 }
-
-// type ArrayItemType<T> = T extends unknown[] ? T[number] : never;
 
 export type MorfixInnerError = {
     error_mrfx?: FieldError;
@@ -33,10 +29,7 @@ export type MorfixErrors<Values> = MorfixInnerError &
 export interface MorfixControl<Values extends MorfixValues> {
     setFieldValue: <T>(name: string, value: T) => void;
     setValues: (values: Values) => void;
-    registerFieldValidator: <T>(
-        name: string,
-        validator: FieldValidator<T>
-    ) => void;
+    registerFieldValidator: <T>(name: string, validator: FieldValidator<T>) => void;
     unregisterFieldValidator: (name: string) => void;
 }
 
@@ -53,9 +46,7 @@ export type FieldContext<T> = [FieldMeta<T>, FieldHandlers<T>];
 
 type NotRequired<T> = void | null | undefined | T;
 
-export type FieldValidator<T> = (
-    value: T
-) => Promise<NotRequired<FieldError>> | NotRequired<FieldError>;
+export type FieldValidator<T> = (value: T) => Promise<NotRequired<FieldError>> | NotRequired<FieldError>;
 
 export type ValidationRegistry = Record<string, FieldValidator<unknown>>;
 

@@ -1,7 +1,7 @@
-import { SharedFieldConfig } from './types';
 import { useDefaultFieldContext } from './DefaultFieldContext';
+import { SharedFieldConfig } from './types';
 
-export interface ArrayFieldConfig extends SharedFieldConfig {}
+export interface ArrayFieldConfig<T> extends SharedFieldConfig<Array<T>> {}
 
 export interface ArrayFieldProps<T> {
     items: Array<T>;
@@ -12,19 +12,17 @@ export interface ArrayFieldProps<T> {
     setAll: (items: Array<T>) => void;
 }
 
-const actionWithCallback = <T extends (...args: unknown[]) => unknown>(
-    action: T,
-    callback: (output: ReturnType<T>) => void
-) => (...args: Parameters<T>) => {
-    const output: ReturnType<T> = action(...args) as ReturnType<T>;
-    callback(output as ReturnType<T>);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const actionWithCallback = <T extends (...args: any) => any>(action: T, callback: (output: ReturnType<T>) => void) => (
+    ...args: Parameters<T>
+) => {
+    const output: ReturnType<T> = action(...(args as unknown[]));
+    callback(output);
     return output;
 };
 
-export const useArrayField = <T,>({
-    name
-}: ArrayFieldConfig): ArrayFieldProps<T> => {
-    const [{ value: items }, { setValue }] = useDefaultFieldContext<T[]>(name);
+export const useArrayField = <T,>(config: ArrayFieldConfig<T>): ArrayFieldProps<T> => {
+    const [{ value: items }, { setValue }] = useDefaultFieldContext<T[]>(config);
 
     const setAll = (items: Array<T>) => setValue(items);
 
@@ -34,10 +32,7 @@ export const useArrayField = <T,>({
         items,
         push: actionWithCallback(Array.prototype.push.bind(items), update),
         pop: actionWithCallback(Array.prototype.pop.bind(items), update),
-        set: actionWithCallback(
-            (item: T, index: number) => (items[index] = item),
-            update
-        ),
+        set: actionWithCallback((item: T, index: number) => (items[index] = item), update),
         remove: (index: number) => {
             const output = items.splice(index, 1);
             update();
@@ -49,7 +44,7 @@ export const useArrayField = <T,>({
 };
 
 export const ArrayField = <T,>(
-    config: ArrayFieldConfig & {
+    config: ArrayFieldConfig<T> & {
         children: (props: ArrayFieldProps<T>) => React.ReactElement;
     }
 ) => {

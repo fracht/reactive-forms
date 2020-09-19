@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useDefaultFieldContext } from './DefaultFieldContext';
+import React, { useCallback, useEffect, useState } from 'react';
 import invariant from 'tiny-invariant';
-import { SharedFieldConfig, FieldProps } from './types';
+
+import { useDefaultFieldContext } from './DefaultFieldContext';
+import { FieldProps, SharedFieldConfig } from './types';
 
 export interface FieldConfig<T> extends SharedFieldConfig<T> {
     valueToString?: (value: T) => string;
@@ -26,23 +27,17 @@ export const useField = <T,>({
 }: FieldConfig<T>): FieldProps => {
     const { name } = config;
 
-    const [{ value, initialValue }, { setValue }] = useDefaultFieldContext<T>(
-        config
-    );
+    const [{ value, initialValue }, { setValue }] = useDefaultFieldContext<T>(config);
 
     const [typedValue, setTypedValue] = useState(valueToString(initialValue));
 
-    const onChange = useCallback(
-        (e: React.ChangeEvent<{ value: string }>) =>
-            setTypedValue(e.target.value),
-        []
-    );
+    const onChange = useCallback((e: React.ChangeEvent<{ value: string }>) => setTypedValue(e.target.value), []);
 
     const onBlur = () => setValue(stringToValue(typedValue));
 
     useEffect(() => {
         setTypedValue(valueToString(value));
-    }, [value]);
+    }, [value, valueToString]);
 
     return {
         name,

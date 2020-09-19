@@ -1,14 +1,8 @@
 import React, { Fragment } from 'react';
 
-import Morfix, {
-    ArrayField,
-    ArrayFieldProps,
-    ObjectField,
-    ObjectFieldConfig,
-    RealtimeField
-} from 'morfix';
+import Morfix, { ArrayFieldProps, ObjectField, ObjectFieldConfig, RealtimeField, ArrayField } from 'morfix';
 
-const TestField = (config: ObjectFieldConfig) => (
+const TestField = (config: ObjectFieldConfig<{ hello: string; bye: string }>) => (
     <ObjectField {...config}>
         {() => (
             <div>
@@ -49,32 +43,17 @@ const App = () => {
                     <h2>Hello world</h2>
                     <p>this is Morfix example</p>
                     <ArrayField name="testField">
-                        {({
-                            items,
-                            push,
-                            remove,
-                            pop
-                        }: ArrayFieldProps<Data>) => (
+                        {({ items, push, remove, pop }: ArrayFieldProps<Data>) => (
                             <div>
                                 {items.map((item, index) => (
                                     <Fragment key={index}>
                                         Hello, {item.hello}:
-                                        <TestField
-                                            name={`testField[${index}]`}
-                                        />
-                                        <button onClick={() => remove(index)}>
-                                            Remove {item.bye}
-                                        </button>
+                                        <TestField name={`testField[${index}]`} />
+                                        <button onClick={() => remove(index)}>Remove {item.bye}</button>
                                     </Fragment>
                                 ))}
                                 <div>
-                                    <button
-                                        onClick={() =>
-                                            push({ hello: '', bye: '' })
-                                        }
-                                    >
-                                        Add
-                                    </button>
+                                    <button onClick={() => push({ hello: '', bye: '' })}>Add</button>
                                     <button onClick={pop}>Remove last</button>
                                 </div>
                             </div>

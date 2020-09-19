@@ -1,12 +1,10 @@
 import { useCallback, useEffect } from 'react';
+import get from 'lodash/get';
+
 import { useMorfixContext } from './MorfixContext';
 import { FieldContext, SharedFieldConfig } from './types';
-import { get } from 'lodash';
 
-export const useDefaultFieldContext = <V>({
-    name,
-    validate
-}: SharedFieldConfig<V>): FieldContext<V> => {
+export const useDefaultFieldContext = <V>({ name, validate }: SharedFieldConfig<V>): FieldContext<V> => {
     const {
         values,
         initialValues,
@@ -18,11 +16,9 @@ export const useDefaultFieldContext = <V>({
     useEffect(() => {
         if (validate) registerFieldValidator(name, validate);
         return () => unregisterFieldValidator(name);
-    }, []);
+    }, [validate, name, registerFieldValidator, unregisterFieldValidator]);
 
-    const setValue = useCallback((value: V) => setFieldValue(name, value), [
-        name
-    ]);
+    const setValue = useCallback((value: unknown) => setFieldValue(name, value), [name, setFieldValue]);
 
     return [
         {

@@ -1,12 +1,11 @@
 import React from 'react';
+
 import { useDefaultFieldContext } from './DefaultFieldContext';
-import { SharedFieldConfig, FieldProps } from './types';
+import { FieldProps, SharedFieldConfig } from './types';
 
 export interface RealtimeFieldConfig<T> extends SharedFieldConfig<T> {}
 
-export const useRealtimeField = (
-    config: RealtimeFieldConfig<string>
-): FieldProps => {
+export const useRealtimeField = (config: RealtimeFieldConfig<string>): FieldProps => {
     const [{ value }, { setValue }] = useDefaultFieldContext<string>(config);
 
     const { name } = config;
