@@ -1,11 +1,10 @@
 import React from 'react';
-import { MorfixValues, MorfixShared } from './types';
+
 import { MorfixContext } from './MorfixContext';
+import { MorfixShared, MorfixValues } from './types';
 import { useMorfix } from './useMorfix';
 
-type ChildrenCallback<Values extends MorfixValues> = (
-    shared: MorfixShared<Values>
-) => React.ReactNode;
+type ChildrenCallback<Values extends MorfixValues> = (shared: MorfixShared<Values>) => React.ReactNode;
 
 export type MorfixChildren<Values extends MorfixValues> =
     | ChildrenCallback<Values>
@@ -17,9 +16,7 @@ export interface MorfixConfig<Values extends MorfixValues> {
     children: MorfixChildren<Values>;
 }
 
-export const Morfix = <Values extends MorfixValues>(
-    config: MorfixConfig<Values>
-) => {
+export const Morfix = <Values extends MorfixValues>(config: MorfixConfig<Values>) => {
     const { children } = config;
     const morfixBag = useMorfix(config);
 
