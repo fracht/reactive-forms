@@ -33,6 +33,7 @@
         "no-console": "warn",
         "react/prop-types": "off",
         "react/display-name": "off",
+        "linebreak-style": ["error", "windows"],
         "simple-import-sort/sort": [
             "warn",
             {
