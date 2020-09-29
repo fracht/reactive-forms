@@ -1,0 +1,26 @@
+{
+    "children": [
+        {
+            "title": "Getting started",
+            "href": "/getting-started"
+        },
+        {
+            "children": [
+                {
+                    "title": "a",
+                    "href": "/lol/a"
+                },
+                {
+                    "children": [
+                        {
+                            "title": "hello",
+                            "href": "/lol/l/hello"
+                        }
+                    ],
+                    "title": "l"
+                }
+            ],
+            "title": "lol"
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+.heading-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    position: relative;
+    .offset-anchor {
+        visibility: hidden;
+        position: absolute;
+        top: -100%;
+    }
+    .anchor {
+        display: none;
+    }
+    &:hover {
+        .anchor {
+            display: block;
+        }
+    }
+}
