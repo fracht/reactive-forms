@@ -1,0 +1,27 @@
+name: CI
+on:
+    pull_request:
+        paths-ignore:
+            - 'docs/**'
+        branches: [master]
+
+jobs:
+    test_pull_request:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Begin CI...
+              uses: actions/checkout@v2
+
+            - name: Use Node 12
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+
+            - name: Deleting node_modules folder & Installing dependencies
+              run: npm ci
+
+            - name: Linting files
+              run: npm run lint
+
+            - name: Building
+              run: npm run build
