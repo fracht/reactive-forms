@@ -12,6 +12,8 @@ export interface ArrayFieldProps<T> {
     setAll: (items: Array<T>) => void;
 }
 
+console.log('asdf');
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const actionWithCallback = <T extends (...args: any) => any>(action: T, callback: (output: ReturnType<T>) => void) => (
     ...args: Parameters<T>
