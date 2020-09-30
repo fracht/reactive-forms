@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 
+const withOptimizedImages = require('next-optimized-images');
+
 const isProd = process.env.NODE_ENV === 'production';
 
 const remarkPlugins = [
@@ -14,8 +16,9 @@ const remarkPlugins = [
     ]
 ];
 
-module.exports = {
+module.exports = withOptimizedImages({
     assetPrefix: isProd ? '/morfix/' : undefined,
+    basePath: isProd ? '/morfix' : undefined,
     pageExtensions: ['tsx', 'mdx', 'md'],
     webpack: (config, { defaultLoaders }) => {
         config.module.rules.push({
@@ -33,4 +36,4 @@ module.exports = {
         });
         return config;
     }
-};
+});
