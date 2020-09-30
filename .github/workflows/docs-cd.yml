@@ -5,6 +5,8 @@ on:
             - 'docs/**'
         branches: [master]
 
+    workflow_dispatch:
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
