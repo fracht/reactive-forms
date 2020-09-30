@@ -24,6 +24,7 @@
         "next-optimized-images": "^2.6.2",
         "react": "16.13.1",
         "react-dom": "16.13.1",
+        "remark-slug": "^6.0.0",
         "sass": "^1.26.11"
     },
     "devDependencies": {
