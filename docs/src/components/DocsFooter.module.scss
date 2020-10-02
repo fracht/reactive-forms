@@ -3,6 +3,8 @@
     &__nav-buttons {
         margin: 15px 0;
         display: flex;
-        justify-content: space-between;
+        .next-button {
+            margin-left: auto;
+        }
     }
 }

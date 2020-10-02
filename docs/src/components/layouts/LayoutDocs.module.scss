@@ -1,5 +1,6 @@
 .docs {
     display: flex;
+    width: 100%;
     &-content {
         position: relative;
         margin-top: 15px;
@@ -8,6 +9,7 @@
             position: absolute;
             top: 15px;
             right: 15px;
+            z-index: 2;
         }
     }
     &-toc {

@@ -1,0 +1,17 @@
+{
+    "/getting-started": {
+        "title": "Getting started",
+        "href": "/getting-started",
+        "index": 0
+    },
+    "/lol/a": {
+        "title": "a",
+        "href": "/lol/a",
+        "index": 1
+    },
+    "/lol/l/hello": {
+        "title": "hello",
+        "href": "/lol/l/hello",
+        "index": 2
+    }
+}
