@@ -5,16 +5,7 @@ const withOptimizedImages = require('next-optimized-images');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const remarkPlugins = [
-    require('remark-slug'),
-    [
-        require('remark-toc'),
-        {
-            skip: 'Reference',
-            maxDepth: 6
-        }
-    ]
-];
+const remarkPlugins = [require('remark-slug')];
 
 module.exports = withOptimizedImages({
     assetPrefix: isProd ? '/morfix/' : undefined,

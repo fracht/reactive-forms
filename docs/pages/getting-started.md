@@ -1,15 +1,10 @@
 ---
 title: Getting started
-order: 1
 ---
 
 # Getting started
 
 ## Hello, I'm Artiom
-
-```bash
-npm install morfix
-```
 
 This is simple blog test
 
@@ -33,12 +28,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 #### And more
 
-`a`
-
 Llo
-
-```jsx live codesandbox=https://www.google.com
-() => {
-    return <div>Hello world!</div>;
-};
-```

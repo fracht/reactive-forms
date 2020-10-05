@@ -18,8 +18,7 @@
         "test": "tsdx test --passWithNoTests",
         "lint": "tsdx lint",
         "lint-fix": "tsdx lint --fix",
-        "prepare": "tsdx build",
-        "format-all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\""
+        "prepare": "tsdx build"
     },
     "peerDependencies": {
         "react": ">=16"
