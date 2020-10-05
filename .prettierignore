@@ -1,0 +1,9 @@
+dist
+node_modules
+out
+.next
+build
+.ico
+.svg
+.png
+.jpg
