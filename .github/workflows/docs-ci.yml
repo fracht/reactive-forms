@@ -17,9 +17,15 @@ jobs:
               with:
                   node-version: 12
 
+            - name: Installing dependencies for base package
+              run: npm ci
+
+            - name: Building base package
+              run: npm run build
+
             - name: Deleting node_modules folder & Installing dependencies
               working-directory: ./docs
-              run: npm ci
+              run: npm i
 
             - name: Building
               run: npm run build

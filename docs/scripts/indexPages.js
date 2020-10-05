@@ -1,4 +1,8 @@
-const getRoutesConfig = require('../src/utils/getPagesConfig');
 const fs = require('fs');
+const getPagesConfig = require('../src/utils/getPagesConfig');
+const flatPagesConfig = require('../src/utils/flatPagesConfig');
 
-fs.writeFileSync('./indexes/pages.json', JSON.stringify(getRoutesConfig('pages'), undefined, 4));
+const pagesConfig = getPagesConfig('pages');
+
+fs.writeFileSync('./indexes/pages.json', JSON.stringify(pagesConfig, undefined, 4));
+fs.writeFileSync('./indexes/pages-map.json', JSON.stringify(flatPagesConfig(pagesConfig), undefined, 4));

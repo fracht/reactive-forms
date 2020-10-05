@@ -5,7 +5,7 @@ import { PageMeta } from '../types/Pages';
 
 import styles from './Nav.module.scss';
 
-interface NavProps {
+export interface NavProps {
     pageMetas: PageMeta[];
 }
 
