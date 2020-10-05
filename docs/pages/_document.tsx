@@ -3,7 +3,7 @@ import Document, { Head, Html, Main, NextScript } from 'next/document';
 export default class MorfixDocument extends Document {
     public render() {
         return (
-            <Html>
+            <Html lang="en">
                 <Head>
                     <link
                         href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600&display=swap"
