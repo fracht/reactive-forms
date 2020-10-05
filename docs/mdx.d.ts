@@ -23,14 +23,6 @@ declare module '@mdx-js/react' {
     type HeadingProps = {
         id: string;
     };
-
-    export type CodeProps = {
-        children: string;
-        className: string;
-        metastring: string;
-        [key: string]: boolean | string;
-    };
-
     export type Components = {
         [key in ComponentType]?: React.ComponentType<{ children: React.ReactNode }>;
     } & {
@@ -41,7 +33,6 @@ declare module '@mdx-js/react' {
         h4?: React.ComponentType<HeadingProps>;
         h5?: React.ComponentType<HeadingProps>;
         h6?: React.ComponentType<HeadingProps>;
-        code?: React.ComponentType<CodeProps>;
     };
     export interface MDXProviderProps {
         children: React.ReactNode;

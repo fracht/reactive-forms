@@ -1,16 +1,12 @@
 import React from 'react';
-import { Container, Divider, Hidden, Icon, IconButton, Tooltip, Typography, useTheme } from '@material-ui/core';
+import { Container, Divider, Tooltip, Typography, useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
 import GithubLogo from '../images/github-logo.svg';
 
 import styles from './Header.module.scss';
 
-interface HeaderProps {
-    openDrawer: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ openDrawer }) => {
+const Header = () => {
     const { push } = useRouter();
 
     const goToMainPage = React.useCallback(() => push('/'), [push]);
@@ -22,16 +18,7 @@ const Header: React.FC<HeaderProps> = ({ openDrawer }) => {
             <Container maxWidth="lg">
                 <div className={styles['header-content']}>
                     <div className={styles['flex-center']}>
-                        <Hidden smUp>
-                            <IconButton onClick={openDrawer} className={styles['hamburger']} size="small">
-                                <Icon fontSize="small">menu</Icon>
-                            </IconButton>
-                        </Hidden>
-                        <Typography
-                            style={{ cursor: 'pointer', lineHeight: 'inherit' }}
-                            onClick={goToMainPage}
-                            variant="h6"
-                        >
+                        <Typography style={{ cursor: 'pointer' }} onClick={goToMainPage} variant="h6">
                             Morfix
                         </Typography>
                         <span style={{ color: theme.palette.primary.dark }} className={styles['version']}>

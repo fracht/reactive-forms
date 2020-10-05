@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
-import { Icon } from '@material-ui/core';
+import React from 'react';
+import { Icon, Tooltip } from '@material-ui/core';
 import classNames from 'classnames';
 
 import { HeadingLevel } from './Heading';
-import { CopyButton } from '../CopyButton';
-
-import styles from './Anchor.module.scss';
 
 interface AnchorProps {
     id: string;
@@ -13,24 +10,13 @@ interface AnchorProps {
     className?: string;
 }
 
-const Anchor: React.FC<AnchorProps> = ({ level, id, className }) => {
-    const [link, setLink] = React.useState('');
-
-    useEffect(() => {
-        setLink(`${window.location.origin}${window.location.pathname}#${id}`);
-    }, [id]);
-
-    return (
-        <CopyButton
-            className={classNames(styles['anchor'], className, 'anchor')}
-            data-id={id}
-            data-level={level}
-            text={link}
-        >
-            <Icon>link</Icon>
-        </CopyButton>
-    );
-};
+const Anchor: React.FC<AnchorProps> = ({ level, id, className }) => (
+    <Tooltip title="Copy link">
+        <Icon className={classNames('anchor', className)} data-id={id} data-level={level}>
+            link
+        </Icon>
+    </Tooltip>
+);
 
 export interface AnchorMeta {
     id: string;

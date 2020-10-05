@@ -39,21 +39,7 @@ export const theme = createMuiTheme({
             fontWeight: 'bold'
         }
     },
-    breakpoints: {
-        values: {
-            xs: 0,
-            sm: 800,
-            md: 960,
-            lg: 1280,
-            xl: 1920
-        }
-    },
     overrides: {
-        MuiIconButton: {
-            sizeSmall: {
-                padding: 8
-            }
-        },
         MuiLink: {
             root: {
                 cursor: 'pointer',
