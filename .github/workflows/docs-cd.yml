@@ -30,7 +30,8 @@ jobs:
               run: npm ci
 
             - name: Indexing pages
-              run: npm run index-page
+              run: npm run index-pages
+              working-directory: ./docs
 
             - name: Building
               run: npm run build
