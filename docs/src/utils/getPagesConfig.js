@@ -36,7 +36,7 @@ module.exports = function getRoutesConfig(baseDir, mainDir) {
         mainDir = baseDir;
     }
 
-    return paths.reduce((out, currentPath) => {
+    const routes = paths.reduce((out, currentPath) => {
         const normalPath = path.join(baseDir, currentPath);
 
         if (currentPath === 'index.md') {
@@ -58,10 +58,14 @@ module.exports = function getRoutesConfig(baseDir, mainDir) {
             const meta = getFileMetadata(normalPath);
             out.children.push({
                 title: meta.title,
+                order: meta.order,
                 href: pathToLink(normalPath, mainDir)
             });
         }
 
         return out;
     }, {});
+
+    routes.children = routes.children.sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder);
+    return routes;
 };

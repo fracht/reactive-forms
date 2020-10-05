@@ -14,7 +14,8 @@
     }
     &-toc {
         margin-top: 40px;
-        $toc-width: 200px;
+        $toc-width: 250px;
+        padding-left: 15px;
         width: $toc-width;
         min-width: $toc-width;
         max-width: $toc-width;

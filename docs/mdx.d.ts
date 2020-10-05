@@ -24,10 +24,12 @@ declare module '@mdx-js/react' {
         id: string;
     };
 
-    export interface CodeProps {
+    export type CodeProps = {
         children: string;
         className: string;
-    }
+        metastring: string;
+        [key: string]: boolean | string;
+    };
 
     export type Components = {
         [key in ComponentType]?: React.ComponentType<{ children: React.ReactNode }>;

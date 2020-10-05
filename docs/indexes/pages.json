@@ -2,22 +2,18 @@
     "children": [
         {
             "title": "Getting started",
+            "order": 1,
             "href": "/getting-started"
+        },
+        {
+            "title": "Docs details",
+            "href": "/documentation-details"
         },
         {
             "children": [
                 {
                     "title": "a",
                     "href": "/lol/a"
-                },
-                {
-                    "children": [
-                        {
-                            "title": "hello",
-                            "href": "/lol/l/hello"
-                        }
-                    ],
-                    "title": "l"
                 }
             ],
             "title": "lol"

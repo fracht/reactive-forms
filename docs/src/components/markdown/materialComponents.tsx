@@ -1,3 +1,4 @@
+import React from 'react';
 import { Components } from '@mdx-js/react';
 
 import { Code } from './Code';
@@ -14,5 +15,6 @@ export const materialComponents: Components = {
     h5: createHeadingComponent(5),
     h6: createHeadingComponent(6),
     p: Paragraph,
-    code: Code
+    code: Code,
+    pre: ({ children }) => <React.Fragment>{children}</React.Fragment>
 };

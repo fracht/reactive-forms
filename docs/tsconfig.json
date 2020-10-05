@@ -16,7 +16,8 @@
         "noImplicitAny": true,
         "baseUrl": ".",
         "paths": {
-            "layouts/*": ["src/components/layouts/*"]
+            "layouts/*": ["src/components/layouts/*"],
+            "morfix": [".."]
         }
     },
     "exclude": ["node_modules"],

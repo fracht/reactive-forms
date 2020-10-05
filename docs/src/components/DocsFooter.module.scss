@@ -1,5 +1,8 @@
 .footer {
     margin: 15px 0;
+    &__first {
+        padding: 5px 0;
+    }
     &__nav-buttons {
         margin: 15px 0;
         display: flex;

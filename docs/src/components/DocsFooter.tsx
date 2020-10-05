@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Divider, Icon } from '@material-ui/core';
+import { Button, Divider, Icon, Link } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
 import indexes from '../../indexes/pages-map.json';
@@ -29,6 +29,11 @@ export const DocsFooter = () => {
 
     return (
         <div className={styles['footer']}>
+            <div className={styles['footer__first']}>
+                <Link target="_blank" href={`https://github.com/ArtiomTr/morfix/tree/master/docs/pages${pathname}.md`}>
+                    View this page on Github
+                </Link>
+            </div>
             <Divider />
             <div className={styles['footer__nav-buttons']}>
                 {prevPage && (

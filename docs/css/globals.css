@@ -2,8 +2,10 @@ body,
 html {
     margin: 0;
     padding: 0;
+    font-family: 'Epilogue', sans-serif;
 }
 
-* {
-    font-family: 'Epilogue', sans-serif;
+pre,
+code {
+    font-family: 'Roboto Mono', monospace;
 }

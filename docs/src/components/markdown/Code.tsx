@@ -1,22 +1,32 @@
 import React from 'react';
-import { CodeProps } from '@mdx-js/react';
-import Highlight, { defaultProps } from 'prism-react-renderer';
-import theme from 'prism-react-renderer/themes/dracula';
+import { CodeProps as MDXCodeProps } from '@mdx-js/react';
 
-export const Code: React.FC<CodeProps> = ({ children }) => {
-    return (
-        <Highlight {...defaultProps} theme={theme} code={children} language="jsx">
-            {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                    {tokens.map((line, i) => (
-                        <div {...getLineProps({ line })} key={i}>
-                            {line.map((token, key) => (
-                                <span {...getTokenProps({ token })} key={key} />
-                            ))}
-                        </div>
-                    ))}
-                </pre>
-            )}
-        </Highlight>
-    );
+import { DefaultCode } from './codeRender/DefaultCode';
+import { isLiveCode, LiveCode } from './codeRender/LiveCode';
+import { isShellLanguage, ShellCode } from './codeRender/ShellCode';
+import { CodeProps } from './codeRender/types';
+
+export const Code = (props: MDXCodeProps) => {
+    const { children, className, metastring, ...other } = props;
+
+    const language = className?.replace('language-', '');
+
+    const normalizedProps: CodeProps = {
+        code: children.trim(),
+        metastring,
+        language,
+        meta: other
+    };
+
+    let CodeComponent: React.ComponentType<CodeProps> = DefaultCode;
+
+    if (isShellLanguage(language)) {
+        CodeComponent = ShellCode;
+    }
+
+    if (isLiveCode(language, normalizedProps.meta)) {
+        CodeComponent = LiveCode;
+    }
+
+    return <CodeComponent {...normalizedProps} />;
 };
