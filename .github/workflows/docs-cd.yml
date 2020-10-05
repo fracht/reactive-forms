@@ -29,6 +29,9 @@ jobs:
               working-directory: ./docs
               run: npm ci
 
+            - name: Indexing pages
+              run: npm run index-page
+
             - name: Building
               run: npm run build
               working-directory: ./docs
