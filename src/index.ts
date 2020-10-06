@@ -7,5 +7,7 @@ export * from './Field';
 export * from './RealtimeField';
 export * from './ObjectField';
 export * from './ArrayField';
+export * from './useFormSubmit';
+export * from './SubmitButton';
 
 export { Morfix as default } from './Morfix';
