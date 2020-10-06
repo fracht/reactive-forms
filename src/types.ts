@@ -33,7 +33,7 @@ export interface MorfixControl<Values extends MorfixValues> {
     setValues: (values: Values) => void;
     registerFieldValidator: <T>(name: string, validator: FieldValidator<T>) => void;
     unregisterFieldValidator: (name: string) => void;
-    submitForm: (submitAction?: SubmitAction<Values>) => void;
+    submitForm: (submitAction?: SubmitAction<Values>) => Promise<void>;
 }
 
 export interface FieldHandlers<V> {

@@ -35,6 +35,24 @@ export const useMorfix = <Values extends MorfixValues>({
         return undefined;
     };
 
+    const validateAllFields = async () => {
+        const fieldKeys = Object.keys(registry.current);
+        const reducedErrors: MorfixErrors<Values> = {};
+        for (let i = 0; i < fieldKeys.length; i++) {
+            const fieldKey = fieldKeys[i];
+            const error = registry.current[fieldKey](get(values, fieldKey));
+            if (error) {
+                set(
+                    reducedErrors,
+                    fieldKey.trim().length > 0 ? `${fieldKey}.${MORFIX_ERROR_PATH}` : MORFIX_ERROR_PATH,
+                    error
+                );
+            }
+        }
+
+        return reducedErrors;
+    };
+
     const setFieldValue = <T>(name: string, value: T) => {
         setValues({ ...set(values, name, value) });
         validateField(name, value);
@@ -53,7 +71,7 @@ export const useMorfix = <Values extends MorfixValues>({
         setValues,
         registerFieldValidator,
         unregisterFieldValidator,
-        submitForm: (submitAciton?: SubmitAction<Values>) => {
+        submitForm: async (submitAciton?: SubmitAction<Values>) => {
             const normalSubmit = submitAciton ?? onSubmit;
 
             invariant(
@@ -61,7 +79,13 @@ export const useMorfix = <Values extends MorfixValues>({
                 "You're trying to call submitForm() without specifying action, when default Morfix submit action is not set."
             );
 
-            normalSubmit(values, control);
+            const newErrors = await validateAllFields();
+
+            setErrors(newErrors);
+
+            if (Object.keys(newErrors).length === 0) {
+                normalSubmit(values, control);
+            }
         }
     };
 
