@@ -8,6 +8,8 @@ export type MorfixShared<Values extends MorfixValues> = MorfixContextType<Values
 
 export type MorfixValues = object;
 
+export type SubmitAction<Values extends MorfixValues> = (values: Values, control: MorfixControl<Values>) => void;
+
 export interface FieldError {
     message: string;
 }
@@ -31,6 +33,7 @@ export interface MorfixControl<Values extends MorfixValues> {
     setValues: (values: Values) => void;
     registerFieldValidator: <T>(name: string, validator: FieldValidator<T>) => void;
     unregisterFieldValidator: (name: string) => void;
+    submitForm: (submitAction?: SubmitAction<Values>) => void;
 }
 
 export interface FieldHandlers<V> {

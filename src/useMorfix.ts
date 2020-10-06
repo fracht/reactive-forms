@@ -1,13 +1,23 @@
 import { useRef, useState } from 'react';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import invariant from 'tiny-invariant';
 
 import { MORFIX_ERROR_PATH } from './constants';
 import { MorfixConfig } from './Morfix';
-import { FieldValidator, MorfixErrors, MorfixShared, MorfixValues, ValidationRegistry } from './types';
+import {
+    FieldValidator,
+    MorfixControl,
+    MorfixErrors,
+    MorfixShared,
+    MorfixValues,
+    SubmitAction,
+    ValidationRegistry
+} from './types';
 
 export const useMorfix = <Values extends MorfixValues>({
-    initialValues
+    initialValues,
+    onSubmit
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState<MorfixErrors<Values>>({});
@@ -38,13 +48,27 @@ export const useMorfix = <Values extends MorfixValues>({
         delete registry.current[name];
     };
 
+    const control: MorfixControl<Values> = {
+        setFieldValue,
+        setValues,
+        registerFieldValidator,
+        unregisterFieldValidator,
+        submitForm: (submitAciton?: SubmitAction<Values>) => {
+            const normalSubmit = submitAciton ?? onSubmit;
+
+            invariant(
+                normalSubmit,
+                "You're trying to call submitForm() without specifying action, when default Morfix submit action is not set."
+            );
+
+            normalSubmit(values, control);
+        }
+    };
+
     return {
         values,
-        setValues,
-        setFieldValue,
         initialValues,
         errors,
-        registerFieldValidator,
-        unregisterFieldValidator
+        ...control
     };
 };
