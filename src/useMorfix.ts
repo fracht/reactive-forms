@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
+import { ValidationError } from 'yup';
 
 import { MORFIX_ERROR_PATH } from './constants';
 import { MorfixConfig } from './Morfix';
@@ -17,7 +18,8 @@ import {
 
 export const useMorfix = <Values extends MorfixValues>({
     initialValues,
-    onSubmit
+    onSubmit,
+    validationSchema
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState<MorfixErrors<Values>>({});
@@ -35,7 +37,7 @@ export const useMorfix = <Values extends MorfixValues>({
         return undefined;
     };
 
-    const validateAllFields = async () => {
+    const validateAllFields = async (values: Values) => {
         const fieldKeys = Object.keys(registry.current);
         const reducedErrors: MorfixErrors<Values> = {};
         for (let i = 0; i < fieldKeys.length; i++) {
@@ -51,6 +53,19 @@ export const useMorfix = <Values extends MorfixValues>({
         }
 
         return reducedErrors;
+    };
+
+    const runValidationSchema = async (values: Values) => {
+        try {
+            await validationSchema?.validate(values);
+        } catch (err) {}
+    };
+
+    const validateForm = async (values: Values) => {
+        const newErrors = await validateAllFields(values);
+        runValidationSchema(values);
+
+        return newErrors;
     };
 
     const setFieldValue = <T>(name: string, value: T) => {
@@ -79,7 +94,7 @@ export const useMorfix = <Values extends MorfixValues>({
                 "You're trying to call submitForm() without specifying action, when default Morfix submit action is not set."
             );
 
-            const newErrors = await validateAllFields();
+            const newErrors = await validateForm(values);
 
             setErrors(newErrors);
 

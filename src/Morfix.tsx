@@ -1,4 +1,5 @@
 import React from 'react';
+import { Schema } from 'yup';
 
 import { MorfixContext } from './MorfixContext';
 import { MorfixShared, MorfixValues, SubmitAction } from './types';
@@ -14,6 +15,7 @@ export type MorfixChildren<Values extends MorfixValues> =
 export interface MorfixConfig<Values extends MorfixValues> {
     initialValues: Values;
     onSubmit?: SubmitAction<Values>;
+    validationSchema?: Schema<Values>;
 }
 
 export const Morfix = <Values extends MorfixValues>(
