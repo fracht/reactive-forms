@@ -43,6 +43,7 @@ export interface FieldHandlers<V> {
 export interface FieldMeta<T> {
     value: T;
     initialValue: T;
+    error: MorfixErrors<T>;
 }
 
 export type FieldContext<T> = [FieldMeta<T>, FieldHandlers<T>];
@@ -61,6 +62,7 @@ export interface SharedFieldConfig<V> {
 export interface FieldProps {
     name: string;
     value: string;
+    error?: FieldError;
     onChange: (e: React.ChangeEvent<{ value: string }>) => void;
     onBlur?: (e: React.FocusEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;

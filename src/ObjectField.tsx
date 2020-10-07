@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import set from 'lodash/set';
 
 import { useDefaultFieldContext } from './DefaultFieldContext';
-import { SharedFieldConfig } from './types';
+import { MorfixErrors, SharedFieldConfig } from './types';
 
 export interface ObjectFieldConfig<T> extends SharedFieldConfig<T> {}
 
@@ -10,10 +10,11 @@ export interface ObjectFieldProps<T extends Object> {
     value: T;
     setValue: (value: T) => void;
     setDeepValue: <V>(name: string, value: V) => void;
+    error?: MorfixErrors<T>;
 }
 
 export const useObjectField = <T extends Object>(config: ObjectFieldConfig<T>): ObjectFieldProps<T> => {
-    const [{ value }, { setValue }] = useDefaultFieldContext<T>(config);
+    const [{ value, error }, { setValue }] = useDefaultFieldContext<T>(config);
 
     const setDeepValue = useCallback(
         <V,>(nestedName: string, newValue: V) => {
@@ -25,6 +26,7 @@ export const useObjectField = <T extends Object>(config: ObjectFieldConfig<T>): 
 
     return {
         value,
+        error,
         setValue,
         setDeepValue
     };

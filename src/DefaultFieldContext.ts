@@ -7,6 +7,7 @@ import { FieldContext, SharedFieldConfig } from './types';
 export const useDefaultFieldContext = <V>({ name, validate }: SharedFieldConfig<V>): FieldContext<V> => {
     const {
         values,
+        errors,
         initialValues,
         setFieldValue,
         registerFieldValidator,
@@ -23,7 +24,8 @@ export const useDefaultFieldContext = <V>({ name, validate }: SharedFieldConfig<
     return [
         {
             value: get(values, name),
-            initialValue: get(initialValues, name)
+            initialValue: get(initialValues, name),
+            error: get(errors, name)
         },
         { setValue }
     ];

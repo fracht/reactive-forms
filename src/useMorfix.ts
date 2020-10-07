@@ -4,7 +4,7 @@ import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 import { ValidationError } from 'yup';
 
-import { MORFIX_ERROR_PATH } from './constants';
+import { fieldNameToErrorPath } from './utils/fieldNameToErrorPath';
 import { MorfixConfig } from './Morfix';
 import {
     FieldValidator,
@@ -30,7 +30,7 @@ export const useMorfix = <Values extends MorfixValues>({
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
             const error = await registry.current[name](value === undefined ? get(values, name) : value);
             setErrors({
-                ...set(errors, name.trim().length > 0 ? `${name}.${MORFIX_ERROR_PATH}` : MORFIX_ERROR_PATH, error)
+                ...set(errors, fieldNameToErrorPath(name), error)
             });
             return error;
         }
@@ -44,11 +44,7 @@ export const useMorfix = <Values extends MorfixValues>({
             const fieldKey = fieldKeys[i];
             const error = registry.current[fieldKey](get(values, fieldKey));
             if (error) {
-                set(
-                    reducedErrors,
-                    fieldKey.trim().length > 0 ? `${fieldKey}.${MORFIX_ERROR_PATH}` : MORFIX_ERROR_PATH,
-                    error
-                );
+                set(reducedErrors, fieldNameToErrorPath(fieldKey), error);
             }
         }
 
