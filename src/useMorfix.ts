@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react';
+import { merge } from 'lodash';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
-import { ValidationError } from 'yup';
 
 import { fieldNameToErrorPath } from './utils/fieldNameToErrorPath';
+import { isValidationError } from './utils/isValidationError';
+import { yupToMorfixErrors } from './utils/yupToMorfixErrors';
 import { MorfixConfig } from './Morfix';
 import {
     FieldValidator,
@@ -51,17 +53,26 @@ export const useMorfix = <Values extends MorfixValues>({
         return reducedErrors;
     };
 
-    const runValidationSchema = async (values: Values) => {
+    const runValidationSchema = async (values: Values): Promise<MorfixErrors<Values> | undefined> => {
         try {
             await validationSchema?.validate(values);
-        } catch (err) {}
+        } catch (err) {
+            if (isValidationError(err)) {
+                return yupToMorfixErrors<Values>(err);
+            } else {
+                throw err;
+            }
+        }
+        return undefined;
     };
 
     const validateForm = async (values: Values) => {
-        const newErrors = await validateAllFields(values);
-        runValidationSchema(values);
+        const registryErrors = await validateAllFields(values);
+        const schemaErrors = await runValidationSchema(values);
 
-        return newErrors;
+        const combinedErrors = merge(registryErrors, schemaErrors);
+
+        return combinedErrors;
     };
 
     const setFieldValue = <T>(name: string, value: T) => {
@@ -93,6 +104,8 @@ export const useMorfix = <Values extends MorfixValues>({
             const newErrors = await validateForm(values);
 
             setErrors(newErrors);
+
+            console.log(newErrors);
 
             if (Object.keys(newErrors).length === 0) {
                 normalSubmit(values, control);

@@ -1,12 +1,23 @@
 import React, { Fragment } from 'react';
 
-import Morfix, { ArrayFieldProps, ObjectField, ObjectFieldConfig, RealtimeField, ArrayField } from 'morfix';
+import Morfix, {
+    ArrayFieldProps,
+    ObjectField,
+    ObjectFieldConfig,
+    RealtimeField,
+    ArrayField,
+    SubmitButton
+} from 'morfix';
+import { array, object } from 'yup';
 
 const TestField = (config: ObjectFieldConfig<{ hello: string; bye: string }>) => (
     <ObjectField {...config}>
         {() => (
             <div>
-                <RealtimeField name={`${config.name}.hello`} />
+                <RealtimeField
+                    validate={(value) => (value.length > 0 ? undefined : { message: 'required' })}
+                    name={`${config.name}.hello`}
+                />
                 <RealtimeField name={`${config.name}.bye`} />
             </div>
         )}
@@ -21,6 +32,7 @@ interface Data {
 const App = () => {
     return (
         <Morfix
+            onSubmit={(val) => alert(JSON.stringify(val, undefined, 4))}
             initialValues={{
                 testField: [
                     {
@@ -37,6 +49,11 @@ const App = () => {
                     }
                 ]
             }}
+            validationSchema={
+                object().shape({
+                    testField: array().min(5)
+                }) as any
+            }
         >
             {() => (
                 <React.Fragment>
@@ -56,6 +73,7 @@ const App = () => {
                                     <button onClick={() => push({ hello: '', bye: '' })}>Add</button>
                                     <button onClick={pop}>Remove last</button>
                                 </div>
+                                <SubmitButton>Submit</SubmitButton>
                             </div>
                         )}
                     </ArrayField>
