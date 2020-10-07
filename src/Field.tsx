@@ -27,7 +27,7 @@ export const useField = <T,>({
 }: FieldConfig<T>): FieldProps => {
     const { name } = config;
 
-    const [{ value, initialValue }, { setValue }] = useDefaultFieldContext<T>(config);
+    const [{ value, initialValue, error }, { setValue }] = useDefaultFieldContext<T>(config);
 
     const [typedValue, setTypedValue] = useState(valueToString(initialValue));
 
@@ -42,6 +42,7 @@ export const useField = <T,>({
     return {
         name,
         value: typedValue,
+        error: error.error_mrfx,
         onBlur,
         onChange
     };

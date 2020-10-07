@@ -1,5 +1,5 @@
 import { useDefaultFieldContext } from './DefaultFieldContext';
-import { SharedFieldConfig } from './types';
+import { MorfixErrors, SharedFieldConfig } from './types';
 
 export interface ArrayFieldConfig<T> extends SharedFieldConfig<Array<T>> {}
 
@@ -10,6 +10,7 @@ export interface ArrayFieldProps<T> {
     remove: (index: number) => T | undefined;
     set: (item: T, index: number) => void;
     setAll: (items: Array<T>) => void;
+    error?: MorfixErrors<Array<T>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +23,7 @@ const actionWithCallback = <T extends (...args: any) => any>(action: T, callback
 };
 
 export const useArrayField = <T,>(config: ArrayFieldConfig<T>): ArrayFieldProps<T> => {
-    const [{ value: items }, { setValue }] = useDefaultFieldContext<T[]>(config);
+    const [{ value: items, error }, { setValue }] = useDefaultFieldContext<T[]>(config);
 
     const setAll = (items: Array<T>) => setValue(items);
 
@@ -30,6 +31,7 @@ export const useArrayField = <T,>(config: ArrayFieldConfig<T>): ArrayFieldProps<
 
     return {
         items,
+        error,
         push: actionWithCallback(Array.prototype.push.bind(items), update),
         pop: actionWithCallback(Array.prototype.pop.bind(items), update),
         set: actionWithCallback((item: T, index: number) => (items[index] = item), update),
