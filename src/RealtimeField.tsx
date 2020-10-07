@@ -6,13 +6,14 @@ import { FieldProps, SharedFieldConfig } from './types';
 export interface RealtimeFieldConfig<T> extends SharedFieldConfig<T> {}
 
 export const useRealtimeField = (config: RealtimeFieldConfig<string>): FieldProps => {
-    const [{ value }, { setValue }] = useDefaultFieldContext<string>(config);
+    const [{ value, error }, { setValue }] = useDefaultFieldContext<string>(config);
 
     const { name } = config;
 
     return {
         name,
         value,
+        error: error?.error_mrfx,
         onChange: (e) => setValue(e.target.value)
     };
 };
