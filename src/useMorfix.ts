@@ -105,8 +105,6 @@ export const useMorfix = <Values extends MorfixValues>({
 
             setErrors(newErrors);
 
-            console.log(newErrors);
-
             if (Object.keys(newErrors).length === 0) {
                 normalSubmit(values, control);
             }
