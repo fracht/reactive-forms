@@ -15,7 +15,7 @@ export type MorfixChildren<Values extends MorfixValues> =
 export interface MorfixConfig<Values extends MorfixValues> {
     initialValues: Values;
     onSubmit?: SubmitAction<Values>;
-    validationSchema?: Schema<Values>;
+    validationSchema?: Schema<Partial<Values> | undefined>;
 }
 
 export const Morfix = <Values extends MorfixValues>(

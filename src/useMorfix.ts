@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react';
-import { merge } from 'lodash';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
 import { fieldNameToErrorPath } from './utils/fieldNameToErrorPath';
-import { isValidationError } from './utils/isValidationError';
-import { yupToMorfixErrors } from './utils/yupToMorfixErrors';
+import { runYupSchema } from './utils/runYupSchema';
+import { safeMerge } from './utils/safeMerge';
 import { MorfixConfig } from './Morfix';
 import {
     FieldValidator,
@@ -44,7 +43,7 @@ export const useMorfix = <Values extends MorfixValues>({
         const reducedErrors: MorfixErrors<Values> = {};
         for (let i = 0; i < fieldKeys.length; i++) {
             const fieldKey = fieldKeys[i];
-            const error = registry.current[fieldKey](get(values, fieldKey));
+            const error = await registry.current[fieldKey](get(values, fieldKey));
             if (error) {
                 set(reducedErrors, fieldNameToErrorPath(fieldKey), error);
             }
@@ -54,23 +53,15 @@ export const useMorfix = <Values extends MorfixValues>({
     };
 
     const runValidationSchema = async (values: Values): Promise<MorfixErrors<Values> | undefined> => {
-        try {
-            await validationSchema?.validate(values);
-        } catch (err) {
-            if (isValidationError(err)) {
-                return yupToMorfixErrors<Values>(err);
-            } else {
-                throw err;
-            }
-        }
-        return undefined;
+        const errors = validationSchema && ((await runYupSchema(validationSchema, values)) as MorfixErrors<Values>);
+        return errors;
     };
 
     const validateForm = async (values: Values) => {
         const registryErrors = await validateAllFields(values);
         const schemaErrors = await runValidationSchema(values);
 
-        const combinedErrors = merge(registryErrors, schemaErrors);
+        const combinedErrors = safeMerge(registryErrors, schemaErrors) as MorfixErrors<Values>;
 
         return combinedErrors;
     };

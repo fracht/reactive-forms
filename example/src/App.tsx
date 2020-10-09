@@ -1,19 +1,25 @@
 import React, { Fragment } from 'react';
-
 import Morfix, {
+    ArrayField,
     ArrayFieldProps,
     ObjectField,
     ObjectFieldConfig,
     RealtimeField,
-    ArrayField,
     SubmitButton
 } from 'morfix';
-import { array, object } from 'yup';
+import { array, object, string } from 'yup';
 
 const TestField = (config: ObjectFieldConfig<{ hello: string; bye: string }>) => (
-    <ObjectField {...config}>
-        {() => (
+    <ObjectField
+        validationSchema={object().shape({
+            hello: string().required(),
+            bye: string().required()
+        })}
+        {...config}
+    >
+        {({ error }) => (
             <div>
+                {error?.bye?.error_mrfx?.message}
                 <RealtimeField
                     validate={(value) => (value.length > 0 ? undefined : { message: 'required' })}
                     name={`${config.name}.hello`}
@@ -49,11 +55,9 @@ const App = () => {
                     }
                 ]
             }}
-            validationSchema={
-                object().shape({
-                    testField: array().min(5)
-                }) as any
-            }
+            validationSchema={object().shape({
+                testField: array<{ hello: string; bye: string }>().min(5)
+            })}
         >
             {() => (
                 <React.Fragment>

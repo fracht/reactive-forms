@@ -1,3 +1,5 @@
+import { Schema } from 'yup';
+
 export type MorfixContextType<Values extends MorfixValues> = {
     values: Values;
     errors: MorfixErrors<Values>;
@@ -57,6 +59,7 @@ export type ValidationRegistry = Record<string, FieldValidator<unknown>>;
 export interface SharedFieldConfig<V> {
     name: string;
     validate?: FieldValidator<V>;
+    validationSchema?: Schema<Partial<V> | undefined>;
 }
 
 export interface FieldProps {
