@@ -4,16 +4,24 @@ export type MorfixContextType<Values extends MorfixValues> = {
     values: Values;
     errors: MorfixErrors<Values>;
     initialValues: Values;
-} & MorfixControl<Values>;
+} & MorfixControl<Values> &
+    MorfixFormState;
 
 export type MorfixShared<Values extends MorfixValues> = MorfixContextType<Values>;
 
 export type MorfixValues = object;
 
-export type SubmitAction<Values extends MorfixValues> = (values: Values, control: MorfixControl<Values>) => void;
+export type SubmitAction<Values extends MorfixValues> = (
+    values: Values,
+    control: MorfixControl<Values>
+) => Promise<void> | void;
 
 export interface FieldError {
     message: string;
+}
+
+export interface MorfixFormState {
+    isSubmitting: boolean;
 }
 
 export type MorfixInnerError = {
@@ -36,6 +44,7 @@ export interface MorfixControl<Values extends MorfixValues> {
     registerFieldValidator: <T>(name: string, validator: FieldValidator<T>) => void;
     unregisterFieldValidator: (name: string) => void;
     submitForm: (submitAction?: SubmitAction<Values>) => Promise<void>;
+    setSubmitting: (isSubmitting: boolean) => void;
 }
 
 export interface FieldHandlers<V> {

@@ -24,6 +24,7 @@ export const useMorfix = <Values extends MorfixValues>({
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState<MorfixErrors<Values>>({});
+    const [isSubmitting, setSubmitting] = useState(false);
 
     const registry = useRef<ValidationRegistry>({});
 
@@ -84,6 +85,7 @@ export const useMorfix = <Values extends MorfixValues>({
         setValues,
         registerFieldValidator,
         unregisterFieldValidator,
+        setSubmitting,
         submitForm: async (submitAciton?: SubmitAction<Values>) => {
             const normalSubmit = submitAciton ?? onSubmit;
 
@@ -92,13 +94,17 @@ export const useMorfix = <Values extends MorfixValues>({
                 "You're trying to call submitForm() without specifying action, when default Morfix submit action is not set."
             );
 
+            setSubmitting(true);
+
             const newErrors = await validateForm(values);
 
             setErrors(newErrors);
 
             if (Object.keys(newErrors).length === 0) {
-                normalSubmit(values, control);
+                await normalSubmit(values, control);
             }
+
+            setSubmitting(false);
         }
     };
 
@@ -106,6 +112,7 @@ export const useMorfix = <Values extends MorfixValues>({
         values,
         initialValues,
         errors,
+        isSubmitting,
         ...control
     };
 };
