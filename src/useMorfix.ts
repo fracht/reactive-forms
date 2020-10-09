@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
-import { fieldNameToErrorPath } from './utils/fieldNameToErrorPath';
 import { runYupSchema } from './utils/runYupSchema';
 import { safeMerge } from './utils/safeMerge';
 import { MorfixConfig } from './Morfix';
@@ -27,25 +26,43 @@ export const useMorfix = <Values extends MorfixValues>({
 
     const registry = useRef<ValidationRegistry>({});
 
-    const validateField = async <V>(name: string, value?: V) => {
+    const runFieldValidation = async <V>(name: string, value: V): Promise<MorfixErrors<V> | undefined> => {
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
-            const error = await registry.current[name](value === undefined ? get(values, name) : value);
-            setErrors({
-                ...set(errors, fieldNameToErrorPath(name), error)
-            });
-            return error;
+            let error = await registry.current[name](value);
+
+            const { error_mrfx, ...oth } = get(errors, name) ?? {};
+
+            if (Object.keys(oth).length > 0) {
+                error = {
+                    ...oth,
+                    ...error
+                };
+            }
+
+            if (error) return error;
         }
         return undefined;
+    };
+
+    const validateField = async <V>(name: string, value?: V) => {
+        const error = await runFieldValidation(name, value === undefined ? get(values, name) : value);
+
+        setErrors({
+            ...set(errors, name, error)
+        });
+
+        return error;
     };
 
     const validateAllFields = async (values: Values) => {
         const fieldKeys = Object.keys(registry.current);
         const reducedErrors: MorfixErrors<Values> = {};
+
         for (let i = 0; i < fieldKeys.length; i++) {
             const fieldKey = fieldKeys[i];
-            const error = await registry.current[fieldKey](get(values, fieldKey));
+            const error = await runFieldValidation(fieldKey, get(values, fieldKey));
             if (error) {
-                set(reducedErrors, fieldNameToErrorPath(fieldKey), error);
+                set(reducedErrors, fieldKey, error);
             }
         }
 

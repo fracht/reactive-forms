@@ -42,7 +42,7 @@ export const useField = <T,>({
     return {
         name,
         value: typedValue,
-        error: error.error_mrfx,
+        error: error?.error_mrfx,
         onBlur,
         onChange
     };
