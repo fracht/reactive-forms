@@ -1,12 +1,29 @@
 import React, { Fragment } from 'react';
-
-import Morfix, { ArrayFieldProps, ObjectField, ObjectFieldConfig, RealtimeField, ArrayField } from 'morfix';
+import Morfix, {
+    ArrayField,
+    ArrayFieldProps,
+    ObjectField,
+    ObjectFieldConfig,
+    RealtimeField,
+    SubmitButton
+} from 'morfix';
+import { array, object, string } from 'yup';
 
 const TestField = (config: ObjectFieldConfig<{ hello: string; bye: string }>) => (
-    <ObjectField {...config}>
-        {() => (
+    <ObjectField
+        validationSchema={object().shape({
+            hello: string().required(),
+            bye: string().required()
+        })}
+        {...config}
+    >
+        {({ error }) => (
             <div>
-                <RealtimeField name={`${config.name}.hello`} />
+                {error?.bye?.error_mrfx?.message}
+                <RealtimeField
+                    validate={(value) => (value.length > 0 ? undefined : { message: 'required' })}
+                    name={`${config.name}.hello`}
+                />
                 <RealtimeField name={`${config.name}.bye`} />
             </div>
         )}
@@ -21,6 +38,7 @@ interface Data {
 const App = () => {
     return (
         <Morfix
+            onSubmit={(val) => alert(JSON.stringify(val, undefined, 4))}
             initialValues={{
                 testField: [
                     {
@@ -37,6 +55,9 @@ const App = () => {
                     }
                 ]
             }}
+            validationSchema={object().shape({
+                testField: array<{ hello: string; bye: string }>().min(5)
+            })}
         >
             {() => (
                 <React.Fragment>
@@ -56,6 +77,7 @@ const App = () => {
                                     <button onClick={() => push({ hello: '', bye: '' })}>Add</button>
                                     <button onClick={pop}>Remove last</button>
                                 </div>
+                                <SubmitButton>Submit</SubmitButton>
                             </div>
                         )}
                     </ArrayField>

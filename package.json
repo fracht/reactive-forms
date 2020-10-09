@@ -33,6 +33,7 @@
         "@types/lodash": "^4.14.161",
         "@types/react": "^16.9.49",
         "@types/react-dom": "^16.9.8",
+        "@types/yup": "^0.29.7",
         "@typescript-eslint/eslint-plugin": "^4.1.1",
         "@typescript-eslint/parser": "^4.1.1",
         "eslint-plugin-simple-import-sort": "^5.0.3",
@@ -41,7 +42,8 @@
         "react-dom": "^16.13.1",
         "tsdx": "^0.13.3",
         "tslib": "^2.0.1",
-        "typescript": "^4.0.3"
+        "typescript": "^4.0.3",
+        "yup": "^0.29.3"
     },
     "files": [
         "dist",
@@ -50,8 +52,6 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "remark-slug": "^6.0.0",
-        "remark-toc": "^7.0.0",
         "tiny-invariant": "^1.1.0"
     }
 }
