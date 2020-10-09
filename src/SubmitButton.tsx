@@ -5,7 +5,7 @@ import { useFormSubmit } from './useFormSubmit';
 
 export type SubmitButtonProps<Values extends MorfixValues> = {
     onClick?: SubmitAction<Values>;
-} & Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'>;
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>;
 
 export const SubmitButton = <Values extends MorfixValues>({
     onClick: submitAction,
