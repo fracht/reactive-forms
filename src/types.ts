@@ -50,9 +50,9 @@ export interface FieldMeta<T> {
 
 export type FieldContext<T> = [FieldMeta<T>, FieldHandlers<T>];
 
-type NotRequired<T> = void | null | undefined | T;
+type NotRequired<T> = null | undefined | T;
 
-export type FieldValidator<T> = (value: T) => Promise<NotRequired<FieldError>> | NotRequired<FieldError>;
+export type FieldValidator<T> = (value: T) => Promise<NotRequired<MorfixErrors<T>>> | NotRequired<MorfixErrors<T>>;
 
 export type ValidationRegistry = Record<string, FieldValidator<unknown>>;
 
