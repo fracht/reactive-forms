@@ -21,8 +21,9 @@ export interface FieldError {
 }
 
 export interface MorfixFormState {
-    isSubmitting: boolean;
-    isValidating: boolean;
+    readonly isSubmitting: boolean;
+    readonly isValidating: boolean;
+    readonly dirty: boolean;
 }
 
 export type MorfixInnerError = {
@@ -87,4 +88,30 @@ export interface FieldProps {
     onChange: (e: React.ChangeEvent<{ value: string }>) => void;
     onBlur?: (e: React.FocusEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;
+}
+
+type ChildrenCallback<Values extends MorfixValues> = (shared: MorfixShared<Values>) => React.ReactNode;
+
+export type MorfixChildren<Values extends MorfixValues> =
+    | ChildrenCallback<Values>
+    | React.ReactNode
+    | React.ReactNodeArray;
+
+export type FunctionChangeListener<Values extends MorfixValues> = (
+    initialValues: Values,
+    currentValues: Values
+) => boolean;
+
+export interface ClassChangeListener<Values extends MorfixValues> {
+    initialFormValues: (values: Values) => void;
+    modifiedFormValues: (values: Values) => boolean;
+}
+
+export type ChangeListener<Values extends MorfixValues> = FunctionChangeListener<Values> | ClassChangeListener<Values>;
+
+export interface MorfixConfig<Values extends MorfixValues> {
+    initialValues: Values;
+    onSubmit?: SubmitAction<Values>;
+    validationSchema?: Schema<Partial<Values> | undefined>;
+    changeListener?: ChangeListener<Values>;
 }

@@ -1,12 +1,14 @@
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
 import { getValidatorOutput } from './utils/getValidatorOutput';
 import { runYupSchema } from './utils/runYupSchema';
 import { safeMerge } from './utils/safeMerge';
-import { MorfixConfig } from './Morfix';
+import { MorfixConfig } from './types';
 import {
     FieldValidator,
     MorfixControl,
@@ -18,15 +20,26 @@ import {
     ValidationRegistry
 } from './types';
 
+const defaultChangeListener = <V>(initialValues: V, values: V) => !isEqual(initialValues, values);
+
 export const useMorfix = <Values extends MorfixValues>({
     initialValues,
     onSubmit,
-    validationSchema
+    validationSchema,
+    changeListener = defaultChangeListener
 }: MorfixConfig<Values>): MorfixShared<Values> => {
-    const [values, setValues] = useState(initialValues);
+    const [values, setValues] = useState<Values>(() => cloneDeep(initialValues));
     const [errors, setErrors] = useState<MorfixErrors<Values>>({} as MorfixErrors<Values>);
     const [isSubmitting, setSubmitting] = useState(false);
     const [isValidating, setValidating] = useState(false);
+
+    const dirty = useMemo(
+        () =>
+            typeof changeListener === 'function'
+                ? changeListener(initialValues, values)
+                : changeListener.modifiedFormValues(values),
+        [initialValues, values, changeListener]
+    );
 
     const registry = useRef<ValidationRegistry>({});
 
@@ -92,7 +105,7 @@ export const useMorfix = <Values extends MorfixValues>({
     };
 
     const setFieldValue = <T>(name: string, value: T) => {
-        setValues({ ...set(values, name, value) });
+        setValues(set({ ...values }, name, value));
         validateField(name, value);
     };
 
@@ -104,9 +117,16 @@ export const useMorfix = <Values extends MorfixValues>({
         delete registry.current[name];
     };
 
+    useEffect(() => {
+        if (typeof changeListener !== 'function') {
+            changeListener.initialFormValues(initialValues);
+        }
+    }, [initialValues, changeListener]);
+
     const state: MorfixFormState = {
         isSubmitting,
-        isValidating
+        isValidating,
+        dirty
     };
 
     const control: MorfixControl<Values> = {
