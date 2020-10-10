@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import { runYupSchema } from './utils/runYupSchema';
 import { safeMerge } from './utils/safeMerge';
 import { useMorfixContext } from './MorfixContext';
-import { FieldContext, FieldError, SharedFieldConfig } from './types';
+import { FieldContext, MorfixErrors, SharedFieldConfig } from './types';
 
 export const useDefaultFieldContext = <V>({
     name,
@@ -24,7 +24,9 @@ export const useDefaultFieldContext = <V>({
         async (value: V) => {
             const fnErrors = await validateFn?.(value);
             const yupErrors = validationSchema && (await runYupSchema(validationSchema, value));
-            return safeMerge(fnErrors, yupErrors) as FieldError;
+            return typeof fnErrors === 'string' && fnErrors.length > 0
+                ? fnErrors
+                : (safeMerge(fnErrors, yupErrors) as MorfixErrors<V>);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [validateFn, validationSchema]

@@ -28,15 +28,19 @@ export type MorfixInnerError = {
     error_mrfx?: FieldError;
 };
 
-export type MorfixErrors<Values> = MorfixInnerError &
-    {
-        [K in keyof Values]?: Values[K] extends object
-            ? Values[K] extends unknown[]
-                ? MorfixErrors<Values[K][number]>[] &
-                      MorfixInnerError /** TODO: think about how to do not mutate array */
-                : MorfixErrors<Values[K]>
-            : MorfixInnerError;
-    };
+type ArrayItemType<T> = T extends unknown[] ? T[number] : never;
+
+export type MorfixErrors<Values> = Values extends object
+    ? {
+          [K in keyof Values]?: Values[K] extends object
+              ? Values[K] extends unknown[]
+                  ? MorfixErrors<ArrayItemType<Values[K]>>[] &
+                        MorfixInnerError /** TODO: think about how to do not mutate array */
+                  : MorfixErrors<Values[K]>
+              : MorfixInnerError;
+      } &
+          MorfixInnerError
+    : MorfixInnerError;
 
 export interface MorfixControl<Values extends MorfixValues> {
     setFieldValue: <T>(name: string, value: T) => void;
@@ -59,9 +63,13 @@ export interface FieldMeta<T> {
 
 export type FieldContext<T> = [FieldMeta<T>, FieldHandlers<T>];
 
-type NotRequired<T> = void | null | undefined | T;
+type NotRequired<T> = null | undefined | T;
 
-export type FieldValidator<T> = (value: T) => Promise<NotRequired<FieldError>> | NotRequired<FieldError>;
+type ValidatorReturnType<T> = MorfixErrors<T> | FieldError | string;
+
+export type FieldValidator<T> = (
+    value: T
+) => Promise<NotRequired<ValidatorReturnType<T>>> | NotRequired<ValidatorReturnType<T>>;
 
 export type ValidationRegistry = Record<string, FieldValidator<unknown>>;
 
