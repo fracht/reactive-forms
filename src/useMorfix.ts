@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
+import { getValidatorOutput } from './utils/getValidatorOutput';
 import { runYupSchema } from './utils/runYupSchema';
 import { safeMerge } from './utils/safeMerge';
 import { MorfixConfig } from './Morfix';
@@ -22,24 +23,24 @@ export const useMorfix = <Values extends MorfixValues>({
     validationSchema
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [values, setValues] = useState(initialValues);
-    const [errors, setErrors] = useState<MorfixErrors<Values>>({});
+    const [errors, setErrors] = useState<MorfixErrors<Values>>({} as MorfixErrors<Values>);
 
     const registry = useRef<ValidationRegistry>({});
 
     const runFieldValidation = async <V>(name: string, value: V): Promise<MorfixErrors<V> | undefined> => {
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
-            let error = await registry.current[name](value);
+            const validationError = await getValidatorOutput(registry.current[name], value);
 
-            const { error_mrfx, ...oth } = get(errors, name) ?? {};
+            const { error_mrfx: _, ...existingErrors } = get(errors, name) ?? {};
 
-            if (Object.keys(oth).length > 0) {
-                error = {
-                    ...oth,
-                    ...error
+            if (Object.keys(existingErrors).length > 0) {
+                return {
+                    ...existingErrors,
+                    ...validationError
                 };
             }
 
-            if (error) return error;
+            return validationError as MorfixErrors<V>;
         }
         return undefined;
     };
@@ -56,7 +57,7 @@ export const useMorfix = <Values extends MorfixValues>({
 
     const validateAllFields = async (values: Values) => {
         const fieldKeys = Object.keys(registry.current);
-        const reducedErrors: MorfixErrors<Values> = {};
+        const reducedErrors: MorfixErrors<Values> = {} as MorfixErrors<Values>;
 
         for (let i = 0; i < fieldKeys.length; i++) {
             const fieldKey = fieldKeys[i];

@@ -6,7 +6,7 @@ import { fieldNameToErrorPath } from './fieldNameToErrorPath';
 import { FieldError, MorfixErrors } from '../types';
 
 export const yupToMorfixErrors = <Values>(yupError: ValidationError): MorfixErrors<Values> => {
-    let errors: MorfixErrors<Values> = {};
+    let errors: MorfixErrors<Values> = {} as MorfixErrors<Values>;
 
     if (yupError.inner) {
         if (yupError.inner.length === 0) {

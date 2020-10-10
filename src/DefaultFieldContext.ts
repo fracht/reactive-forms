@@ -24,7 +24,9 @@ export const useDefaultFieldContext = <V>({
         async (value: V) => {
             const fnErrors = await validateFn?.(value);
             const yupErrors = validationSchema && (await runYupSchema(validationSchema, value));
-            return safeMerge(fnErrors, yupErrors) as MorfixErrors<V>;
+            return typeof fnErrors === 'string' && fnErrors.length > 0
+                ? fnErrors
+                : (safeMerge(fnErrors, yupErrors) as MorfixErrors<V>);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [validateFn, validationSchema]
