@@ -11,6 +11,7 @@ import {
     FieldValidator,
     MorfixControl,
     MorfixErrors,
+    MorfixFormState,
     MorfixShared,
     MorfixValues,
     SubmitAction,
@@ -25,6 +26,7 @@ export const useMorfix = <Values extends MorfixValues>({
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState<MorfixErrors<Values>>({} as MorfixErrors<Values>);
     const [isSubmitting, setSubmitting] = useState(false);
+    const [isValidating, setValidating] = useState(false);
 
     const registry = useRef<ValidationRegistry>({});
 
@@ -77,10 +79,14 @@ export const useMorfix = <Values extends MorfixValues>({
     };
 
     const validateForm = async (values: Values) => {
+        setValidating(true);
+
         const registryErrors = await validateAllFields(values);
         const schemaErrors = await runValidationSchema(values);
 
         const combinedErrors = safeMerge(registryErrors, schemaErrors) as MorfixErrors<Values>;
+
+        setValidating(false);
 
         return combinedErrors;
     };
@@ -96,6 +102,11 @@ export const useMorfix = <Values extends MorfixValues>({
 
     const unregisterFieldValidator = (name: string) => {
         delete registry.current[name];
+    };
+
+    const state: MorfixFormState = {
+        isSubmitting,
+        isValidating
     };
 
     const control: MorfixControl<Values> = {
@@ -130,7 +141,7 @@ export const useMorfix = <Values extends MorfixValues>({
         values,
         initialValues,
         errors,
-        isSubmitting,
+        ...state,
         ...control
     };
 };

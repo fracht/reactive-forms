@@ -22,6 +22,7 @@ export interface FieldError {
 
 export interface MorfixFormState {
     isSubmitting: boolean;
+    isValidating: boolean;
 }
 
 export type MorfixInnerError = {
