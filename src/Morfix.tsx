@@ -1,22 +1,8 @@
 import React from 'react';
-import { Schema } from 'yup';
 
 import { MorfixContext } from './MorfixContext';
-import { MorfixShared, MorfixValues, SubmitAction } from './types';
+import { MorfixChildren, MorfixConfig, MorfixValues } from './types';
 import { useMorfix } from './useMorfix';
-
-type ChildrenCallback<Values extends MorfixValues> = (shared: MorfixShared<Values>) => React.ReactNode;
-
-export type MorfixChildren<Values extends MorfixValues> =
-    | ChildrenCallback<Values>
-    | React.ReactNode
-    | React.ReactNodeArray;
-
-export interface MorfixConfig<Values extends MorfixValues> {
-    initialValues: Values;
-    onSubmit?: SubmitAction<Values>;
-    validationSchema?: Schema<Partial<Values> | undefined>;
-}
 
 export const Morfix = <Values extends MorfixValues>(
     config: MorfixConfig<Values> & {
@@ -24,7 +10,7 @@ export const Morfix = <Values extends MorfixValues>(
     }
 ) => {
     const { children } = config;
-    const morfixBag = useMorfix(config);
+    const morfixBag = useMorfix<Values>(config);
 
     return (
         <MorfixContext.Provider value={morfixBag}>

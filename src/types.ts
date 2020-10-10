@@ -4,16 +4,26 @@ export type MorfixContextType<Values extends MorfixValues> = {
     values: Values;
     errors: MorfixErrors<Values>;
     initialValues: Values;
-} & MorfixControl<Values>;
+} & MorfixControl<Values> &
+    MorfixFormState;
 
 export type MorfixShared<Values extends MorfixValues> = MorfixContextType<Values>;
 
 export type MorfixValues = object;
 
-export type SubmitAction<Values extends MorfixValues> = (values: Values, control: MorfixControl<Values>) => void;
+export type SubmitAction<Values extends MorfixValues> = (
+    values: Values,
+    control: MorfixControl<Values>
+) => Promise<void> | void;
 
 export interface FieldError {
     message: string;
+}
+
+export interface MorfixFormState {
+    readonly isSubmitting: boolean;
+    readonly isValidating: boolean;
+    readonly dirty: boolean;
 }
 
 export type MorfixInnerError = {
@@ -40,6 +50,7 @@ export interface MorfixControl<Values extends MorfixValues> {
     registerFieldValidator: <T>(name: string, validator: FieldValidator<T>) => void;
     unregisterFieldValidator: (name: string) => void;
     submitForm: (submitAction?: SubmitAction<Values>) => Promise<void>;
+    setSubmitting: (isSubmitting: boolean) => void;
 }
 
 export interface FieldHandlers<V> {
@@ -77,4 +88,30 @@ export interface FieldProps {
     onChange: (e: React.ChangeEvent<{ value: string }>) => void;
     onBlur?: (e: React.FocusEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;
+}
+
+type ChildrenCallback<Values extends MorfixValues> = (shared: MorfixShared<Values>) => React.ReactNode;
+
+export type MorfixChildren<Values extends MorfixValues> =
+    | ChildrenCallback<Values>
+    | React.ReactNode
+    | React.ReactNodeArray;
+
+export type FunctionChangeListener<Values extends MorfixValues> = (
+    initialValues: Values,
+    currentValues: Values
+) => boolean;
+
+export interface ClassChangeListener<Values extends MorfixValues> {
+    initialFormValues: (values: Values) => void;
+    modifiedFormValues: (values: Values) => boolean;
+}
+
+export type ChangeListener<Values extends MorfixValues> = FunctionChangeListener<Values> | ClassChangeListener<Values>;
+
+export interface MorfixConfig<Values extends MorfixValues> {
+    initialValues: Values;
+    onSubmit?: SubmitAction<Values>;
+    validationSchema?: Schema<Partial<Values> | undefined>;
+    changeListener?: ChangeListener<Values>;
 }
