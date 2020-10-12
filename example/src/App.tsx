@@ -1,89 +1,46 @@
-import React, { Fragment } from 'react';
-import Morfix, {
-    ArrayField,
-    ArrayFieldProps,
-    ObjectField,
-    ObjectFieldConfig,
-    RealtimeField,
-    SubmitButton
-} from 'morfix';
-import { array, object, string } from 'yup';
+import React from 'react';
+import Morfix, { useDefaultFieldContext } from 'morfix';
+import { RecoilRoot } from 'recoil';
 
-const TestField = (config: ObjectFieldConfig<{ hello: string; bye: string }>) => (
-    <ObjectField
-        validationSchema={object().shape({
-            hello: string().required(),
-            bye: string().required()
-        })}
-        {...config}
-    >
-        {({ error }) => (
-            <div>
-                {error?.bye?.error_mrfx?.message}
-                <RealtimeField
-                    validate={(value) => (value.length > 0 ? undefined : { message: 'required' })}
-                    name={`${config.name}.hello`}
-                />
-                <RealtimeField name={`${config.name}.bye`} />
-            </div>
-        )}
-    </ObjectField>
-);
+const TestField = (props: { name: string }) => {
+    const [value, setValue] = useDefaultFieldContext<string>(props);
 
-interface Data {
-    hello: string;
-    bye: string;
-}
+    return <input value={value ?? ''} onChange={(e) => setValue(e.target.value)} />;
+};
+
+const ObjField = (props: { name: string }) => {
+    const [value, setValue] = useDefaultFieldContext<{ a: string }>(props);
+
+    return (
+        <div>
+            {value.a}
+            <button onClick={() => setValue({ a: 'LOL!!!' })}>Hello</button>
+        </div>
+    );
+};
 
 const App = () => {
     return (
-        <Morfix
-            onSubmit={(val) => alert(JSON.stringify(val, undefined, 4))}
-            initialValues={{
-                testField: [
-                    {
-                        hello: 'a',
-                        bye: 'b'
+        <RecoilRoot>
+            <Morfix
+                initialValues={{
+                    h: {
+                        a: 'asdf',
+                        c: 'asdf'
                     },
-                    {
-                        hello: 'c',
-                        bye: 'asdfasdf'
-                    },
-                    {
-                        hello: 'h',
-                        bye: 'f'
-                    }
-                ]
-            }}
-            validationSchema={object().shape({
-                testField: array<{ hello: string; bye: string }>().min(5)
-            })}
-        >
-            {() => (
-                <React.Fragment>
-                    <h2>Hello world</h2>
-                    <p>this is Morfix example</p>
-                    <ArrayField name="testField">
-                        {({ items, push, remove, pop }: ArrayFieldProps<Data>) => (
-                            <div>
-                                {items.map((item, index) => (
-                                    <Fragment key={index}>
-                                        Hello, {item.hello}:
-                                        <TestField name={`testField[${index}]`} />
-                                        <button onClick={() => remove(index)}>Remove {item.bye}</button>
-                                    </Fragment>
-                                ))}
-                                <div>
-                                    <button onClick={() => push({ hello: '', bye: '' })}>Add</button>
-                                    <button onClick={pop}>Remove last</button>
-                                </div>
-                                <SubmitButton>Submit</SubmitButton>
-                            </div>
-                        )}
-                    </ArrayField>
-                </React.Fragment>
-            )}
-        </Morfix>
+                    a: 'asdf',
+                    b: 'hello'
+                }}
+            >
+                <div>
+                    <h2>Hello</h2>
+                    <ObjField name="h" />
+                    <TestField name="h.a" />
+                    <TestField name="h.c" />
+                    <TestField name="b" />
+                </div>
+            </Morfix>
+        </RecoilRoot>
     );
 };
 

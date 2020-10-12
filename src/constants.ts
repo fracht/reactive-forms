@@ -1,2 +1,5 @@
 export const MORFIX_PREFIX = 'mrfx';
-export const MORFIX_ERROR_PATH = `error_${MORFIX_PREFIX}`;
+
+export const getFieldKey = (name: string) => `${MORFIX_PREFIX}__${name}`;
+
+export const getRawValueKey = (name: string) => `${MORFIX_PREFIX}__raw__${name}`;

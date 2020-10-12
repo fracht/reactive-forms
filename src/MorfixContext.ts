@@ -1,20 +1,20 @@
 import { createContext, useContext } from 'react';
 import invariant from 'tiny-invariant';
 
-import { MorfixContextType, MorfixValues } from './types';
+import { MorfixStorageShared } from './MorfixStorage';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const MorfixContext = createContext<MorfixContextType<any>>(
-    (undefined as unknown) as MorfixContextType<MorfixValues>
-);
+export type MorfixContextType = MorfixStorageShared;
 
-export const useMorfixContext = <Values extends MorfixValues>(): MorfixContextType<Values> => {
-    const context = useContext(MorfixContext) as MorfixContextType<Values> | undefined;
+const MorfixContext = createContext<MorfixContextType | undefined>(undefined);
 
-    invariant(
-        context,
-        '[useMorfixContext]: Morfix context is undefined. It looks like you are trying to access morfix context outside <Morfix> component'
-    );
+export const MorfixProvider = MorfixContext.Provider;
+
+export const MorfixConsumer = MorfixContext.Consumer;
+
+export const useMorfixContext = (): MorfixContextType => {
+    const context = useContext(MorfixContext);
+
+    invariant(context, "You're trying to access MorfixContext outside <Morfix> tag");
 
     return context;
 };
