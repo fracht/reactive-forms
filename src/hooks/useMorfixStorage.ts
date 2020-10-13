@@ -1,49 +1,61 @@
 import { useRef } from 'react';
-import { RecoilState } from 'recoil';
+import { cloneDeep, get, set, toPath } from 'lodash';
 
-import { createDependentField } from '../recoil/createDependentField';
-import { createIndependentField } from '../recoil/createIndependentField';
-import { FieldMeta } from '../typings';
-import { parentPath, pickInnerPaths, relativePath } from '../utils/pathUtils';
+import { Observable } from '../utils/Observer';
+import { isInnerPath } from '../utils/pathUtils';
+import { useLazyRef } from '../utils/useLazyRef';
 
-export interface MorfixStorageConfig<Values> {
+export interface MorfixStorageConfig<Values extends object> {
     initialValues: Values;
 }
 
 export interface MorfixStorageShared {
-    registerField: <V>(name: string) => RecoilState<V>;
+    registerField: <V>(name: string, observer: (value: V) => void) => void;
+    setFieldValue: <V>(name: string, value: V) => void;
 }
 
-export type FieldRegistry = Record<string, FieldMeta<unknown>>;
+export type FieldObservers<V> = {
+    value: Observable<V>;
+};
 
-export const useMorfixStorage = <Values>({ initialValues }: MorfixStorageConfig<Values>): MorfixStorageShared => {
-    const fieldRegistry = useRef<FieldRegistry>({});
+export type FieldRegistry = Record<string, FieldObservers<unknown>>;
 
-    const registerField = <V>(name: string): RecoilState<V> => {
-        if (!Object.prototype.hasOwnProperty.call(fieldRegistry.current, name)) {
-            const allPaths = Object.keys(fieldRegistry.current);
-            const parent = parentPath(name, allPaths);
-            const innerFields = pickInnerPaths(name, allPaths).map((path) => relativePath(name, path));
+export const useMorfixStorage = <Values extends object>({
+    initialValues
+}: MorfixStorageConfig<Values>): MorfixStorageShared => {
+    const values = useLazyRef(() => cloneDeep(initialValues));
 
-            if (parent) {
-                if (fieldRegistry.current[parent].innerFields.length === 0) {
-                    fieldRegistry.current[parent] = createDependentField(parent, [name], initialValues, fieldRegistry);
-                } else {
-                    fieldRegistry.current[parent].innerFields.push(name);
-                }
-            }
+    const registry = useRef<FieldRegistry>({});
 
-            if (innerFields.length === 0) {
-                fieldRegistry.current[name] = createIndependentField(name, innerFields, initialValues);
-            } else {
-                fieldRegistry.current[name] = createDependentField(name, innerFields, initialValues, fieldRegistry);
-            }
+    const registerField = <V>(name: string, observer: (value: V) => void) => {
+        if (!Object.prototype.hasOwnProperty.call(registry.current, name)) {
+            registry.current[toPath(name).join('.')] = {
+                value: new Observable<V>()
+            } as FieldObservers<unknown>;
         }
 
-        return fieldRegistry.current[name].value as RecoilState<V>;
+        (registry.current[name] as FieldObservers<V>).value.subscribe(observer);
+
+        observer(get(values.current, name));
+
+        return registry.current[name];
+    };
+
+    const setFieldValue = <V>(name: string, value: V) => {
+        set(values.current, name, value);
+
+        const paths = Object.keys(registry.current).filter(
+            (tempName) => isInnerPath(name, tempName) || name === tempName || isInnerPath(tempName, name)
+        );
+
+        paths.forEach((path) => {
+            const value = get(values.current, path);
+            registry.current[path].value.notifyAll(typeof value === 'object' ? { ...value } : value);
+        });
     };
 
     return {
-        registerField
+        registerField,
+        setFieldValue
     };
 };

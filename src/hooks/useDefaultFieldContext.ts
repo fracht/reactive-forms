@@ -1,11 +1,15 @@
-import { SetterOrUpdater, useRecoilState } from 'recoil';
+import { useEffect, useState } from 'react';
 
 import { useMorfixContext } from './useMorfixContext';
 
-export const useDefaultFieldContext = <V>({ name }: { name: string }): [V, SetterOrUpdater<V>] => {
-    const { registerField } = useMorfixContext();
+export const useDefaultFieldContext = <V>({ name }: { name: string }): [V | undefined, (value: V) => void] => {
+    const { registerField, setFieldValue } = useMorfixContext();
 
-    const [value, setValue] = useRecoilState<V>(registerField(name));
+    const [value, setValue] = useState<V>();
 
-    return [value, setValue];
+    useEffect(() => {
+        registerField<V>(name, setValue);
+    }, [registerField, name]);
+
+    return [value, (value: V) => setFieldValue(name, value)];
 };
