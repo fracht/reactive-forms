@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { getFieldKey, getRawValueKey } from '../constants';
 import { FieldRegistry } from '../hooks/useMorfixStorage';
 import { FieldMeta } from '../typings/FieldMeta';
-import { relativePath } from '../utils/pathUtils';
+import { joinPaths } from '../utils/pathUtils';
 
 export const createDependentField = <T, Values>(
     name: string,
@@ -31,11 +31,7 @@ export const createDependentField = <T, Values>(
             const output = cloneDeep(rawValue);
 
             for (const innerField of innerFields) {
-                set(
-                    output as object,
-                    relativePath(name, innerField),
-                    getRecoilValue(registry.current[innerField].value)
-                );
+                set(output as object, innerField, getRecoilValue(registry.current[joinPaths(name, innerField)].value));
             }
 
             return output;
@@ -46,7 +42,7 @@ export const createDependentField = <T, Values>(
             invariant(rawValue, 'Morfix caught error: the field graph is built incorrectly.');
 
             for (const innerField of innerFields) {
-                setRecoilValue(registry.current[innerField].value, get(value, relativePath(name, innerField)));
+                setRecoilValue(registry.current[joinPaths(name, innerField)].value, get(value, name, innerField));
             }
 
             setRecoilValue(rawValue, value);

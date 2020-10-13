@@ -1,4 +1,11 @@
-import { isInnerPath, normalizePath, parentPath, pickInnerPaths, relativePath } from '../../src/utils/pathUtils';
+import {
+    isInnerPath,
+    joinPaths,
+    normalizePath,
+    parentPath,
+    pickInnerPaths,
+    relativePath
+} from '../../src/utils/pathUtils';
 
 describe('normalizePath function tests', () => {
     it('"   hello.tst[0].b   " = "hello.tst.0.b"', () => {
@@ -71,5 +78,22 @@ describe('relativePath function tests', () => {
     it('Different path format relativeness', () => {
         expect(relativePath('test[0].b', 'test.0.b.c')).toBe('c');
         expect(relativePath('a.0.b', 'a[0].b.c')).toBe('c');
+    });
+});
+
+describe('joinPaths function tests', () => {
+    it('Simple join', () => {
+        expect(joinPaths('a', 'b', 'c')).toBe('a.b.c');
+        expect(joinPaths('a.a.a', 'b.c', 'd')).toBe('a.a.a.b.c.d');
+        expect(joinPaths('a')).toBe('a');
+    });
+
+    it('Join with undefined', () => {
+        expect(joinPaths('a', undefined, undefined, 'b')).toBe('a.b');
+        expect(joinPaths(undefined, undefined, 'b')).toBe('b');
+    });
+
+    it('Join with empty strings', () => {
+        expect(joinPaths('a', '', 'a.b.c', '')).toBe('a.a.b.c');
     });
 });

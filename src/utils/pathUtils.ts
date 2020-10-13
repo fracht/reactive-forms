@@ -11,6 +11,8 @@ export const isInnerPath = (_basePath: string, _path: string) => {
     return path.indexOf(basePath + '.') === 0 && path.replace(basePath, '').trim().length > 0;
 };
 
+export const joinPaths = (..._paths: (string | undefined)[]): string => _paths.filter(Boolean).join('.');
+
 export const pickInnerPaths = (path: string, availablePaths: string[]) => {
     const allInnerPaths = availablePaths
         .filter((avPath) => isInnerPath(path, avPath))

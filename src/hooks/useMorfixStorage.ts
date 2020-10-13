@@ -4,7 +4,7 @@ import { RecoilState } from 'recoil';
 import { createDependentField } from '../recoil/createDependentField';
 import { createIndependentField } from '../recoil/createIndependentField';
 import { FieldMeta } from '../typings';
-import { parentPath, pickInnerPaths } from '../utils/pathUtils';
+import { parentPath, pickInnerPaths, relativePath } from '../utils/pathUtils';
 
 export interface MorfixStorageConfig<Values> {
     initialValues: Values;
@@ -23,7 +23,7 @@ export const useMorfixStorage = <Values>({ initialValues }: MorfixStorageConfig<
         if (!Object.prototype.hasOwnProperty.call(fieldRegistry.current, name)) {
             const allPaths = Object.keys(fieldRegistry.current);
             const parent = parentPath(name, allPaths);
-            const innerFields = pickInnerPaths(name, allPaths);
+            const innerFields = pickInnerPaths(name, allPaths).map((path) => relativePath(name, path));
 
             if (parent) {
                 if (fieldRegistry.current[parent].innerFields.length === 0) {
