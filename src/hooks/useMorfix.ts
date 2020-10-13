@@ -1,4 +1,4 @@
-import { MorfixStorageConfig, MorfixStorageShared, useMorfixStorage } from './MorfixStorage';
+import { MorfixStorageConfig, MorfixStorageShared, useMorfixStorage } from './useMorfixStorage';
 
 export type MorfixConfig<Values> = {} & MorfixStorageConfig<Values>;
 

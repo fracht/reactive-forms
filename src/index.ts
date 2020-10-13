@@ -1,7 +1,5 @@
-export * from './DefaultFieldContext';
-export * from './Morfix';
-export * from './MorfixContext';
-export * from './MorfixStorage';
-export * from './useMorfix';
+export * from './hooks';
+export * from './typings';
+export * from './components';
 
-export { Morfix as default } from './Morfix';
+export { Morfix as default } from './components/Morfix';

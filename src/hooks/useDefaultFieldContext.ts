@@ -1,6 +1,6 @@
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 
-import { useMorfixContext } from './MorfixContext';
+import { useMorfixContext } from './useMorfixContext';
 
 export const useDefaultFieldContext = <V>({ name }: { name: string }): [V, SetterOrUpdater<V>] => {
     const { registerField } = useMorfixContext();

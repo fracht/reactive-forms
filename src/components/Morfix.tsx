@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { MorfixProvider } from './MorfixContext';
-import { MorfixConfig, useMorfix } from './useMorfix';
+import { MorfixConfig, useMorfix } from '../hooks/useMorfix';
 
 export const Morfix = <Values,>({
     children,
