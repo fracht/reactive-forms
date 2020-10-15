@@ -1,17 +1,21 @@
 import { useRef } from 'react';
 import { cloneDeep, get, set, toPath } from 'lodash';
+import invariant from 'tiny-invariant';
 
+import { SubmitAction } from '../typings/SubmitAction';
 import { Observable } from '../utils/Observer';
 import { isInnerPath } from '../utils/pathUtils';
 import { useLazyRef } from '../utils/useLazyRef';
 
 export interface MorfixStorageConfig<Values extends object> {
     initialValues: Values;
+    onSubmit?: SubmitAction<Values>;
 }
 
-export interface MorfixStorageShared {
+export interface MorfixStorageShared<Values> {
     registerField: <V>(name: string, observer: (value: V) => void) => void;
     setFieldValue: <V>(name: string, value: V) => void;
+    submit: (action?: SubmitAction<Values>) => void;
 }
 
 export type FieldObservers<V> = {
@@ -21,8 +25,9 @@ export type FieldObservers<V> = {
 export type FieldRegistry = Record<string, FieldObservers<unknown>>;
 
 export const useMorfixStorage = <Values extends object>({
-    initialValues
-}: MorfixStorageConfig<Values>): MorfixStorageShared => {
+    initialValues,
+    onSubmit
+}: MorfixStorageConfig<Values>): MorfixStorageShared<Values> => {
     const values = useLazyRef(() => cloneDeep(initialValues));
 
     const registry = useRef<FieldRegistry>({});
@@ -54,8 +59,18 @@ export const useMorfixStorage = <Values extends object>({
         });
     };
 
+    const submit = (action: SubmitAction<Values> | undefined = onSubmit) => {
+        invariant(
+            action,
+            'Cannot call submit, because no action specified in arguments and no default action provided.'
+        );
+
+        action(values.current);
+    };
+
     return {
         registerField,
-        setFieldValue
+        setFieldValue,
+        submit
     };
 };
