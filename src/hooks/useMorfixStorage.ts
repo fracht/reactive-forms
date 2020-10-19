@@ -1,13 +1,10 @@
-import { MutableRefObject, useRef } from 'react';
-import { cloneDeep, get, set } from 'lodash';
+import { MutableRefObject, useCallback } from 'react';
 import invariant from 'tiny-invariant';
 
+import { useObservableStorage } from './useObservableStorage';
+import { useValidationRegistry } from './useValidationRegistry';
 import { FieldValidator, MorfixErrors } from '../typings';
-import { FieldMeta, FieldRegistry } from '../typings/FieldRegistry';
 import { SubmitAction } from '../typings/SubmitAction';
-import { FunctionArray } from '../utils/FunctionArray';
-import { isInnerPath, normalizePath } from '../utils/pathUtils';
-import { useLazyRef } from '../utils/useLazyRef';
 
 export interface MorfixStorageConfig<Values extends object> {
     initialValues: Values;
@@ -16,6 +13,7 @@ export interface MorfixStorageConfig<Values extends object> {
 
 export interface MorfixStorageShared<Values> {
     registerField: <V>(name: string, observers: FieldObservers<V>) => void;
+    unregisterField: <V>(name: string, observers: FieldObservers<V>) => void;
     setFieldValue: <V>(name: string, value: V) => void;
     submit: (action?: SubmitAction<Values>) => void;
     values: MutableRefObject<Values>;
@@ -31,61 +29,59 @@ export const useMorfixStorage = <Values extends object>({
     initialValues,
     onSubmit
 }: MorfixStorageConfig<Values>): MorfixStorageShared<Values> => {
-    const values = useLazyRef(() => cloneDeep(initialValues));
-    const errors = useRef<MorfixErrors<Values>>({} as MorfixErrors<Values>);
+    const {
+        values,
+        setValue: setFieldValue,
+        observe: observeValue,
+        stopObserving: stopObservingValue,
+        isObserved: isValueObserved
+    } = useObservableStorage({ initialValues, debugName: 'values' });
+    const {
+        values: errors,
+        setValue: setFieldError,
+        observe: observeError,
+        stopObserving: stopObservingError
+    } = useObservableStorage<MorfixErrors<Values>>({
+        initialValues: {} as MorfixErrors<Values>,
+        debugName: 'errors'
+    });
 
-    const registry = useRef<FieldRegistry>({});
+    const { registerValidator, unregisterValidator, validateField: runFieldLevelValidation } = useValidationRegistry();
 
-    const registerField = <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
-        name = normalizePath(name);
+    const validateField = useCallback(
+        async <V>(name: string, value: V) => {
+            const error = await runFieldLevelValidation(name, value);
+            setFieldError(name, error);
+        },
+        [runFieldLevelValidation, setFieldError]
+    );
 
-        if (!Object.prototype.hasOwnProperty.call(registry.current, name)) {
-            registry.current[name] = {
-                value: new FunctionArray(),
-                error: new FunctionArray(),
-                validator: new FunctionArray()
-            };
-        }
+    const registerField = useCallback(
+        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
+            if (!isValueObserved(name)) {
+                observeValue(name, (value) => validateField(name, value));
+            }
 
-        const currentFieldMeta = registry.current[name] as FieldMeta<V>;
+            observeValue(name, valueObserver);
+            observeError(name, errorObserver);
 
-        currentFieldMeta.value.push(valueObserver);
-        currentFieldMeta.error.push(errorObserver);
-        if (validator) currentFieldMeta.validator.push(validator);
+            if (validator) {
+                registerValidator(name, validator);
+            }
+        },
+        [isValueObserved, observeValue, observeError, validateField, registerValidator]
+    );
 
-        valueObserver(get(values.current, name));
-        errorObserver(get(errors.current, name));
-
-        return registry.current[name];
-    };
-
-    const setFieldValue = <V>(name: string, value: V) => {
-        set(values.current, name, value);
-
-        const paths = Object.keys(registry.current).filter(
-            (tempName) => isInnerPath(name, tempName) || name === tempName || isInnerPath(tempName, name)
-        );
-
-        paths.forEach((path) => {
-            const currentField = registry.current[path];
-            const value = get(values.current, path);
-            validateField(path, value);
-            currentField.value.call(typeof value === 'object' ? { ...value } : value);
-        });
-    };
-
-    const validateField = async <V>(name: string, value?: V) => {
-        name = normalizePath(name);
-        const field = registry.current[name];
-
-        if (field) {
-            value = value ?? get(values.current, name);
-            let error = await field.validator.lazyAsyncCall(value);
-            if (!error || error === void 0) error = undefined;
-            set(errors.current, name, error);
-            field.error.call(error as MorfixErrors<V>);
-        }
-    };
+    const unregisterField = useCallback(
+        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
+            stopObservingValue(name, valueObserver);
+            stopObservingError(name, errorObserver);
+            if (validator) {
+                unregisterValidator(name, validator);
+            }
+        },
+        [stopObservingError, stopObservingValue, unregisterValidator]
+    );
 
     const submit = (action: SubmitAction<Values> | undefined = onSubmit) => {
         invariant(
@@ -93,11 +89,14 @@ export const useMorfixStorage = <Values extends object>({
             'Cannot call submit, because no action specified in arguments and no default action provided.'
         );
 
-        action(values.current);
+        if (Object.keys(errors.current).length === 0) {
+            action(values.current);
+        }
     };
 
     return {
         registerField,
+        unregisterField,
         setFieldValue,
         submit,
         values

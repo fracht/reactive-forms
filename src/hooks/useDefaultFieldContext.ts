@@ -12,18 +12,21 @@ export interface FieldContextProps<V> {
 }
 
 export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps<V>): FieldContext<V> => {
-    const { registerField, setFieldValue, values } = useMorfixContext();
+    const { registerField, unregisterField, setFieldValue, values } = useMorfixContext();
 
     const [value, setValue] = useState<V>(() => get(values.current, name));
     const [error, setError] = useState<MorfixErrors<V>>();
 
     useEffect(() => {
-        registerField<V>(name, {
+        const observers = {
             valueObserver: setValue,
             errorObserver: setError,
             validator: validator
-        });
-    }, [registerField, name, validator]);
+        };
+
+        registerField<V>(name, observers);
+        return () => unregisterField(name, observers);
+    }, [registerField, unregisterField, name, validator]);
 
     return {
         value,
