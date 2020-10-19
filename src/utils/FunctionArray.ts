@@ -43,6 +43,10 @@ export class FunctionArray<T extends (...args: any[]) => any> {
 
         this.items.splice(index, 1);
     };
+
+    public isEmpty = () => this.items.length === 0;
 }
 
-export type Observable<T> = FunctionArray<(message: T) => void>;
+export type Observer<T> = (message: T) => void;
+
+export type ObserversArray<T> = FunctionArray<Observer<T>>;
