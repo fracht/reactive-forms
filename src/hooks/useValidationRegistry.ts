@@ -13,6 +13,7 @@ export type ValidationRegistryControl = {
     unregisterValidator: <V>(name: string, validator: FieldValidator<V>) => void;
     validateField: <V>(name: string, value: V) => Promise<MorfixErrors<V> | undefined>;
     validateAllFields: <V extends object>(values: V) => Promise<MorfixErrors<V>>;
+    hasValidator: (name: string) => boolean;
 };
 
 export const useValidationRegistry = (): ValidationRegistryControl => {
@@ -43,6 +44,8 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
         return undefined;
     };
 
+    const hasValidator = (name: string) => Object.prototype.hasOwnProperty.call(registry.current, name);
+
     const validateAllFields = async <V extends object>(values: V): Promise<MorfixErrors<V>> => {
         const reducedErrors: MorfixErrors<V> = {} as MorfixErrors<V>;
 
@@ -62,6 +65,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
         registerValidator,
         unregisterValidator,
         validateField,
-        validateAllFields
+        validateAllFields,
+        hasValidator
     };
 };

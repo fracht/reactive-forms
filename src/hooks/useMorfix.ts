@@ -33,15 +33,23 @@ export const useMorfix = <Values extends object>({
     const [
         { values, setFieldValue, observeValue, stopObservingValue, isValueObserved },
         { setFieldErrors, setFieldError, observeError, stopObservingError },
-        { validateField: runFieldLevelValidation, validateAllFields, registerValidator, unregisterValidator }
+        {
+            validateField: runFieldLevelValidation,
+            validateAllFields,
+            registerValidator,
+            unregisterValidator,
+            hasValidator
+        }
     ] = useMorfixStorage({ initialValues });
 
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
-            const error = await runFieldLevelValidation(name, value);
-            setFieldError(name, error);
+            if (hasValidator(name)) {
+                const error = await runFieldLevelValidation(name, value);
+                setFieldError(name, error);
+            }
         },
-        [runFieldLevelValidation, setFieldError]
+        [runFieldLevelValidation, setFieldError, hasValidator]
     );
 
     const registerField = useCallback(
