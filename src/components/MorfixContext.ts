@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
-import { MorfixStorageShared } from '../hooks';
+import { MorfixShared } from '../hooks';
 
-export type MorfixContextType<Values> = MorfixStorageShared<Values>;
+export type MorfixContextType<Values> = MorfixShared<Values>;
 
 export const MorfixContext = createContext<MorfixContextType<unknown> | undefined>(undefined);
 
