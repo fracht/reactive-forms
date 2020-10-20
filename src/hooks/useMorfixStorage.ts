@@ -1,34 +1,38 @@
-import { MutableRefObject, useCallback } from 'react';
-import invariant from 'tiny-invariant';
+import { MorfixErrors } from '../typings';
+import { ObservableStorage, useObservableStorage } from './useObservableStorage';
+import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 
-import { useObservableStorage } from './useObservableStorage';
-import { useValidationRegistry } from './useValidationRegistry';
-import { FieldValidator, MorfixErrors } from '../typings';
-import { SubmitAction } from '../typings/SubmitAction';
-
-export interface MorfixStorageConfig<Values extends object> {
-    initialValues: Values;
-    onSubmit?: SubmitAction<Values>;
-}
-
-export interface MorfixStorageShared<Values> {
-    registerField: <V>(name: string, observers: FieldObservers<V>) => void;
-    unregisterField: <V>(name: string, observers: FieldObservers<V>) => void;
-    setFieldValue: <V>(name: string, value: V) => void;
-    submit: (action?: SubmitAction<Values>) => void;
-    values: MutableRefObject<Values>;
-}
-
-export type FieldObservers<V> = {
-    valueObserver: (value: V) => void;
-    errorObserver: (error: MorfixErrors<V> | undefined) => void;
-    validator?: FieldValidator<V>;
+export type MorfixStorageConfig<T extends object> = {
+    initialValues: T;
+    initialErrors?: MorfixErrors<T>;
 };
 
-export const useMorfixStorage = <Values extends object>({
+export type MorfixValuesStorage<T extends object> = {
+    values: ObservableStorage<T>['values'];
+    setFieldValue: ObservableStorage<T>['setValue'];
+    observeValue: ObservableStorage<T>['observe'];
+    stopObservingValue: ObservableStorage<T>['stopObserving'];
+    isValueObserved: ObservableStorage<T>['isObserved'];
+};
+
+export type MorfixErrorsStorage<T extends object> = {
+    errors: ObservableStorage<MorfixErrors<T>>['values'];
+    setFieldError: ObservableStorage<MorfixErrors<T>>['setValue'];
+    observeError: ObservableStorage<MorfixErrors<T>>['observe'];
+    stopObservingError: ObservableStorage<MorfixErrors<T>>['stopObserving'];
+    isErrorObserved: ObservableStorage<MorfixErrors<T>>['isObserved'];
+};
+
+export type MorfixStorage<T extends object> = [
+    MorfixValuesStorage<T>,
+    MorfixErrorsStorage<T>,
+    ValidationRegistryControl
+];
+
+export const useMorfixStorage = <T extends object>({
     initialValues,
-    onSubmit
-}: MorfixStorageConfig<Values>): MorfixStorageShared<Values> => {
+    initialErrors = {} as MorfixErrors<T>
+}: MorfixStorageConfig<T>): MorfixStorage<T> => {
     const {
         values,
         setValue: setFieldValue,
@@ -40,65 +44,30 @@ export const useMorfixStorage = <Values extends object>({
         values: errors,
         setValue: setFieldError,
         observe: observeError,
-        stopObserving: stopObservingError
-    } = useObservableStorage<MorfixErrors<Values>>({
-        initialValues: {} as MorfixErrors<Values>,
+        stopObserving: stopObservingError,
+        isObserved: isErrorObserved
+    } = useObservableStorage({
+        initialValues: initialErrors,
         debugName: 'errors'
     });
 
-    const { registerValidator, unregisterValidator, validateField: runFieldLevelValidation } = useValidationRegistry();
+    const registry = useValidationRegistry();
 
-    const validateField = useCallback(
-        async <V>(name: string, value: V) => {
-            const error = await runFieldLevelValidation(name, value);
-            setFieldError(name, error);
+    return [
+        {
+            values,
+            setFieldValue,
+            observeValue,
+            stopObservingValue,
+            isValueObserved
         },
-        [runFieldLevelValidation, setFieldError]
-    );
-
-    const registerField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
-            if (!isValueObserved(name)) {
-                observeValue(name, (value) => validateField(name, value));
-            }
-
-            observeValue(name, valueObserver);
-            observeError(name, errorObserver);
-
-            if (validator) {
-                registerValidator(name, validator);
-            }
+        {
+            errors,
+            setFieldError,
+            observeError,
+            stopObservingError,
+            isErrorObserved
         },
-        [isValueObserved, observeValue, observeError, validateField, registerValidator]
-    );
-
-    const unregisterField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
-            stopObservingValue(name, valueObserver);
-            stopObservingError(name, errorObserver);
-            if (validator) {
-                unregisterValidator(name, validator);
-            }
-        },
-        [stopObservingError, stopObservingValue, unregisterValidator]
-    );
-
-    const submit = (action: SubmitAction<Values> | undefined = onSubmit) => {
-        invariant(
-            action,
-            'Cannot call submit, because no action specified in arguments and no default action provided.'
-        );
-
-        if (Object.keys(errors.current).length === 0) {
-            action(values.current);
-        }
-    };
-
-    return {
-        registerField,
-        unregisterField,
-        setFieldValue,
-        submit,
-        values
-    };
+        registry
+    ];
 };
