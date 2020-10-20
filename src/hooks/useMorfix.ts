@@ -3,7 +3,7 @@ import merge from 'lodash/merge';
 import invariant from 'tiny-invariant';
 
 import { useMorfixStorage } from './useMorfixStorage';
-import { Empty, FieldValidator, MorfixErrors, SubmitAction } from '../typings';
+import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
@@ -14,6 +14,7 @@ export type MorfixConfig<Values extends object> = {
 export type FieldObservers<V> = {
     valueObserver: (value: V) => void;
     errorObserver: (error: MorfixErrors<V> | undefined) => void;
+    touchObserver: (touched: MorfixTouched<V> | undefined) => void;
     validator?: FieldValidator<V>;
 };
 
@@ -21,6 +22,7 @@ export type MorfixShared<Values> = {
     registerField: <V>(name: string, observers: FieldObservers<V>) => void;
     unregisterField: <V>(name: string, observers: FieldObservers<V>) => void;
     setFieldValue: <V>(name: string, value: V) => void;
+    setFieldTouched: <V>(name: string, touched: MorfixTouched<V>) => void;
     submit: (action?: SubmitAction<Values>) => void;
     values: MutableRefObject<Values>;
 };
@@ -33,6 +35,7 @@ export const useMorfix = <Values extends object>({
     const [
         { values, setFieldValue, observeValue, stopObservingValue, isValueObserved },
         { setFieldErrors, setFieldError, observeError, stopObservingError },
+        { setFieldTouched, observeTouched, stopObservingTouched },
         {
             validateField: runFieldLevelValidation,
             validateAllFields,
@@ -53,30 +56,33 @@ export const useMorfix = <Values extends object>({
     );
 
     const registerField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
+        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: FieldObservers<V>) => {
             if (!isValueObserved(name)) {
                 observeValue(name, (value) => validateField(name, value));
             }
 
             observeValue(name, valueObserver);
             observeError(name, errorObserver);
+            observeTouched(name, touchObserver);
 
             if (validator) {
                 registerValidator(name, validator);
             }
         },
-        [isValueObserved, observeValue, observeError, validateField, registerValidator]
+        [isValueObserved, observeValue, observeError, validateField, registerValidator, observeTouched]
     );
 
     const unregisterField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, validator }: FieldObservers<V>) => {
+        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: FieldObservers<V>) => {
             stopObservingValue(name, valueObserver);
             stopObservingError(name, errorObserver);
+            stopObservingTouched(name, touchObserver);
+
             if (validator) {
                 unregisterValidator(name, validator);
             }
         },
-        [stopObservingError, stopObservingValue, unregisterValidator]
+        [stopObservingError, stopObservingValue, unregisterValidator, stopObservingTouched]
     );
 
     const validateForm = async (values: Values): Promise<MorfixErrors<Values>> => {
@@ -105,6 +111,7 @@ export const useMorfix = <Values extends object>({
         registerField,
         unregisterField,
         setFieldValue,
+        setFieldTouched,
         submit,
         values
     };

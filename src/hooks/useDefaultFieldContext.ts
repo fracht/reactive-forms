@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { get } from 'lodash';
 
 import { useMorfixContext } from './useMorfixContext';
-import { FieldValidator } from '../typings';
+import { FieldValidator, MorfixTouched } from '../typings';
 import { FieldContext } from '../typings/FieldContext';
 import { MorfixErrors } from '../typings/MorfixErrors';
 
@@ -12,15 +12,17 @@ export interface FieldContextProps<V> {
 }
 
 export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps<V>): FieldContext<V> => {
-    const { registerField, unregisterField, setFieldValue, values } = useMorfixContext();
+    const { registerField, unregisterField, setFieldValue, setFieldTouched, values } = useMorfixContext();
 
     const [value, setValue] = useState<V>(() => get(values.current, name));
     const [error, setError] = useState<MorfixErrors<V>>();
+    const [touched, setTouched] = useState<MorfixTouched<V>>();
 
     useEffect(() => {
         const observers = {
             valueObserver: setValue,
             errorObserver: setError,
+            touchObserver: setTouched,
             validator: validator
         };
 
@@ -31,10 +33,12 @@ export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps
     return {
         value,
         meta: {
-            error
+            error,
+            touched
         },
         control: {
-            setValue: (value: V) => setFieldValue(name, value)
+            setValue: (value: V) => setFieldValue(name, value),
+            setTouched: (touched: MorfixTouched<V>) => setFieldTouched(name, touched)
         }
     };
 };

@@ -1,10 +1,11 @@
-import { MorfixErrors } from '../typings';
+import { MorfixErrors, MorfixTouched } from '../typings';
 import { ObservableStorage, useObservableStorage } from './useObservableStorage';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 
 export type MorfixStorageConfig<T extends object> = {
     initialValues: T;
     initialErrors?: MorfixErrors<T>;
+    initialTouched?: MorfixTouched<T>;
 };
 
 export type MorfixValuesStorage<T extends object> = {
@@ -25,15 +26,26 @@ export type MorfixErrorsStorage<T extends object> = {
     isErrorObserved: ObservableStorage<MorfixErrors<T>>['isObserved'];
 };
 
+export type MorfixTouchedStorage<T extends object> = {
+    touched: ObservableStorage<MorfixTouched<T>>['values'];
+    setAllTouched: ObservableStorage<MorfixTouched<T>>['setValues'];
+    setFieldTouched: ObservableStorage<MorfixTouched<T>>['setValue'];
+    observeTouched: ObservableStorage<MorfixTouched<T>>['observe'];
+    stopObservingTouched: ObservableStorage<MorfixTouched<T>>['stopObserving'];
+    isTouchedObserved: ObservableStorage<MorfixTouched<T>>['isObserved'];
+};
+
 export type MorfixStorage<T extends object> = [
     MorfixValuesStorage<T>,
     MorfixErrorsStorage<T>,
+    MorfixTouchedStorage<T>,
     ValidationRegistryControl
 ];
 
 export const useMorfixStorage = <T extends object>({
     initialValues,
-    initialErrors = {} as MorfixErrors<T>
+    initialErrors = {} as MorfixErrors<T>,
+    initialTouched = {} as MorfixTouched<T>
 }: MorfixStorageConfig<T>): MorfixStorage<T> => {
     const {
         values,
@@ -43,6 +55,7 @@ export const useMorfixStorage = <T extends object>({
         stopObserving: stopObservingValue,
         isObserved: isValueObserved
     } = useObservableStorage({ initialValues, debugName: 'values' });
+
     const {
         values: errors,
         setValue: setFieldError,
@@ -53,6 +66,18 @@ export const useMorfixStorage = <T extends object>({
     } = useObservableStorage({
         initialValues: initialErrors,
         debugName: 'errors'
+    });
+
+    const {
+        values: touched,
+        setValue: setFieldTouched,
+        setValues: setAllTouched,
+        observe: observeTouched,
+        stopObserving: stopObservingTouched,
+        isObserved: isTouchedObserved
+    } = useObservableStorage({
+        initialValues: initialTouched,
+        debugName: 'touched'
     });
 
     const registry = useValidationRegistry();
@@ -73,6 +98,14 @@ export const useMorfixStorage = <T extends object>({
             observeError,
             stopObservingError,
             isErrorObserved
+        },
+        {
+            touched,
+            setFieldTouched,
+            setAllTouched,
+            observeTouched,
+            stopObservingTouched,
+            isTouchedObserved
         },
         registry
     ];
