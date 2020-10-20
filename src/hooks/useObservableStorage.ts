@@ -49,6 +49,14 @@ export const useObservableStorage = <T extends object>({
         if (currentObservers.isEmpty()) delete observers.current[path];
     }, []);
 
+    const callObservers = useCallback((paths: string[], values: T) => {
+        paths.forEach((path) => {
+            const observer = observers.current[path];
+            const value = get(values, path);
+            observer.call(typeof value === 'object' ? { ...value } : value);
+        });
+    }, []);
+
     const setValue = useCallback(
         (path: string, value: unknown) => {
             set(values.current, path, value);
@@ -57,20 +65,17 @@ export const useObservableStorage = <T extends object>({
                 (tempPath) => isInnerPath(path, tempPath) || path === tempPath || isInnerPath(tempPath, path)
             );
 
-            paths.forEach((path) => {
-                const observer = observers.current[path];
-                const value = get(values.current, path);
-                observer.call(typeof value === 'object' ? { ...value } : value);
-            });
+            callObservers(paths, values.current);
         },
-        [values]
+        [values, callObservers]
     );
 
     const setValues = useCallback(
         (newValues: T) => {
             values.current = newValues;
+            callObservers(Object.keys(observers.current), newValues);
         },
-        [values]
+        [values, callObservers]
     );
 
     const isObserved = useCallback((path: string) => Object.prototype.hasOwnProperty.call(observers.current, path), []);

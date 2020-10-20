@@ -1,12 +1,14 @@
 import { MutableRefObject, useCallback } from 'react';
+import merge from 'lodash/merge';
 import invariant from 'tiny-invariant';
 
 import { useMorfixStorage } from './useMorfixStorage';
-import { FieldValidator, MorfixErrors, SubmitAction } from '../typings';
+import { Empty, FieldValidator, MorfixErrors, SubmitAction } from '../typings';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
     onSubmit?: SubmitAction<Values>;
+    validateForm?: FieldValidator<Values>;
 };
 
 export type FieldObservers<V> = {
@@ -25,20 +27,29 @@ export type MorfixShared<Values> = {
 
 export const useMorfix = <Values extends object>({
     initialValues,
-    onSubmit
+    onSubmit,
+    validateForm: validateFormFn
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [
         { values, setFieldValue, observeValue, stopObservingValue, isValueObserved },
         { setFieldErrors, setFieldError, observeError, stopObservingError },
-        { validateField: runFieldLevelValidation, validateAllFields, registerValidator, unregisterValidator }
+        {
+            validateField: runFieldLevelValidation,
+            validateAllFields,
+            registerValidator,
+            unregisterValidator,
+            hasValidator
+        }
     ] = useMorfixStorage({ initialValues });
 
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
-            const error = await runFieldLevelValidation(name, value);
-            setFieldError(name, error);
+            if (hasValidator(name)) {
+                const error = await runFieldLevelValidation(name, value);
+                setFieldError(name, error);
+            }
         },
-        [runFieldLevelValidation, setFieldError]
+        [runFieldLevelValidation, setFieldError, hasValidator]
     );
 
     const registerField = useCallback(
@@ -68,13 +79,20 @@ export const useMorfix = <Values extends object>({
         [stopObservingError, stopObservingValue, unregisterValidator]
     );
 
+    const validateForm = async (values: Values): Promise<MorfixErrors<Values>> => {
+        const registryErrors = await validateAllFields(values);
+        const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
+
+        return merge(registryErrors, validateFormFnErrors);
+    };
+
     const submit = async (action: SubmitAction<Values> | undefined = onSubmit) => {
         invariant(
             action,
             'Cannot call submit, because no action specified in arguments and no default action provided.'
         );
 
-        const errors = await validateAllFields(values.current);
+        const errors = await validateForm(values.current);
 
         setFieldErrors(errors);
 
