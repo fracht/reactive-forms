@@ -29,8 +29,8 @@ export const useMorfix = <Values extends object>({
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const [
         { values, setFieldValue, observeValue, stopObservingValue, isValueObserved },
-        { errors, setFieldError, observeError, stopObservingError },
-        { validateField: runFieldLevelValidation, registerValidator, unregisterValidator }
+        { setFieldErrors, setFieldError, observeError, stopObservingError },
+        { validateField: runFieldLevelValidation, validateAllFields, registerValidator, unregisterValidator }
     ] = useMorfixStorage({ initialValues });
 
     const validateField = useCallback(
@@ -68,13 +68,17 @@ export const useMorfix = <Values extends object>({
         [stopObservingError, stopObservingValue, unregisterValidator]
     );
 
-    const submit = (action: SubmitAction<Values> | undefined = onSubmit) => {
+    const submit = async (action: SubmitAction<Values> | undefined = onSubmit) => {
         invariant(
             action,
             'Cannot call submit, because no action specified in arguments and no default action provided.'
         );
 
-        if (Object.keys(errors.current).length === 0) {
+        const errors = await validateAllFields(values.current);
+
+        setFieldErrors(errors);
+
+        if (Object.keys(errors).length === 0) {
             action(values.current);
         }
     };

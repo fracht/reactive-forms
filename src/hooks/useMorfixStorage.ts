@@ -9,6 +9,7 @@ export type MorfixStorageConfig<T extends object> = {
 
 export type MorfixValuesStorage<T extends object> = {
     values: ObservableStorage<T>['values'];
+    setFieldValues: ObservableStorage<T>['setValues'];
     setFieldValue: ObservableStorage<T>['setValue'];
     observeValue: ObservableStorage<T>['observe'];
     stopObservingValue: ObservableStorage<T>['stopObserving'];
@@ -17,6 +18,7 @@ export type MorfixValuesStorage<T extends object> = {
 
 export type MorfixErrorsStorage<T extends object> = {
     errors: ObservableStorage<MorfixErrors<T>>['values'];
+    setFieldErrors: ObservableStorage<MorfixErrors<T>>['setValues'];
     setFieldError: ObservableStorage<MorfixErrors<T>>['setValue'];
     observeError: ObservableStorage<MorfixErrors<T>>['observe'];
     stopObservingError: ObservableStorage<MorfixErrors<T>>['stopObserving'];
@@ -36,6 +38,7 @@ export const useMorfixStorage = <T extends object>({
     const {
         values,
         setValue: setFieldValue,
+        setValues: setFieldValues,
         observe: observeValue,
         stopObserving: stopObservingValue,
         isObserved: isValueObserved
@@ -43,6 +46,7 @@ export const useMorfixStorage = <T extends object>({
     const {
         values: errors,
         setValue: setFieldError,
+        setValues: setFieldErrors,
         observe: observeError,
         stopObserving: stopObservingError,
         isObserved: isErrorObserved
@@ -57,6 +61,7 @@ export const useMorfixStorage = <T extends object>({
         {
             values,
             setFieldValue,
+            setFieldValues,
             observeValue,
             stopObservingValue,
             isValueObserved
@@ -64,6 +69,7 @@ export const useMorfixStorage = <T extends object>({
         {
             errors,
             setFieldError,
+            setFieldErrors,
             observeError,
             stopObservingError,
             isErrorObserved

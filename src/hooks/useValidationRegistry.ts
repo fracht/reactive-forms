@@ -1,4 +1,6 @@
 import { useRef } from 'react';
+import get from 'lodash/get';
+import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
 import { FieldValidator, MorfixErrors } from '../typings';
@@ -10,6 +12,7 @@ export type ValidationRegistryControl = {
     registerValidator: <V>(name: string, validator: FieldValidator<V>) => void;
     unregisterValidator: <V>(name: string, validator: FieldValidator<V>) => void;
     validateField: <V>(name: string, value: V) => Promise<MorfixErrors<V> | undefined>;
+    validateAllFields: <V extends object>(values: V) => Promise<MorfixErrors<V>>;
 };
 
 export const useValidationRegistry = (): ValidationRegistryControl => {
@@ -40,9 +43,25 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
         return undefined;
     };
 
+    const validateAllFields = async <V extends object>(values: V): Promise<MorfixErrors<V>> => {
+        const reducedErrors: MorfixErrors<V> = {} as MorfixErrors<V>;
+
+        const allValidatorKeys = Object.keys(registry.current);
+
+        for (const key of allValidatorKeys) {
+            const error = await registry.current[key].lazyAsyncCall(get(values, key));
+            if (error) {
+                set(reducedErrors, key, error);
+            }
+        }
+
+        return reducedErrors;
+    };
+
     return {
         registerValidator,
         unregisterValidator,
-        validateField
+        validateField,
+        validateAllFields
     };
 };
