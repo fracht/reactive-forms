@@ -3,3 +3,4 @@ export * from './useMorfix';
 export * from './useMorfixContext';
 export * from './useSubmitAction';
 export * from './useTextField';
+export * from './useFieldValidator';
