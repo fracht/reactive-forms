@@ -16,11 +16,12 @@
         "start": "tsdx watch",
         "build": "tsdx build",
         "test": "tsdx test --passWithNoTests",
-        "test-watch": "tsdx test --watch",
+        "test:watch": "tsdx test --watch",
         "lint": "tsdx lint",
-        "lint-fix": "tsdx lint --fix",
+        "lint:fix": "tsdx lint --fix",
         "prepare": "tsdx build",
-        "format-all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\""
+        "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
+        "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx"
     },
     "peerDependencies": {
         "react": ">=16"

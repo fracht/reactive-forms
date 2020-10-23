@@ -1,13 +1,15 @@
 import React from 'react';
+import { Icon } from '@material-ui/core';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 
+import { CopyButton } from 'src/components/CopyButton';
 import { theme } from 'src/constants/prismTheme';
 import { CodeSandboxLink } from './CodeSandboxLink';
 import { CodeProps } from './types';
 
 import styles from './Code.module.scss';
 
-export const DefaultCode = ({ code, language, meta: { codesandbox } }: CodeProps) => (
+export const DefaultCode = ({ code, language, meta: { codesandbox, copy } }: CodeProps) => (
     <div className={styles['code-wrapper']}>
         <Highlight {...defaultProps} theme={theme} code={code} language={language as Language}>
             {({ style, tokens, getLineProps, getTokenProps }) => (
@@ -22,6 +24,11 @@ export const DefaultCode = ({ code, language, meta: { codesandbox } }: CodeProps
                 </pre>
             )}
         </Highlight>
+        {copy && (
+            <CopyButton className={styles['code__copy']} text={code}>
+                <Icon>file_copy</Icon>
+            </CopyButton>
+        )}
         {codesandbox && typeof codesandbox === 'string' && <CodeSandboxLink link={codesandbox} />}
     </div>
 );

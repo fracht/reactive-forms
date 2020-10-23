@@ -1,6 +1,6 @@
 const fs = require('fs');
-const getPagesConfig = require('../src/utils/getPagesConfig');
-const flatPagesConfig = require('../src/utils/flatPagesConfig');
+const getPagesConfig = require('../../src/utils/getPagesConfig');
+const flatPagesConfig = require('../../src/utils/flatPagesConfig');
 
 const pagesConfig = getPagesConfig('pages');
 

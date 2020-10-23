@@ -16,6 +16,9 @@ declare module '@mdx-js/react' {
         | 'sup'
         | 'table'
         | 'td'
+        | 'th'
+        | 'tbody'
+        | 'thead'
         | 'thematicBreak'
         | 'tr'
         | 'ul';

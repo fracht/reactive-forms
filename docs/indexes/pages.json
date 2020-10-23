@@ -6,17 +6,55 @@
             "href": "/getting-started"
         },
         {
-            "title": "Docs details",
-            "href": "/documentation-details"
-        },
-        {
             "children": [
                 {
-                    "title": "a",
-                    "href": "/lol/a"
+                    "children": [
+                        {
+                            "title": "Morfix",
+                            "href": "/api-reference/components/Morfix"
+                        },
+                        {
+                            "title": "MorfixProvider",
+                            "href": "/api-reference/components/MorfixContext"
+                        }
+                    ],
+                    "href": "/api-reference/components",
+                    "title": "Components"
+                },
+                {
+                    "title": "Hooks",
+                    "children": [
+                        {
+                            "title": "useDefaultFieldContext",
+                            "href": "/api-reference/hooks/useDefaultFieldContext"
+                        },
+                        {
+                            "title": "useMorfix",
+                            "href": "/api-reference/hooks/useMorfix"
+                        },
+                        {
+                            "title": "useMorfixStorage",
+                            "href": "/api-reference/hooks/useMorfixStorage"
+                        },
+                        {
+                            "title": "useObservableStorage",
+                            "href": "/api-reference/hooks/useObservableStorage"
+                        },
+                        {
+                            "title": "useSubmitAction",
+                            "href": "/api-reference/hooks/useSubmitAction"
+                        }
+                    ],
+                    "href": "/api-reference/hooks"
                 }
             ],
-            "title": "lol"
+            "href": "/api-reference",
+            "title": "API"
+        },
+        {
+            "title": "Docs details",
+            "href": "/documentation-details"
         }
-    ]
+    ],
+    "href": "/"
 }

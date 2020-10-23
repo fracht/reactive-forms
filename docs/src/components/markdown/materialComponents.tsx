@@ -1,4 +1,5 @@
 import React from 'react';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Components } from '@mdx-js/react';
 
 import { Code } from './Code';
@@ -14,6 +15,12 @@ export const materialComponents: Components = {
     h4: createHeadingComponent(4),
     h5: createHeadingComponent(5),
     h6: createHeadingComponent(6),
+    table: Table,
+    tr: TableRow,
+    tbody: TableBody,
+    thead: TableHead,
+    th: ({ children }) => <TableCell>{children}</TableCell>,
+    td: ({ children, ...oth }) => <TableCell>{children}</TableCell>,
     p: Paragraph,
     code: Code,
     pre: ({ children }) => <React.Fragment>{children}</React.Fragment>
