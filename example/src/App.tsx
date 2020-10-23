@@ -1,5 +1,5 @@
 import React from 'react';
-import Morfix, { TextFieldConfig, useDefaultFieldContext, useSubmitAction, useTextField } from 'morfix';
+import Morfix, { TextFieldConfig, useObjectField, useSubmitAction, useTextField } from 'morfix';
 
 const TestField = (props: TextFieldConfig) => {
     const [field, { error, touched }] = useTextField(props);
@@ -13,15 +13,14 @@ const TestField = (props: TextFieldConfig) => {
 };
 
 const ObjField = (props: { name: string }) => {
-    const {
-        value,
-        control: { setValue }
-    } = useDefaultFieldContext<{ a: string }>(props);
+    const { values, errors, setDeepValue, setDeepError } = useObjectField<{ a: string }>(props);
 
     return (
         <div>
-            {value?.a}
-            <button onClick={() => setValue({ a: 'LOL!!!' })}>Hello</button>
+            {values?.a}
+            {errors?.a?.mrfxError}
+            <button onClick={() => setDeepValue('a', 'LOL!!!')}>Hello</button>
+            <button onClick={() => setDeepError('a', { mrfxError: 'fff' })}>asdf</button>
         </div>
     );
 };
@@ -40,7 +39,7 @@ const App = () => {
         <Morfix
             initialValues={{
                 h: {
-                    a: '',
+                    a: 'asdf',
                     c: 'asdf'
                 },
                 a: 'asdf',
