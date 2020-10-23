@@ -22,6 +22,7 @@ export type MorfixShared<Values> = {
     registerField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
     unregisterField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
     setFieldValue: <V>(name: string, value: V) => void;
+    setFieldError: <V>(name: string, error: MorfixErrors<V>) => void;
     setFieldTouched: <V>(name: string, touched: MorfixTouched<V>) => void;
     submit: (action?: SubmitAction<Values>) => void;
     values: MutableRefObject<Values>;
@@ -112,6 +113,7 @@ export const useMorfix = <Values extends object>({
         unregisterField,
         setFieldValue,
         setFieldTouched,
+        setFieldError,
         submit,
         values
     };
