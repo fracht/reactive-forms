@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { get } from 'lodash';
 
 import { useMorfixContext } from './useMorfixContext';
@@ -12,17 +12,24 @@ export interface FieldContextProps<V> {
 }
 
 export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps<V>): FieldContext<V> => {
-    const { registerField, unregisterField, setFieldValue, setFieldTouched, values } = useMorfixContext();
+    const {
+        registerField,
+        unregisterField,
+        setFieldValue,
+        setFieldTouched,
+        setFieldError,
+        values
+    } = useMorfixContext();
 
-    const [value, setValue] = useState<V>(() => get(values.current, name));
-    const [error, setError] = useState<MorfixErrors<V>>();
-    const [touched, setTouched] = useState<MorfixTouched<V>>();
+    const [value, setValueState] = useState<V>(() => get(values.current, name));
+    const [error, setErrorState] = useState<MorfixErrors<V>>();
+    const [touched, setTouchedState] = useState<MorfixTouched<V>>();
 
     useEffect(() => {
         const observers = {
-            valueObserver: setValue,
-            errorObserver: setError,
-            touchObserver: setTouched,
+            valueObserver: setValueState,
+            errorObserver: setErrorState,
+            touchObserver: setTouchedState,
             validator: validator
         };
 
@@ -31,6 +38,13 @@ export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [registerField, unregisterField, name, validator]);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const setValue = useCallback((value: V) => setFieldValue(name, value), [setFieldValue, name]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const setTouched = useCallback((value: MorfixTouched<V>) => setFieldTouched(name, value), [setFieldTouched, name]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const setError = useCallback((value: MorfixErrors<V>) => setFieldError(name, value), [setFieldError, name]);
+
     return {
         value,
         meta: {
@@ -38,8 +52,9 @@ export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps
             touched
         },
         control: {
-            setValue: (value: V) => setFieldValue(name, value),
-            setTouched: (touched: MorfixTouched<V>) => setFieldTouched(name, touched)
+            setValue,
+            setTouched,
+            setError
         }
     };
 };
