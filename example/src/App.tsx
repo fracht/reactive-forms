@@ -1,14 +1,22 @@
 import React from 'react';
-import Morfix, { useDefaultFieldContext } from 'morfix';
+import Morfix, { TextFieldConfig, useDefaultFieldContext, useSubmitAction, useTextField } from 'morfix';
 
-const TestField = (props: { name: string }) => {
-    const [value, setValue] = useDefaultFieldContext<string>(props);
+const TestField = (props: TextFieldConfig) => {
+    const [field, { error, touched }] = useTextField(props);
 
-    return <input value={value ?? ''} onChange={(e) => setValue(e.target.value)} />;
+    return (
+        <div>
+            <input {...field} />
+            {touched && error && <span>{error}</span>}
+        </div>
+    );
 };
 
 const ObjField = (props: { name: string }) => {
-    const [value, setValue] = useDefaultFieldContext<{ a: string }>(props);
+    const {
+        value,
+        control: { setValue }
+    } = useDefaultFieldContext<{ a: string }>(props);
 
     return (
         <div>
@@ -18,12 +26,21 @@ const ObjField = (props: { name: string }) => {
     );
 };
 
+const SubmitButton = () => {
+    const onClick = useSubmitAction(() => {
+        // console.log(values);
+        return Promise.resolve();
+    });
+
+    return <button onClick={onClick}>Hello</button>;
+};
+
 const App = () => {
     return (
         <Morfix
             initialValues={{
                 h: {
-                    a: 'asdf',
+                    a: '',
                     c: 'asdf'
                 },
                 a: 'asdf',
@@ -33,9 +50,14 @@ const App = () => {
             <div>
                 <h2>Hello</h2>
                 <ObjField name="h" />
-                <TestField name="h.a" />
+                <TestField
+                    validator={(value) => (value.length === 0 ? { mrfxError: 'Required' } : undefined)}
+                    name="h.a"
+                />
                 <TestField name="h.c" />
                 <TestField name="b" />
+                <TestField name="h.a" />
+                <SubmitButton />
             </div>
         </Morfix>
     );
