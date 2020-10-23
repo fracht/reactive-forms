@@ -55,6 +55,7 @@ export const useObservableStorage = <T extends object>({
             const value = get(values, path);
             observer.call(typeof value === 'object' ? { ...value } : value);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const setValue = useCallback(
@@ -75,6 +76,7 @@ export const useObservableStorage = <T extends object>({
             values.current = newValues;
             callObservers(Object.keys(observers.current), newValues);
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [values, callObservers]
     );
 
