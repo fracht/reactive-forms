@@ -25,12 +25,12 @@ jobs:
             - name: Building base package
               run: npm run build
 
-            - name: Generating API documentation
-              run: npm run docs:gen
-
             - name: Deleting node_modules folder & Installing dependencies
               working-directory: ./docs
               run: npm ci
+
+            - name: Generating API documentation
+              run: npm run docs:gen
 
             - name: Generating page indexes
               working-directory: ./docs
