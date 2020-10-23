@@ -25,9 +25,11 @@ export const DefaultCode = ({ code, language, meta: { codesandbox, copy } }: Cod
             )}
         </Highlight>
         {copy && (
-            <CopyButton className={styles['code__copy']} text={code}>
-                <Icon>file_copy</Icon>
-            </CopyButton>
+            <div className={styles['code__copy']}>
+                <CopyButton text={code}>
+                    <Icon>file_copy</Icon>
+                </CopyButton>
+            </div>
         )}
         {codesandbox && typeof codesandbox === 'string' && <CodeSandboxLink link={codesandbox} />}
     </div>
