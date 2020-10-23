@@ -19,8 +19,8 @@ export type FieldObservers<V> = {
 };
 
 export type MorfixShared<Values> = {
-    registerField: <V>(name: string, observers: FieldObservers<V>) => void;
-    unregisterField: <V>(name: string, observers: FieldObservers<V>) => void;
+    registerField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
+    unregisterField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
     setFieldValue: <V>(name: string, value: V) => void;
     setFieldError: <V>(name: string, error: MorfixErrors<V>) => void;
     setFieldTouched: <V>(name: string, touched: MorfixTouched<V>) => void;
@@ -57,14 +57,14 @@ export const useMorfix = <Values extends object>({
     );
 
     const registerField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: FieldObservers<V>) => {
+        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: Partial<FieldObservers<V>>) => {
             if (!isValueObserved(name)) {
                 observeValue(name, (value) => validateField(name, value));
             }
 
-            observeValue(name, valueObserver);
-            observeError(name, errorObserver);
-            observeTouched(name, touchObserver);
+            if (valueObserver) observeValue(name, valueObserver);
+            if (errorObserver) observeError(name, errorObserver);
+            if (touchObserver) observeTouched(name, touchObserver);
 
             if (validator) {
                 registerValidator(name, validator);
@@ -74,10 +74,10 @@ export const useMorfix = <Values extends object>({
     );
 
     const unregisterField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: FieldObservers<V>) => {
-            stopObservingValue(name, valueObserver);
-            stopObservingError(name, errorObserver);
-            stopObservingTouched(name, touchObserver);
+        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: Partial<FieldObservers<V>>) => {
+            if (valueObserver) stopObservingValue(name, valueObserver);
+            if (errorObserver) stopObservingError(name, errorObserver);
+            if (touchObserver) stopObservingTouched(name, touchObserver);
 
             if (validator) {
                 unregisterValidator(name, validator);
