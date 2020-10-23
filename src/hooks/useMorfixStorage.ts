@@ -1,6 +1,6 @@
-import { MorfixErrors, MorfixTouched } from '../typings';
 import { ObservableStorage, useObservableStorage } from './useObservableStorage';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
+import { MorfixErrors, MorfixTouched } from '../typings';
 
 export type MorfixStorageConfig<T extends object> = {
     initialValues: T;

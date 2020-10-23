@@ -34,7 +34,7 @@ export const useTextField = ({
             setValue(e.target.value);
             onChange?.(e);
         },
-        [setValue]
+        [setValue, onChange]
     );
 
     const handleBlur = useCallback(
@@ -42,7 +42,7 @@ export const useTextField = ({
             setTouched({ mrfxTouched: true });
             onBlur?.(e);
         },
-        [setTouched]
+        [setTouched, onBlur]
     );
 
     return [

@@ -28,6 +28,7 @@ export const useDefaultFieldContext = <V>({ name, validator }: FieldContextProps
 
         registerField<V>(name, observers);
         return () => unregisterField(name, observers);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [registerField, unregisterField, name, validator]);
 
     return {
