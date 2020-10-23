@@ -1,12 +1,22 @@
 ---
+# this is generated file.
 title: useDefaultFieldContext
 layout: Docs
 ---
 
 # useDefaultFieldContext
-# Props
 
+> Hook
+
+## Import
+
+```js copy
+import { useDefaultFieldContext } from 'morfix';
+```
+
+
+## Parameters
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| name | string | Required | 
-| validator | FieldValidator&lt;V&gt; &#124; undefined | false | 
+| name* | string | Required | 
+| validator | FieldValidator&lt;V&gt; |  | 

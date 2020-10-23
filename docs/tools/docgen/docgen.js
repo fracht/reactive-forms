@@ -14,12 +14,19 @@ let {
     exclude
 } = yargs(process.argv).argv;
 
+/**
+ * @type {import('react-docgen-typescript').ParserOptions}
+ */
+const options = {
+    shouldRemoveUndefinedFromOptional: true
+};
+
 let parser;
 
 if (tsconfig) {
-    parser = docgen.withCustomConfig(tsconfig);
+    parser = docgen.withCustomConfig(tsconfig, options);
 } else {
-    parser = docgen.withDefaultConfig();
+    parser = docgen.withDefaultConfig(options);
 }
 
 if (!out) {
@@ -51,6 +58,12 @@ for (const path of src) {
 
     if (component) {
         const relativePath = relative(base, path);
+
+        if (component.displayName.indexOf('use') === 0) {
+            component.isHook = true;
+        } else {
+            component.isHook = false;
+        }
 
         const newPath = join(out, relativePath.replace(/\.\w+$/g, '') + '.md');
 

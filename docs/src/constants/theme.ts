@@ -42,9 +42,9 @@ export const theme = createMuiTheme({
     breakpoints: {
         values: {
             xs: 0,
-            sm: 800,
-            md: 960,
-            lg: 1280,
+            sm: 1000,
+            md: 1300,
+            lg: 1600,
             xl: 1920
         }
     },
@@ -74,8 +74,11 @@ export const theme = createMuiTheme({
                 borderLeft: '2px solid',
                 textTransform: 'initial',
                 padding: '4px 32px',
-                fontSize: '1rem',
+                fontSize: '0.9rem',
                 margin: '5px 0'
+            },
+            outlined: {
+                textTransform: 'initial'
             },
             textPrimary: {
                 backgroundColor: fade(palette.primary.light, 0.2),

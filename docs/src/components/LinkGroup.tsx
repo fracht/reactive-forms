@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Button, Divider, Icon } from '@material-ui/core';
 import classNames from 'classnames';
 
@@ -12,9 +12,16 @@ interface LinkGroupProps {
 }
 
 export const LinkGroup: React.FC<LinkGroupProps> = ({ pageMeta }) => {
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
     const toggleGroup = () => setExpanded(!expanded);
+
+    useLayoutEffect(() => {
+        if (window.location.pathname.includes(pageMeta.href)) {
+            setExpanded(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div>

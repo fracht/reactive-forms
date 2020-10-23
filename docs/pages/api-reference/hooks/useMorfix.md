@@ -1,13 +1,23 @@
 ---
+# this is generated file.
 title: useMorfix
 layout: Docs
 ---
 
 # useMorfix
-# Props
 
+> Hook
+
+## Import
+
+```js copy
+import { useMorfix } from 'morfix';
+```
+
+
+## Parameters
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| initialValues | Values | Required | 
-| onSubmit | SubmitAction&lt;Values&gt; &#124; undefined | false | 
-| validateForm | FieldValidator&lt;Values&gt; &#124; undefined | false | 
+| initialValues* | Values | Required | 
+| onSubmit | SubmitAction&lt;Values&gt; |  | 
+| validateForm | FieldValidator&lt;Values&gt; |  | 

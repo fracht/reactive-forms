@@ -5,49 +5,149 @@
         "href": "/getting-started",
         "index": 0
     },
+    "/api-reference": {
+        "children": [
+            {
+                "children": [
+                    {
+                        "title": "Morfix",
+                        "href": "/api-reference/components/Morfix",
+                        "index": 3
+                    },
+                    {
+                        "title": "MorfixProvider",
+                        "href": "/api-reference/components/MorfixContext",
+                        "index": 4
+                    }
+                ],
+                "href": "/api-reference/components",
+                "title": "Components",
+                "index": 2
+            },
+            {
+                "title": "Hooks",
+                "children": [
+                    {
+                        "title": "useDefaultFieldContext",
+                        "href": "/api-reference/hooks/useDefaultFieldContext",
+                        "index": 4
+                    },
+                    {
+                        "title": "useMorfix",
+                        "href": "/api-reference/hooks/useMorfix",
+                        "index": 5
+                    },
+                    {
+                        "title": "useMorfixStorage",
+                        "href": "/api-reference/hooks/useMorfixStorage",
+                        "index": 6
+                    },
+                    {
+                        "title": "useObservableStorage",
+                        "href": "/api-reference/hooks/useObservableStorage",
+                        "index": 7
+                    },
+                    {
+                        "title": "useSubmitAction",
+                        "href": "/api-reference/hooks/useSubmitAction",
+                        "index": 8
+                    }
+                ],
+                "href": "/api-reference/hooks",
+                "index": 3
+            }
+        ],
+        "href": "/api-reference",
+        "title": "API",
+        "index": 1
+    },
+    "/api-reference/components": {
+        "children": [
+            {
+                "title": "Morfix",
+                "href": "/api-reference/components/Morfix",
+                "index": 3
+            },
+            {
+                "title": "MorfixProvider",
+                "href": "/api-reference/components/MorfixContext",
+                "index": 4
+            }
+        ],
+        "href": "/api-reference/components",
+        "title": "Components",
+        "index": 2
+    },
     "/api-reference/components/Morfix": {
         "title": "Morfix",
         "href": "/api-reference/components/Morfix",
-        "index": 1
+        "index": 3
     },
     "/api-reference/components/MorfixContext": {
         "title": "MorfixProvider",
         "href": "/api-reference/components/MorfixContext",
-        "index": 2
+        "index": 4
+    },
+    "/api-reference/hooks": {
+        "title": "Hooks",
+        "children": [
+            {
+                "title": "useDefaultFieldContext",
+                "href": "/api-reference/hooks/useDefaultFieldContext",
+                "index": 4
+            },
+            {
+                "title": "useMorfix",
+                "href": "/api-reference/hooks/useMorfix",
+                "index": 5
+            },
+            {
+                "title": "useMorfixStorage",
+                "href": "/api-reference/hooks/useMorfixStorage",
+                "index": 6
+            },
+            {
+                "title": "useObservableStorage",
+                "href": "/api-reference/hooks/useObservableStorage",
+                "index": 7
+            },
+            {
+                "title": "useSubmitAction",
+                "href": "/api-reference/hooks/useSubmitAction",
+                "index": 8
+            }
+        ],
+        "href": "/api-reference/hooks",
+        "index": 3
     },
     "/api-reference/hooks/useDefaultFieldContext": {
         "title": "useDefaultFieldContext",
         "href": "/api-reference/hooks/useDefaultFieldContext",
-        "index": 1
+        "index": 4
     },
     "/api-reference/hooks/useMorfix": {
         "title": "useMorfix",
         "href": "/api-reference/hooks/useMorfix",
-        "index": 2
+        "index": 5
     },
     "/api-reference/hooks/useMorfixStorage": {
         "title": "useMorfixStorage",
         "href": "/api-reference/hooks/useMorfixStorage",
-        "index": 3
+        "index": 6
     },
     "/api-reference/hooks/useObservableStorage": {
         "title": "useObservableStorage",
         "href": "/api-reference/hooks/useObservableStorage",
-        "index": 4
+        "index": 7
     },
     "/api-reference/hooks/useSubmitAction": {
         "title": "useSubmitAction",
         "href": "/api-reference/hooks/useSubmitAction",
-        "index": 5
+        "index": 8
     },
     "/documentation-details": {
         "title": "Docs details",
         "href": "/documentation-details",
-        "index": 1
-    },
-    "/lol/a": {
-        "title": "a",
-        "href": "/lol/a",
         "index": 2
     }
 }

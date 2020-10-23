@@ -18,6 +18,7 @@
                             "href": "/api-reference/components/MorfixContext"
                         }
                     ],
+                    "href": "/api-reference/components",
                     "title": "Components"
                 },
                 {
@@ -43,23 +44,17 @@
                             "title": "useSubmitAction",
                             "href": "/api-reference/hooks/useSubmitAction"
                         }
-                    ]
+                    ],
+                    "href": "/api-reference/hooks"
                 }
             ],
+            "href": "/api-reference",
             "title": "API"
         },
         {
             "title": "Docs details",
             "href": "/documentation-details"
-        },
-        {
-            "children": [
-                {
-                    "title": "a",
-                    "href": "/lol/a"
-                }
-            ],
-            "title": "lol"
         }
-    ]
+    ],
+    "href": "/"
 }

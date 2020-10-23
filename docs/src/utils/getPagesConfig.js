@@ -47,6 +47,7 @@ module.exports = function getRoutesConfig(baseDir, mainDir) {
 
         if (out.children === undefined) {
             out.children = [];
+            out.href = pathToLink(baseDir, mainDir);
         }
 
         if (fs.lstatSync(normalPath).isDirectory()) {
