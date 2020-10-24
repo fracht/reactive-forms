@@ -1,9 +1,11 @@
-import { MutableRefObject, useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import merge from 'lodash/merge';
 import invariant from 'tiny-invariant';
 
-import { useMorfixStorage } from './useMorfixStorage';
-import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
+import { MorfixErrorsStorage, MorfixTouchedStorage, MorfixValuesStorage, useMorfixStorage } from './useMorfixStorage';
+import { ValidationRegistryControl } from './useValidationRegistry';
+import { Empty, FieldValidator, MorfixErrors, SubmitAction } from '../typings';
+import { Observer } from '../utils/FunctionArray';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
@@ -11,110 +13,108 @@ export type MorfixConfig<Values extends object> = {
     validateForm?: FieldValidator<Values>;
 };
 
-export type FieldObservers<V> = {
-    valueObserver: (value: V) => void;
-    errorObserver: (error: MorfixErrors<V> | undefined) => void;
-    touchObserver: (touched: MorfixTouched<V> | undefined) => void;
-    validator?: FieldValidator<V>;
-};
-
-export type MorfixShared<Values> = {
-    registerField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
-    unregisterField: <V>(name: string, observers: Partial<FieldObservers<V>>) => void;
-    setFieldValue: <V>(name: string, value: V) => void;
-    setFieldError: <V>(name: string, error: MorfixErrors<V>) => void;
-    setFieldTouched: <V>(name: string, touched: MorfixTouched<V>) => void;
-    submit: (action?: SubmitAction<Values>) => void;
-    values: MutableRefObject<Values>;
-};
+export type MorfixShared<Values extends object> = MorfixValuesStorage<Values> &
+    MorfixErrorsStorage<Values> &
+    MorfixTouchedStorage<Values> &
+    ValidationRegistryControl & {
+        submit: (action?: SubmitAction<Values>) => void;
+    };
 
 export const useMorfix = <Values extends object>({
     initialValues,
     onSubmit,
     validateForm: validateFormFn
 }: MorfixConfig<Values>): MorfixShared<Values> => {
-    const [
-        { values, setFieldValue, observeValue, stopObservingValue, isValueObserved },
-        { setFieldErrors, setFieldError, observeError, stopObservingError },
-        { setFieldTouched, observeTouched, stopObservingTouched },
-        {
-            validateField: runFieldLevelValidation,
-            validateAllFields,
-            registerValidator,
-            unregisterValidator,
-            hasValidator
-        }
-    ] = useMorfixStorage({ initialValues });
+    const [valuesStorage, errorsStorage, touchedStorage, validationRegistryControl] = useMorfixStorage({
+        initialValues
+    });
+
+    const { values, observeValue, stopObservingValue } = valuesStorage;
+    const { setFieldErrors, setFieldError } = errorsStorage;
+    const {
+        validateField: runFieldLevelValidation,
+        validateAllFields,
+        registerValidator: addValidatorToRegistry,
+        unregisterValidator: removeValidatorFromRegistry,
+        hasValidator
+    } = validationRegistryControl;
+
+    const validationValueObservers = useRef<Record<string, Observer<unknown>>>({});
 
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
             if (hasValidator(name)) {
                 const error = await runFieldLevelValidation(name, value);
                 setFieldError(name, error);
+                return error;
             }
+            return undefined;
         },
         [runFieldLevelValidation, setFieldError, hasValidator]
     );
 
-    const registerField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: Partial<FieldObservers<V>>) => {
-            if (!isValueObserved(name)) {
-                observeValue(name, (value) => validateField(name, value));
-            }
+    const registerValidator = useCallback(
+        <V>(name: string, validator: FieldValidator<V>) => {
+            addValidatorToRegistry(name, validator);
 
-            if (valueObserver) observeValue(name, valueObserver);
-            if (errorObserver) observeError(name, errorObserver);
-            if (touchObserver) observeTouched(name, touchObserver);
-
-            if (validator) {
-                registerValidator(name, validator);
+            if (!Object.prototype.hasOwnProperty.call(validationValueObservers.current, name)) {
+                validationValueObservers.current[name] = (value) => validateField(name, value);
+                observeValue(name, validationValueObservers.current[name]);
             }
         },
-        [isValueObserved, observeValue, observeError, validateField, registerValidator, observeTouched]
+        [addValidatorToRegistry, observeValue, validateField]
     );
 
-    const unregisterField = useCallback(
-        <V>(name: string, { valueObserver, errorObserver, touchObserver, validator }: Partial<FieldObservers<V>>) => {
-            if (valueObserver) stopObservingValue(name, valueObserver);
-            if (errorObserver) stopObservingError(name, errorObserver);
-            if (touchObserver) stopObservingTouched(name, touchObserver);
+    const unregisterValidator = useCallback(
+        <V>(name: string, validator: FieldValidator<V>) => {
+            removeValidatorFromRegistry(name, validator);
 
-            if (validator) {
-                unregisterValidator(name, validator);
+            if (!hasValidator(name)) {
+                stopObservingValue(name, validationValueObservers.current[name]);
+                delete validationValueObservers.current[name];
             }
         },
-        [stopObservingError, stopObservingValue, unregisterValidator, stopObservingTouched]
+        [hasValidator, removeValidatorFromRegistry, stopObservingValue]
     );
 
-    const validateForm = async (values: Values): Promise<MorfixErrors<Values>> => {
-        const registryErrors = await validateAllFields(values);
-        const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
+    const validateForm = useCallback(
+        async (values: Values): Promise<MorfixErrors<Values>> => {
+            const registryErrors = await validateAllFields(values);
+            const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
 
-        return merge(registryErrors, validateFormFnErrors);
-    };
+            return merge(registryErrors, validateFormFnErrors);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [validateAllFields, validateFormFn]
+    );
 
-    const submit = async (action: SubmitAction<Values> | undefined = onSubmit) => {
-        invariant(
-            action,
-            'Cannot call submit, because no action specified in arguments and no default action provided.'
-        );
+    const submit = useCallback(
+        async (action: SubmitAction<Values> | undefined = onSubmit) => {
+            invariant(
+                action,
+                'Cannot call submit, because no action specified in arguments and no default action provided.'
+            );
 
-        const errors = await validateForm(values.current);
+            const errors = await validateForm(values.current);
 
-        setFieldErrors(errors);
+            setFieldErrors(errors);
 
-        if (Object.keys(errors).length === 0) {
-            action(values.current);
-        }
-    };
+            if (Object.keys(errors).length === 0) {
+                action(values.current);
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [onSubmit, setFieldErrors, validateForm, values]
+    );
 
     return {
-        registerField,
-        unregisterField,
-        setFieldValue,
-        setFieldTouched,
-        setFieldError,
+        ...valuesStorage,
+        ...errorsStorage,
+        ...touchedStorage,
+        ...validationRegistryControl,
         submit,
-        values
+        registerValidator,
+        unregisterValidator,
+        validateField
     };
 };

@@ -5,3 +5,8 @@ export * from './useSubmitAction';
 export * from './useTextField';
 export * from './useFieldValidator';
 export * from './useObjectField';
+export * from './useObservedState';
+export * from './useNamedObservedState';
+export * from './useObservedValue';
+export * from './useObservedError';
+export * from './useObservedTouched';

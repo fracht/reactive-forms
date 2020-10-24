@@ -8,5 +8,5 @@ export const useMorfixContext = <Values>(): MorfixContextType<Values> => {
 
     invariant(context, "You're trying to access MorfixContext outside <Morfix> tag");
 
-    return context as MorfixContextType<Values>;
+    return (context as unknown) as MorfixContextType<Values>;
 };

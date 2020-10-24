@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { FieldObservers } from './useMorfix';
 import { useMorfixContext } from './useMorfixContext';
+import { useObservedError } from './useObservedError';
 import { FieldValidator, MorfixErrors } from '../typings';
 
 export type UseFieldValidatorConfig<V> = {
@@ -13,25 +13,22 @@ export const useFieldValidator = <V>({
     name,
     validator: validatorFn
 }: UseFieldValidatorConfig<V>): MorfixErrors<V> | undefined => {
-    const { registerField, unregisterField } = useMorfixContext();
+    const { registerValidator, unregisterValidator } = useMorfixContext();
 
-    const [error, setError] = useState<MorfixErrors<V> | undefined>(undefined);
+    const error = useObservedError<V>(name);
 
     const validatorRef = useRef(validatorFn);
 
     validatorRef.current = validatorFn;
 
     useEffect(() => {
-        const observers: Partial<FieldObservers<V>> = {
-            validator: (value: V) => validatorRef.current?.(value),
-            errorObserver: setError
-        };
+        const registeredValidator = (value: V) => validatorRef.current?.(value);
 
-        registerField(name, observers);
+        registerValidator(name, registeredValidator);
 
-        return () => unregisterField(name, observers);
+        return () => unregisterValidator(name, registeredValidator);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [name, registerField, unregisterField]);
+    }, [name, registerValidator, unregisterValidator]);
 
     return error;
 };
