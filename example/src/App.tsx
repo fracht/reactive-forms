@@ -1,5 +1,5 @@
 import React from 'react';
-import Morfix, { TextFieldConfig, useObjectField, useSubmitAction, useTextField } from 'morfix';
+import Morfix, { TextFieldConfig, useObjectField, useObservedValue, useSubmitAction, useTextField } from 'morfix';
 
 const TestField = (props: TextFieldConfig) => {
     const [field, { error, touched }] = useTextField(props);
@@ -34,6 +34,12 @@ const SubmitButton = () => {
     return <button onClick={onClick}>Hello</button>;
 };
 
+const ValueDisplayer = ({ name }: { name: string }) => {
+    const value = useObservedValue<string>(name);
+
+    return <div>{value}</div>;
+};
+
 const App = () => {
     return (
         <Morfix
@@ -53,6 +59,7 @@ const App = () => {
                     validator={(value) => (value.length === 0 ? { mrfxError: 'Required' } : undefined)}
                     name="h.a"
                 />
+                <ValueDisplayer name="h.a" />
                 <TestField name="h.c" />
                 <TestField name="b" />
                 <TestField name="h.a" />
