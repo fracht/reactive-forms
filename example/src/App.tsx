@@ -27,7 +27,6 @@ const ObjField = (props: { name: string }) => {
 
 const SubmitButton = () => {
     const onClick = useSubmitAction(() => {
-        // console.log(values);
         return Promise.resolve();
     });
 
