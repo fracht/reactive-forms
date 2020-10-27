@@ -86,8 +86,6 @@ export const useMorfix = <Values extends object>({
             errors.setValues(newErrors);
             touched.setValues(setNestedValues(values.values.current, { mrfxTouched: true }));
 
-            console.log(touched.values.current);
-
             if (Object.keys(newErrors).length === 0) {
                 action(values.values.current);
             }
