@@ -2,7 +2,7 @@ import isObject from 'lodash/isObject';
 
 import { NestedObject } from '../typings/NestedObject';
 
-export const setNestedValues = <Example extends object, Value>(
+export const setNestedValues = <Example extends object, Value extends object>(
     exampleObject: Example,
     value: Value,
     visited: WeakMap<object, boolean> = new WeakMap(),
@@ -14,11 +14,12 @@ export const setNestedValues = <Example extends object, Value>(
         if (isObject(part)) {
             if (!visited.get(part)) {
                 visited.set(part, true);
-                output[key] = Array.isArray(part) ? [] : {};
-                setNestedValues(exampleObject, value, visited, acc);
+                acc[key] = Array.isArray(part) ? [] : {};
+                acc[key] = Object.assign(acc[key], value);
+                setNestedValues(part, value, visited, acc[key]);
             }
         } else {
-            output[key] = value;
+            acc[key] = value;
         }
 
         return acc;

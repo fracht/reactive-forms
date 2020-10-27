@@ -5,6 +5,7 @@ import invariant from 'tiny-invariant';
 
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
+import { setNestedValues } from '../utils/setNestedValues';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
@@ -83,6 +84,9 @@ export const useMorfix = <Values extends object>({
             const newErrors = await validateForm(values.values.current);
 
             errors.setValues(newErrors);
+            touched.setValues(setNestedValues(values.values.current, { mrfxTouched: true }));
+
+            console.log(touched.values.current);
 
             if (Object.keys(newErrors).length === 0) {
                 action(values.values.current);
