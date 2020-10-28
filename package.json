@@ -49,8 +49,7 @@
         "yup": "^0.29.3"
     },
     "files": [
-        "dist",
-        "src"
+        "dist"
     ],
     "dependencies": {
         "lodash": "^4.17.19",
