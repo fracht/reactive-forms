@@ -2,15 +2,18 @@ import { useCallback, useRef } from 'react';
 import merge from 'lodash/merge';
 import { Observer, Stock, useStock } from 'stocked';
 import invariant from 'tiny-invariant';
+import { Schema } from 'yup';
 
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
+import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
     initialTouched?: MorfixTouched<Values>;
     initialErrors?: MorfixErrors<Values>;
+    schema?: Schema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
 };
@@ -35,6 +38,7 @@ export const useMorfix = <Values extends object>({
     initialErrors = {} as MorfixErrors<Values>,
     initialTouched = {} as MorfixTouched<Values>,
     onSubmit,
+    schema,
     validateForm: validateFormFn
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const values = useStock({ initialValues });
@@ -63,12 +67,23 @@ export const useMorfix = <Values extends object>({
         [runFieldLevelValidation, errors, hasValidator]
     );
 
+    const runFormValidationSchema = useCallback(
+        (values: Values): Promise<MorfixErrors<Values> | undefined> => {
+            if (!schema) return Promise.resolve(undefined);
+
+            return runYupSchema(schema, values);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [schema]
+    );
+
     const validateForm = useCallback(
         async (values: Values): Promise<MorfixErrors<Values>> => {
             const registryErrors = await validateAllFields(values);
             const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
+            const schemaErrors = await runFormValidationSchema(values);
 
-            return merge(registryErrors, validateFormFnErrors);
+            return merge({}, ...[registryErrors, validateFormFnErrors, schemaErrors].filter(Boolean));
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [validateAllFields, validateFormFn]
