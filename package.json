@@ -1,7 +1,7 @@
 {
     "name": "morfix",
-    "version": "0.1.0",
-    "description": "Build complex forms in React, without the tears.",
+    "version": "0.0.0",
+    "description": "Complex forms with React? Easy!",
     "author": "Artiom Tretjakovas",
     "license": "MIT",
     "repository": "ArtiomTr/morfix",
@@ -54,6 +54,7 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
+        "np": "^6.5.0",
         "stocked": "^0.1.4",
         "tiny-invariant": "^1.1.0"
     }
