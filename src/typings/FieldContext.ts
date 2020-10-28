@@ -9,7 +9,7 @@ export type FieldContext<V> = {
     };
     control: {
         setValue: (value: V) => void;
-        setTouched: (touched: MorfixTouched<V>) => void;
-        setError: (error: MorfixErrors<V>) => void;
+        setTouched: (touched: MorfixTouched<V> | undefined) => void;
+        setError: (error: MorfixErrors<V> | undefined) => void;
     };
 };

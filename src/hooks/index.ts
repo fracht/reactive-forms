@@ -1,4 +1,5 @@
 export * from './useDefaultFieldContext';
+export * from './useArrayField';
 export * from './useFieldValidator';
 export * from './useMorfix';
 export * from './useMorfixContext';
