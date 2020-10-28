@@ -83,7 +83,7 @@ export const useMorfix = <Values extends object>({
             const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
             const schemaErrors = await runFormValidationSchema(values);
 
-            return merge({}, ...[registryErrors, validateFormFnErrors, schemaErrors].filter(Boolean));
+            return merge({}, registryErrors, validateFormFnErrors, schemaErrors);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [validateAllFields, validateFormFn]
