@@ -1,11 +1,11 @@
-import React, { ComponentType, ElementType } from 'react';
+import { ComponentType, createElement, ElementType, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
 import { TextFieldConfig, TextFieldProps, useTextField } from '../hooks';
 
 export type TextFieldComponentProps = TextFieldConfig & {
     component?: ElementType | ComponentType<TextFieldProps>;
-    children?: React.ReactNode | ((shared: TextFieldProps) => React.ReactNode);
+    children?: ReactNode | ((shared: TextFieldProps) => ReactNode);
 };
 
 export const TextField = ({
@@ -29,6 +29,6 @@ export const TextField = ({
     return typeof children === 'function'
         ? children(fieldBag)
         : typeof component !== 'string' && component
-        ? React.createElement(component, fieldBag, children)
-        : React.createElement(component ?? 'input', field, children);
+        ? createElement(component, fieldBag, children)
+        : createElement(component ?? 'input', field, children);
 };
