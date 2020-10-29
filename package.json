@@ -41,6 +41,7 @@
         "@typescript-eslint/parser": "^4.1.1",
         "eslint-plugin-simple-import-sort": "^5.0.3",
         "husky": "^4.3.0",
+        "np": "^7.0.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "tsdx": "^0.14.1",
@@ -54,7 +55,6 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "np": "^6.5.0",
         "stocked": "^0.2.0",
         "tiny-invariant": "^1.1.0"
     }
