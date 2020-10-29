@@ -3,6 +3,7 @@ export * from './useArrayField';
 export * from './useFieldValidator';
 export * from './useMorfix';
 export * from './useMorfixContext';
+export * from './useMorfixMeta';
 export * from './useMorfixError';
 export * from './useMorfixTouched';
 export * from './useMorfixValue';
