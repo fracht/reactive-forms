@@ -1,12 +1,7 @@
-import { ComponentType, createElement, ElementType, ReactNode } from 'react';
-import invariant from 'tiny-invariant';
-
 import { TextFieldConfig, TextFieldProps, useTextField } from '../hooks';
+import { renderComponent, RenderHelpers } from '../utils/renderComponent';
 
-export type TextFieldComponentProps = TextFieldConfig & {
-    component?: ElementType | ComponentType<TextFieldProps>;
-    children?: ReactNode | ((shared: TextFieldProps) => ReactNode);
-};
+export type TextFieldComponentProps = TextFieldConfig & RenderHelpers<TextFieldProps>;
 
 export const TextField = ({
     name,
@@ -21,14 +16,11 @@ export const TextField = ({
 
     const { field } = fieldBag;
 
-    invariant(
-        !(typeof children === 'function' && component),
-        'Cannot use "component" and "children" renderers at once'
-    );
-
-    return typeof children === 'function'
-        ? children(fieldBag)
-        : typeof component !== 'string' && component
-        ? createElement(component, fieldBag, children)
-        : createElement(component ?? 'input', field, children);
+    return renderComponent({
+        component,
+        children,
+        defaultComponent: 'input',
+        bag: fieldBag,
+        elementComponentProps: field
+    });
 };

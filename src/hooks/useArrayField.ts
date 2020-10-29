@@ -2,7 +2,7 @@ import { FieldContextProps, useDefaultFieldContext } from './useDefaultFieldCont
 import { MorfixErrors, MorfixTouched } from '../typings';
 import { useRefCallback } from '../utils/useRefCallback';
 
-export type ArrayConfig<V> = FieldContextProps<Array<V>>;
+export type ArrayFieldConfig<V> = FieldContextProps<Array<V>>;
 
 export type ArrayFieldProps<V> = {
     items: Array<V>;
@@ -20,7 +20,7 @@ export type ArrayFieldProps<V> = {
     removeAt: (index: number) => void;
 };
 
-export const useArrayField = <V>({ ...fieldContextConfig }: ArrayConfig<V>): ArrayFieldProps<V> => {
+export const useArrayField = <V>({ ...fieldContextConfig }: ArrayFieldConfig<V>): ArrayFieldProps<V> => {
     const {
         value: items,
         control: { setValue: setItems, setError: setErrors, setTouched },
