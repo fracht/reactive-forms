@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 
-import { useSubmitAction } from '../hooks';
-import { SubmitAction } from '../typings';
+import { useSubmitAction } from '../hooks/useSubmitAction';
+import { SubmitAction } from '../typings/SubmitAction';
 import { renderComponent, RenderHelpers } from '../utils/renderComponent';
 
 export type SubmitButtonProps<T extends object> = {

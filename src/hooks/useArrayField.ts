@@ -1,8 +1,8 @@
-import { FieldContextProps, useDefaultFieldContext } from './useDefaultFieldContext';
+import { FieldContextConfig, useDefaultFieldContext } from './useDefaultFieldContext';
 import { MorfixErrors, MorfixTouched } from '../typings';
 import { useRefCallback } from '../utils/useRefCallback';
 
-export type ArrayFieldConfig<V> = FieldContextProps<Array<V>>;
+export type ArrayFieldConfig<V> = FieldContextConfig<Array<V>>;
 
 export type ArrayFieldProps<V> = {
     items: Array<V>;

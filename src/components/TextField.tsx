@@ -1,4 +1,4 @@
-import { TextFieldConfig, TextFieldProps, useTextField } from '../hooks';
+import { TextFieldConfig, TextFieldProps, useTextField } from '../hooks/useTextField';
 import { renderComponent, RenderHelpers } from '../utils/renderComponent';
 
 export type TextFieldComponentProps = TextFieldConfig & RenderHelpers<TextFieldProps>;

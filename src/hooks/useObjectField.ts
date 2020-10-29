@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import set from 'lodash/set';
 
-import { FieldContextProps, useDefaultFieldContext } from './useDefaultFieldContext';
+import { FieldContextConfig, useDefaultFieldContext } from './useDefaultFieldContext';
 import { MorfixErrors, MorfixTouched } from '../typings';
 
-export type ObjectFieldConfig<V extends object> = {} & FieldContextProps<V>;
+export type ObjectFieldConfig<V extends object> = {} & FieldContextConfig<V>;
 
 export type ObjectFieldProps<V extends object> = {
     values: V;

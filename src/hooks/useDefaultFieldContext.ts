@@ -1,14 +1,14 @@
-import { FieldValidationProps, useFieldValidator } from './useFieldValidator';
+import { FieldValidationProps as FieldValidationConfig, useFieldValidator } from './useFieldValidator';
 import { useMorfixError } from './useMorfixError';
 import { useMorfixTouched } from './useMorfixTouched';
 import { useMorfixValue } from './useMorfixValue';
 import { FieldContext } from '../typings/FieldContext';
 
-export type FieldContextProps<V> = {
+export type FieldContextConfig<V> = {
     name: string;
-} & FieldValidationProps<V>;
+} & FieldValidationConfig<V>;
 
-export const useDefaultFieldContext = <V>({ name, validator, schema }: FieldContextProps<V>): FieldContext<V> => {
+export const useDefaultFieldContext = <V>({ name, validator, schema }: FieldContextConfig<V>): FieldContext<V> => {
     const [value, setValue] = useMorfixValue<V>(name);
     const [touched, setTouched] = useMorfixTouched<V>(name);
     const [error, setError] = useMorfixError<V>(name);

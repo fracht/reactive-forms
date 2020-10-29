@@ -1,4 +1,4 @@
-import { ObjectFieldConfig, ObjectFieldProps, useObjectField } from '../hooks';
+import { ObjectFieldConfig, ObjectFieldProps, useObjectField } from '../hooks/useObjectField';
 import { renderComponent, RenderHelpers } from '../utils/renderComponent';
 
 export type ObjectFieldComponentProps<V extends object> = ObjectFieldConfig<V> & RenderHelpers<ObjectFieldProps<V>>;
