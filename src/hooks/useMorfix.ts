@@ -1,11 +1,14 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
-import { Observer, Stock, useStock } from 'stocked';
+import { BatchUpdate, Observer, Stock, useStock } from 'stocked';
 import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
+import { MorfixMeta } from '../typings/MorfixMeta';
+import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
@@ -30,7 +33,16 @@ export type MorfixShared<Values extends object> = {
     values: Stock<Values>;
     touched: Stock<MorfixTouched<Values>>;
     errors: Stock<MorfixErrors<Values>>;
+    formMeta: Stock<MorfixMeta>;
     validationRegistry: ValidationRegistryControl;
+};
+
+const initialFormMeta: MorfixMeta = {
+    dirty: false,
+    isSubmitting: false,
+    isValid: true,
+    isValidating: false,
+    submitCount: 0
 };
 
 export const useMorfix = <Values extends object>({
@@ -44,8 +56,11 @@ export const useMorfix = <Values extends object>({
     const values = useStock({ initialValues });
     const errors = useStock({ initialValues: initialErrors });
     const touched = useStock({ initialValues: initialTouched });
+    const formMeta = useStock({ initialValues: initialFormMeta });
 
     const validationRegistry = useValidationRegistry();
+
+    const setFormMetaValue: (path: keyof MorfixMeta, value: unknown) => void = formMeta.setValue;
 
     const {
         validateField: runFieldLevelValidation,
@@ -96,13 +111,20 @@ export const useMorfix = <Values extends object>({
                 'Cannot call submit, because no action specified in arguments and no default action provided.'
             );
 
+            setFormMetaValue('submitCount', formMeta.values.current.submitCount + 1);
+            setFormMetaValue('isSubmitting', true);
+            setFormMetaValue('isValidating', true);
+
             const newErrors = await validateForm(values.values.current);
+
+            setFormMetaValue('isValidating', false);
 
             errors.setValues(newErrors);
             touched.setValues(setNestedValues(values.values.current, { mrfxTouched: true }));
 
             if (Object.keys(newErrors).length === 0) {
-                action(values.values.current);
+                await action(values.values.current);
+                setFormMetaValue('isSubmitting', true);
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,10 +153,34 @@ export const useMorfix = <Values extends object>({
         [hasValidator, removeValidatorFromRegistry, values]
     );
 
+    const updateFormDirtiness = useCallback(
+        ({ values }: BatchUpdate<unknown>) => setFormMetaValue('dirty', !isEqual(values, initialValues)),
+        [setFormMetaValue, initialValues]
+    );
+
+    const updateFormValidness = useCallback(
+        ({ values }: BatchUpdate<object>) => setFormMetaValue('isValid', deepRemoveEmpty(values) === undefined),
+        [setFormMetaValue]
+    );
+
+    useEffect(() => {
+        const valuesObserver = updateFormDirtiness;
+        const errorsObserver = updateFormValidness;
+
+        values.observeBatchUpdates(valuesObserver);
+        errors.observeBatchUpdates(errorsObserver);
+
+        return () => {
+            values.stopObservingBatchUpdates(valuesObserver);
+            errors.stopObservingBatchUpdates(errorsObserver);
+        };
+    }, [updateFormDirtiness, updateFormValidness, errors, values]);
+
     return {
         errors,
         touched,
         values,
+        formMeta,
         submit,
         validationRegistry: {
             ...validationRegistry,
