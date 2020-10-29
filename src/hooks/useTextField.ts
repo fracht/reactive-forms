@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import { FieldContextProps, useDefaultFieldContext } from './useDefaultFieldContext';
+import { FieldContextConfig, useDefaultFieldContext } from './useDefaultFieldContext';
 
 export type TextFieldConfig = {
     onChange?: (e: React.ChangeEvent<{ value: string }>) => void;
     onBlur?: (e: React.FocusEvent) => void;
-} & FieldContextProps<string>;
+} & FieldContextConfig<string>;
 
 export type TextFieldInputProps = {
     value: string;
@@ -18,11 +18,12 @@ export type TextFieldMetaProps = {
     touched?: boolean;
 };
 
-export const useTextField = ({
-    onChange,
-    onBlur,
-    ...fieldContextConfig
-}: TextFieldConfig): [TextFieldInputProps, TextFieldMetaProps] => {
+export type TextFieldProps = {
+    field: TextFieldInputProps;
+    meta: TextFieldMetaProps;
+};
+
+export const useTextField = ({ onChange, onBlur, ...fieldContextConfig }: TextFieldConfig): TextFieldProps => {
     const {
         value,
         control: { setValue, setTouched },
@@ -45,15 +46,15 @@ export const useTextField = ({
         [setTouched, onBlur]
     );
 
-    return [
-        {
+    return {
+        field: {
             value,
             onChange: handleChange,
             onBlur: handleBlur
         },
-        {
+        meta: {
             error: error?.mrfxError,
             touched: touched?.mrfxTouched
         }
-    ];
+    };
 };
