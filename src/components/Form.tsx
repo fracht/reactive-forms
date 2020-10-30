@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useSubmitAction } from '../hooks';
+import { useMorfixContext, useSubmitAction } from '../hooks';
 import { SubmitAction } from '../typings';
 
 export type FormProps<V extends object> = React.PropsWithChildren<
@@ -11,6 +11,7 @@ export type FormProps<V extends object> = React.PropsWithChildren<
 
 export const Form = <V extends object>({ submitAction, children, ...other }: FormProps<V>) => {
     const handleSubmit = useSubmitAction(submitAction);
+    const { resetForm } = useMorfixContext();
 
     return (
         <form
@@ -18,6 +19,12 @@ export const Form = <V extends object>({ submitAction, children, ...other }: For
             onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
+                other.onSubmit?.(e);
+            }}
+            onReset={(e) => {
+                e.preventDefault();
+                resetForm();
+                other.onReset?.(e);
             }}
         >
             {children}
