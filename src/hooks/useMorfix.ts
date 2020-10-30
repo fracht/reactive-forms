@@ -28,8 +28,15 @@ export type FieldObservers<V> = {
     validator?: FieldValidator<V>;
 };
 
+export type MorfixResetConfig<V> = {
+    initialValues?: V;
+    initialTouched?: MorfixTouched<V>;
+    initialErrors?: MorfixErrors<V>;
+};
+
 export type MorfixShared<Values extends object> = {
     submit: (action?: SubmitAction<Values>) => void;
+    resetForm: (config?: MorfixResetConfig<Values>) => void;
     values: Stock<Values>;
     touched: Stock<MorfixTouched<Values>>;
     errors: Stock<MorfixErrors<Values>>;
@@ -57,6 +64,14 @@ export const useMorfix = <Values extends object>({
     const errors = useStock({ initialValues: initialErrors });
     const touched = useStock({ initialValues: initialTouched });
     const formMeta = useStock({ initialValues: initialFormMeta });
+
+    const initialValuesRef = useRef(initialValues);
+    const initialErrorsRef = useRef(initialErrors);
+    const initialTouchedRef = useRef(initialTouched);
+
+    initialValuesRef.current = initialValues;
+    initialErrorsRef.current = initialErrors;
+    initialTouchedRef.current = initialTouched;
 
     const validationRegistry = useValidationRegistry();
 
@@ -154,13 +169,23 @@ export const useMorfix = <Values extends object>({
     );
 
     const updateFormDirtiness = useCallback(
-        ({ values }: BatchUpdate<unknown>) => setFormMetaValue('dirty', !isEqual(values, initialValues)),
-        [setFormMetaValue, initialValues]
+        ({ values }: BatchUpdate<unknown>) => setFormMetaValue('dirty', !isEqual(values, initialValuesRef.current)),
+        [setFormMetaValue]
     );
 
     const updateFormValidness = useCallback(
         ({ values }: BatchUpdate<object>) => setFormMetaValue('isValid', deepRemoveEmpty(values) === undefined),
         [setFormMetaValue]
+    );
+
+    const resetForm = useCallback(
+        ({ initialErrors, initialTouched, initialValues }: MorfixResetConfig<Values> = {}) => {
+            values.setValues(initialValues ?? initialValuesRef.current);
+            touched.setValues(initialTouched ?? initialTouchedRef.current);
+            errors.setValues(initialErrors ?? initialErrorsRef.current);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [errors, touched, values]
     );
 
     useEffect(() => {
@@ -182,6 +207,7 @@ export const useMorfix = <Values extends object>({
         values,
         formMeta,
         submit,
+        resetForm,
         validationRegistry: {
             ...validationRegistry,
             registerValidator,
