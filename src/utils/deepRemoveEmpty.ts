@@ -19,5 +19,5 @@ export const deepRemoveEmpty = (obj: object): object | undefined => {
         }, {});
         return isEmpty(newObj) ? undefined : newObj;
     }
-    return obj;
+    return undefined;
 };

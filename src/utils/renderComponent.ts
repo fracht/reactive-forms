@@ -1,4 +1,4 @@
-import { ComponentType, createElement, ElementType, ReactNode } from 'react';
+import { Attributes, ComponentType, createElement, ElementType, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
 export type RenderHelpers<T> = {
@@ -19,7 +19,7 @@ export const renderComponent = <T>({
 }): JSX.Element => {
     invariant(
         !(typeof children === 'function' && component),
-        'Cannot use "children" and "component" renderers at once'
+        'Cannot render: cannot use "children" and "component" renderers at once'
     );
 
     invariant(
@@ -33,5 +33,7 @@ export const renderComponent = <T>({
         ? createElement(component, bag, children)
         : defaultComponent
         ? createElement(component ?? defaultComponent, elementComponentProps ?? bag, children)
-        : null;
+        : component
+        ? createElement(component, ((elementComponentProps ?? bag) as unknown) as Attributes, children)
+        : invariant(false, 'Cannot render: not specified renderer("children" or "component" props)');
 };
