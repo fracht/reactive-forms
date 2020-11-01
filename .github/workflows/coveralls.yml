@@ -6,6 +6,7 @@ on:
       - 'src/**'
       - 'tests/**'
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
