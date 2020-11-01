@@ -31,8 +31,8 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
 
     const updateArray = <Output>(
         update: <T>(oldItems: Array<T>) => [Array<T>, Output],
-        updateErrors: boolean | ((oldItems: MorfixErrors<Array<V>>) => Array<MorfixErrors<V>>),
-        updateTouched: boolean | ((oldItems: MorfixTouched<Array<V>>) => Array<MorfixTouched<V>>)
+        updateErrors: boolean | ((oldItems: MorfixErrors<Array<V>>, items: Array<V>) => Array<MorfixErrors<V>>),
+        updateTouched: boolean | ((oldItems: MorfixTouched<Array<V>>, items: Array<V>) => Array<MorfixTouched<V>>)
     ): Output => {
         const items: Array<V> = get(values.values.current, name);
         const errors: MorfixErrors<Array<V>> = get(allErrors.values.current, name);
@@ -43,11 +43,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         setItems(newItems);
 
         if (updateErrors && errors) {
-            setErrors(typeof updateErrors === 'function' ? updateErrors(errors) : update(errors)[0]);
+            setErrors(typeof updateErrors === 'function' ? updateErrors(errors, items) : update(errors)[0]);
         }
 
         if (updateTouched && touched) {
-            setTouched(typeof updateTouched === 'function' ? updateTouched(touched) : update(touched)[0]);
+            setTouched(typeof updateTouched === 'function' ? updateTouched(touched, items) : update(touched)[0]);
         }
 
         return output;
@@ -79,10 +79,18 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         updateArray(
             <T>(oldItems: Array<T>) => {
                 const output = oldItems.pop();
-                return [oldItems, output as V | undefined];
+                return [oldItems, (output as unknown) as V | undefined];
             },
-            true,
-            true
+            (errors, items) => {
+                const index = items.length;
+                errors.splice(index);
+                return errors;
+            },
+            (touched, items) => {
+                const index = items.length;
+                touched.splice(index);
+                return touched;
+            }
         )
     );
 
@@ -114,7 +122,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         updateArray(
             (items) => {
                 const shiftedItem = items.shift();
-                return [items, shiftedItem as V | undefined];
+                return [items, (shiftedItem as unknown) as V | undefined];
             },
             true,
             true
@@ -128,11 +136,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
                 return [items, newArrayLength];
             },
             (oldErrors) => {
-                oldErrors.unshift({} as MorfixErrors<V>);
+                oldErrors.unshift((undefined as unknown) as MorfixErrors<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.unshift({} as MorfixTouched<V>);
+                oldTouched.unshift((undefined as unknown) as MorfixTouched<V>);
                 return oldTouched;
             }
         )
@@ -142,6 +150,9 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         updateArray(
             (items) => {
                 const item = items[from];
+                if (items.length <= to) {
+                    items.push(...new Array(to - items.length + 1));
+                }
                 items.splice(from, 1);
                 items.splice(to, 0, item);
                 return [items, undefined];
@@ -158,11 +169,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
                 return [items, undefined];
             },
             (oldErrors) => {
-                oldErrors.splice(index, 0, {} as MorfixErrors<V>);
+                oldErrors.splice(index, 0, (undefined as unknown) as MorfixErrors<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.splice(index, 0, {} as MorfixTouched<V>);
+                oldTouched.splice(index, 0, (undefined as unknown) as MorfixTouched<V>);
                 return oldTouched;
             }
         )
