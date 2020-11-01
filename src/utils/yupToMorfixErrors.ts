@@ -1,6 +1,6 @@
-import { toPath } from 'lodash';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import toPath from 'lodash/toPath';
 import { ValidationError } from 'yup';
 
 import { getErrorPath } from '../constants';
