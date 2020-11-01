@@ -39,7 +39,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
     const validateField = async <V>(name: string, value: V): Promise<MorfixErrors<V> | undefined> => {
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
             const output = await (registry.current[name] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
-            return output === void 0 || output === null ? undefined : output;
+            return output === void 0 || output === null ? undefined : (output as MorfixErrors<V>);
         }
         return undefined;
     };
