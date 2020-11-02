@@ -39,6 +39,5 @@ export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: U
         registerValidator(name, validator);
 
         return () => unregisterValidator(name, validator);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [name, registerValidator, unregisterValidator]);
 };

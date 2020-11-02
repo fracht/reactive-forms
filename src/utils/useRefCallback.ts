@@ -6,7 +6,6 @@ export const useRefCallback = <F extends (...args: any[]) => any>(func: F): F =>
 
     ref.current = func;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const callback = useCallback((...args: Parameters<F>) => ref.current(...args), []);
 
     return callback as F;

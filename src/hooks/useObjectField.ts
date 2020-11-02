@@ -25,20 +25,20 @@ export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfi
         meta: { error: errors, touched }
     } = useDefaultFieldContext(contextConfig);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const setDeepValue = useCallback(<T>(path: string, value: T) => setValues(set(values, path, value)), [setValues]);
+    const setDeepValue = useCallback(<T>(path: string, value: T) => setValues(set(values, path, value)), [
+        setValues,
+        values
+    ]);
 
     const setDeepTouched = useCallback(
         <T>(path: string, newTouched: MorfixTouched<T>) =>
             setTouched(set(touched ?? ({} as MorfixTouched<V>), path, newTouched)),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [setTouched]
+        [setTouched, touched]
     );
 
     const setDeepError = useCallback(
         <T>(path: string, error: MorfixErrors<T>) => setErrors(set(errors ?? ({} as MorfixErrors<V>), path, error)),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [setErrors]
+        [errors, setErrors]
     );
 
     return {
