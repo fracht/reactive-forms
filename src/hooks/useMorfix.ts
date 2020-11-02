@@ -103,7 +103,6 @@ export const useMorfix = <Values extends object>({
 
             return runYupSchema(schema, values);
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [schema]
     );
 
@@ -115,8 +114,7 @@ export const useMorfix = <Values extends object>({
 
             return merge({}, registryErrors, validateFormFnErrors, schemaErrors);
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [validateAllFields, validateFormFn]
+        [runFormValidationSchema, validateAllFields, validateFormFn]
     );
 
     const submit = useCallback(
@@ -142,8 +140,7 @@ export const useMorfix = <Values extends object>({
                 setFormMetaValue('isSubmitting', true);
             }
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [errors, onSubmit, validateForm, values.values]
+        [errors, formMeta.values, onSubmit, setFormMetaValue, touched, validateForm, values.values]
     );
 
     const registerValidator = useCallback(
@@ -184,7 +181,6 @@ export const useMorfix = <Values extends object>({
             touched.setValues(initialTouched ?? initialTouchedRef.current);
             errors.setValues(initialErrors ?? initialErrorsRef.current);
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [errors, touched, values]
     );
 
