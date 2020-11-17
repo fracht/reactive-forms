@@ -9,6 +9,7 @@ import { useValidationRegistry, ValidationRegistryControl } from './useValidatio
 import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
 import { MorfixMeta } from '../typings/MorfixMeta';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
+import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
@@ -19,6 +20,7 @@ export type MorfixConfig<Values extends object> = {
     schema?: Schema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
+    shouldValidatePureFields?: boolean;
 };
 
 export type FieldObservers<V> = {
@@ -58,6 +60,7 @@ export const useMorfix = <Values extends object>({
     initialTouched = {} as MorfixTouched<Values>,
     onSubmit,
     schema,
+    shouldValidatePureFields,
     validateForm: validateFormFn
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const values = useStock({ initialValues });
@@ -112,9 +115,15 @@ export const useMorfix = <Values extends object>({
             const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
             const schemaErrors = await runFormValidationSchema(values);
 
-            return merge({}, registryErrors, validateFormFnErrors, schemaErrors);
+            const allErrors = merge({}, registryErrors, validateFormFnErrors, schemaErrors);
+
+            if (shouldValidatePureFields) {
+                return allErrors;
+            } else {
+                return excludeOverlaps(values, initialValuesRef.current, allErrors) as MorfixErrors<Values>;
+            }
         },
-        [runFormValidationSchema, validateAllFields, validateFormFn]
+        [runFormValidationSchema, validateAllFields, validateFormFn, shouldValidatePureFields]
     );
 
     const submit = useCallback(
