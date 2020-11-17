@@ -20,7 +20,7 @@ const pathToLink = (path, basePath) => {
         path = path.substring(indexOf + basePath.length);
     }
     path = path.replace(/^[\\|/]/, '');
-    path = path.replace('\\', '/');
+    path = path.replace(/\\/g, '/');
     path = path.replace(/\.mdx?$/, '');
     return `/${path}`;
 };
