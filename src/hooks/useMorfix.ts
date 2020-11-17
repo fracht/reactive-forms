@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { get } from 'lodash';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import { BatchUpdate, Observer, Stock, useStock } from 'stocked';
@@ -93,11 +94,18 @@ export const useMorfix = <Values extends object>({
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
             if (hasValidator(name)) {
-                const error = await runFieldLevelValidation(name, value);
-                errors.setValue(name, error);
+                if (
+                    shouldValidatePureFields ||
+                    (!shouldValidatePureFields && !isEqual(value, get(initialValuesRef.current, name)))
+                ) {
+                    const error = await runFieldLevelValidation(name, value);
+                    errors.setValue(name, error);
+                } else {
+                    errors.setValue(name, undefined);
+                }
             }
         },
-        [runFieldLevelValidation, errors, hasValidator]
+        [runFieldLevelValidation, errors, hasValidator, shouldValidatePureFields]
     );
 
     const runFormValidationSchema = useCallback(
