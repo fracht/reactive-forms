@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import { BatchUpdate, Observer, Stock, useStock } from 'stocked';
