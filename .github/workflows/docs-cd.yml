@@ -11,7 +11,7 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Begin CI...
+            - name: Begin CD...
               uses: actions/checkout@v2
 
             - name: Use Node 12
@@ -19,16 +19,17 @@ jobs:
               with:
                   node-version: 12
 
-            - name: Installing dependencies for base package
-              run: npm ci
+            - name: Install deps and build (with cache) for base package
+              uses: bahmutov/npm-install@v1
 
             - name: Building base package
               run: npm run build
 
-            - name: Deleting node_modules folder & Installing dependencies
-              working-directory: ./docs
-              run: npm ci
-              
+            - name: Install deps and build (with cache)
+              uses: bahmutov/npm-install@v1
+              with:
+                  working-directory: ./docs
+
             - name: Generating API documentation
               run: npm run docs:gen
 
