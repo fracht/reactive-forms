@@ -42,16 +42,16 @@ jobs:
             - name: Install deps and build (with cache)
               uses: bahmutov/npm-install@v1
               with:
-                  working-directory: packages/${{ matrix.package }}
+                  working-directory: ${{ matrix.package }}
 
             - name: Lint
               run: yarn lint
-              working-directory: packages/${{ matrix.package }}
+              working-directory: ${{ matrix.package }}
 
             - name: Test
               run: yarn test --ci --coverage --maxWorkers=2
-              working-directory: packages/${{ matrix.package }}
+              working-directory: ${{ matrix.package }}
 
             - name: Build
               run: yarn build
-              working-directory: packages/${{ matrix.package }}
+              working-directory: ${{ matrix.package }}
