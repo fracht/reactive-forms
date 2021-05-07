@@ -16,10 +16,10 @@ jobs:
               uses: actions/checkout@v2
             - name: Find changed packages
               id: changed_packages
-              uses: ReyahSolutions/matrix-git-generator@v1
+              uses: giautm/matrix-git-generator@master
               with:
                   filters: |
-                      packages/*
+                      packages/**:1
     build:
         needs: [generate_matrix]
         name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
