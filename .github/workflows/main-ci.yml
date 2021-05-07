@@ -19,7 +19,7 @@ jobs:
               uses: giautm/matrix-git-generator@master
               with:
                   filters: |
-                      packages/*/**:2
+                      packages/*/**:1
     build:
         needs: [generate_matrix]
         name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
