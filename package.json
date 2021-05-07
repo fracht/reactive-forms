@@ -1,79 +1,21 @@
 {
     "name": "morfix",
+    "private": true,
     "version": "0.2.0",
     "description": "Complex forms with React? Easy!",
     "author": "Artiom Tretjakovas",
     "license": "MIT",
     "repository": "ArtiomTr/morfix",
-    "main": "dist/index.js",
-    "module": "dist/morfix.esm.js",
-    "source": "src/index.ts",
-    "types": "dist/index.d.ts",
-    "engines": {
-        "node": ">=10"
-    },
-    "size-limit": [
-        {
-            "path": "dist/morfix.cjs.production.min.js",
-            "limit": "20 KB"
-        },
-        {
-            "path": "dist/morfix.esm.js",
-            "limit": "20 KB"
-        }
-    ],
     "scripts": {
-        "start": "tsdx watch",
-        "build": "tsdx build",
-        "test": "tsdx test --passWithNoTests",
-        "test:watch": "tsdx test --watch",
-        "test:coverage": "tsdx test --coverage",
-        "lint": "tsdx lint",
-        "lint:fix": "tsdx lint --fix",
-        "prepare": "tsdx build",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "release": "np",
-        "size": "npm run build && size-limit",
-        "size:analyze": "size-limit --why",
         "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx"
     },
-    "peerDependencies": {
-        "react": ">=16"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint"
-        }
-    },
     "devDependencies": {
-        "@size-limit/preset-big-lib": "^4.7.0",
-        "@testing-library/react-hooks": "^3.4.2",
-        "@types/lodash": "^4.14.161",
-        "@types/react": "^16.9.49",
-        "@types/react-dom": "^16.9.8",
-        "@types/yup": "^0.29.7",
         "@typescript-eslint/eslint-plugin": "^4.6.0",
         "@typescript-eslint/parser": "^4.6.0",
         "eslint-plugin-react-hooks": "^4.2.0",
         "eslint-plugin-simple-import-sort": "^5.0.3",
-        "husky": "^4.3.0",
-        "np": "^7.0.0",
-        "react": "^16.13.1",
-        "react-dom": "^16.13.1",
-        "react-test-renderer": "^17.0.1",
-        "size-limit": "^4.7.0",
-        "tsdx": "^0.14.1",
-        "tslib": "^2.0.1",
-        "typescript": "^4.0.3",
-        "yup": "^0.29.3"
-    },
-    "files": [
-        "dist"
-    ],
-    "dependencies": {
-        "lodash": "^4.17.19",
-        "lodash-es": "^4.17.15",
-        "stocked": "^0.2.0",
-        "tiny-invariant": "^1.1.0"
+        "lerna": "^3.1.4"
     }
 }

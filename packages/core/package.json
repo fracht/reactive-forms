@@ -1,0 +1,72 @@
+{
+    "name": "@morfix/core",
+    "version": "0.0.0",
+    "description": "Core package of Morfix framework",
+    "author": "Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>",
+    "homepage": "https://github.com/ArtiomTr/morfix#readme",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/morfix.esm.js",
+    "source": "src/index.ts",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "size-limit": [
+        {
+            "path": "dist/morfix.cjs.production.min.js",
+            "limit": "20 KB"
+        },
+        {
+            "path": "dist/morfix.esm.js",
+            "limit": "20 KB"
+        }
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArtiomTr/morfix.git"
+    },
+    "scripts": {
+        "size": "npm run build && size-limit",
+        "size:analyze": "size-limit --why",
+        "start": "tsdx watch",
+        "build": "tsdx build",
+        "test": "tsdx test --passWithNoTests",
+        "test:watch": "tsdx test --watch",
+        "test:coverage": "tsdx test --coverage",
+        "lint": "tsdx lint",
+        "lint:fix": "tsdx lint --fix",
+        "prepare": "tsdx build"
+    },
+    "bugs": {
+        "url": "https://github.com/ArtiomTr/morfix/issues"
+    },
+    "dependencies": {
+        "lodash": "^4.17.19",
+        "lodash-es": "^4.17.15",
+        "stocked": "^0.2.0",
+        "tiny-invariant": "^1.1.0"
+    },
+    "devDependencies": {
+        "@size-limit/preset-big-lib": "^3.0.1",
+        "@testing-library/react-hooks": "^3.4.2",
+        "@types/lodash": "^4.14.161",
+        "@types/react": "^17.0.2",
+        "@types/react-dom": "^17.0.2",
+        "@types/yup": "^0.29.7",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-test-renderer": "^17.0.1",
+        "size-limit": "^0.3.0",
+        "tsdx": "^0.14.1",
+        "tslib": "^2.0.1",
+        "typescript": "^4.0.3",
+        "yup": "^0.29.3"
+    },
+    "peerDependencies": {
+        "react": ">=16"
+    }
+}

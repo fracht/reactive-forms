@@ -6,13 +6,28 @@ on:
             - 'example/**'
         branches: [master]
 jobs:
+    generate_matrix:
+        name: Get changed packages
+        runs-on: ubuntu-latest
+        outputs:
+            packages: ${{ steps.changed_packages.outputs.matrix }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Find changed packages
+              id: changed_packages
+              uses: ReyahSolutions/matrix-git-generator@v1
+              with:
+                  filters: |
+                      packages/**
     build:
-        name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
-
+        needs: [generate_matrix]
+        name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 node: ['10.x', '12.x', '14.x']
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
                 os: [ubuntu-latest, windows-latest, macOS-latest]
 
         steps:
@@ -26,12 +41,17 @@ jobs:
 
             - name: Install deps and build (with cache)
               uses: bahmutov/npm-install@v1
+              with:
+                  working-directory: packages/${{ matrix.package }}
 
             - name: Lint
               run: yarn lint
+              working-directory: packages/${{ matrix.package }}
 
             - name: Test
               run: yarn test --ci --coverage --maxWorkers=2
+              working-directory: packages/${{ matrix.package }}
 
             - name: Build
               run: yarn build
+              working-directory: packages/${{ matrix.package }}
