@@ -1,0 +1,36 @@
+name: Size Limit
+on:
+    pull_request:
+        paths-ignore:
+            - 'docs/**'
+            - 'example/**'
+        branches: [master]
+    workflow_dispatch:
+jobs:
+    size:
+        runs-on: ubuntu-latest
+        env:
+            CI_JOB_NUMBER: 1
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Use Node 14.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14.x
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Bootstrap packages
+              run: lerna bootstrap
+
+            - name: Build packages
+              run: npm run build
+
+            - name: Size limit
+              uses: andresz1/size-limit-action@v1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  skip_step: build

@@ -1,0 +1,28 @@
+name: Danger
+on:
+    pull_request:
+        paths-ignore:
+            - 'docs/**'
+            - 'example/**'
+        branches: [master]
+    workflow_dispatch:
+jobs:
+    danger:
+        name: Danger
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Use Node 14.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14.x
+
+            - name: Install dependencies
+              uses: npm install
+
+            - name: Danger
+              run: npx danger ci
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
