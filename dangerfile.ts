@@ -1,7 +1,8 @@
 import { danger, warn } from 'danger';
-import { match } from 'micromatch';
+import type micromatch from 'micromatch';
+const { match } = require('micromatch') as typeof micromatch;
 
-const modifiedPackageJsons = match(danger.git.modified_files, '**/package.json');
+const modifiedPackageJsons: string[] = match(danger.git.modified_files, '**/package.json');
 
 modifiedPackageJsons.forEach((packageJson) => {
     const lockfile = packageJson.replace('package.json', 'package-lock.json');
