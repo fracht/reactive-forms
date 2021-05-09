@@ -42,7 +42,7 @@ jobs:
                   node-version: ${{ matrix.node }}
 
             - name: Install dependencies
-              uses: npm install
+              run: npm install
               with:
                   working-directory: ${{ matrix.package }}
 
