@@ -7,7 +7,7 @@
     "license": "MIT",
     "repository": "ArtiomTr/morfix",
     "scripts": {
-        "build": "lerna exec npm run build",
+        "build": "lerna exec -- \"npm run build\"",
         "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
@@ -15,12 +15,12 @@
     },
     "size-limit": [
         {
-            "path": "packages/core/dist/morfix.cjs.production.min.js",
-            "limit": "20 KB"
+            "path": "packages/core/dist/core.cjs.production.min.js",
+            "limit": "30 KB"
         },
         {
-            "path": "packages/core/dist/morfix.esm.js",
-            "limit": "20 KB"
+            "path": "packages/core/dist/core.esm.js",
+            "limit": "30 KB"
         }
     ],
     "devDependencies": {
@@ -31,7 +31,7 @@
         "danger": "^10.6.4",
         "eslint-plugin-react-hooks": "^4.2.0",
         "eslint-plugin-simple-import-sort": "^5.0.3",
-        "lerna": "^3.1.4",
+        "lerna": "^4.0.0",
         "micromatch": "^4.0.4",
         "size-limit": "^4.10.2"
     }

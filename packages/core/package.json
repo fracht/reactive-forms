@@ -6,7 +6,7 @@
     "homepage": "https://github.com/ArtiomTr/morfix#readme",
     "license": "MIT",
     "main": "dist/index.js",
-    "module": "dist/morfix.esm.js",
+    "module": "dist/core.esm.js",
     "source": "src/index.ts",
     "types": "dist/index.d.ts",
     "files": [
