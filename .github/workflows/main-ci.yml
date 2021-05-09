@@ -44,8 +44,8 @@ jobs:
               with:
                   node-version: 14.x
 
-            - name: Install deps (with cache)
-              uses: bahmutov/npm-install@v1
+            - name: Install dependencies
+              uses: npm install
 
             - name: Danger
               run: npx danger ci
@@ -86,8 +86,8 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
-            - name: Install deps and build (with cache)
-              uses: bahmutov/npm-install@v1
+            - name: Install dependencies
+              uses: npm install
               with:
                   working-directory: ${{ matrix.package }}
 
