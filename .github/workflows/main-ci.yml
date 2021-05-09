@@ -6,6 +6,26 @@ on:
             - 'example/**'
         branches: [master]
 jobs:
+    danger:
+        name: Danger
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Use Node 14.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14.x
+
+            - name: Install deps (with cache)
+              uses: bahmutov/npm-install@v1
+
+            - name: Danger
+              run: npx danger ci
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     generate_matrix:
         name: Get changed packages
         runs-on: ubuntu-latest
@@ -14,6 +34,7 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
+
             - name: Find changed packages
               id: changed_packages
               uses: giautm/matrix-git-generator@master
@@ -31,7 +52,7 @@ jobs:
                 os: [ubuntu-latest, windows-latest, macOS-latest]
 
         steps:
-            - name: Checkout repo
+            - name: Checkout
               uses: actions/checkout@v2
 
             - name: Use Node ${{ matrix.node }}
