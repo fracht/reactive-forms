@@ -43,8 +43,7 @@ jobs:
 
             - name: Install dependencies
               run: npm install
-              with:
-                  working-directory: ${{ matrix.package }}
+              working-directory: ${{ matrix.package }}
 
             - name: Lint
               run: yarn lint
