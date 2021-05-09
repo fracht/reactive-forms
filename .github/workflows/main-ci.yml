@@ -5,6 +5,7 @@ on:
             - 'docs/**'
             - 'example/**'
         branches: [master]
+    workflow_dispatch:
 jobs:
     size:
         runs-on: ubuntu-latest
