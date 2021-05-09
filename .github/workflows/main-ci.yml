@@ -5,18 +5,35 @@ on:
             - 'docs/**'
             - 'example/**'
         branches: [master]
+    workflow_dispatch:
 jobs:
-    build:
-        name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+    generate_matrix:
+        name: Get changed packages
+        runs-on: ubuntu-latest
+        outputs:
+            packages: ${{ steps.changed_packages.outputs.matrix }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
+            - name: Find changed packages
+              id: changed_packages
+              uses: giautm/matrix-git-generator@master
+              with:
+                  filters: |
+                      packages/*/**:3
+    build:
+        needs: [generate_matrix]
+        name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 node: ['10.x', '12.x', '14.x']
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
                 os: [ubuntu-latest, windows-latest, macOS-latest]
 
         steps:
-            - name: Checkout repo
+            - name: Checkout
               uses: actions/checkout@v2
 
             - name: Use Node ${{ matrix.node }}
@@ -24,14 +41,18 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
-            - name: Install deps and build (with cache)
-              uses: bahmutov/npm-install@v1
+            - name: Install dependencies
+              run: npm install
+              working-directory: ${{ matrix.package }}
 
             - name: Lint
               run: yarn lint
+              working-directory: ${{ matrix.package }}
 
             - name: Test
               run: yarn test --ci --coverage --maxWorkers=2
+              working-directory: ${{ matrix.package }}
 
             - name: Build
               run: yarn build
+              working-directory: ${{ matrix.package }}
