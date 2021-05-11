@@ -1,0 +1,15 @@
+name-template: morfix@$NEXT_PATCH_VERSION
+tag-template: v$NEXT_PATCH_VERSION
+categories:
+    - title: 💥 Breaking changes
+      label: breaking changes
+    - title: 🚀 Features
+      label: feature
+    - title: 🐛 Bug fixes
+      label: bug
+    - title: 🧰 Maintenance
+      label: chore
+template: |
+    ## What's changed
+
+    $CHANGES
