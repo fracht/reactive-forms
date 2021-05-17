@@ -30,7 +30,7 @@ jobs:
             matrix:
                 node: ['10.x', '12.x', '14.x']
                 package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
-                os: [ubuntu-latest, windows-latest, macOS-latest]
+                os: [ubuntu-latest]
 
         steps:
             - name: Checkout
