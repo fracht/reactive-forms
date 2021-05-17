@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef } from 'react';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
-import { BatchUpdate, Observer, Stock, useStock } from 'stocked';
+import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
+import { MorfixControl, useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
-import { MorfixMeta } from '../typings/MorfixMeta';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
@@ -40,20 +40,8 @@ export type MorfixResetConfig<V> = {
 export type MorfixShared<Values extends object> = {
     submit: (action?: SubmitAction<Values>) => void;
     resetForm: (config?: MorfixResetConfig<Values>) => void;
-    values: Stock<Values>;
-    touched: Stock<MorfixTouched<Values>>;
-    errors: Stock<MorfixErrors<Values>>;
-    formMeta: Stock<MorfixMeta>;
-    validationRegistry: ValidationRegistryControl;
-};
-
-const initialFormMeta: MorfixMeta = {
-    dirty: false,
-    isSubmitting: false,
-    isValid: true,
-    isValidating: false,
-    submitCount: 0
-};
+} & MorfixControl<Values> &
+    ValidationRegistryControl;
 
 export const useMorfix = <Values extends object>({
     initialValues,
@@ -64,10 +52,8 @@ export const useMorfix = <Values extends object>({
     shouldValidatePureFields,
     validateForm: validateFormFn
 }: MorfixConfig<Values>): MorfixShared<Values> => {
-    const values = useStock({ initialValues });
-    const errors = useStock({ initialValues: initialErrors });
-    const touched = useStock({ initialValues: initialTouched });
-    const formMeta = useStock({ initialValues: initialFormMeta });
+    const control = useMorfixControl({ initialValues, initialErrors, initialTouched });
+    const validationRegistry = useValidationRegistry();
 
     const initialValuesRef = useRef(initialValues);
     const initialErrorsRef = useRef(initialErrors);
@@ -77,9 +63,7 @@ export const useMorfix = <Values extends object>({
     initialErrorsRef.current = initialErrors;
     initialTouchedRef.current = initialTouched;
 
-    const validationRegistry = useValidationRegistry();
-
-    const setFormMetaValue: (path: keyof MorfixMeta, value: unknown) => void = formMeta.setValue;
+    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, formMeta } = control;
 
     const {
         validateField: runFieldLevelValidation,
@@ -89,23 +73,20 @@ export const useMorfix = <Values extends object>({
         hasValidator
     } = validationRegistry;
 
-    const validationValueObservers = useRef<Record<string, Observer<unknown>>>({});
+    const validationValueObservers = useRef<Record<string, () => void>>({});
 
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
             if (hasValidator(name)) {
-                if (
-                    shouldValidatePureFields ||
-                    (!shouldValidatePureFields && !isEqual(value, get(initialValuesRef.current, name)))
-                ) {
+                if (shouldValidatePureFields || !isEqual(value, get(initialValuesRef.current, name))) {
                     const error = await runFieldLevelValidation(name, value);
-                    errors.setValue(name, error);
+                    setFieldError(name, error);
                 } else {
-                    errors.setValue(name, undefined);
+                    setFieldError(name, undefined);
                 }
             }
         },
-        [runFieldLevelValidation, errors, hasValidator, shouldValidatePureFields]
+        [runFieldLevelValidation, setFieldError, hasValidator, shouldValidatePureFields]
     );
 
     const runFormValidationSchema = useCallback(
@@ -141,31 +122,32 @@ export const useMorfix = <Values extends object>({
                 'Cannot call submit, because no action specified in arguments and no default action provided.'
             );
 
-            setFormMetaValue('submitCount', formMeta.values.current.submitCount + 1);
-            setFormMetaValue('isSubmitting', true);
-            setFormMetaValue('isValidating', true);
+            setFormMeta('submitCount', getFormMeta<number>('submitCount') + 1);
+            setFormMeta('isSubmitting', true);
+            setFormMeta('isValidating', true);
 
-            const newErrors = await validateForm(values.values.current);
+            const currentValues = values.getValues();
 
-            setFormMetaValue('isValidating', false);
+            const newErrors = await validateForm(currentValues);
 
-            errors.setValues(newErrors);
-            touched.setValues(setNestedValues(values.values.current, { mrfxTouched: true }));
+            setFormMeta('isValidating', false);
+
+            setErrors(newErrors);
+            setTouched(setNestedValues(currentValues, { mrfxTouched: true }));
 
             if (Object.keys(newErrors).length === 0) {
-                await action(values.values.current);
-                setFormMetaValue('isSubmitting', true);
+                await action(currentValues);
+                setFormMeta('isSubmitting', true);
             }
         },
-        [errors, formMeta.values, onSubmit, setFormMetaValue, touched, validateForm, values.values]
+        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched]
     );
 
     const registerValidator = useCallback(
         <V>(name: string, validator: FieldValidator<V>) => {
             addValidatorToRegistry(name, validator);
             if (!Object.prototype.hasOwnProperty.call(validationValueObservers.current, name)) {
-                validationValueObservers.current[name] = (value) => validateField(name, value);
-                values.observe(name, validationValueObservers.current[name]);
+                validationValueObservers.current[name] = values.watch(name, (value) => validateField(name, value));
             }
         },
         [addValidatorToRegistry, validateField, values]
@@ -174,57 +156,56 @@ export const useMorfix = <Values extends object>({
     const unregisterValidator = useCallback(
         <V>(name: string, validator: FieldValidator<V>) => {
             removeValidatorFromRegistry(name, validator);
-            if (!hasValidator(name)) {
-                values.stopObserving(name, validationValueObservers.current[name]);
+            if (!hasValidator(name) && Object.prototype.hasOwnProperty.call(validationValueObservers, name)) {
+                validationValueObservers.current[name]();
                 delete validationValueObservers.current[name];
             }
         },
-        [hasValidator, removeValidatorFromRegistry, values]
+        [hasValidator, removeValidatorFromRegistry]
     );
 
     const updateFormDirtiness = useCallback(
-        ({ values }: BatchUpdate<unknown>) => setFormMetaValue('dirty', !isEqual(values, initialValuesRef.current)),
-        [setFormMetaValue]
+        ({ values }: BatchUpdate<unknown>) => setFormMeta('dirty', !isEqual(values, initialValuesRef.current)),
+        [setFormMeta]
     );
 
     const updateFormValidness = useCallback(
-        ({ values }: BatchUpdate<object>) => setFormMetaValue('isValid', deepRemoveEmpty(values) === undefined),
-        [setFormMetaValue]
+        ({ values }: BatchUpdate<object>) => setFormMeta('isValid', deepRemoveEmpty(values) === undefined),
+        [setFormMeta]
     );
 
     const resetForm = useCallback(
         ({ initialErrors, initialTouched, initialValues }: MorfixResetConfig<Values> = {}) => {
-            values.setValues(initialValues ?? initialValuesRef.current);
-            touched.setValues(initialTouched ?? initialTouchedRef.current);
-            errors.setValues(initialErrors ?? initialErrorsRef.current);
+            setValues(initialValues ?? initialValuesRef.current);
+            setTouched(initialTouched ?? initialTouchedRef.current);
+            setErrors(initialErrors ?? initialErrorsRef.current);
         },
-        [errors, touched, values]
+        [setValues, setTouched, setErrors]
     );
 
-    useEffect(() => {
-        const valuesObserver = updateFormDirtiness;
-        const errorsObserver = updateFormValidness;
+    useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
 
-        values.observeBatchUpdates(valuesObserver);
-        errors.observeBatchUpdates(errorsObserver);
+    useEffect(
+        () =>
+            formMeta.watchBatchUpdates((batchUpdate) => {
+                const newPaths = batchUpdate.paths.filter((path) => path.indexOf('errors') === 0);
 
-        return () => {
-            values.stopObservingBatchUpdates(valuesObserver);
-            errors.stopObservingBatchUpdates(errorsObserver);
-        };
-    }, [updateFormDirtiness, updateFormValidness, errors, values]);
+                if (newPaths.length > 0) {
+                    updateFormValidness({
+                        ...batchUpdate,
+                        paths: newPaths
+                    });
+                }
+            }),
+        [formMeta, updateFormValidness]
+    );
 
     return {
-        errors,
-        touched,
-        values,
-        formMeta,
         submit,
         resetForm,
-        validationRegistry: {
-            ...validationRegistry,
-            registerValidator,
-            unregisterValidator
-        }
+        ...validationRegistry,
+        registerValidator,
+        unregisterValidator,
+        ...control
     };
 };

@@ -90,7 +90,7 @@ describe('setNestedValues', () => {
             }
         };
 
-        values.a.b = (values.a as unknown) as string;
+        values.a.b = values.a as unknown as string;
 
         const newValues = setNestedValues(values, {
             t: true

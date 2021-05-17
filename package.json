@@ -11,7 +11,8 @@
         "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
-        "size:analyze": "size-limit --why"
+        "size:analyze": "size-limit --why",
+        "lint": "eslint ."
     },
     "size-limit": [
         {
@@ -26,13 +27,19 @@
     "devDependencies": {
         "@size-limit/preset-small-lib": "^4.10.2",
         "@types/micromatch": "^4.0.1",
-        "@typescript-eslint/eslint-plugin": "^4.6.0",
-        "@typescript-eslint/parser": "^4.6.0",
+        "@typescript-eslint/eslint-plugin": "^4.23.0",
+        "@typescript-eslint/parser": "^4.23.0",
         "danger": "^10.6.4",
+        "eslint": "^7.26.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-react": "^7.23.2",
         "eslint-plugin-react-hooks": "^4.2.0",
         "eslint-plugin-simple-import-sort": "^5.0.3",
         "lerna": "^4.0.0",
         "micromatch": "^4.0.4",
+        "prettier": "^2.3.0",
+        "react": "^17.0.2",
         "size-limit": "^4.10.2"
     }
 }

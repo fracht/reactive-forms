@@ -1,5 +1,3 @@
-import get from 'lodash/get';
-
 import { useMorfixContext } from './useMorfixContext';
 import { MorfixErrors } from '../typings/MorfixErrors';
 import { MorfixTouched } from '../typings/MorfixTouched';
@@ -23,20 +21,21 @@ export type ArrayControlConfig = {
 };
 
 export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V> => {
-    const { values, errors: allErrors, touched: allTouched } = useMorfixContext();
+    const { setFieldValue, setFieldTouched, setFieldError, getFieldValue, getFieldError, getFieldTouched } =
+        useMorfixContext();
 
-    const setItems = (items: Array<V>) => values.setValue(name, items);
-    const setTouched = (newTouched: Array<MorfixTouched<V>>) => allTouched.setValue(name, newTouched);
-    const setErrors = (newErrors: Array<MorfixErrors<V>>) => allErrors.setValue(name, newErrors);
+    const setItems = (items: Array<V>) => setFieldValue(name, items);
+    const setTouched = (newTouched: MorfixTouched<Array<V>>) => setFieldTouched(name, newTouched);
+    const setErrors = (newErrors: MorfixErrors<Array<V>>) => setFieldError(name, newErrors);
 
     const updateArray = <Output>(
         update: <T>(oldItems: Array<T>) => [Array<T>, Output],
         updateErrors: boolean | ((oldItems: MorfixErrors<Array<V>>, items: Array<V>) => Array<MorfixErrors<V>>),
         updateTouched: boolean | ((oldItems: MorfixTouched<Array<V>>, items: Array<V>) => Array<MorfixTouched<V>>)
     ): Output => {
-        const items: Array<V> = get(values.values.current, name);
-        const errors: MorfixErrors<Array<V>> = get(allErrors.values.current, name);
-        const touched: MorfixTouched<Array<V>> = get(allTouched.values.current, name);
+        const items: Array<V> = getFieldValue<Array<V>>(name)!;
+        const errors: MorfixErrors<Array<V>> = getFieldError<Array<V>>(name)!;
+        const touched: MorfixTouched<Array<V>> = getFieldTouched<Array<V>>(name)!;
 
         const [newItems, output] = update(items);
 
@@ -56,7 +55,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
     const setItem = useRefCallback((item: V, index: number) =>
         updateArray(
             <T>(items: Array<T>) => {
-                items[index] = (item as unknown) as T;
+                items[index] = item as unknown as T;
                 return [items, undefined];
             },
             false,
@@ -67,7 +66,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
     const push = useRefCallback((...newItems: Array<V>) =>
         updateArray(
             <T>(oldItems: Array<T>) => {
-                const size = oldItems.push(...((newItems as unknown) as Array<T>));
+                const size = oldItems.push(...(newItems as unknown as Array<T>));
                 return [oldItems, size];
             },
             false,
@@ -79,7 +78,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         updateArray(
             <T>(oldItems: Array<T>) => {
                 const output = oldItems.pop();
-                return [oldItems, (output as unknown) as V | undefined];
+                return [oldItems, output as unknown as V | undefined];
             },
             (errors, items) => {
                 const index = items.length;
@@ -122,7 +121,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         updateArray(
             (items) => {
                 const shiftedItem = items.shift();
-                return [items, (shiftedItem as unknown) as V | undefined];
+                return [items, shiftedItem as unknown as V | undefined];
             },
             true,
             true
@@ -132,15 +131,15 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
     const unshift = useRefCallback((newItem: V) =>
         updateArray(
             <T>(items: Array<T>) => {
-                const newArrayLength = items.unshift((newItem as unknown) as T);
+                const newArrayLength = items.unshift(newItem as unknown as T);
                 return [items, newArrayLength];
             },
             (oldErrors) => {
-                oldErrors.unshift((undefined as unknown) as MorfixErrors<V>);
+                oldErrors.unshift(undefined as unknown as MorfixErrors<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.unshift((undefined as unknown) as MorfixTouched<V>);
+                oldTouched.unshift(undefined as unknown as MorfixTouched<V>);
                 return oldTouched;
             }
         )
@@ -165,15 +164,15 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
     const insert = useRefCallback((index: number, value: V) =>
         updateArray(
             <T>(items: Array<T>) => {
-                items.splice(index, 0, (value as unknown) as T);
+                items.splice(index, 0, value as unknown as T);
                 return [items, undefined];
             },
             (oldErrors) => {
-                oldErrors.splice(index, 0, (undefined as unknown) as MorfixErrors<V>);
+                oldErrors.splice(index, 0, undefined as unknown as MorfixErrors<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.splice(index, 0, (undefined as unknown) as MorfixTouched<V>);
+                oldTouched.splice(index, 0, undefined as unknown as MorfixTouched<V>);
                 return oldTouched;
             }
         )

@@ -25,10 +25,10 @@ export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfi
         meta: { error: errors, touched }
     } = useDefaultFieldContext(contextConfig);
 
-    const setDeepValue = useCallback(<T>(path: string, value: T) => setValues(set(values, path, value)), [
-        setValues,
-        values
-    ]);
+    const setDeepValue = useCallback(
+        <T>(path: string, value: T) => setValues(set(values, path, value)),
+        [setValues, values]
+    );
 
     const setDeepTouched = useCallback(
         <T>(path: string, newTouched: MorfixTouched<T>) =>

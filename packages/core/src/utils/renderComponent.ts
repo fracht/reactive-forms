@@ -34,6 +34,6 @@ export const renderComponent = <T>({
         : defaultComponent
         ? createElement(component ?? defaultComponent, elementComponentProps ?? bag, children)
         : component
-        ? createElement(component, ((elementComponentProps ?? bag) as unknown) as Attributes, children)
+        ? createElement(component, (elementComponentProps ?? bag) as unknown as Attributes, children)
         : invariant(false, 'Cannot render: not specified renderer("children" or "component" props)');
 };
