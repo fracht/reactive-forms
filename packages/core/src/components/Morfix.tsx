@@ -20,5 +20,5 @@ export const Morfix = <Values extends object>({
 }: MorfixConfig<Values> & { children: React.ReactNode | React.ReactNodeArray }) => {
     const morfixBag = useMorfix<Values>(config);
 
-    return <MorfixProvider value={(morfixBag as unknown) as MorfixContextType<object>}>{children}</MorfixProvider>;
+    return <MorfixProvider value={morfixBag as unknown as MorfixContextType<object>}>{children}</MorfixProvider>;
 };

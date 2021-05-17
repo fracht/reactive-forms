@@ -100,7 +100,7 @@ describe('array schema', () => {
 
 describe('throw not yup error', () => {
     it('should throw unexpected error', async () => {
-        await expect(() => runYupSchema((null as unknown) as Schema<string>, 'a')).rejects.toBeTruthy();
+        await expect(() => runYupSchema(null as unknown as Schema<string>, 'a')).rejects.toBeTruthy();
     });
 });
 

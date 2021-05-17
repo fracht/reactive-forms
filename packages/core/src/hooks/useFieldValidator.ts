@@ -14,9 +14,7 @@ export type FieldValidationProps<V> = {
 };
 
 export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: UseFieldValidatorConfig<V>) => {
-    const {
-        validationRegistry: { registerValidator, unregisterValidator }
-    } = useMorfixContext();
+    const { registerValidator, unregisterValidator } = useMorfixContext();
 
     const validate = async (value: V) => {
         if (!validatorFn && !schema) return undefined;
