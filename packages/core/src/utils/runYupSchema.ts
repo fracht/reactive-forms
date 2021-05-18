@@ -2,13 +2,13 @@ import { Schema, ValidateOptions } from 'yup';
 
 import { isYupError } from './isYupError';
 import { yupToMorfixErrors } from './yupToMorfixErrors';
-import { MorfixErrors } from '../typings';
+import { FieldError } from '../typings';
 
 export const runYupSchema = async <V>(
     schema: Schema<Partial<V> | undefined>,
     value: V,
     options?: ValidateOptions
-): Promise<MorfixErrors<V> | undefined> => {
+): Promise<FieldError<V> | undefined> => {
     try {
         await schema.validate(value, options);
     } catch (error) {

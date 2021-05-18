@@ -1,9 +1,9 @@
-import { MorfixErrors } from './MorfixErrors';
-import { MorfixFormMeta } from './MorfixFormMeta';
-import { MorfixTouched } from './MorfixTouched';
+import { FieldError } from './FieldError';
+import { FormMeta } from './FormMeta';
+import { FieldTouched } from './MorfixTouched';
 
 export type MorfixMeta<T> = {
-    globalMeta: MorfixFormMeta;
-    errors: MorfixErrors<T>;
-    touched: MorfixTouched<T>;
+    globalMeta: FormMeta;
+    errors: FieldError<T>;
+    touched: FieldTouched<T>;
 };

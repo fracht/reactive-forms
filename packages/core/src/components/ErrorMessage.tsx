@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { useMorfixError, useMorfixTouched } from '../hooks';
-import { MorfixErrors, MorfixTouched } from '../typings';
+import { useFieldError } from '../hooks/useFieldError';
+import { useFieldTouched } from '../hooks/useFieldTouched';
+import { FieldError, FieldTouched } from '../typings';
 
 export type ErrorMessageProps<V = string> = {
     name: string;
-    children?: (errors?: MorfixErrors<V>, touched?: MorfixTouched<V>) => React.ReactNode;
+    children?: (errors?: FieldError<V>, touched?: FieldTouched<V>) => React.ReactNode;
 };
 
 export const ErrorMessage = <V,>({ name, children }: ErrorMessageProps<V>) => {
-    const [errors] = useMorfixError<V>(name);
-    const [touched] = useMorfixTouched<V>(name);
+    const [errors] = useFieldError<V>(name);
+    const [touched] = useFieldTouched<V>(name);
 
     return (
         <React.Fragment>

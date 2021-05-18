@@ -1,5 +1,5 @@
-import { MorfixErrors } from './MorfixErrors';
+import { FieldError } from './FieldError';
 
 export type Empty = null | undefined | void;
 
-export type FieldValidator<V> = (value: V) => MorfixErrors<V> | Empty | Promise<MorfixErrors<V> | Empty>;
+export type FieldValidator<V> = (value: V) => FieldError<V> | Empty | Promise<FieldError<V> | Empty>;

@@ -1,21 +1,22 @@
 import { useCallback } from 'react';
 import set from 'lodash/set';
 
-import { FieldContextConfig, useDefaultFieldContext } from './useDefaultFieldContext';
-import { MorfixErrors, MorfixTouched } from '../typings';
+import { FieldConfig, useField } from './useField';
+import { FieldError } from '../typings/FieldError';
+import { FieldTouched } from '../typings/MorfixTouched';
 
-export type ObjectFieldConfig<V extends object> = {} & FieldContextConfig<V>;
+export type ObjectFieldConfig<V extends object> = {} & FieldConfig<V>;
 
 export type ObjectFieldProps<V extends object> = {
     values: V;
     setValues: (value: V) => void;
-    setTouched: (touched: MorfixTouched<V>) => void;
-    setErrors: (errors: MorfixErrors<V>) => void;
+    setTouched: (touched: FieldTouched<V>) => void;
+    setErrors: (errors: FieldError<V>) => void;
     setDeepValue: <T>(path: string, value: T) => void;
-    setDeepTouched: <T>(path: string, touched: MorfixTouched<T>) => void;
-    setDeepError: <T>(path: string, error: MorfixErrors<T>) => void;
-    errors?: MorfixErrors<V>;
-    touched?: MorfixTouched<V>;
+    setDeepTouched: <T>(path: string, touched: FieldTouched<T>) => void;
+    setDeepError: <T>(path: string, error: FieldError<T>) => void;
+    errors?: FieldError<V>;
+    touched?: FieldTouched<V>;
 };
 
 export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfig<V>): ObjectFieldProps<V> => {
@@ -23,7 +24,7 @@ export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfi
         value: values,
         control: { setValue: setValues, setTouched, setError: setErrors },
         meta: { error: errors, touched }
-    } = useDefaultFieldContext(contextConfig);
+    } = useField(contextConfig);
 
     const setDeepValue = useCallback(
         <T>(path: string, value: T) => setValues(set(values, path, value)),
@@ -31,13 +32,13 @@ export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfi
     );
 
     const setDeepTouched = useCallback(
-        <T>(path: string, newTouched: MorfixTouched<T>) =>
-            setTouched(set(touched ?? ({} as MorfixTouched<V>), path, newTouched)),
+        <T>(path: string, newTouched: FieldTouched<T>) =>
+            setTouched(set(touched ?? ({} as FieldTouched<V>), path, newTouched)),
         [setTouched, touched]
     );
 
     const setDeepError = useCallback(
-        <T>(path: string, error: MorfixErrors<T>) => setErrors(set(errors ?? ({} as MorfixErrors<V>), path, error)),
+        <T>(path: string, error: FieldError<T>) => setErrors(set(errors ?? ({} as FieldError<V>), path, error)),
         [errors, setErrors]
     );
 

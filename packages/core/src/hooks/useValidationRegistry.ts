@@ -3,7 +3,8 @@ import get from 'lodash/get';
 import set from 'lodash/set';
 import invariant from 'tiny-invariant';
 
-import { FieldValidator, MorfixErrors } from '../typings';
+import { FieldError } from '../typings/FieldError';
+import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
 
 export type ValidationRegistry = Record<string, FunctionArray<FieldValidator<unknown>>>;
@@ -11,8 +12,8 @@ export type ValidationRegistry = Record<string, FunctionArray<FieldValidator<unk
 export type ValidationRegistryControl = {
     registerValidator: <V>(name: string, validator: FieldValidator<V>) => void;
     unregisterValidator: <V>(name: string, validator: FieldValidator<V>) => void;
-    validateField: <V>(name: string, value: V) => Promise<MorfixErrors<V> | undefined>;
-    validateAllFields: <V extends object>(values: V) => Promise<MorfixErrors<V>>;
+    validateField: <V>(name: string, value: V) => Promise<FieldError<V> | undefined>;
+    validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
     hasValidator: (name: string) => boolean;
 };
 
@@ -36,10 +37,10 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
         if (currentValidators.isEmpty()) delete registry.current[name];
     }, []);
 
-    const validateField = useCallback(async <V>(name: string, value: V): Promise<MorfixErrors<V> | undefined> => {
+    const validateField = useCallback(async <V>(name: string, value: V): Promise<FieldError<V> | undefined> => {
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
             const output = await (registry.current[name] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
-            return output === void 0 || output === null ? undefined : (output as MorfixErrors<V>);
+            return output === void 0 || output === null ? undefined : (output as FieldError<V>);
         }
         return undefined;
     }, []);
@@ -49,8 +50,8 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
         []
     );
 
-    const validateAllFields = useCallback(async <V extends object>(values: V): Promise<MorfixErrors<V>> => {
-        const reducedErrors: MorfixErrors<V> = {} as MorfixErrors<V>;
+    const validateAllFields = useCallback(async <V extends object>(values: V): Promise<FieldError<V>> => {
+        const reducedErrors: FieldError<V> = {} as FieldError<V>;
 
         const allValidatorKeys = Object.keys(registry.current);
 

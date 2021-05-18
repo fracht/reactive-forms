@@ -1,15 +1,15 @@
-import { MorfixErrors } from './MorfixErrors';
-import { MorfixTouched } from './MorfixTouched';
+import { FieldError } from './FieldError';
+import { FieldTouched } from './MorfixTouched';
 
 export type FieldContext<V> = {
     value: V;
     meta: {
-        error?: MorfixErrors<V>;
-        touched?: MorfixTouched<V>;
+        error?: FieldError<V>;
+        touched?: FieldTouched<V>;
     };
     control: {
         setValue: (value: V) => void;
-        setTouched: (touched: MorfixTouched<V> | undefined) => void;
-        setError: (error: MorfixErrors<V> | undefined) => void;
+        setTouched: (touched: FieldTouched<V> | undefined) => void;
+        setError: (error: FieldError<V> | undefined) => void;
     };
 };

@@ -4,12 +4,12 @@ import toPath from 'lodash/toPath';
 import { ValidationError } from 'yup';
 
 import { getErrorPath } from '../constants';
-import { MorfixErrors } from '../typings/MorfixErrors';
+import { FieldError } from '../typings/FieldError';
 
-export const yupToMorfixErrors = <V>(yupError: ValidationError): MorfixErrors<V> => {
+export const yupToMorfixErrors = <V>(yupError: ValidationError): FieldError<V> => {
     const isArr = yupError.inner?.some((value) => !isNaN(+toPath(value.path)[0]));
 
-    const errors: MorfixErrors<V> = isArr ? ([] as unknown as MorfixErrors<V>) : ({} as MorfixErrors<V>);
+    const errors: FieldError<V> = isArr ? ([] as unknown as FieldError<V>) : ({} as FieldError<V>);
 
     if (yupError.inner) {
         if (yupError.inner.length === 0) {

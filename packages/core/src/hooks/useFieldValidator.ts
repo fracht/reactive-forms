@@ -3,7 +3,7 @@ import merge from 'lodash/merge';
 import { Schema } from 'yup';
 
 import { useMorfixContext } from './useMorfixContext';
-import { FieldValidator } from '../typings';
+import { FieldValidator } from '../typings/FieldValidator';
 import { runYupSchema } from '../utils/runYupSchema';
 
 export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: string };
