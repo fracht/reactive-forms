@@ -1,4 +1,4 @@
-import { ArrayFieldConfig, ArrayFieldProps, useArrayField } from '../hooks';
+import { ArrayFieldConfig, ArrayFieldProps, useArrayField } from '../hooks/useArrayField';
 import { renderComponent, RenderHelpers } from '../utils/renderComponent';
 
 export type ArrayFieldComponentProps<V> = ArrayFieldConfig<V> & RenderHelpers<ArrayFieldProps<V>>;

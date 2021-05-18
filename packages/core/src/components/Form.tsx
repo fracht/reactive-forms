@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { useMorfixContext, useSubmitAction } from '../hooks';
-import { SubmitAction } from '../typings';
+import { useMorfixContext } from '../hooks/useMorfixContext';
+import { useSubmitAction } from '../hooks/useSubmitAction';
+import { SubmitAction } from '../typings/SubmitAction';
 
 export type FormProps<V extends object> = React.PropsWithChildren<
     {

@@ -1,6 +1,6 @@
 import { useMorfixContext } from './useMorfixContext';
-import { MorfixErrors } from '../typings/MorfixErrors';
-import { MorfixTouched } from '../typings/MorfixTouched';
+import { FieldError } from '../typings/FieldError';
+import { FieldTouched } from '../typings/MorfixTouched';
 import { useRefCallback } from '../utils/useRefCallback';
 
 export type ArrayControl<V> = {
@@ -25,17 +25,17 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
         useMorfixContext();
 
     const setItems = (items: Array<V>) => setFieldValue(name, items);
-    const setTouched = (newTouched: MorfixTouched<Array<V>>) => setFieldTouched(name, newTouched);
-    const setErrors = (newErrors: MorfixErrors<Array<V>>) => setFieldError(name, newErrors);
+    const setTouched = (newTouched: FieldTouched<Array<V>>) => setFieldTouched(name, newTouched);
+    const setErrors = (newErrors: FieldError<Array<V>>) => setFieldError(name, newErrors);
 
     const updateArray = <Output>(
         update: <T>(oldItems: Array<T>) => [Array<T>, Output],
-        updateErrors: boolean | ((oldItems: MorfixErrors<Array<V>>, items: Array<V>) => Array<MorfixErrors<V>>),
-        updateTouched: boolean | ((oldItems: MorfixTouched<Array<V>>, items: Array<V>) => Array<MorfixTouched<V>>)
+        updateErrors: boolean | ((oldItems: FieldError<Array<V>>, items: Array<V>) => Array<FieldError<V>>),
+        updateTouched: boolean | ((oldItems: FieldTouched<Array<V>>, items: Array<V>) => Array<FieldTouched<V>>)
     ): Output => {
         const items: Array<V> = getFieldValue<Array<V>>(name)!;
-        const errors: MorfixErrors<Array<V>> = getFieldError<Array<V>>(name)!;
-        const touched: MorfixTouched<Array<V>> = getFieldTouched<Array<V>>(name)!;
+        const errors: FieldError<Array<V>> = getFieldError<Array<V>>(name)!;
+        const touched: FieldTouched<Array<V>> = getFieldTouched<Array<V>>(name)!;
 
         const [newItems, output] = update(items);
 
@@ -135,11 +135,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
                 return [items, newArrayLength];
             },
             (oldErrors) => {
-                oldErrors.unshift(undefined as unknown as MorfixErrors<V>);
+                oldErrors.unshift(undefined as unknown as FieldError<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.unshift(undefined as unknown as MorfixTouched<V>);
+                oldTouched.unshift(undefined as unknown as FieldTouched<V>);
                 return oldTouched;
             }
         )
@@ -168,11 +168,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
                 return [items, undefined];
             },
             (oldErrors) => {
-                oldErrors.splice(index, 0, undefined as unknown as MorfixErrors<V>);
+                oldErrors.splice(index, 0, undefined as unknown as FieldError<V>);
                 return oldErrors;
             },
             (oldTouched) => {
-                oldTouched.splice(index, 0, undefined as unknown as MorfixTouched<V>);
+                oldTouched.splice(index, 0, undefined as unknown as FieldTouched<V>);
                 return oldTouched;
             }
         )

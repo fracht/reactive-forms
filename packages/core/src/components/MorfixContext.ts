@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { MorfixShared } from '../hooks';
+import { MorfixShared } from '../hooks/useMorfix';
 
 export type MorfixContextType<Values extends object> = MorfixShared<Values>;
 

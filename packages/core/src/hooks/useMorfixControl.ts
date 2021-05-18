@@ -2,25 +2,25 @@ import { useCallback } from 'react';
 import { Stock, useStock } from 'stocked';
 
 import { META_KEY_ERRORS, META_KEY_GLOBAL_META, META_KEY_TOUCHED } from '../constants';
-import { MorfixErrors } from '../typings/MorfixErrors';
-import { MorfixFormMeta } from '../typings/MorfixFormMeta';
+import { FieldError } from '../typings/FieldError';
+import { FormMeta } from '../typings/FormMeta';
 import { MorfixMeta } from '../typings/MorfixMeta';
-import { MorfixTouched } from '../typings/MorfixTouched';
+import { FieldTouched } from '../typings/MorfixTouched';
 import { joinPaths } from '../utils/joinPaths';
 
 export type MorfixControl<Values extends object> = {
-    setFieldError: <V>(name: string, error: MorfixErrors<V> | undefined) => void;
-    setFieldTouched: <V>(name: string, touched: MorfixTouched<V> | undefined) => void;
+    setFieldError: <V>(name: string, error: FieldError<V> | undefined) => void;
+    setFieldTouched: <V>(name: string, touched: FieldTouched<V> | undefined) => void;
     setFieldValue: <V>(name: string, value: V) => void;
-    setFormMeta: <V>(name: keyof MorfixFormMeta, value: V) => void;
+    setFormMeta: <V>(name: keyof FormMeta, value: V) => void;
 
-    getFieldError: <V>(name: string) => MorfixErrors<V> | undefined;
-    getFieldTouched: <V>(name: string) => MorfixTouched<V> | undefined;
+    getFieldError: <V>(name: string) => FieldError<V> | undefined;
+    getFieldTouched: <V>(name: string) => FieldTouched<V> | undefined;
     getFieldValue: <V>(name: string) => V | undefined;
-    getFormMeta: <V>(name: keyof MorfixFormMeta) => V;
+    getFormMeta: <V>(name: keyof FormMeta) => V;
 
-    setErrors: (error: MorfixErrors<Values>) => void;
-    setTouched: (touched: MorfixTouched<Values>) => void;
+    setErrors: (error: FieldError<Values>) => void;
+    setTouched: (touched: FieldTouched<Values>) => void;
     setValues: (values: Values) => void;
 
     values: Stock<Values>;
@@ -29,11 +29,11 @@ export type MorfixControl<Values extends object> = {
 
 export type MorfixControlConfig<Values extends object> = {
     initialValues: Values;
-    initialErrors: MorfixErrors<Values>;
-    initialTouched: MorfixTouched<Values>;
+    initialErrors: FieldError<Values>;
+    initialTouched: FieldTouched<Values>;
 };
 
-const initialFormMeta: MorfixFormMeta = {
+const initialFormMeta: FormMeta = {
     dirty: false,
     isSubmitting: false,
     isValid: true,
@@ -56,11 +56,11 @@ export const useMorfixControl = <Values extends object>({
     });
 
     const setFormMeta = useCallback(
-        (path: keyof MorfixFormMeta, value: unknown) => formMeta.setValue(joinPaths(META_KEY_GLOBAL_META, path), value),
+        (path: keyof FormMeta, value: unknown) => formMeta.setValue(joinPaths(META_KEY_GLOBAL_META, path), value),
         [formMeta]
     );
     const getFormMeta = useCallback(
-        <V>(path: keyof MorfixFormMeta) => formMeta.getValue<V>(joinPaths(META_KEY_GLOBAL_META, path)),
+        <V>(path: keyof FormMeta) => formMeta.getValue<V>(joinPaths(META_KEY_GLOBAL_META, path)),
         [formMeta]
     );
 
@@ -69,30 +69,30 @@ export const useMorfixControl = <Values extends object>({
     const setValues = useCallback((newValues: Values) => values.setValues(newValues), [values]);
 
     const setFieldTouched = useCallback(
-        <V>(name: string, touched: MorfixTouched<V> | undefined) =>
+        <V>(name: string, touched: FieldTouched<V> | undefined) =>
             formMeta.setValue(joinPaths(META_KEY_TOUCHED, name), touched),
         [formMeta]
     );
     const getFieldTouched = useCallback(
-        <V>(name: string) => formMeta.getValue<MorfixTouched<V>>(joinPaths(META_KEY_TOUCHED, name)),
+        <V>(name: string) => formMeta.getValue<FieldTouched<V>>(joinPaths(META_KEY_TOUCHED, name)),
         [formMeta]
     );
     const setTouched = useCallback(
-        (touched: MorfixTouched<Values>) => formMeta.setValue(META_KEY_TOUCHED, touched),
+        (touched: FieldTouched<Values>) => formMeta.setValue(META_KEY_TOUCHED, touched),
         [formMeta]
     );
 
     const setFieldError = useCallback(
-        <V>(name: string, error: MorfixErrors<V> | undefined) =>
+        <V>(name: string, error: FieldError<V> | undefined) =>
             formMeta.setValue(joinPaths(META_KEY_ERRORS, name), error),
         [formMeta]
     );
     const getFieldError = useCallback(
-        <V>(name: string) => formMeta.getValue<MorfixErrors<V>>(joinPaths(META_KEY_ERRORS, name)),
+        <V>(name: string) => formMeta.getValue<FieldError<V>>(joinPaths(META_KEY_ERRORS, name)),
         [formMeta]
     );
     const setErrors = useCallback(
-        (errors: MorfixErrors<Values>) => formMeta.setValue(META_KEY_ERRORS, errors),
+        (errors: FieldError<Values>) => formMeta.setValue(META_KEY_ERRORS, errors),
         [formMeta]
     );
 

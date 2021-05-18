@@ -1,7 +1,7 @@
 import React from 'react';
 import invariant from 'tiny-invariant';
 
-import { useMorfixValue } from '../hooks';
+import { useFieldValue } from '../hooks/useFieldValue';
 
 export type DisplayValueProps<V> = {
     name: string;
@@ -10,7 +10,7 @@ export type DisplayValueProps<V> = {
 };
 
 export const DisplayValue = <V,>({ name, children, renderValue }: DisplayValueProps<V>) => {
-    const [value] = useMorfixValue<V>(name);
+    const [value] = useFieldValue<V>(name);
 
     invariant(
         typeof renderValue === 'function' ||

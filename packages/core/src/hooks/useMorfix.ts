@@ -8,7 +8,10 @@ import { Schema } from 'yup';
 
 import { MorfixControl, useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
-import { Empty, FieldValidator, MorfixErrors, MorfixTouched, SubmitAction } from '../typings';
+import { FieldError } from '../typings/FieldError';
+import { Empty, FieldValidator } from '../typings/FieldValidator';
+import { FieldTouched } from '../typings/MorfixTouched';
+import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
@@ -16,8 +19,8 @@ import { setNestedValues } from '../utils/setNestedValues';
 
 export type MorfixConfig<Values extends object> = {
     initialValues: Values;
-    initialTouched?: MorfixTouched<Values>;
-    initialErrors?: MorfixErrors<Values>;
+    initialTouched?: FieldTouched<Values>;
+    initialErrors?: FieldError<Values>;
     schema?: Schema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
@@ -26,15 +29,15 @@ export type MorfixConfig<Values extends object> = {
 
 export type FieldObservers<V> = {
     valueObserver: (value: V) => void;
-    errorObserver: (error: MorfixErrors<V> | undefined) => void;
-    touchObserver: (touched: MorfixTouched<V> | undefined) => void;
+    errorObserver: (error: FieldError<V> | undefined) => void;
+    touchObserver: (touched: FieldTouched<V> | undefined) => void;
     validator?: FieldValidator<V>;
 };
 
 export type MorfixResetConfig<V> = {
     initialValues?: V;
-    initialTouched?: MorfixTouched<V>;
-    initialErrors?: MorfixErrors<V>;
+    initialTouched?: FieldTouched<V>;
+    initialErrors?: FieldError<V>;
 };
 
 export type MorfixShared<Values extends object> = {
@@ -45,8 +48,8 @@ export type MorfixShared<Values extends object> = {
 
 export const useMorfix = <Values extends object>({
     initialValues,
-    initialErrors = {} as MorfixErrors<Values>,
-    initialTouched = {} as MorfixTouched<Values>,
+    initialErrors = {} as FieldError<Values>,
+    initialTouched = {} as FieldTouched<Values>,
     onSubmit,
     schema,
     shouldValidatePureFields,
@@ -90,7 +93,7 @@ export const useMorfix = <Values extends object>({
     );
 
     const runFormValidationSchema = useCallback(
-        (values: Values): Promise<MorfixErrors<Values> | undefined> => {
+        (values: Values): Promise<FieldError<Values> | undefined> => {
             if (!schema) return Promise.resolve(undefined);
 
             return runYupSchema(schema, values);
@@ -99,9 +102,9 @@ export const useMorfix = <Values extends object>({
     );
 
     const validateForm = useCallback(
-        async (values: Values): Promise<MorfixErrors<Values>> => {
+        async (values: Values): Promise<FieldError<Values>> => {
             const registryErrors = await validateAllFields(values);
-            const validateFormFnErrors: MorfixErrors<Values> | Empty = await validateFormFn?.(values);
+            const validateFormFnErrors: FieldError<Values> | Empty = await validateFormFn?.(values);
             const schemaErrors = await runFormValidationSchema(values);
 
             const allErrors = merge({}, registryErrors, validateFormFnErrors, schemaErrors);
@@ -109,7 +112,7 @@ export const useMorfix = <Values extends object>({
             if (shouldValidatePureFields) {
                 return allErrors;
             } else {
-                return excludeOverlaps(values, initialValuesRef.current, allErrors) as MorfixErrors<Values>;
+                return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
             }
         },
         [runFormValidationSchema, validateAllFields, validateFormFn, shouldValidatePureFields]

@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction, useStockState } from 'stocked';
 
 import { useMorfixContext } from './useMorfixContext';
 import { META_KEY_TOUCHED } from '../constants';
-import { MorfixTouched } from '../typings';
+import { FieldTouched } from '../typings/MorfixTouched';
 import { joinPaths } from '../utils/joinPaths';
 
-export const useMorfixTouched = <V>(
+export const useFieldTouched = <V>(
     name: string
-): [MorfixTouched<V> | undefined, Dispatch<SetStateAction<MorfixTouched<V> | undefined>>] => {
+): [FieldTouched<V> | undefined, Dispatch<SetStateAction<FieldTouched<V> | undefined>>] => {
     const { formMeta } = useMorfixContext<object>();
 
     return useStockState(joinPaths(META_KEY_TOUCHED, name), formMeta);

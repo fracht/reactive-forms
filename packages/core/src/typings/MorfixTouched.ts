@@ -1,7 +1,7 @@
 import { NestedObject } from './NestedObject';
 
-export type MorfixInnerTouched = {
+export type FieldInnerTouched = {
     mrfxTouched?: boolean;
 };
 
-export type MorfixTouched<V> = NestedObject<MorfixInnerTouched, V>;
+export type FieldTouched<V> = NestedObject<FieldInnerTouched, V>;

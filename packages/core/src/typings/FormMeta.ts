@@ -1,4 +1,4 @@
-export type MorfixFormMeta = {
+export type FormMeta = {
     readonly dirty: boolean;
     readonly isSubmitting: boolean;
     readonly isValidating: boolean;
