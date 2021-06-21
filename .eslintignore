@@ -5,3 +5,4 @@ node_modules/
 *.min.js
 *.config.js
 dangerfile.js
+.eslintrc.js
