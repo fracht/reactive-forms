@@ -1,0 +1,22 @@
+{
+    "name": "parcel",
+    "version": "1.0.0",
+    "description": "Parcel example",
+    "scripts": {
+        "start": "parcel serve src/index.html"
+    },
+    "keywords": [],
+    "dependencies": {
+        "@morfix/core": "file:..\\..\\core",
+        "parcel": "^2.0.0-beta.2",
+        "react": "file:..\\..\\core\\node_modules\\react",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "@types/react": "^17.0.11",
+        "@types/react-dom": "^17.0.8",
+        "eslint": "^7.29.0",
+        "eslint-plugin-simple-import-sort": "^7.0.0",
+        "prettier": "^2.3.1"
+    }
+}
