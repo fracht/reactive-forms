@@ -12,8 +12,7 @@
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
-        "lint": "eslint .",
-        "test": "lerna run test"
+        "lint": "eslint ."
     },
     "size-limit": [
         {
