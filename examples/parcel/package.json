@@ -9,9 +9,9 @@
     },
     "keywords": [],
     "dependencies": {
-        "@morfix/core": "file:..\\..\\core",
+        "@morfix/core": "file:../../packages/core",
         "parcel": "^2.0.0-beta.2",
-        "react": "file:..\\..\\core\\node_modules\\react",
+        "react": "file:../../packages/core/node_modules/react",
         "react-dom": "^17.0.2"
     },
     "devDependencies": {
