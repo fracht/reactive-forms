@@ -10,7 +10,7 @@ jobs:
         name: Get changed examples
         runs-on: ubuntu-latest
         outputs:
-            packages: ${{ steps.changed_examples.outputs.matrix }}
+            examples: ${{ steps.changed_examples.outputs.matrix }}
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
         strategy:
             matrix:
                 node: ['10.x', '12.x', '14.x']
-                example: ${{ fromJson(needs.changed_examples.outputs.packages) }}
+                example: ${{ fromJson(needs.generate_matrix.outputs.examples) }}
                 os: [ubuntu-latest]
 
         steps:
@@ -45,12 +45,12 @@ jobs:
 
             - name: Install dependencies
               run: npm install
-              working-directory: ${{ matrix.package }}
+              working-directory: ${{ matrix.example }}
 
             - name: Lint
               run: yarn lint
-              working-directory: ${{ matrix.package }}
+              working-directory: ${{ matrix.example }}
 
             - name: Build
               run: yarn build
-              working-directory: ${{ matrix.package }}
+              working-directory: ${{ matrix.example }}
