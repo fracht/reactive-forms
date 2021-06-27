@@ -118,6 +118,15 @@ export const useMorfix = <Values extends object>({
         [runFormValidationSchema, validateAllFields, validateFormFn, shouldValidatePureFields]
     );
 
+    const resetForm = useCallback(
+        ({ initialErrors, initialTouched, initialValues }: MorfixResetConfig<Values> = {}) => {
+            setValues(initialValues ?? initialValuesRef.current);
+            setTouched(initialTouched ?? initialTouchedRef.current);
+            setErrors(initialErrors ?? initialErrorsRef.current);
+        },
+        [setValues, setTouched, setErrors]
+    );
+
     const submit = useCallback(
         async (action: SubmitAction<Values> | undefined = onSubmit) => {
             invariant(
@@ -139,11 +148,28 @@ export const useMorfix = <Values extends object>({
             setTouched(setNestedValues(currentValues, { mrfxTouched: true }));
 
             if (Object.keys(newErrors).length === 0) {
-                await action(currentValues);
+                await action(currentValues, {
+                    // FIXME values prop shouldn't pass in
+                    ...control,
+                    validateField,
+                    validateForm,
+                    resetForm
+                });
                 setFormMeta('isSubmitting', true);
             }
         },
-        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched]
+        [
+            onSubmit,
+            setFormMeta,
+            getFormMeta,
+            values,
+            validateForm,
+            setErrors,
+            setTouched,
+            validateField,
+            resetForm,
+            control
+        ]
     );
 
     const registerValidator = useCallback(
@@ -175,15 +201,6 @@ export const useMorfix = <Values extends object>({
     const updateFormValidness = useCallback(
         ({ values }: BatchUpdate<object>) => setFormMeta('isValid', deepRemoveEmpty(values) === undefined),
         [setFormMeta]
-    );
-
-    const resetForm = useCallback(
-        ({ initialErrors, initialTouched, initialValues }: MorfixResetConfig<Values> = {}) => {
-            setValues(initialValues ?? initialValuesRef.current);
-            setTouched(initialTouched ?? initialTouchedRef.current);
-            setErrors(initialErrors ?? initialErrorsRef.current);
-        },
-        [setValues, setTouched, setErrors]
     );
 
     useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
