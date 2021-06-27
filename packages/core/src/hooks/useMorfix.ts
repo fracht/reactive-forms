@@ -111,16 +111,13 @@ export const useMorfix = <Values extends object>({
 
             const allErrors = merge({}, registryErrors, validateFormFnErrors, schemaErrors);
 
-            // TODO add check if there are some errors
-            onValidationFailed?.(allErrors);
-
             if (shouldValidatePureFields) {
                 return allErrors;
             } else {
                 return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
             }
         },
-        [validateAllFields, validateFormFn, runFormValidationSchema, onValidationFailed, shouldValidatePureFields]
+        [validateAllFields, validateFormFn, runFormValidationSchema, shouldValidatePureFields]
     );
 
     const submit = useCallback(
@@ -146,9 +143,11 @@ export const useMorfix = <Values extends object>({
             if (Object.keys(newErrors).length === 0) {
                 await action(currentValues);
                 setFormMeta('isSubmitting', true);
+            } else {
+                onValidationFailed?.(newErrors);
             }
         },
-        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched]
+        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched, onValidationFailed]
     );
 
     const registerValidator = useCallback(
