@@ -149,7 +149,6 @@ export const useMorfix = <Values extends object>({
 
             if (Object.keys(newErrors).length === 0) {
                 await action(currentValues, {
-                    // FIXME values prop shouldn't pass in
                     ...control,
                     validateField,
                     validateForm,
