@@ -1,35 +1,34 @@
 name: CI
 on:
     pull_request:
-        paths-ignore:
-            - 'docs/**'
+        paths:
             - 'examples/**'
         branches: [master]
     workflow_dispatch:
 jobs:
     generate_matrix:
-        name: Get changed packages
+        name: Get changed examples
         runs-on: ubuntu-latest
         outputs:
-            packages: ${{ steps.changed_packages.outputs.matrix }}
+            packages: ${{ steps.changed_examples.outputs.matrix }}
         steps:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Find changed packages
-              id: changed_packages
+            - name: Find changed examples
+              id: changed_examples
               uses: giautm/matrix-git-generator@master
               with:
                   filters: |
-                      packages/*/**:3
+                      examples/*/**:3
     build:
         needs: [generate_matrix]
-        name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
+        name: Build and lint ${{ matrix.example }} example on Node ${{ matrix.node }} and ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 node: ['10.x', '12.x', '14.x']
-                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
+                example: ${{ fromJson(needs.changed_examples.outputs.packages) }}
                 os: [ubuntu-latest]
 
         steps:
@@ -50,10 +49,6 @@ jobs:
 
             - name: Lint
               run: yarn lint
-              working-directory: ${{ matrix.package }}
-
-            - name: Test
-              run: yarn test --ci --coverage --maxWorkers=2
               working-directory: ${{ matrix.package }}
 
             - name: Build
