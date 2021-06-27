@@ -1,8 +1,8 @@
 build/
 dist/
 node_modules/
+docs/
 .snapshots/
 *.min.js
 *.config.js
 dangerfile.js
-.eslintrc.js

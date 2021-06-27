@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "Parcel example",
     "scripts": {
-        "start": "parcel serve src/index.html"
+        "start": "parcel serve src/index.html",
+        "lint": "eslint ."
     },
     "keywords": [],
     "dependencies": {
