@@ -2,7 +2,7 @@
     "name": "@morfix/core",
     "version": "0.0.0",
     "description": "Core package of Morfix framework",
-    "author": "Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>",
+    "author": "Morfix team",
     "homepage": "https://github.com/ArtiomTr/morfix#readme",
     "license": "MIT",
     "main": "dist/index.js",

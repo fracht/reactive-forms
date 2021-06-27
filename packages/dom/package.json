@@ -1,0 +1,38 @@
+{
+    "name": "@morfix/dom",
+    "version": "0.0.0",
+    "description": "> TODO: description",
+    "author": "Morfix team",
+    "homepage": "https://github.com/ArtiomTr/morfix#readme",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/dom.esm.js",
+    "source": "src/index.ts",
+    "types": "dist/dom.d.ts",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArtiomTr/morfix.git"
+    },
+    "scripts": {
+        "start": "aqu watch",
+        "build": "aqu build",
+        "test": "aqu test --passWithNoTests",
+        "test:watch": "aqu test --watch",
+        "test:coverage": "aqu test --coverage",
+        "lint": "eslint .",
+        "lint:fix": "npm run lint --fix",
+        "prepare": "aqu build"
+    },
+    "bugs": {
+        "url": "https://github.com/ArtiomTr/morfix/issues"
+    },
+    "devDependencies": {
+        "aqu": "^0.1.0"
+    }
+}
