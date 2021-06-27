@@ -117,7 +117,7 @@ export const useMorfix = <Values extends object>({
                 return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
             }
         },
-        [validateAllFields, validateFormFn, runFormValidationSchema, shouldValidatePureFields]
+        [runFormValidationSchema, validateAllFields, validateFormFn, shouldValidatePureFields]
     );
 
     const submit = useCallback(
