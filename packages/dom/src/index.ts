@@ -1,1 +1,1 @@
-export * from './renderComponent.ts';
+export * from './renderComponent';

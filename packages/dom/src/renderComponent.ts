@@ -1,4 +1,4 @@
-import React, { Attributes, ComponentProps, ComponentType, createElement, ElementType, ReactNode } from 'react';
+import React, { ComponentProps, ComponentType, createElement, ElementType } from 'react';
 import invariant from 'tiny-invariant';
 
 export type RenderHelpers<B, C extends ComponentType | ElementType> = (
@@ -18,16 +18,12 @@ type RenderComponentProps<B, C extends ComponentType | ElementType> = RenderHelp
     elementProps?: unknown;
 };
 
-// <Field />
-
-// <Field />
-
 export const renderComponent = <B, C extends ComponentType | ElementType>({
     as,
     children,
     bag,
     elementProps,
-    ...other,
+    ...other
 }: RenderComponentProps<B, C>): JSX.Element => {
     invariant(
         as || typeof children === 'function',
@@ -38,20 +34,13 @@ export const renderComponent = <B, C extends ComponentType | ElementType>({
         return children(bag);
     }
 
-    if(typeof as !== 'string' && as) {
+    if (typeof as !== 'string' && as) {
         return createElement(as, { ...bag, ...other }, children);
     }
 
-    if(typeof )
+    if (as !== undefined) {
+        return createElement(as, { ...bag, ...(elementProps as object), ...other }, children);
+    }
 
-    // if (typeof copmonent !== 'string')
-    //     return typeof children === 'function'
-    //         ? children(bag)
-    //         : typeof component !== 'string' && component
-    //         ? createElement(component, bag, children)
-    //         : defaultComponent
-    //         ? createElement(component ?? defaultComponent, elementComponentProps ?? bag, children)
-    //         : component
-    //         ? createElement(component, (elementComponentProps ?? bag) as unknown as Attributes, children)
-    //         : invariant(false, 'Cannot render: not specified renderer("children" or "component" props)');
+    throw new Error('No renderer found');
 };
