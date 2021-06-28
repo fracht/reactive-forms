@@ -17,6 +17,9 @@ jobs:
               with:
                   node-version: 12
 
+            - name: Install npm 17.x
+              run: npm i -g npm@latest
+
             - name: Installing dependencies for base package
               run: npm ci
 
