@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
@@ -8,6 +8,7 @@ import { Schema } from 'yup';
 
 import { MorfixControl, useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
+import { MorfixHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
 import { Empty, FieldValidator } from '../typings/FieldValidator';
 import { FieldTouched } from '../typings/MorfixTouched';
@@ -84,10 +85,13 @@ export const useMorfix = <Values extends object>({
                 if (shouldValidatePureFields || !isEqual(value, get(initialValuesRef.current, name))) {
                     const error = await runFieldLevelValidation(name, value);
                     setFieldError(name, error);
+                    return error;
                 } else {
                     setFieldError(name, undefined);
                 }
             }
+
+            return undefined;
         },
         [runFieldLevelValidation, setFieldError, hasValidator, shouldValidatePureFields]
     );
@@ -127,6 +131,16 @@ export const useMorfix = <Values extends object>({
         [setValues, setTouched, setErrors]
     );
 
+    const morfixHelpers: MorfixHelpers<Values> = useMemo(
+        () => ({
+            ...control,
+            validateField,
+            validateForm,
+            resetForm
+        }),
+        [control, resetForm, validateField, validateForm]
+    );
+
     const submit = useCallback(
         async (action: SubmitAction<Values> | undefined = onSubmit) => {
             invariant(
@@ -148,27 +162,11 @@ export const useMorfix = <Values extends object>({
             setTouched(setNestedValues(currentValues, { mrfxTouched: true }));
 
             if (Object.keys(newErrors).length === 0) {
-                await action(currentValues, {
-                    ...control,
-                    validateField,
-                    validateForm,
-                    resetForm
-                });
+                await action(currentValues, morfixHelpers);
                 setFormMeta('isSubmitting', true);
             }
         },
-        [
-            onSubmit,
-            setFormMeta,
-            getFormMeta,
-            values,
-            validateForm,
-            setErrors,
-            setTouched,
-            validateField,
-            resetForm,
-            control
-        ]
+        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched, morfixHelpers]
     );
 
     const registerValidator = useCallback(
