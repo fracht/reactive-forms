@@ -10,6 +10,7 @@ jobs:
     generate_matrix:
         name: Get changed packages
         runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
         outputs:
             packages: ${{ steps.changed_packages.outputs.matrix }}
         steps:
@@ -22,6 +23,29 @@ jobs:
               with:
                   filters: |
                       packages/*/**:3
+    coverage:
+        name: Coverage report
+        needs: [generate_matrix]
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Use Node 14.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14.x
+
+            - name: Install npm 17.x
+              run: npm i -g npm@latest
+
+            - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  working-directory: ${{ matrix.package }}
+                  test-script: npm run test:coverage
     build:
         needs: [generate_matrix]
         name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
