@@ -24,7 +24,7 @@
         "build": "aqu build",
         "test": "aqu test --passWithNoTests",
         "test:watch": "aqu test --watch",
-        "test:coverage": "aqu test --coverage",
+        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
         "prepare": "aqu build"

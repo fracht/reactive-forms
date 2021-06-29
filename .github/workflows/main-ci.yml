@@ -24,6 +24,7 @@ jobs:
                   filters: |
                       packages/*/**:3
     coverage:
+        name: Coverage report
         needs: [generate_matrix]
         runs-on: ubuntu-latest
         strategy:
@@ -35,6 +36,7 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   working-directory: ${{ matrix.package }}
+                  test-script: npm run test:coverage
     build:
         needs: [generate_matrix]
         name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
