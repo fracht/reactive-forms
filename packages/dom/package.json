@@ -1,14 +1,14 @@
 {
-    "name": "@morfix/core",
+    "name": "@morfix/dom",
     "version": "0.0.0",
-    "description": "Core package of Morfix framework",
+    "description": "> TODO: description",
     "author": "Morfix team",
     "homepage": "https://github.com/ArtiomTr/morfix#readme",
     "license": "MIT",
     "main": "dist/index.js",
-    "module": "dist/core.esm.js",
+    "module": "dist/dom.esm.js",
     "source": "src/index.ts",
-    "types": "dist/core.d.ts",
+    "types": "dist/dom.d.ts",
     "files": [
         "dist"
     ],
@@ -32,24 +32,15 @@
     "bugs": {
         "url": "https://github.com/ArtiomTr/morfix/issues"
     },
-    "dependencies": {
-        "lodash": "^4.17.19",
-        "lodash-es": "^4.17.15",
-        "stocked": "^1.0.0-beta.3",
-        "tiny-invariant": "^1.1.0"
-    },
     "devDependencies": {
-        "@testing-library/react-hooks": "^3.4.2",
-        "@types/jest": "^26.0.23",
-        "@types/lodash": "^4.14.161",
-        "@types/react": "^17.0.2",
-        "@types/yup": "^0.29.7",
+        "@types/react": "^17.0.11",
+        "@types/react-dom": "^17.0.8",
         "aqu": "^0.1.0",
         "react": "^17.0.2",
-        "react-test-renderer": "^17.0.1",
-        "tslib": "^2.0.1",
-        "typescript": "^4.2.4",
-        "yup": "^0.29.3"
+        "react-dom": "^17.0.2"
+    },
+    "dependencies": {
+        "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
         "react": ">=16"
