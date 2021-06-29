@@ -33,10 +33,10 @@ jobs:
         steps:
             - uses: actions/checkout@v1
 
-            - name: Use Node ${{ matrix.node }}
+            - name: Use Node 14.x
               uses: actions/setup-node@v1
               with:
-                  node-version: ${{ matrix.node }}
+                  node-version: 14.x
 
             - name: Install npm 17.x
               run: npm i -g npm@latest
