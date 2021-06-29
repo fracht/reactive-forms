@@ -35,7 +35,9 @@
     "devDependencies": {
         "@types/react": "^17.0.11",
         "@types/react-dom": "^17.0.8",
-        "aqu": "^0.1.0"
+        "aqu": "^0.1.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "dependencies": {
         "tiny-invariant": "^1.1.0"

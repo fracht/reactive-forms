@@ -2,7 +2,7 @@ import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 
-import { renderComponent } from '../../src/utils/renderComponent';
+import { renderComponent } from '../src/renderComponent';
 
 let container: HTMLDivElement = null;
 
@@ -18,15 +18,14 @@ afterEach(() => {
 });
 
 describe('normal behaviour', () => {
-    it('should render default element', () => {
+    it('should render element and pass bag', () => {
         act(() => {
             render(
                 renderComponent({
-                    defaultComponent: 'span',
                     bag: {
                         'attr-test': 'test'
                     },
-                    component: undefined,
+                    as: 'span',
                     children: undefined
                 }),
                 container
@@ -36,13 +35,12 @@ describe('normal behaviour', () => {
         expect(container.querySelector('span').getAttribute('attr-test')).toBe('test');
     });
 
-    it('should render default element and pass children', () => {
+    it('should render element and pass children', () => {
         act(() => {
             render(
                 renderComponent({
-                    defaultComponent: 'span',
                     bag: {},
-                    component: undefined,
+                    as: 'span',
                     children: 'Hello world!'
                 }),
                 container
@@ -52,14 +50,13 @@ describe('normal behaviour', () => {
         expect(container.querySelector('span').textContent).toBe('Hello world!');
     });
 
-    it('should pass custom bag to element', () => {
+    it('should pass elementProps to element', () => {
         act(() => {
             render(
                 renderComponent({
-                    defaultComponent: 'span',
                     bag: {},
-                    component: undefined,
-                    elementComponentProps: {
+                    as: 'span',
+                    elementProps: {
                         'custom-prop': 'asdf'
                     }
                 }),
@@ -70,15 +67,35 @@ describe('normal behaviour', () => {
         expect(container.querySelector('span').getAttribute('custom-prop')).toBe('asdf');
     });
 
+    it('should not pass elementProps to component', () => {
+        const MockComponent = jest.fn(() => {
+            return <div>Hello</div>;
+        });
+
+        act(() => {
+            render(
+                renderComponent({
+                    bag: {},
+                    as: MockComponent,
+                    elementProps: {
+                        'custom-prop': 'asdf'
+                    }
+                }),
+                container
+            );
+        });
+
+        expect(MockComponent).toBeCalledWith(expect.not.objectContaining({ 'custom-prop': 'asdf' }), expect.anything());
+    });
+
     it('should render custom component', () => {
         act(() => {
             render(
                 renderComponent({
-                    defaultComponent: 'span',
+                    as: ({ prop }) => <span>{prop}</span>,
                     bag: {
                         prop: 'asdf'
-                    },
-                    component: ({ prop }) => <span>{prop}</span>
+                    }
                 }),
                 container
             );
@@ -87,28 +104,10 @@ describe('normal behaviour', () => {
         expect(container.querySelector('span').innerHTML).toBe('asdf');
     });
 
-    it('should render custom component(element)', () => {
+    it('should render via children function', () => {
         act(() => {
             render(
                 renderComponent({
-                    defaultComponent: 'span',
-                    bag: {
-                        prop: 'asdf'
-                    },
-                    component: 'span'
-                }),
-                container
-            );
-        });
-
-        expect(container.querySelector('span').getAttribute('prop')).toBe('asdf');
-    });
-
-    it('should render via children', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    defaultComponent: 'span',
                     bag: {
                         prop: 'asdf'
                     },
@@ -120,60 +119,17 @@ describe('normal behaviour', () => {
 
         expect(container.querySelector('span').innerHTML).toBe('asdf');
     });
-
-    it('should render custom component(element, without default specified)', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        prop: 'asdf'
-                    },
-                    component: 'span'
-                }),
-                container
-            );
-        });
-
-        expect(container.querySelector('span').getAttribute('prop')).toBe('asdf');
-    });
-
-    it('should render custom component(element, without default specified)', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        pra: 'a'
-                    },
-                    elementComponentProps: {
-                        prop: 'asdf'
-                    },
-                    component: 'span'
-                }),
-                container
-            );
-        });
-
-        expect(container.querySelector('span').getAttribute('prop')).toBe('asdf');
-    });
 });
 
 describe('exceptions', () => {
-    it('should throw error, if both children and component specified', () => {
-        expect(() =>
-            renderComponent({
-                defaultComponent: 'div',
-                bag: {},
-                children: () => <div></div>,
-                component: 'div'
-            })
-        ).toThrow();
-    });
     it('should throw error, if no renderer specified', () => {
         expect(() =>
             renderComponent({
-                bag: {}
+                bag: {},
+                children: undefined
             })
         ).toThrow();
+
         expect(() =>
             renderComponent({
                 bag: {},

@@ -12,9 +12,6 @@
     "files": [
         "dist"
     ],
-    "aqu": {
-        "target": "es2019"
-    },
     "publishConfig": {
         "access": "public"
     },
