@@ -10,5 +10,4 @@ export * from './useFieldTouched';
 export * from './useFieldValue';
 export * from './useObjectField';
 export * from './useSubmitAction';
-export * from './useTextField';
 export * from './useValidationRegistry';

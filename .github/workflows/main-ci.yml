@@ -28,7 +28,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node: ['10.x', '12.x', '14.x']
+                node: ['12.x', '14.x', '16.x']
                 package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
                 os: [ubuntu-latest]
 
@@ -40,9 +40,12 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node }}
-                  
+
             - name: Install npm 17.x
               run: npm i -g npm@latest
+
+            - name: Install global dependencies
+              run: npm install
 
             - name: Install global dependencies
               run: npm install
