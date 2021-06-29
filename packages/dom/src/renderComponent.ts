@@ -26,7 +26,7 @@ export const renderComponent = <B, C extends ComponentType | ElementType>({
     ...other
 }: RenderComponentProps<B, C>): JSX.Element => {
     invariant(as || typeof children === 'function', 'Cannot render: not specified renderer("children" or "as" props)');
-
+    // test
     if (typeof children === 'function') {
         return children(bag);
     }
