@@ -1,9 +1,9 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { MorfixHelpers, useMorfix } from '../../src';
+import { MorfixConfig, MorfixHelpers, useMorfix } from '../../src';
 
-describe('Test useMorfix functionality', () => {
-    it('Should pass morfixHelpers into onSubmit', async () => {
+describe('useMorfix', () => {
+    it('should pass morfixHelpers into onSubmit', async () => {
         const initialValues = {
             test: 'asdf'
         };
@@ -38,5 +38,35 @@ describe('Test useMorfix functionality', () => {
         });
 
         expect(onSubmit).toBeCalled();
+    });
+
+    test('should call onValidationFailed function', () => {
+        const formErrors = {
+            test: {
+                mrfxError: 'error message'
+            }
+        };
+
+        const onSubmit = jest.fn();
+
+        const config: MorfixConfig<{ test: string }> = {
+            initialValues: {
+                test: 'hello'
+            },
+            onSubmit,
+            onValidationFailed: (errors) => {
+                expect(errors).toStrictEqual(formErrors);
+            },
+            validateForm: () => formErrors,
+            shouldValidatePureFields: true
+        };
+
+        const { result } = renderHook(() => useMorfix(config));
+
+        act(() => {
+            result.current.submit();
+        });
+
+        expect(onSubmit).toBeCalledTimes(0);
     });
 });

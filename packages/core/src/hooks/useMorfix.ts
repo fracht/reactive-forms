@@ -25,6 +25,7 @@ export type MorfixConfig<Values extends object> = {
     schema?: Schema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
+    onValidationFailed?: (errors: FieldError<Values>) => void;
     shouldValidatePureFields?: boolean;
 };
 
@@ -54,7 +55,8 @@ export const useMorfix = <Values extends object>({
     onSubmit,
     schema,
     shouldValidatePureFields,
-    validateForm: validateFormFn
+    validateForm: validateFormFn,
+    onValidationFailed
 }: MorfixConfig<Values>): MorfixShared<Values> => {
     const control = useMorfixControl({ initialValues, initialErrors, initialTouched });
     const validationRegistry = useValidationRegistry();
@@ -164,9 +166,21 @@ export const useMorfix = <Values extends object>({
             if (Object.keys(newErrors).length === 0) {
                 await action(currentValues, morfixHelpers);
                 setFormMeta('isSubmitting', true);
+            } else {
+                onValidationFailed?.(newErrors);
             }
         },
-        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched, morfixHelpers]
+        [
+            onSubmit,
+            setFormMeta,
+            getFormMeta,
+            values,
+            validateForm,
+            setErrors,
+            setTouched,
+            onValidationFailed,
+            morfixHelpers
+        ]
     );
 
     const registerValidator = useCallback(
