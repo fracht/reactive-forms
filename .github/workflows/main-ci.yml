@@ -43,7 +43,7 @@ jobs:
 
             - name: Install dependencies
               run: npm install
-              working-direcotry: ${{ matrix.package }}
+              working-directory: ${{ matrix.package }}
 
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
