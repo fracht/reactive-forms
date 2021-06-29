@@ -32,11 +32,25 @@ jobs:
                 package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
         steps:
             - uses: actions/checkout@v1
+
+            - name: Use Node ${{ matrix.node }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node }}
+
+            - name: Install npm 17.x
+              run: npm i -g npm@latest
+
+            - name: Install dependencies
+              run: npm install
+              working-direcotry: ${{ matrix.package }}
+
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   working-directory: ${{ matrix.package }}
                   test-script: npm run test:coverage
+                  skip-step: install
     build:
         needs: [generate_matrix]
         name: Build, lint, and test ${{ matrix.package }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
