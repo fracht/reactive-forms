@@ -42,11 +42,10 @@ export type MorfixResetConfig<V> = {
     initialErrors?: FieldError<V>;
 };
 
-export type MorfixShared<Values extends object> = {
-    submit: (action?: SubmitAction<Values>) => void;
-    resetForm: (config?: MorfixResetConfig<Values>) => void;
-} & MorfixControl<Values> &
-    ValidationRegistryControl;
+export type MorfixShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+    MorfixHelpers<Values> & {
+        submit: (action?: SubmitAction<Values>) => void;
+    };
 
 export const useMorfix = <Values extends object>({
     initialValues,
@@ -234,9 +233,11 @@ export const useMorfix = <Values extends object>({
     return {
         submit,
         resetForm,
-        ...validationRegistry,
+        validateField,
+        validateForm,
         registerValidator,
         unregisterValidator,
+        hasValidator,
         ...control
     };
 };
