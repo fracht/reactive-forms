@@ -6,7 +6,7 @@ import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
-import { MorfixControl, useMorfixControl } from './useMorfixControl';
+import { useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { MorfixHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
