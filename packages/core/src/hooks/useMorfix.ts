@@ -10,8 +10,8 @@ import { MorfixControl, useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { MorfixHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
+import { FieldTouched } from '../typings/FieldTouched';
 import { Empty, FieldValidator } from '../typings/FieldValidator';
-import { FieldTouched } from '../typings/MorfixTouched';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
@@ -69,7 +69,7 @@ export const useMorfix = <Values extends object>({
     initialErrorsRef.current = initialErrors;
     initialTouchedRef.current = initialTouched;
 
-    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, formMeta } = control;
+    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, errors } = control;
 
     const {
         validateField: runFieldLevelValidation,
@@ -218,17 +218,12 @@ export const useMorfix = <Values extends object>({
 
     useEffect(
         () =>
-            formMeta.watchBatchUpdates((batchUpdate) => {
-                const newPaths = batchUpdate.paths.filter((path) => path.indexOf('errors') === 0);
-
-                if (newPaths.length > 0) {
-                    updateFormValidness({
-                        ...batchUpdate,
-                        paths: newPaths
-                    });
+            errors.watchBatchUpdates((batchUpdate) => {
+                if (batchUpdate.paths.length > 0) {
+                    updateFormValidness(batchUpdate);
                 }
             }),
-        [formMeta, updateFormValidness]
+        [errors, updateFormValidness]
     );
 
     return {
