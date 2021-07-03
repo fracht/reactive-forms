@@ -6,7 +6,7 @@ import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
-import { MorfixControl, useMorfixControl } from './useMorfixControl';
+import { useMorfixControl } from './useMorfixControl';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { MorfixHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
@@ -42,11 +42,10 @@ export type MorfixResetConfig<V> = {
     initialErrors?: FieldError<V>;
 };
 
-export type MorfixShared<Values extends object> = {
-    submit: (action?: SubmitAction<Values>) => void;
-    resetForm: (config?: MorfixResetConfig<Values>) => void;
-} & MorfixControl<Values> &
-    ValidationRegistryControl;
+export type MorfixShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+    MorfixHelpers<Values> & {
+        submit: (action?: SubmitAction<Values>) => void;
+    };
 
 export const useMorfix = <Values extends object>({
     initialValues,
@@ -229,9 +228,11 @@ export const useMorfix = <Values extends object>({
     return {
         submit,
         resetForm,
-        ...validationRegistry,
+        validateField,
+        validateForm,
         registerValidator,
         unregisterValidator,
+        hasValidator,
         ...control
     };
 };
