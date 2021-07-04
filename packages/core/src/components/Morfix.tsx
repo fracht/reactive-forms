@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MorfixContextType, MorfixProvider } from './MorfixContext';
+import { MorfixContext, MorfixContextType } from './MorfixContext';
 import { MorfixConfig, useMorfix } from '../hooks/useMorfix';
 
 /**
@@ -20,5 +20,9 @@ export const Morfix = <Values extends object>({
 }: MorfixConfig<Values> & { children: React.ReactNode | React.ReactNodeArray }) => {
     const morfixBag = useMorfix<Values>(config);
 
-    return <MorfixProvider value={morfixBag as unknown as MorfixContextType<object>}>{children}</MorfixProvider>;
+    return (
+        <MorfixContext.Provider value={morfixBag as unknown as MorfixContextType<object>}>
+            {children}
+        </MorfixContext.Provider>
+    );
 };

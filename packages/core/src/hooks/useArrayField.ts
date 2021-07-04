@@ -1,7 +1,7 @@
 import { ArrayControl, useArrayControl } from './useArrayControl';
 import { FieldConfig, useField } from './useField';
 import { FieldError } from '../typings/FieldError';
-import { FieldTouched } from '../typings/MorfixTouched';
+import { FieldTouched } from '../typings/FieldTouched';
 
 export type ArrayFieldConfig<V> = FieldConfig<Array<V>>;
 

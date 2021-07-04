@@ -1,6 +1,6 @@
 import { useMorfixContext } from './useMorfixContext';
 import { FieldError } from '../typings/FieldError';
-import { FieldTouched } from '../typings/MorfixTouched';
+import { FieldTouched } from '../typings/FieldTouched';
 import { useRefCallback } from '../utils/useRefCallback';
 
 export type ArrayControl<V> = {

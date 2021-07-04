@@ -73,7 +73,7 @@ describe('errors control', () => {
             result.current.setErrors({ a: { mrfxError: 'Nested error' }, mrfxError: 'Error' });
         });
 
-        expect(result.current.formMeta.getValues().errors).toStrictEqual({
+        expect(result.current.errors.getValues()).toStrictEqual({
             mrfxError: 'Error',
             a: {
                 mrfxError: 'Nested error'
@@ -88,7 +88,7 @@ describe('errors control', () => {
             result.current.setFieldError('a', { mrfxError: 'hello' });
         });
 
-        expect(result.current.formMeta.getValues().errors).toStrictEqual({
+        expect(result.current.errors.getValues()).toStrictEqual({
             a: {
                 mrfxError: 'hello'
             }
@@ -98,7 +98,7 @@ describe('errors control', () => {
             result.current.setFieldError('hello.a.b', { mrfxError: 'bye' });
         });
 
-        expect(result.current.formMeta.getValues().errors).toStrictEqual({
+        expect(result.current.errors.getValues()).toStrictEqual({
             a: expect.anything(),
             hello: {
                 a: {
@@ -135,7 +135,7 @@ describe('touched control', () => {
             result.current.setTouched({ a: { mrfxTouched: true }, mrfxTouched: true });
         });
 
-        expect(result.current.formMeta.getValues().touched).toStrictEqual({
+        expect(result.current.touched.getValues()).toStrictEqual({
             a: {
                 mrfxTouched: true
             },
@@ -150,7 +150,7 @@ describe('touched control', () => {
             result.current.setFieldTouched('a', { mrfxTouched: true });
         });
 
-        expect(result.current.formMeta.getValues().touched).toStrictEqual({
+        expect(result.current.touched.getValues()).toStrictEqual({
             a: {
                 mrfxTouched: true
             }
@@ -160,7 +160,7 @@ describe('touched control', () => {
             result.current.setFieldTouched('hello.a.b', { mrfxTouched: true });
         });
 
-        expect(result.current.formMeta.getValues().touched).toStrictEqual({
+        expect(result.current.touched.getValues()).toStrictEqual({
             a: expect.anything(),
             hello: {
                 a: {
@@ -193,7 +193,7 @@ describe('formMeta control', () => {
     it('test initial meta', () => {
         const { result } = renderMorfixControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
 
-        expect(result.current.formMeta.getValues().globalMeta).toStrictEqual({
+        expect(result.current.formMeta.getValues()).toStrictEqual({
             dirty: false,
             isSubmitting: false,
             isValid: true,
@@ -204,7 +204,7 @@ describe('formMeta control', () => {
     it('setFormMeta', () => {
         const { result } = renderMorfixControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
 
-        const initialMeta = result.current.formMeta.getValues().globalMeta;
+        const initialMeta = result.current.formMeta.getValues();
 
         const initialDirty = initialMeta.dirty;
 
@@ -212,7 +212,7 @@ describe('formMeta control', () => {
             result.current.setFormMeta('dirty', !initialDirty);
         });
 
-        expect(result.current.formMeta.getValues().globalMeta).toStrictEqual({
+        expect(result.current.formMeta.getValues()).toStrictEqual({
             ...initialMeta,
             dirty: !initialDirty
         });
