@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 
-import { ArrayControl, MorfixConfig, MorfixProvider, MorfixShared, useArrayControl, useMorfix } from '../../src';
+import { ArrayControl, MorfixConfig, MorfixContext, MorfixShared, useArrayControl, useMorfix } from '../../src';
 
 const renderArrayControl = <T extends object>(
     name,
@@ -12,7 +12,7 @@ const renderArrayControl = <T extends object>(
     } = renderHook(() => useMorfix(config));
 
     const wrapper = ({ children }) => (
-        <MorfixProvider value={bag as unknown as MorfixShared<object>}>{children}</MorfixProvider>
+        <MorfixContext.Provider value={bag as unknown as MorfixShared<object>}>{children}</MorfixContext.Provider>
     );
 
     return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag];
