@@ -1,22 +1,33 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
+    createPluginArray,
     MorfixConfig,
     MorfixContext,
-    MorfixPlugin,
     MorfixPlugins,
     MorfixShared,
+    Plugin,
+    PluginArray,
     useMorfix,
     useMorfixContext
 } from '../../src';
 
-const renderMorfix = <T extends object>(config: MorfixConfig<T>, plugins: MorfixPlugin[]) => {
+const renderPlugins = <T extends object>(config: MorfixConfig<T>, plugins: PluginArray) => {
+    return renderHook(() => useMorfix(config), {
+        wrapper: ({ children, plugins }: React.PropsWithChildren<{ plugins: PluginArray }>) => (
+            <MorfixPlugins plugins={plugins}>{children}</MorfixPlugins>
+        ),
+        initialProps: {
+            plugins
+        }
+    });
+};
+
+const renderMorfix = <T extends object>(config: MorfixConfig<T>, plugins: PluginArray) => {
     const {
         result: { current: bag }
-    } = renderHook(() => useMorfix(config), {
-        wrapper: ({ children }) => <MorfixPlugins plugins={plugins}>{children}</MorfixPlugins>
-    });
+    } = renderPlugins(config, plugins);
 
     const wrapper = ({ children }) => (
         <MorfixContext.Provider value={bag as unknown as MorfixShared<object>}>{children}</MorfixContext.Provider>
@@ -31,7 +42,7 @@ describe('MorfixPlugins', () => {
             return bag;
         });
 
-        const dummyPlugin: MorfixPlugin = {
+        const dummyPlugin: Plugin = {
             token: Symbol.for('dummy'),
             useDecorator: dummyDecorator
         };
@@ -40,7 +51,7 @@ describe('MorfixPlugins', () => {
             {
                 initialValues: {}
             },
-            [dummyPlugin]
+            createPluginArray(dummyPlugin)
         );
 
         expect(dummyDecorator).toBeCalledWith(expect.any(Object), {
@@ -55,7 +66,7 @@ describe('MorfixPlugins', () => {
             return bag;
         });
 
-        const dummyPlugin: MorfixPlugin = {
+        const dummyPlugin: Plugin = {
             token: Symbol.for('dummy'),
             useDecorator: dummyDecorator
         };
@@ -64,12 +75,30 @@ describe('MorfixPlugins', () => {
             {
                 initialValues: {}
             },
-            [dummyPlugin]
+            createPluginArray(dummyPlugin)
         );
 
         expect(dummyDecorator).toBeCalledWith(expect.any(Object), {
             initialValues: {}
         });
         expect((result.current as any).hello).toBe('Hello world!');
+    });
+
+    it('should fail when plugin array updates', () => {
+        const plugins = createPluginArray();
+
+        const { rerender } = renderPlugins({ initialValues: {} }, plugins);
+
+        expect(() =>
+            act(() => {
+                rerender({ plugins });
+            })
+        ).not.toThrow();
+
+        expect(() =>
+            act(() => {
+                rerender({ plugins: createPluginArray() });
+            })
+        ).toThrow();
     });
 });
