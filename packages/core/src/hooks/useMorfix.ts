@@ -7,6 +7,7 @@ import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
 import { useMorfixControl } from './useMorfixControl';
+import { usePlugins } from './usePlugins';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { MorfixHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
@@ -47,16 +48,18 @@ export type MorfixShared<Values extends object> = Omit<ValidationRegistryControl
         submit: (action?: SubmitAction<Values>) => void;
     };
 
-export const useMorfix = <Values extends object>({
-    initialValues,
-    initialErrors = {} as FieldError<Values>,
-    initialTouched = {} as FieldTouched<Values>,
-    onSubmit,
-    schema,
-    shouldValidatePureFields,
-    validateForm: validateFormFn,
-    onValidationFailed
-}: MorfixConfig<Values>): MorfixShared<Values> => {
+export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): MorfixShared<Values> => {
+    const {
+        initialValues,
+        initialErrors = {} as FieldError<Values>,
+        initialTouched = {} as FieldTouched<Values>,
+        onSubmit,
+        schema,
+        shouldValidatePureFields,
+        validateForm: validateFormFn,
+        onValidationFailed
+    } = config;
+
     const control = useMorfixControl({ initialValues, initialErrors, initialTouched });
     const validationRegistry = useValidationRegistry();
 
@@ -225,7 +228,7 @@ export const useMorfix = <Values extends object>({
         [errors, updateFormValidness]
     );
 
-    return {
+    const bag = {
         submit,
         resetForm,
         validateField,
@@ -235,4 +238,8 @@ export const useMorfix = <Values extends object>({
         hasValidator,
         ...control
     };
+
+    const bagWithPlugins = usePlugins(bag, config);
+
+    return bagWithPlugins;
 };
