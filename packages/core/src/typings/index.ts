@@ -4,3 +4,4 @@ export * from './FieldError';
 export * from './FieldTouched';
 export * from './SubmitAction';
 export * from './MorfixHelpers';
+export * from './MorfixPlugin';
