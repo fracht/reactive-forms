@@ -1,9 +1,9 @@
 import { ChangeEvent, FocusEvent, useCallback } from 'react';
-import { MorfixShared, Plugin } from '@morf1x/core';
+import { FormShared, Plugin } from '@reactive-forms/core';
 
 export const domPlugin = (): Plugin => ({
     token: Symbol.for('dom'),
-    useDecorator: <T extends object>(shared: MorfixShared<T>) => {
+    useDecorator: <T extends object>(shared: FormShared<T>) => {
         const { setFieldValue, setFieldTouched } = shared;
 
         const handleChange = useCallback(
