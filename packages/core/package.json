@@ -1,9 +1,9 @@
 {
-    "name": "@morf1x/core",
-    "version": "0.0.2",
-    "description": "Core package of Morfix framework",
-    "author": "Morfix team",
-    "homepage": "https://github.com/ArtiomTr/morfix#readme",
+    "name": "@reactive-forms/core",
+    "version": "0.0.0",
+    "description": "Core package of Reactive Forms framework",
+    "author": "ReactiveForms team",
+    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
     "license": "MIT",
     "main": "dist/index.js",
     "module": "dist/core.esm.js",
@@ -17,7 +17,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ArtiomTr/morfix.git"
+        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
     },
     "scripts": {
         "start": "aqu watch",
@@ -30,7 +30,7 @@
         "prepare": "aqu build"
     },
     "bugs": {
-        "url": "https://github.com/ArtiomTr/morfix/issues"
+        "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "dependencies": {
         "lodash": "^4.17.19",

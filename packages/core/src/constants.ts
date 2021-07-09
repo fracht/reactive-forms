@@ -1,4 +1,5 @@
-export const MORFIX_PREFIX = 'mrfx';
-export const MORFIX_ERROR_PREFIX = `${MORFIX_PREFIX}Error`;
+export const REACTIVE_FORMS_PREFIX = 'mrfx';
+export const REACTIVE_FORMS_ERROR_PREFIX = `${REACTIVE_FORMS_PREFIX}Error`;
 
-export const getErrorPath = (path?: string): string => (path ? `${path}.${MORFIX_ERROR_PREFIX}` : MORFIX_ERROR_PREFIX);
+export const getErrorPath = (path?: string): string =>
+    path ? `${path}.${REACTIVE_FORMS_ERROR_PREFIX}` : REACTIVE_FORMS_ERROR_PREFIX;

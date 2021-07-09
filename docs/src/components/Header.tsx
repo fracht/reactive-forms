@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ openDrawer }) => {
                             onClick={goToMainPage}
                             variant="h6"
                         >
-                            Morfix
+                            @reactive-forms
                         </Typography>
                         <span style={{ color: theme.palette.primary.dark }} className={styles['version']}>
                             v0.1.0
@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ openDrawer }) => {
                     <Tooltip title="View github repository">
                         <a
                             className={styles['github']}
-                            href="https://github.com/ArtiomTr/morfix"
+                            href="https://github.com/ArtiomTr/reactive-forms"
                             rel="noreferrer"
                             target="_blank"
                         >

@@ -1,8 +1,8 @@
 import { ValidationError } from 'yup';
 
-import { yupToMorfixErrors } from '../../src/utils/yupToMorfixErrors';
+import { yupToFormErrors } from '../../src/utils/yupToFormErrors';
 
-describe('yupToMorfixErrors', () => {
+describe('yupToFormErrors', () => {
     it('should convert without inner errors', () => {
         const error = {
             name: 'ValidationError',
@@ -15,7 +15,7 @@ describe('yupToMorfixErrors', () => {
             params: { path: 'hello' }
         };
 
-        expect(yupToMorfixErrors(error)).toStrictEqual({
+        expect(yupToFormErrors(error)).toStrictEqual({
             hello: {
                 mrfxError: 'hello is a required field'
             }
@@ -33,7 +33,7 @@ describe('yupToMorfixErrors', () => {
             params: { path: 'hello' }
         };
 
-        expect(yupToMorfixErrors(error as ValidationError)).toStrictEqual({});
+        expect(yupToFormErrors(error as ValidationError)).toStrictEqual({});
     });
 
     it('should convert with inner errors', () => {
@@ -65,7 +65,7 @@ describe('yupToMorfixErrors', () => {
             message: '2 errors occurred'
         };
 
-        expect(yupToMorfixErrors(error as ValidationError)).toStrictEqual({
+        expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
             hello: {
                 a: {
                     mrfxError: 'hello.a is a required field'
@@ -106,7 +106,7 @@ describe('yupToMorfixErrors', () => {
             message: '2 errors occurred'
         };
 
-        expect(yupToMorfixErrors(error as ValidationError)).toStrictEqual({
+        expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
             hello: {
                 b: {
                     mrfxError: 'hello.b is a required field'

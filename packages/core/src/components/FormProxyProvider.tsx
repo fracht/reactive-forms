@@ -1,16 +1,16 @@
 import React, { PropsWithChildren } from 'react';
 import { StockProxy, useStockContext } from 'stocked';
 
-import { MorfixContext } from './MorfixContext';
+import { FormContext } from './FormContext';
 import { useControlHandlers } from '../hooks/useControlHandlers';
-import { useMorfixContext } from '../hooks/useMorfixContext';
+import { useFormContext } from '../hooks/useFormContext';
 
-export type MorfixProxyProviderProps = PropsWithChildren<{
+export type FormProxyProviderProps = PropsWithChildren<{
     proxy: StockProxy;
 }>;
 
-export const MorfixProxyProvider = ({ proxy, children }: MorfixProxyProviderProps) => {
-    const { values, errors, touched, formMeta, ...other } = useMorfixContext();
+export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) => {
+    const { values, errors, touched, formMeta, ...other } = useFormContext();
 
     const newValues = useStockContext(values, proxy);
     const newErrors = useStockContext(errors, proxy);
@@ -19,7 +19,7 @@ export const MorfixProxyProvider = ({ proxy, children }: MorfixProxyProviderProp
     const handlers = useControlHandlers({ values: newValues, errors: newErrors, touched: newTouched, formMeta });
 
     return (
-        <MorfixContext.Provider
+        <FormContext.Provider
             value={{
                 ...other,
                 ...handlers,
@@ -30,6 +30,6 @@ export const MorfixProxyProvider = ({ proxy, children }: MorfixProxyProviderProp
             }}
         >
             {children}
-        </MorfixContext.Provider>
+        </FormContext.Provider>
     );
 };

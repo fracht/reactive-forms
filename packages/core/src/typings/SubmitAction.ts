@@ -1,3 +1,3 @@
-import { MorfixHelpers } from './MorfixHelpers';
+import { FormHelpers } from './FormHelpers';
 
-export type SubmitAction<Values extends object> = (values: Values, helpers: MorfixHelpers<Values>) => Promise<void>;
+export type SubmitAction<Values extends object> = (values: Values, helpers: FormHelpers<Values>) => Promise<void>;

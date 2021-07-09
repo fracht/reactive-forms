@@ -4,13 +4,13 @@ import invariant from 'tiny-invariant';
 import { Plugin } from '../typings/Plugin';
 import { PluginArray } from '../typings/PluginArray';
 
-export const MorfixPluginsContext = createContext<readonly Plugin[]>([]);
+export const FormPluginsContext = createContext<readonly Plugin[]>([]);
 
-export type MorfixPluginsProps = PropsWithChildren<{
+export type FormPluginsProps = PropsWithChildren<{
     plugins: PluginArray;
 }>;
 
-export const MorfixPlugins = ({ plugins, children }: MorfixPluginsProps) => {
+export const FormPlugins = ({ plugins, children }: FormPluginsProps) => {
     const tokenRef = useRef<Symbol>();
 
     if (tokenRef.current === undefined) {
@@ -22,5 +22,5 @@ export const MorfixPlugins = ({ plugins, children }: MorfixPluginsProps) => {
         "PluginArray token have changed. This means that you've modified your plugins runtime. PluginArray should never be modified / updated / extended."
     );
 
-    return <MorfixPluginsContext.Provider value={plugins.plugins}>{children}</MorfixPluginsContext.Provider>;
+    return <FormPluginsContext.Provider value={plugins.plugins}>{children}</FormPluginsContext.Provider>;
 };
