@@ -1,4 +1,4 @@
-name-template: morfix@$NEXT_PATCH_VERSION
+name-template: '@reactive-forms/core@$NEXT_PATCH_VERSION'
 tag-template: v$NEXT_PATCH_VERSION
 categories:
     - title: 💥 Breaking changes

@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
-import { MorfixConfig, MorfixShared } from './useMorfix';
-import { MorfixPluginsContext } from '../components/MorfixPlugins';
+import { FormConfig, FormShared } from './useForm';
+import { FormPluginsContext } from '../components/FormPlugins';
 
-export const usePlugins = <T extends Object>(bag: MorfixShared<T>, config: MorfixConfig<T>): MorfixShared<T> => {
-    const plugins = useContext(MorfixPluginsContext);
+export const usePlugins = <T extends Object>(bag: FormShared<T>, config: FormConfig<T>): FormShared<T> => {
+    const plugins = useContext(FormPluginsContext);
 
     for (const plugin of plugins) {
         bag = plugin.useDecorator(bag, config);

@@ -1,7 +1,7 @@
 import { Schema, ValidateOptions } from 'yup';
 
 import { isYupError } from './isYupError';
-import { yupToMorfixErrors } from './yupToMorfixErrors';
+import { yupToFormErrors } from './yupToFormErrors';
 import { FieldError } from '../typings';
 
 export const runYupSchema = async <V>(
@@ -13,7 +13,7 @@ export const runYupSchema = async <V>(
         await schema.validate(value, options);
     } catch (error) {
         if (isYupError(error)) {
-            return yupToMorfixErrors(error);
+            return yupToFormErrors(error);
         } else {
             throw error;
         }

@@ -6,10 +6,10 @@ import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import { Schema } from 'yup';
 
-import { useMorfixControl } from './useMorfixControl';
+import { useFormControl } from './useFormControl';
 import { usePlugins } from './usePlugins';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
-import { MorfixHelpers } from '../typings';
+import { FormHelpers } from '../typings';
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
 import { Empty, FieldValidator } from '../typings/FieldValidator';
@@ -19,7 +19,7 @@ import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
-export type MorfixConfig<Values extends object> = {
+export type FormConfig<Values extends object> = {
     initialValues: Values;
     initialTouched?: FieldTouched<Values>;
     initialErrors?: FieldError<Values>;
@@ -37,18 +37,18 @@ export type FieldObservers<V> = {
     validator?: FieldValidator<V>;
 };
 
-export type MorfixResetConfig<V> = {
+export type FormResetConfig<V> = {
     initialValues?: V;
     initialTouched?: FieldTouched<V>;
     initialErrors?: FieldError<V>;
 };
 
-export type MorfixShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
-    MorfixHelpers<Values> & {
+export type FormShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+    FormHelpers<Values> & {
         submit: (action?: SubmitAction<Values>) => void;
     };
 
-export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): MorfixShared<Values> => {
+export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const {
         initialValues,
         initialErrors = {} as FieldError<Values>,
@@ -60,7 +60,7 @@ export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): 
         onValidationFailed
     } = config;
 
-    const control = useMorfixControl({ initialValues, initialErrors, initialTouched });
+    const control = useFormControl({ initialValues, initialErrors, initialTouched });
     const validationRegistry = useValidationRegistry();
 
     const initialValuesRef = useRef(initialValues);
@@ -127,7 +127,7 @@ export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): 
     );
 
     const resetForm = useCallback(
-        ({ initialErrors, initialTouched, initialValues }: MorfixResetConfig<Values> = {}) => {
+        ({ initialErrors, initialTouched, initialValues }: FormResetConfig<Values> = {}) => {
             setValues(initialValues ?? initialValuesRef.current);
             setTouched(initialTouched ?? initialTouchedRef.current);
             setErrors(initialErrors ?? initialErrorsRef.current);
@@ -135,7 +135,7 @@ export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): 
         [setValues, setTouched, setErrors]
     );
 
-    const morfixHelpers: MorfixHelpers<Values> = useMemo(
+    const helpers: FormHelpers<Values> = useMemo(
         () => ({
             ...control,
             validateField,
@@ -166,23 +166,13 @@ export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): 
             setTouched(setNestedValues(currentValues, { mrfxTouched: true }));
 
             if (Object.keys(newErrors).length === 0) {
-                await action(currentValues, morfixHelpers);
+                await action(currentValues, helpers);
                 setFormMeta('isSubmitting', true);
             } else {
                 onValidationFailed?.(newErrors);
             }
         },
-        [
-            onSubmit,
-            setFormMeta,
-            getFormMeta,
-            values,
-            validateForm,
-            setErrors,
-            setTouched,
-            onValidationFailed,
-            morfixHelpers
-        ]
+        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched, onValidationFailed, helpers]
     );
 
     const registerValidator = useCallback(

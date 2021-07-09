@@ -1,15 +1,15 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { MorfixControlConfig, useMorfixControl } from '../../src/hooks/useMorfixControl';
+import { FormControlConfig, useFormControl } from '../../src/hooks/useFormControl';
 
-const renderMorfixControl = <T extends object>(config: MorfixControlConfig<T>) =>
-    renderHook((props: MorfixControlConfig<T>) => useMorfixControl(props), {
+const renderFormControl = <T extends object>(config: FormControlConfig<T>) =>
+    renderHook((props: FormControlConfig<T>) => useFormControl(props), {
         initialProps: config
     });
 
 describe('values control', () => {
     it('setValues', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setValues({ a: 'Hello world!' });
@@ -21,7 +21,7 @@ describe('values control', () => {
     });
 
     it('setFieldValue', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setFieldValue('hello.a.b', 0);
@@ -51,7 +51,7 @@ describe('values control', () => {
     });
 
     it('getFieldValue', () => {
-        const { result } = renderMorfixControl({
+        const { result } = renderFormControl({
             initialValues: { a: 'asdf', b: { j: 0 } },
             initialErrors: {},
             initialTouched: {}
@@ -67,7 +67,7 @@ describe('values control', () => {
 
 describe('errors control', () => {
     it('setErrors', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setErrors({ a: { mrfxError: 'Nested error' }, mrfxError: 'Error' });
@@ -82,7 +82,7 @@ describe('errors control', () => {
     });
 
     it('setFieldError', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setFieldError('a', { mrfxError: 'hello' });
@@ -111,7 +111,7 @@ describe('errors control', () => {
     });
 
     it('getFieldError', () => {
-        const { result } = renderMorfixControl({
+        const { result } = renderFormControl({
             initialValues: { a: 'asdf', b: { j: 0 } },
             initialErrors: { a: { mrfxError: 'asdf' }, b: { j: { mrfxError: 'hello' } } },
             initialTouched: {}
@@ -129,7 +129,7 @@ describe('errors control', () => {
 
 describe('touched control', () => {
     it('setTouched', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setTouched({ a: { mrfxTouched: true }, mrfxTouched: true });
@@ -144,7 +144,7 @@ describe('touched control', () => {
     });
 
     it('setFieldTouched', () => {
-        const { result } = renderMorfixControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
             result.current.setFieldTouched('a', { mrfxTouched: true });
@@ -173,7 +173,7 @@ describe('touched control', () => {
     });
 
     it('getFieldTouched', () => {
-        const { result } = renderMorfixControl({
+        const { result } = renderFormControl({
             initialValues: { a: 'asdf', b: { j: 0 } },
             initialErrors: {},
             initialTouched: { a: { mrfxTouched: true }, b: { j: { mrfxTouched: false } } }
@@ -191,7 +191,7 @@ describe('touched control', () => {
 
 describe('formMeta control', () => {
     it('test initial meta', () => {
-        const { result } = renderMorfixControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
 
         expect(result.current.formMeta.getValues()).toStrictEqual({
             dirty: false,
@@ -202,7 +202,7 @@ describe('formMeta control', () => {
         });
     });
     it('setFormMeta', () => {
-        const { result } = renderMorfixControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
+        const { result } = renderFormControl({ initialValues: {}, initialErrors: {}, initialTouched: {} });
 
         const initialMeta = result.current.formMeta.getValues();
 
@@ -219,7 +219,7 @@ describe('formMeta control', () => {
     });
 
     it('getFormMeta', () => {
-        const { result } = renderMorfixControl({
+        const { result } = renderFormControl({
             initialValues: {},
             initialErrors: {},
             initialTouched: {}

@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useStockState } from 'stocked';
 
-import { useMorfixContext } from './useMorfixContext';
+import { useFormContext } from './useFormContext';
 import { FieldError } from '../typings/FieldError';
 
 export const useFieldError = <V>(
     name: string
 ): [FieldError<V> | undefined, Dispatch<SetStateAction<FieldError<V> | undefined>>] => {
-    const { errors } = useMorfixContext<object>();
+    const { errors } = useFormContext<object>();
 
     return useStockState(name, errors);
 };
