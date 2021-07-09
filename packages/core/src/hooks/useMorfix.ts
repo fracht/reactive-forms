@@ -19,7 +19,7 @@ import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
-export type MorfixConfig<Values extends object> = {
+export interface MorfixConfig<Values extends object> {
     initialValues: Values;
     initialTouched?: FieldTouched<Values>;
     initialErrors?: FieldError<Values>;
@@ -28,7 +28,7 @@ export type MorfixConfig<Values extends object> = {
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;
     shouldValidatePureFields?: boolean;
-};
+}
 
 export type FieldObservers<V> = {
     valueObserver: (value: V) => void;
@@ -43,10 +43,12 @@ export type MorfixResetConfig<V> = {
     initialErrors?: FieldError<V>;
 };
 
-export type MorfixShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
-    MorfixHelpers<Values> & {
-        submit: (action?: SubmitAction<Values>) => void;
-    };
+export type DefaultMorfixShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+    MorfixHelpers<Values>;
+
+export interface MorfixShared<Values extends object> extends DefaultMorfixShared<Values> {
+    submit: (action?: SubmitAction<Values>) => void;
+}
 
 export const useMorfix = <Values extends object>(config: MorfixConfig<Values>): MorfixShared<Values> => {
     const {

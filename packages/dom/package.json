@@ -1,6 +1,6 @@
 {
-    "name": "@morfix/dom",
-    "version": "0.0.0",
+    "name": "@morf1x/dom",
+    "version": "0.0.1",
     "description": "> TODO: description",
     "author": "Morfix team",
     "homepage": "https://github.com/ArtiomTr/morfix#readme",
@@ -33,6 +33,7 @@
         "url": "https://github.com/ArtiomTr/morfix/issues"
     },
     "devDependencies": {
+        "@morf1x/core": "^0.0.2",
         "@types/react": "^17.0.11",
         "@types/react-dom": "^17.0.8",
         "aqu": "^0.1.0",
@@ -43,6 +44,7 @@
         "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
+        "@morf1x/core": "^0.0.1",
         "react": ">=16"
     }
 }
