@@ -1,4 +1,4 @@
-import { useMorfixContext } from './useMorfixContext';
+import { useFormContext } from './useFormContext';
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
 import { useRefCallback } from '../utils/useRefCallback';
@@ -22,7 +22,7 @@ export type ArrayControlConfig = {
 
 export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V> => {
     const { setFieldValue, setFieldTouched, setFieldError, getFieldValue, getFieldError, getFieldTouched } =
-        useMorfixContext();
+        useFormContext();
 
     const setItems = (items: Array<V>) => setFieldValue(name, items);
     const setTouched = (newTouched: FieldTouched<Array<V>>) => setFieldTouched(name, newTouched);

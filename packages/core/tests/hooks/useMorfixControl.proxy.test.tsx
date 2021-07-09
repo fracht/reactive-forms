@@ -2,24 +2,24 @@ import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { MappingProxy, StockProxy } from 'stocked';
 
-import { MorfixContext, MorfixProxyProvider, MorfixShared, useMorfix, useMorfixContext } from '../../src';
-import { MorfixControlConfig } from '../../src/hooks/useMorfixControl';
+import { FormContext, FormProxyProvider, FormShared, useForm, useFormContext } from '../../src';
+import { FormControlConfig } from '../../src/hooks/useFormControl';
 
-const renderMorfixContextWithProxy = <T extends object>(
-    config: MorfixControlConfig<T>,
+const renderFormContextWithProxy = <T extends object>(
+    config: FormControlConfig<T>,
     proxy: StockProxy
-): [RenderHookResult<undefined, MorfixShared<object>>, MorfixShared<T>] => {
+): [RenderHookResult<undefined, FormShared<object>>, FormShared<T>] => {
     const {
         result: { current: bag }
-    } = renderHook(() => useMorfix(config));
+    } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <MorfixContext.Provider value={bag as unknown as MorfixShared<object>}>
-            <MorfixProxyProvider proxy={proxy}>{children}</MorfixProxyProvider>
-        </MorfixContext.Provider>
+        <FormContext.Provider value={bag as unknown as FormShared<object>}>
+            <FormProxyProvider proxy={proxy}>{children}</FormProxyProvider>
+        </FormContext.Provider>
     );
 
-    return [renderHook(() => useMorfixContext(), { wrapper }), bag];
+    return [renderHook(() => useFormContext(), { wrapper }), bag];
 };
 
 const proxy = new MappingProxy(
@@ -49,7 +49,7 @@ const initialValues = {
 
 describe('values control', () => {
     it('setValues', () => {
-        const [{ result }, bag] = renderMorfixContextWithProxy(
+        const [{ result }, bag] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -108,7 +108,7 @@ describe('values control', () => {
         });
     });
     it('setFieldValue', () => {
-        const [{ result }, bag] = renderMorfixContextWithProxy(
+        const [{ result }, bag] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -138,7 +138,7 @@ describe('values control', () => {
     });
 
     it('getFieldValue', () => {
-        const [{ result }] = renderMorfixContextWithProxy(
+        const [{ result }] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -157,7 +157,7 @@ describe('values control', () => {
 });
 describe('errors control', () => {
     it('setErrors', () => {
-        const [{ result }, bag] = renderMorfixContextWithProxy(
+        const [{ result }, bag] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -200,7 +200,7 @@ describe('errors control', () => {
     });
 
     it('setFieldError', () => {
-        const [{ result }] = renderMorfixContextWithProxy(
+        const [{ result }] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -231,7 +231,7 @@ describe('errors control', () => {
     });
 
     it('getFieldError', () => {
-        const [{ result }] = renderMorfixContextWithProxy(
+        const [{ result }] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {
@@ -263,7 +263,7 @@ describe('errors control', () => {
 
 describe('touched control', () => {
     it('setTouched', () => {
-        const [{ result }, bag] = renderMorfixContextWithProxy(
+        const [{ result }, bag] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -315,7 +315,7 @@ describe('touched control', () => {
     });
 
     it('setFieldTouched', () => {
-        const [{ result }] = renderMorfixContextWithProxy(
+        const [{ result }] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},
@@ -366,7 +366,7 @@ describe('touched control', () => {
     });
 
     it('getFieldTouched', () => {
-        const [{ result }] = renderMorfixContextWithProxy(
+        const [{ result }] = renderFormContextWithProxy(
             {
                 initialValues,
                 initialErrors: {},

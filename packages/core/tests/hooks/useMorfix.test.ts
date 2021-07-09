@@ -1,23 +1,23 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { MorfixConfig, MorfixHelpers, useMorfix } from '../../src';
+import { FormConfig, FormHelpers, useForm } from '../../src';
 
-describe('useMorfix', () => {
-    it('should pass morfixHelpers into onSubmit', async () => {
+describe('useForm', () => {
+    it('should pass helpers into onSubmit', async () => {
         const initialValues = {
             test: 'asdf'
         };
 
-        const onSubmit = jest.fn(async (initialValues, morfixHelpers: MorfixHelpers<{ test: string }>) => {
+        const onSubmit = jest.fn(async (initialValues, helpers: FormHelpers<{ test: string }>) => {
             expect(initialValues).toStrictEqual(initialValues);
-            expect(morfixHelpers).toBeDefined();
-            expect(await morfixHelpers.validateField('test', '')).toStrictEqual({ mrfxError: 'Required' });
-            expect(await morfixHelpers.validateField('test', 'hello')).toBeUndefined();
-            expect(await morfixHelpers.validateForm({ test: '' })).toStrictEqual({ test: { mrfxError: 'Required' } });
+            expect(helpers).toBeDefined();
+            expect(await helpers.validateField('test', '')).toStrictEqual({ mrfxError: 'Required' });
+            expect(await helpers.validateField('test', 'hello')).toBeUndefined();
+            expect(await helpers.validateForm({ test: '' })).toStrictEqual({ test: { mrfxError: 'Required' } });
         });
 
         const { result } = renderHook(() =>
-            useMorfix({
+            useForm({
                 initialValues,
                 onSubmit
             })
@@ -49,7 +49,7 @@ describe('useMorfix', () => {
 
         const onSubmit = jest.fn();
 
-        const config: MorfixConfig<{ test: string }> = {
+        const config: FormConfig<{ test: string }> = {
             initialValues: {
                 test: 'hello'
             },
@@ -61,7 +61,7 @@ describe('useMorfix', () => {
             shouldValidatePureFields: true
         };
 
-        const { result } = renderHook(() => useMorfix(config));
+        const { result } = renderHook(() => useForm(config));
 
         act(() => {
             result.current.submit();

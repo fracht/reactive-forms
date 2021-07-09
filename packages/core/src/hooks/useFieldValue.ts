@@ -1,10 +1,10 @@
 import { SetStateAction } from 'react';
 import { Dispatch, useStockState } from 'stocked';
 
-import { useMorfixContext } from './useMorfixContext';
+import { useFormContext } from './useFormContext';
 
 export const useFieldValue = <V>(name: string): [V, Dispatch<SetStateAction<V>>] => {
-    const { values } = useMorfixContext<object>();
+    const { values } = useFormContext<object>();
 
     return useStockState<V>(name, values);
 };

@@ -3,20 +3,20 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
     createPluginArray,
-    MorfixConfig,
-    MorfixContext,
-    MorfixPlugins,
-    MorfixShared,
+    FormConfig,
+    FormContext,
+    FormPlugins,
+    FormShared,
     Plugin,
     PluginArray,
-    useMorfix,
-    useMorfixContext
+    useForm,
+    useFormContext
 } from '../../src';
 
-const renderPlugins = <T extends object>(config: MorfixConfig<T>, plugins: PluginArray) => {
-    return renderHook(() => useMorfix(config), {
+const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
+    return renderHook(() => useForm(config), {
         wrapper: ({ children, plugins }: React.PropsWithChildren<{ plugins: PluginArray }>) => (
-            <MorfixPlugins plugins={plugins}>{children}</MorfixPlugins>
+            <FormPlugins plugins={plugins}>{children}</FormPlugins>
         ),
         initialProps: {
             plugins
@@ -24,19 +24,19 @@ const renderPlugins = <T extends object>(config: MorfixConfig<T>, plugins: Plugi
     });
 };
 
-const renderMorfix = <T extends object>(config: MorfixConfig<T>, plugins: PluginArray) => {
+const renderForm = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
     const {
         result: { current: bag }
     } = renderPlugins(config, plugins);
 
     const wrapper = ({ children }) => (
-        <MorfixContext.Provider value={bag as unknown as MorfixShared<object>}>{children}</MorfixContext.Provider>
+        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
     );
 
-    return renderHook(() => useMorfixContext(), { wrapper });
+    return renderHook(() => useFormContext(), { wrapper });
 };
 
-describe('MorfixPlugins', () => {
+describe('FormPlugins', () => {
     it('should call plugin', () => {
         const dummyDecorator = jest.fn((bag) => {
             return bag;
@@ -47,7 +47,7 @@ describe('MorfixPlugins', () => {
             useDecorator: dummyDecorator
         };
 
-        renderMorfix(
+        renderForm(
             {
                 initialValues: {}
             },
@@ -71,7 +71,7 @@ describe('MorfixPlugins', () => {
             useDecorator: dummyDecorator
         };
 
-        const { result } = renderMorfix(
+        const { result } = renderForm(
             {
                 initialValues: {}
             },

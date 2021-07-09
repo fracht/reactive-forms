@@ -11,7 +11,7 @@ import styles from './LayoutDocs.module.scss';
 export const LayoutDocs: React.FC<LayoutProps> = ({ children, meta }) => (
     <React.Fragment>
         <Head>
-            <title>{meta.title} | Morfix</title>
+            <title>{meta.title} | Reactive Forms</title>
             <meta name="description" content={meta.description as string} />
         </Head>
         <div className={styles['docs']}>

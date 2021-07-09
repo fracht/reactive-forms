@@ -1,18 +1,18 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 
-import { ArrayControl, MorfixConfig, MorfixContext, MorfixShared, useArrayControl, useMorfix } from '../../src';
+import { ArrayControl, FormConfig, FormContext, FormShared, useArrayControl, useForm } from '../../src';
 
 const renderArrayControl = <T extends object>(
     name,
-    config: MorfixConfig<T>
-): [RenderHookResult<undefined, ArrayControl<unknown>>, MorfixShared<T>] => {
+    config: FormConfig<T>
+): [RenderHookResult<undefined, ArrayControl<unknown>>, FormShared<T>] => {
     const {
         result: { current: bag }
-    } = renderHook(() => useMorfix(config));
+    } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <MorfixContext.Provider value={bag as unknown as MorfixShared<object>}>{children}</MorfixContext.Provider>
+        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
     );
 
     return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag];
