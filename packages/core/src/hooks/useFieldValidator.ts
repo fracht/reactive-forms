@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import merge from 'lodash/merge';
-import type { Schema } from 'yup';
+import type { BaseSchema } from 'yup';
 
 import { useFormContext } from './useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';
@@ -10,7 +10,7 @@ export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: strin
 
 export type FieldValidationProps<V> = {
     validator?: FieldValidator<V>;
-    schema?: Schema<Partial<V> | V | undefined>;
+    schema?: BaseSchema<Partial<V> | V | undefined>;
 };
 
 export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: UseFieldValidatorConfig<V>) => {

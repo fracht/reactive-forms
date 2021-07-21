@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/dom",
-    "version": "0.0.0",
+    "version": "0.0.1-dev.4",
     "description": "> TODO: description",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -33,16 +33,20 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
+        "@reactive-forms/core": "^0.0.1-dev.4",
+        "@testing-library/react-hooks": "^7.0.1",
         "@types/react": "^17.0.11",
         "@types/react-dom": "^17.0.8",
-        "aqu": "^0.1.0",
+        "aqu": "^0.1.1",
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "yup": "^0.32.9"
     },
     "dependencies": {
         "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
+        "@reactive-forms/core": "^0.0.1",
         "react": ">=16"
     }
 }

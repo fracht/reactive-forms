@@ -33,7 +33,7 @@ describe('yupToFormErrors', () => {
             params: { path: 'hello' }
         };
 
-        expect(yupToFormErrors(error as ValidationError)).toStrictEqual({});
+        expect(yupToFormErrors(error as unknown as ValidationError)).toStrictEqual({});
     });
 
     it('should convert with inner errors', () => {

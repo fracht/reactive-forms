@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
-import { Schema } from 'yup';
+import type { BaseSchema } from 'yup';
 
 import { useFormControl } from './useFormControl';
 import { usePlugins } from './usePlugins';
@@ -19,16 +19,16 @@ import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 
-export type FormConfig<Values extends object> = {
+export interface FormConfig<Values extends object> {
     initialValues: Values;
     initialTouched?: FieldTouched<Values>;
     initialErrors?: FieldError<Values>;
-    schema?: Schema<Partial<Values> | undefined>;
+    schema?: BaseSchema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;
     shouldValidatePureFields?: boolean;
-};
+}
 
 export type FieldObservers<V> = {
     valueObserver: (value: V) => void;
@@ -43,10 +43,12 @@ export type FormResetConfig<V> = {
     initialErrors?: FieldError<V>;
 };
 
-export type FormShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
-    FormHelpers<Values> & {
-        submit: (action?: SubmitAction<Values>) => void;
-    };
+export type DefaultFormShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+    FormHelpers<Values>;
+
+export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
+    submit: (action?: SubmitAction<Values>) => void;
+}
 
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const {

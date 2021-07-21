@@ -1,4 +1,4 @@
-import { array, number, object, Schema, string } from 'yup';
+import { array, BaseSchema, number, object, string } from 'yup';
 
 import { runYupSchema } from '../../src/utils/runYupSchema';
 
@@ -100,7 +100,7 @@ describe('array schema', () => {
 
 describe('throw not yup error', () => {
     it('should throw unexpected error', async () => {
-        await expect(() => runYupSchema(null as unknown as Schema<string>, 'a')).rejects.toBeTruthy();
+        await expect(() => runYupSchema(null as unknown as BaseSchema<string>, 'a')).rejects.toBeTruthy();
     });
 });
 

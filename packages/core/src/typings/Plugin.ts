@@ -1,4 +1,4 @@
-import { FormConfig, FormShared } from '../hooks';
+import { FormConfig, FormShared } from '../hooks/useForm';
 
 export type Plugin = {
     token: Symbol;
