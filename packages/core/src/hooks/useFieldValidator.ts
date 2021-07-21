@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import merge from 'lodash/merge';
-import { Schema } from 'yup';
+import type { Schema } from 'yup';
 
 import { useFormContext } from './useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';

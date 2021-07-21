@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { Stock } from 'stocked';
 
-import { FieldError, FieldTouched } from '../typings';
+import { FieldError } from '../typings/FieldError';
+import { FieldTouched } from '../typings/FieldTouched';
 import { FormMeta } from '../typings/FormMeta';
 
 export type ControlHandlersConfig<Values extends object> = {
