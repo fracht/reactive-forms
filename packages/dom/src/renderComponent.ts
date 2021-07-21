@@ -1,7 +1,7 @@
-import React, { ComponentProps, ComponentType, createElement, ElementType } from 'react';
+import React, { createElement } from 'react';
 import invariant from 'tiny-invariant';
 
-export type RenderHelpers<B, C extends ComponentType | ElementType> = (
+export type RenderHelpers<B, C extends React.ComponentType | React.ElementType> = (
     | {
           children: ((bag: B) => React.ReactNode) | React.ReactNode;
           as?: never;
@@ -11,14 +11,14 @@ export type RenderHelpers<B, C extends ComponentType | ElementType> = (
           as: C;
       }
 ) &
-    Omit<ComponentProps<C>, 'children' | 'as' | keyof B>;
+    Omit<React.ComponentProps<C>, 'children' | 'as' | keyof B>;
 
-type RenderComponentProps<B, C extends ComponentType | ElementType> = RenderHelpers<B, C> & {
+type RenderComponentProps<B, C extends React.ComponentType | React.ElementType> = RenderHelpers<B, C> & {
     bag: B;
     elementProps?: unknown;
 };
 
-export const renderComponent = <B, C extends ComponentType | ElementType>({
+export const renderComponent = <B, C extends React.ComponentType | React.ElementType>({
     as,
     children,
     bag,
