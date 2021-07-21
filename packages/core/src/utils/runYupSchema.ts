@@ -1,8 +1,8 @@
-import { Schema, ValidateOptions } from 'yup';
+import type { Schema, ValidateOptions } from 'yup';
 
 import { isYupError } from './isYupError';
 import { yupToFormErrors } from './yupToFormErrors';
-import { FieldError } from '../typings';
+import { FieldError } from '../typings/FieldError';
 
 export const runYupSchema = async <V>(
     schema: Schema<Partial<V> | undefined>,

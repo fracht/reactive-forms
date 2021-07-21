@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { StockProxy, useStockContext } from 'stocked';
 
 import { FormContext } from './FormContext';
 import { useControlHandlers } from '../hooks/useControlHandlers';
 import { useFormContext } from '../hooks/useFormContext';
 
-export type FormProxyProviderProps = PropsWithChildren<{
+export type FormProxyProviderProps = React.PropsWithChildren<{
     proxy: StockProxy;
 }>;
 
