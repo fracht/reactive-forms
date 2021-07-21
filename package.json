@@ -1,11 +1,11 @@
 {
-    "name": "reactive-forms",
+    "name": "morfix",
     "private": true,
     "version": "0.2.0",
     "description": "Complex forms with React? Easy!",
     "author": "Artiom Tretjakovas",
     "license": "MIT",
-    "repository": "ArtiomTr/reactive-forms",
+    "repository": "ArtiomTr/morfix",
     "scripts": {
         "build": "lerna exec -- \"npm run build\"",
         "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx",

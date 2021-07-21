@@ -1,11 +1,11 @@
-# `@reactive-forms/core`
+# `@morfix/core`
 
 > TODO: description
 
 ## Usage
 
 ```
-const core = require('@reactive-forms/core');
+const core = require('@morfix/core');
 
 // TODO: DEMONSTRATE API
 ```

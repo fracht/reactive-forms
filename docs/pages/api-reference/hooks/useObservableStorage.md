@@ -11,12 +11,12 @@ layout: Docs
 ## Import
 
 ```js copy
-import { useObservableStorage } from '@reactive-forms/core';
+import { useObservableStorage } from 'morfix';
 ```
 
-## Parameters
 
-| Name            | Type   | Default  | Description |
-| --------------- | ------ | -------- | ----------- |
-| initialValues\* | T      | Required |
-| debugName       | string |          |
+## Parameters
+| Name | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| initialValues* | T | Required | 
+| debugName | string |  | 

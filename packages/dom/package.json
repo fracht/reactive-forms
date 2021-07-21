@@ -1,9 +1,9 @@
 {
-    "name": "@reactive-forms/dom",
+    "name": "@morfix/dom",
     "version": "0.0.0",
     "description": "> TODO: description",
-    "author": "ReactiveForms team",
-    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+    "author": "Morfix team",
+    "homepage": "https://github.com/ArtiomTr/morfix#readme",
     "license": "MIT",
     "main": "dist/index.js",
     "module": "dist/dom.esm.js",
@@ -17,7 +17,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
+        "url": "git+https://github.com/ArtiomTr/morfix.git"
     },
     "scripts": {
         "start": "aqu watch",
@@ -30,7 +30,7 @@
         "prepare": "aqu build"
     },
     "bugs": {
-        "url": "https://github.com/ArtiomTr/reactive-forms/issues"
+        "url": "https://github.com/ArtiomTr/morfix/issues"
     },
     "devDependencies": {
         "@types/react": "^17.0.11",

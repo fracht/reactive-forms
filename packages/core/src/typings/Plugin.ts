@@ -1,6 +1,6 @@
-import { FormConfig, FormShared } from '../hooks';
+import { MorfixConfig, MorfixShared } from '../hooks';
 
 export type Plugin = {
     token: Symbol;
-    useDecorator: <T extends object>(form: FormShared<T>, config: FormConfig<T>) => FormShared<T>;
+    useDecorator: <T extends object>(morfix: MorfixShared<T>, config: MorfixConfig<T>) => MorfixShared<T>;
 };

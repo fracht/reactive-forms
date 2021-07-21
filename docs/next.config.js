@@ -8,8 +8,8 @@ const isProd = process.env.NODE_ENV === 'production';
 const remarkPlugins = [require('remark-slug')];
 
 module.exports = withOptimizedImages({
-    assetPrefix: isProd ? '/reactive-forms/' : undefined,
-    basePath: isProd ? '/reactive-forms' : undefined,
+    assetPrefix: isProd ? '/morfix/' : undefined,
+    basePath: isProd ? '/morfix' : undefined,
     pageExtensions: ['tsx', 'mdx', 'md'],
     webpack: (config, { defaultLoaders }) => {
         config.module.rules.push({

@@ -30,10 +30,7 @@ export const DocsFooter = () => {
     return (
         <div className={styles['footer']}>
             <div className={styles['footer__first']}>
-                <Link
-                    target="_blank"
-                    href={`https://github.com/ArtiomTr/reactive-forms/tree/master/docs/pages${pathname}.md`}
-                >
+                <Link target="_blank" href={`https://github.com/ArtiomTr/morfix/tree/master/docs/pages${pathname}.md`}>
                     View this page on Github
                 </Link>
             </div>

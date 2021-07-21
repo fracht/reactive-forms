@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import merge from 'lodash/merge';
 import { Schema } from 'yup';
 
-import { useFormContext } from './useFormContext';
+import { useMorfixContext } from './useMorfixContext';
 import { FieldValidator } from '../typings/FieldValidator';
 import { runYupSchema } from '../utils/runYupSchema';
 
@@ -14,7 +14,7 @@ export type FieldValidationProps<V> = {
 };
 
 export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: UseFieldValidatorConfig<V>) => {
-    const { registerValidator, unregisterValidator } = useFormContext();
+    const { registerValidator, unregisterValidator } = useMorfixContext();
 
     const validate = async (value: V) => {
         if (!validatorFn && !schema) return undefined;

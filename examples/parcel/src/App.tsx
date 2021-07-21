@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, TextField } from '@reactive-forms/core';
+import { Morfix, TextField } from '@morfix/core';
 
 export const App = () => {
     return (
-        <Form
+        <Morfix
             initialValues={{
                 array: new Array(100).fill('asdf')
             }}
@@ -11,6 +11,6 @@ export const App = () => {
             {new Array(100).fill(0).map((_, index) => (
                 <TextField key={index} name={`array.${index}`} />
             ))}
-        </Form>
+        </Morfix>
     );
 };
