@@ -1,12 +1,12 @@
 import { useFieldError } from './useFieldError';
 import { useFieldTouched } from './useFieldTouched';
-import { FieldValidationProps as FieldValidationConfig, useFieldValidator } from './useFieldValidator';
+import { FieldValidationProps, useFieldValidator } from './useFieldValidator';
 import { useFieldValue } from './useFieldValue';
 import { FieldContext } from '../typings/FieldContext';
 
 export type FieldConfig<V> = {
     name: string;
-} & FieldValidationConfig<V>;
+} & FieldValidationProps<V>;
 
 export const useField = <V>({ name, validator, schema }: FieldConfig<V>): FieldContext<V> => {
     const [value, setValue] = useFieldValue<V>(name);
