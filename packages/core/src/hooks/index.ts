@@ -11,3 +11,4 @@ export * from './useFieldValue';
 export * from './useObjectField';
 export * from './useSubmitAction';
 export * from './useValidationRegistry';
+export * from './usePluginAssertion';

@@ -1,7 +1,7 @@
 import { ChangeEvent, FocusEvent, useCallback } from 'react';
 import { FormShared, Plugin } from '@reactive-forms/core';
 
-export const domPlugin = (): Plugin => ({
+export const domPlugin: Plugin = {
     token: Symbol.for('dom'),
     useDecorator: <T extends object>(shared: FormShared<T>) => {
         const { setFieldValue, setFieldTouched } = shared;
@@ -28,4 +28,4 @@ export const domPlugin = (): Plugin => ({
             handleBlur
         };
     }
-});
+};

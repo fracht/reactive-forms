@@ -2,6 +2,7 @@ import { ChangeEvent, FocusEvent } from 'react';
 
 export * from './renderComponent';
 export * from './plugin';
+export * from './useTextField';
 
 declare module '@reactive-forms/core' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

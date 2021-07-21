@@ -1,22 +1,31 @@
 import React from 'react';
-import { useFormContext } from '@reactive-forms/core';
+import { useFormContext, usePluginAssertion } from '@reactive-forms/core';
+import { useStockValue } from 'stocked';
+
+import { domPlugin } from './plugin';
 
 export type TextFieldConfig = {
     name: string;
 };
 
 export type TextFieldBag = {
-    onChange: (e: React.ChangeEvent) => void;
-    onBlur: (e: React.FocusEvent) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
     value: string;
     name: string;
 };
 
-export const useTextField = ({ name }: TextFieldConfig) => {
-    const { values, errors, touched, handleChange, handleBlur } = useFormContext();
+export const useTextField = ({ name }: TextFieldConfig): TextFieldBag => {
+    usePluginAssertion(domPlugin, 'Dom plugin is required to use text field');
+
+    const { handleChange, handleBlur, values } = useFormContext();
+
+    const value = useStockValue<string>(name, values);
 
     return {
-        handleChange,
-        handleBlur
+        onChange: handleChange,
+        onBlur: handleBlur,
+        name,
+        value
     };
 };
