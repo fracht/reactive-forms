@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
-import { Schema } from 'yup';
+import type { BaseSchema } from 'yup';
 
 import { useFormControl } from './useFormControl';
 import { usePlugins } from './usePlugins';
@@ -23,7 +23,7 @@ export interface FormConfig<Values extends object> {
     initialValues: Values;
     initialTouched?: FieldTouched<Values>;
     initialErrors?: FieldError<Values>;
-    schema?: Schema<Partial<Values> | undefined>;
+    schema?: BaseSchema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;

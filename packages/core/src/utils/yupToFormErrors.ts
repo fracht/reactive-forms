@@ -16,7 +16,7 @@ export const yupToFormErrors = <V>(yupError: ValidationError): FieldError<V> => 
             set(errors, getErrorPath(yupError.path), yupError.message);
         }
         for (const error of yupError.inner) {
-            if (!get(errors, error.path)) {
+            if (!get(errors, error.path || '')) {
                 set(errors, getErrorPath(error.path), error.message);
             }
         }
