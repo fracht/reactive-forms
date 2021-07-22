@@ -9,9 +9,9 @@ import { FormConfig, useForm } from '../hooks/useForm';
  * ## Example
  *
  * ```jsx live
- * <Form initialValues={{ hello: 'asdf' }}>
+ * <ReactiveForm initialValues={{ hello: 'asdf' }}>
  *     <div></div>
- * </Form>
+ * </ReactiveForm>
  * ```
  */
 export const ReactiveForm = <Values extends object>({
