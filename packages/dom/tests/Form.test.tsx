@@ -76,7 +76,9 @@ describe('Form', () => {
             </FormContext.Provider>
         );
 
-        bag.current.setFieldValue('test', 'modified');
+        act(() => {
+            bag.current.setFieldValue('test', 'modified');
+        });
 
         await act(async () => {
             wrapper.find('form').simulate('reset');
