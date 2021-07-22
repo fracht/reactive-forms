@@ -1,6 +1,6 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
+import ReactiveForm, { createPluginArray, FormContext, FormPlugins, useForm } from '@reactive-forms/core';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
 import { configureEnzyme } from './configureEnzyme';
@@ -61,5 +61,27 @@ describe('Form', () => {
         });
 
         expect(submit).toBeCalledTimes(1);
+    });
+
+    it('should call onReset function', async () => {
+        const { result: bag } = renderHook(() => useForm<object>({ initialValues: { test: 'initial' } }), {
+            wrapper: ({ children }) => <FormPlugins plugins={createPluginArray(domPlugin)}>{children}</FormPlugins>
+        });
+
+        const wrapper = mount(
+            <FormContext.Provider value={bag.current}>
+                <Form>
+                    <div>children</div>
+                </Form>
+            </FormContext.Provider>
+        );
+
+        bag.current.setFieldValue('test', 'modified');
+
+        await act(async () => {
+            wrapper.find('form').simulate('reset');
+        });
+
+        expect(bag.current.values.getValue('test')).toBe('initial');
     });
 });
