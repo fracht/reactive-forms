@@ -17,7 +17,7 @@ describe('yupToFormErrors', () => {
 
         expect(yupToFormErrors(error)).toStrictEqual({
             hello: {
-                mrfxError: 'hello is a required field'
+                $error: 'hello is a required field'
             }
         });
     });
@@ -68,10 +68,10 @@ describe('yupToFormErrors', () => {
         expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
             hello: {
                 a: {
-                    mrfxError: 'hello.a is a required field'
+                    $error: 'hello.a is a required field'
                 },
                 b: {
-                    mrfxError: 'hello.b is a required field'
+                    $error: 'hello.b is a required field'
                 }
             }
         });
@@ -109,7 +109,7 @@ describe('yupToFormErrors', () => {
         expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
             hello: {
                 b: {
-                    mrfxError: 'hello.b is a required field'
+                    $error: 'hello.b is a required field'
                 }
             }
         });

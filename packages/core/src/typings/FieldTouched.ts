@@ -1,7 +1,7 @@
 import { NestedObject } from './NestedObject';
 
 export type FieldInnerTouched = {
-    mrfxTouched?: boolean;
+    $touched?: boolean;
 };
 
 export type FieldTouched<V> = NestedObject<FieldInnerTouched, V>;

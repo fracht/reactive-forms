@@ -70,13 +70,13 @@ describe('errors control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setErrors({ a: { mrfxError: 'Nested error' }, mrfxError: 'Error' });
+            result.current.setErrors({ a: { $error: 'Nested error' }, $error: 'Error' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
-            mrfxError: 'Error',
+            $error: 'Error',
             a: {
-                mrfxError: 'Nested error'
+                $error: 'Nested error'
             }
         });
     });
@@ -85,17 +85,17 @@ describe('errors control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setFieldError('a', { mrfxError: 'hello' });
+            result.current.setFieldError('a', { $error: 'hello' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
             a: {
-                mrfxError: 'hello'
+                $error: 'hello'
             }
         });
 
         act(() => {
-            result.current.setFieldError('hello.a.b', { mrfxError: 'bye' });
+            result.current.setFieldError('hello.a.b', { $error: 'bye' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
@@ -103,7 +103,7 @@ describe('errors control', () => {
             hello: {
                 a: {
                     b: {
-                        mrfxError: 'bye'
+                        $error: 'bye'
                     }
                 }
             }
@@ -113,15 +113,15 @@ describe('errors control', () => {
     it('getFieldError', () => {
         const { result } = renderFormControl({
             initialValues: { a: 'asdf', b: { j: 0 } },
-            initialErrors: { a: { mrfxError: 'asdf' }, b: { j: { mrfxError: 'hello' } } },
+            initialErrors: { a: { $error: 'asdf' }, b: { j: { $error: 'hello' } } },
             initialTouched: {}
         });
 
-        expect(result.current.getFieldError('a')).toStrictEqual({ mrfxError: 'asdf' });
-        expect(result.current.getFieldError('b.j')).toStrictEqual({ mrfxError: 'hello' });
+        expect(result.current.getFieldError('a')).toStrictEqual({ $error: 'asdf' });
+        expect(result.current.getFieldError('b.j')).toStrictEqual({ $error: 'hello' });
         expect(result.current.getFieldError('b')).toStrictEqual({
             j: {
-                mrfxError: 'hello'
+                $error: 'hello'
             }
         });
     });
@@ -132,14 +132,14 @@ describe('touched control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setTouched({ a: { mrfxTouched: true }, mrfxTouched: true });
+            result.current.setTouched({ a: { $touched: true }, $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
             a: {
-                mrfxTouched: true
+                $touched: true
             },
-            mrfxTouched: true
+            $touched: true
         });
     });
 
@@ -147,17 +147,17 @@ describe('touched control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setFieldTouched('a', { mrfxTouched: true });
+            result.current.setFieldTouched('a', { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
             a: {
-                mrfxTouched: true
+                $touched: true
             }
         });
 
         act(() => {
-            result.current.setFieldTouched('hello.a.b', { mrfxTouched: true });
+            result.current.setFieldTouched('hello.a.b', { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
@@ -165,7 +165,7 @@ describe('touched control', () => {
             hello: {
                 a: {
                     b: {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 }
             }
@@ -176,14 +176,14 @@ describe('touched control', () => {
         const { result } = renderFormControl({
             initialValues: { a: 'asdf', b: { j: 0 } },
             initialErrors: {},
-            initialTouched: { a: { mrfxTouched: true }, b: { j: { mrfxTouched: false } } }
+            initialTouched: { a: { $touched: true }, b: { j: { $touched: false } } }
         });
 
-        expect(result.current.getFieldTouched('a')).toStrictEqual({ mrfxTouched: true });
-        expect(result.current.getFieldTouched('b.j')).toStrictEqual({ mrfxTouched: false });
+        expect(result.current.getFieldTouched('a')).toStrictEqual({ $touched: true });
+        expect(result.current.getFieldTouched('b.j')).toStrictEqual({ $touched: false });
         expect(result.current.getFieldTouched('b')).toStrictEqual({
             j: {
-                mrfxTouched: false
+                $touched: false
             }
         });
     });

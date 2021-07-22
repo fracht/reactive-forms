@@ -167,14 +167,14 @@ describe('errors control', () => {
         );
 
         act(() => {
-            result.current.setErrors({ user: { name: { mrfxError: 'Nested error' } } } as any);
+            result.current.setErrors({ user: { name: { $error: 'Nested error' } } } as any);
         });
 
         expect(bag.errors.getValues()).toStrictEqual({
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxError: 'Nested error'
+                        $error: 'Nested error'
                     },
                     lastName: undefined
                 }
@@ -185,14 +185,14 @@ describe('errors control', () => {
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxError: 'Nested error'
+                        $error: 'Nested error'
                     },
                     lastName: undefined
                 }
             },
             user: {
                 name: {
-                    mrfxError: 'Nested error'
+                    $error: 'Nested error'
                 },
                 surname: undefined
             }
@@ -210,20 +210,20 @@ describe('errors control', () => {
         );
 
         act(() => {
-            result.current.setFieldError('user.name', { mrfxError: 'hello' });
+            result.current.setFieldError('user.name', { $error: 'hello' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxError: 'hello'
+                        $error: 'hello'
                     }
                 }
             },
             user: {
                 name: {
-                    mrfxError: 'hello'
+                    $error: 'hello'
                 },
                 surname: undefined
             }
@@ -238,10 +238,10 @@ describe('errors control', () => {
                     sessionInfo: {
                         currentUser: {
                             firstName: {
-                                mrfxError: 'asdf'
+                                $error: 'asdf'
                             }
                         },
-                        mrfxError: 'hello'
+                        $error: 'hello'
                     }
                 },
                 initialTouched: {}
@@ -249,14 +249,14 @@ describe('errors control', () => {
             proxy
         );
 
-        expect(result.current.getFieldError('user.name')).toStrictEqual({ mrfxError: 'asdf' });
+        expect(result.current.getFieldError('user.name')).toStrictEqual({ $error: 'asdf' });
         expect(result.current.getFieldError('sessionInfo')).toStrictEqual({
             currentUser: {
                 firstName: {
-                    mrfxError: 'asdf'
+                    $error: 'asdf'
                 }
             },
-            mrfxError: 'hello'
+            $error: 'hello'
         });
     });
 });
@@ -276,41 +276,41 @@ describe('touched control', () => {
             result.current.setTouched({
                 user: {
                     name: {
-                        mrfxTouched: false
+                        $touched: false
                     }
                 },
-                mrfxTouched: true
+                $touched: true
             } as any);
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
             user: {
                 name: {
-                    mrfxTouched: false
+                    $touched: false
                 },
                 surname: undefined
             },
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxTouched: false
+                        $touched: false
                     },
                     lastName: undefined
                 }
             },
-            mrfxTouched: true
+            $touched: true
         });
 
         expect(bag.touched.getValues()).toStrictEqual({
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxTouched: false
+                        $touched: false
                     },
                     lastName: undefined
                 }
             },
-            mrfxTouched: true
+            $touched: true
         });
     });
 
@@ -325,40 +325,40 @@ describe('touched control', () => {
         );
 
         act(() => {
-            result.current.setFieldTouched('user.name', { mrfxTouched: true });
+            result.current.setFieldTouched('user.name', { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
             user: {
                 name: {
-                    mrfxTouched: true
+                    $touched: true
                 },
                 surname: undefined
             },
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 }
             }
         });
 
         act(() => {
-            result.current.setFieldTouched('sessionInfo.currentUser.firstName', { mrfxTouched: true });
+            result.current.setFieldTouched('sessionInfo.currentUser.firstName', { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
             user: {
                 name: {
-                    mrfxTouched: true
+                    $touched: true
                 },
                 surname: undefined
             },
             sessionInfo: {
                 currentUser: {
                     firstName: {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 }
             }
@@ -374,7 +374,7 @@ describe('touched control', () => {
                     sessionInfo: {
                         currentUser: {
                             firstName: {
-                                mrfxTouched: true
+                                $touched: true
                             }
                         }
                     }
@@ -384,12 +384,12 @@ describe('touched control', () => {
         );
 
         expect(result.current.getFieldTouched('sessionInfo.currentUser.firstName')).toStrictEqual({
-            mrfxTouched: true
+            $touched: true
         });
-        expect(result.current.getFieldTouched('user.name')).toStrictEqual({ mrfxTouched: true });
+        expect(result.current.getFieldTouched('user.name')).toStrictEqual({ $touched: true });
         expect(result.current.getFieldTouched('user')).toStrictEqual({
             name: {
-                mrfxTouched: true
+                $touched: true
             },
             surname: undefined
         });

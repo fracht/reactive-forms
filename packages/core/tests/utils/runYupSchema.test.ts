@@ -7,7 +7,7 @@ describe('value schema', () => {
         const error = await runYupSchema(string().required('required'), '');
 
         expect(error).toStrictEqual({
-            mrfxError: 'required'
+            $error: 'required'
         });
     });
 
@@ -15,7 +15,7 @@ describe('value schema', () => {
         const error = await runYupSchema(number().positive('positive'), -5);
 
         expect(error).toStrictEqual({
-            mrfxError: 'positive'
+            $error: 'positive'
         });
     });
 });
@@ -38,10 +38,10 @@ describe('object schema', () => {
 
         expect(errors).toStrictEqual({
             a: {
-                mrfxError: 'required'
+                $error: 'required'
             },
             b: {
-                mrfxError: 'positive'
+                $error: 'positive'
             }
         });
     });
@@ -67,11 +67,11 @@ describe('object schema', () => {
 
         expect(errors).toStrictEqual({
             a: {
-                mrfxError: 'required'
+                $error: 'required'
             },
             b: {
                 c: {
-                    mrfxError: 'required'
+                    $error: 'required'
                 }
             }
         });
@@ -88,11 +88,11 @@ describe('array schema', () => {
             undefined,
             undefined,
             {
-                mrfxError: 'required'
+                $error: 'required'
             },
             undefined,
             {
-                mrfxError: 'required'
+                $error: 'required'
             }
         ]);
     });
