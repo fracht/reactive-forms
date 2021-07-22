@@ -35,9 +35,12 @@
     "devDependencies": {
         "@reactive-forms/core": "^0.0.1-dev.4",
         "@testing-library/react-hooks": "^7.0.1",
+        "@types/enzyme": "^3.10.9",
         "@types/react": "^17.0.11",
         "@types/react-dom": "^17.0.8",
+        "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
         "aqu": "^0.1.1",
+        "enzyme": "^3.11.0",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "yup": "^0.32.9"
