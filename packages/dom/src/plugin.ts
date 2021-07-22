@@ -16,7 +16,7 @@ export const domPlugin: Plugin = {
         const handleBlur = useCallback(
             (e: React.FocusEvent<HTMLInputElement>) => {
                 setFieldTouched(e.target.name, {
-                    mrfxTouched: true
+                    $touched: true
                 });
             },
             [setFieldTouched]

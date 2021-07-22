@@ -87,7 +87,7 @@ describe('useTextField', () => {
 
         expect(touched.getValues()).toStrictEqual({
             hello: {
-                mrfxTouched: true
+                $touched: true
             }
         });
     });
