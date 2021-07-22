@@ -3,7 +3,8 @@ import { SubmitAction, useFormContext } from '@reactive-forms/core';
 
 export type FormProps<Values extends object> = React.PropsWithChildren<{
     submitAction?: SubmitAction<Values>;
-}>;
+}> &
+    Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onReset' | 'onSubmit'>;
 
 export const Form = <Values extends object>({ children, submitAction }: FormProps<Values>) => {
     const { submit, resetForm } = useFormContext<Values>();
