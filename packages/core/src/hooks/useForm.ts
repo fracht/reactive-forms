@@ -165,7 +165,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             setFormMeta('isValidating', false);
 
             setErrors(newErrors);
-            setTouched(setNestedValues(currentValues, { mrfxTouched: true }));
+            setTouched(setNestedValues(currentValues, { $touched: true }));
 
             if (Object.keys(newErrors).length === 0) {
                 await action(currentValues, helpers);
