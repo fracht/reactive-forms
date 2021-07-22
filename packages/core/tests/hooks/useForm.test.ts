@@ -11,9 +11,9 @@ describe('useForm', () => {
         const onSubmit = jest.fn(async (initialValues, helpers: FormHelpers<{ test: string }>) => {
             expect(initialValues).toStrictEqual(initialValues);
             expect(helpers).toBeDefined();
-            expect(await helpers.validateField('test', '')).toStrictEqual({ mrfxError: 'Required' });
+            expect(await helpers.validateField('test', '')).toStrictEqual({ $error: 'Required' });
             expect(await helpers.validateField('test', 'hello')).toBeUndefined();
-            expect(await helpers.validateForm({ test: '' })).toStrictEqual({ test: { mrfxError: 'Required' } });
+            expect(await helpers.validateForm({ test: '' })).toStrictEqual({ test: { $error: 'Required' } });
         });
 
         const { result } = renderHook(() =>
@@ -27,7 +27,7 @@ describe('useForm', () => {
             result.current.registerValidator('test', (value: string) => {
                 if (value.length === 0) {
                     return {
-                        mrfxError: 'Required'
+                        $error: 'Required'
                     };
                 }
 
@@ -43,7 +43,7 @@ describe('useForm', () => {
     test('should call onValidationFailed function', () => {
         const formErrors = {
             test: {
-                mrfxError: 'error message'
+                $error: 'error message'
             }
         };
 

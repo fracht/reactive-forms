@@ -106,7 +106,7 @@ describe('pop', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     }
                 ]
             },
@@ -115,7 +115,7 @@ describe('pop', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
@@ -138,7 +138,7 @@ describe('pop', () => {
                 arr: [
                     undefined,
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     }
                 ]
             },
@@ -146,7 +146,7 @@ describe('pop', () => {
                 arr: [
                     undefined,
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
@@ -160,13 +160,13 @@ describe('pop', () => {
         expect(bag.getFieldError('arr')).toStrictEqual([
             undefined,
             {
-                mrfxError: 'LOL!!!'
+                $error: 'LOL!!!'
             }
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             }
         ]);
     });
@@ -179,16 +179,16 @@ describe('pop', () => {
                 arr: [
                     undefined,
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     },
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     },
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     },
                     {
-                        mrfxError: 'LOL!!!'
+                        $error: 'LOL!!!'
                     }
                 ]
             }
@@ -202,7 +202,7 @@ describe('pop', () => {
         expect(bag.getFieldError('arr')).toStrictEqual([
             undefined,
             {
-                mrfxError: 'LOL!!!'
+                $error: 'LOL!!!'
             }
         ]);
     });
@@ -217,7 +217,7 @@ describe('shift', () => {
             initialErrors: {
                 arr: [
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     },
                     undefined,
                     undefined
@@ -226,7 +226,7 @@ describe('shift', () => {
             initialTouched: {
                 arr: [
                     {
-                        mrfxTouched: true
+                        $touched: true
                     },
                     undefined,
                     undefined
@@ -256,7 +256,7 @@ describe('unshift', () => {
             initialErrors: {
                 arr: [
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     },
                     undefined
                 ]
@@ -264,7 +264,7 @@ describe('unshift', () => {
             initialTouched: {
                 arr: [
                     {
-                        mrfxTouched: true
+                        $touched: true
                     },
                     undefined
                 ]
@@ -282,14 +282,14 @@ describe('unshift', () => {
         expect(bag.getFieldError('arr')).toStrictEqual([
             undefined,
             {
-                mrfxError: 'L'
+                $error: 'L'
             },
             undefined
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             },
             undefined
         ]);
@@ -305,7 +305,7 @@ describe('swap', () => {
             initialErrors: {
                 arr: [
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     },
                     undefined
                 ]
@@ -313,7 +313,7 @@ describe('swap', () => {
             initialTouched: {
                 arr: [
                     {
-                        mrfxTouched: true
+                        $touched: true
                     },
                     undefined
                 ]
@@ -328,13 +328,13 @@ describe('swap', () => {
         expect(bag.getFieldError('arr')).toStrictEqual([
             undefined,
             {
-                mrfxError: 'L'
+                $error: 'L'
             }
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             }
         ]);
     });
@@ -346,14 +346,14 @@ describe('swap', () => {
             initialErrors: {
                 arr: [
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     }
                 ]
             },
             initialTouched: {
                 arr: [
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
@@ -367,13 +367,13 @@ describe('swap', () => {
         expect(bag.getFieldError('arr')).toStrictEqual([
             undefined,
             {
-                mrfxError: 'L'
+                $error: 'L'
             }
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             }
         ]);
     });
@@ -389,7 +389,7 @@ describe('move', () => {
                 arr: [
                     undefined,
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     }
                 ]
             },
@@ -397,7 +397,7 @@ describe('move', () => {
                 arr: [
                     undefined,
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
@@ -413,7 +413,7 @@ describe('move', () => {
             undefined,
             undefined,
             {
-                mrfxError: 'L'
+                $error: 'L'
             }
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
@@ -421,7 +421,7 @@ describe('move', () => {
             undefined,
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             }
         ]);
     });
@@ -438,7 +438,7 @@ describe('insert', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     }
                 ]
             },
@@ -447,7 +447,7 @@ describe('insert', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
@@ -463,7 +463,7 @@ describe('insert', () => {
             undefined,
             undefined,
             {
-                mrfxError: 'L'
+                $error: 'L'
             }
         ]);
         expect(bag.getFieldTouched('arr')).toStrictEqual([
@@ -471,7 +471,7 @@ describe('insert', () => {
             undefined,
             undefined,
             {
-                mrfxTouched: true
+                $touched: true
             }
         ]);
     });
@@ -488,7 +488,7 @@ describe('removeAt', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxError: 'L'
+                        $error: 'L'
                     }
                 ]
             },
@@ -497,7 +497,7 @@ describe('removeAt', () => {
                     undefined,
                     undefined,
                     {
-                        mrfxTouched: true
+                        $touched: true
                     }
                 ]
             }
