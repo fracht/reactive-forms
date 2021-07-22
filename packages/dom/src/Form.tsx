@@ -6,7 +6,7 @@ export type FormProps<Values extends object> = React.PropsWithChildren<{
 }> &
     Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onReset' | 'onSubmit'>;
 
-export const Form = <Values extends object>({ children, submitAction }: FormProps<Values>) => {
+export const Form = <Values extends object>({ children, submitAction, ...other }: FormProps<Values>) => {
     const { submit, resetForm } = useFormContext<Values>();
 
     const onSubmit = useCallback(
@@ -22,7 +22,7 @@ export const Form = <Values extends object>({ children, submitAction }: FormProp
     }, [resetForm]);
 
     return (
-        <form onSubmit={onSubmit} onReset={onReset}>
+        <form onSubmit={onSubmit} onReset={onReset} {...other}>
             {children}
         </form>
     );
