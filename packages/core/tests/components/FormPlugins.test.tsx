@@ -87,18 +87,18 @@ describe('FormPlugins', () => {
     it('should fail when plugin array updates', () => {
         const plugins = createPluginArray();
 
-        const { rerender } = renderPlugins({ initialValues: {} }, plugins);
+        const { result, rerender } = renderPlugins({ initialValues: {} }, plugins);
 
-        expect(() =>
-            act(() => {
-                rerender({ plugins });
-            })
-        ).not.toThrow();
+        act(() => {
+            rerender({ plugins });
+        });
 
-        expect(() =>
-            act(() => {
-                rerender({ plugins: createPluginArray() });
-            })
-        ).toThrow();
+        expect(result.error).toBe(undefined);
+
+        act(() => {
+            rerender({ plugins: createPluginArray() });
+        });
+
+        expect(result.error).not.toBe(undefined);
     });
 });
