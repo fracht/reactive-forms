@@ -1,27 +1,35 @@
-import React, { useCallback } from 'react';
-import { SubmitAction, useFormContext } from '@reactive-forms/core';
+import React, { ComponentType, ElementType, useCallback } from 'react';
+import { SubmitAction, useFormContext, useFormMeta } from '@reactive-forms/core';
 
-export type SubmitButtonProps<Values extends object> = {
+import { renderComponent, RenderHelpers } from './renderComponent';
+
+export type SubmitButtonBag = {
+    onClick: (e: React.MouseEvent) => void;
+    disabled?: boolean;
+};
+
+export type SubmitButtonProps<Values extends object, C extends ComponentType | ElementType = 'button'> = {
     submitAction?: SubmitAction<Values>;
-    children?: React.ReactNode | ((onSubmit: () => void) => React.ReactNode);
-} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'children'>;
+} & RenderHelpers<SubmitButtonBag, C>;
 
-export const SubmitButton = <Values extends object>({
-    children,
+export const SubmitButton = <Values extends object, C extends ComponentType | ElementType = 'button'>({
     submitAction,
+    as,
     ...other
-}: SubmitButtonProps<Values>) => {
+}: SubmitButtonProps<Values, C>) => {
     const { submit } = useFormContext<Values>();
+    const isSubmitting = useFormMeta<boolean>('isSubmitting');
 
-    const onSubmit = useCallback(() => {
+    const onClick = useCallback(() => {
         submit(submitAction);
     }, [submit, submitAction]);
 
-    return typeof children === 'function' ? (
-        children(onSubmit)
-    ) : (
-        <button onClick={onSubmit} {...other}>
-            {children}
-        </button>
-    );
+    return renderComponent({
+        as: as ?? 'button',
+        bag: {
+            onClick,
+            disabled: isSubmitting
+        },
+        ...(other as RenderHelpers<SubmitButtonBag, C>)
+    });
 };

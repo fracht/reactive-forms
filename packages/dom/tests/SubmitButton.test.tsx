@@ -1,14 +1,22 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { act } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
 import { configureEnzyme } from './configureEnzyme';
-import { domPlugin, SubmitButton } from '../src';
+import { domPlugin, SubmitButton, SubmitButtonBag } from '../src';
 
 configureEnzyme();
 
 describe('SubmitButton', () => {
+    const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
+        return (
+            <button onClick={onClick} disabled={disabled}>
+                custom button
+            </button>
+        );
+    };
+
     it('should use default submit function and render default button', async () => {
         const submit = jest.fn();
 
@@ -35,7 +43,7 @@ describe('SubmitButton', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    <SubmitButton>{(onSubmit) => <button onClick={onSubmit}>custom button</button>}</SubmitButton>
+                    <SubmitButton as={CustomButton} />
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -56,18 +64,41 @@ describe('SubmitButton', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    <SubmitButton submitAction={action}>
-                        {(onSubmit) => <button onClick={onSubmit}>custom button</button>}
-                    </SubmitButton>
+                    <SubmitButton submitAction={action} />
                 </ReactiveForm>
             </FormPlugins>
         );
 
         await act(async () => {
-            wrapper.find('button').simulate('click');
+            await wrapper.find('button').simulate('click');
         });
 
         expect(action).toBeCalledTimes(1);
         expect(submit).toBeCalledTimes(0);
+    });
+
+    it('button should be disabled while submitting', async () => {
+        const submit = jest.fn();
+
+        let wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{}} onSubmit={submit}>
+                    <SubmitButton />
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        await act(async () => {
+            await wrapper.find('button').simulate('click');
+            wrapper = wrapper.mount();
+        });
+
+        expect(wrapper.find('button').prop('disabled')).toBe(true);
+
+        await act(async () => {
+            wrapper = wrapper.mount();
+        });
+
+        expect(wrapper.find('button').prop('disabled')).toBe(false);
     });
 });
