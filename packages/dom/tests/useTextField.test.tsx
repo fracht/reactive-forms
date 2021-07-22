@@ -1,21 +1,12 @@
 import React, { PropsWithChildren } from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
 import { createPluginArray, FormConfig, FormContext, FormPlugins, FormShared, useForm } from '@reactive-forms/core';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { mount } from 'enzyme';
 
+import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, TextFieldBag, useTextField } from '../src';
 
-let container = null;
-beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-});
-
-afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-});
+configureEnzyme();
 
 const renderUseTextField = <T extends object>(
     name: string,
@@ -47,19 +38,13 @@ describe('useTextField', () => {
             }
         });
 
+        const wrapper = mount(<input {...result.current} />);
+
         act(() => {
-            const ref: React.MutableRefObject<HTMLInputElement> = { current: undefined };
-
-            render(<input ref={ref} {...result.current} />, container);
-
-            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-                window.HTMLInputElement.prototype,
-                'value'
-            ).set;
-            nativeInputValueSetter.call(ref.current, 'new value');
-
-            const ev2 = new Event('input', { bubbles: true });
-            ref.current.dispatchEvent(ev2);
+            wrapper
+                .find('input')
+                .at(0)
+                .simulate('change', { target: { name: result.current.name, value: 'new value' } });
         });
 
         expect(values.getValues()).toStrictEqual({
@@ -76,13 +61,13 @@ describe('useTextField', () => {
             }
         });
 
+        const wrapper = mount(<input {...result.current} />);
+
         act(() => {
-            const ref: React.MutableRefObject<HTMLInputElement> = { current: undefined };
-
-            render(<input ref={ref} {...result.current} />, container);
-
-            ref.current.focus();
-            ref.current.blur();
+            wrapper
+                .find('input')
+                .at(0)
+                .simulate('blur', { target: { name: result.current.name } });
         });
 
         expect(touched.getValues()).toStrictEqual({
