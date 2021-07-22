@@ -9,12 +9,12 @@ import { FormConfig, useForm } from '../hooks/useForm';
  * ## Example
  *
  * ```jsx live
- * <Form initialValues={{ hello: 'asdf' }}>
+ * <ReactiveForm initialValues={{ hello: 'asdf' }}>
  *     <div></div>
- * </Form>
+ * </ReactiveForm>
  * ```
  */
-export const Form = <Values extends object>({
+export const ReactiveForm = <Values extends object>({
     children,
     ...config
 }: FormConfig<Values> & { children: ReactNode | ReactNodeArray }) => {

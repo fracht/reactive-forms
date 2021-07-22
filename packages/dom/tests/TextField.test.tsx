@@ -1,5 +1,5 @@
 import React from 'react';
-import Form, { createPluginArray, FormPlugins } from '@reactive-forms/core';
+import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
 import { configureEnzyme } from './configureEnzyme';
@@ -11,9 +11,9 @@ describe('TextField', () => {
     it('should render input by default', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <Form initialValues={{}}>
+                <ReactiveForm initialValues={{}}>
                     <TextField name="hello" />
-                </Form>
+                </ReactiveForm>
             </FormPlugins>
         );
 
@@ -24,9 +24,9 @@ describe('TextField', () => {
     it('should render custom element, if specified', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <Form initialValues={{}}>
+                <ReactiveForm initialValues={{}}>
                     <TextField name="hello" as="div" />
-                </Form>
+                </ReactiveForm>
             </FormPlugins>
         );
 
@@ -37,13 +37,13 @@ describe('TextField', () => {
     it('should pass children to custom element', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <Form initialValues={{}}>
+                <ReactiveForm initialValues={{}}>
                     <TextField name="hello" as="select">
                         <option value="1">asdf</option>
                         <option value="2">asdf</option>
                         <option value="3">asdf</option>
                     </TextField>
-                </Form>
+                </ReactiveForm>
             </FormPlugins>
         );
 
@@ -55,13 +55,13 @@ describe('TextField', () => {
     it('should call function renderer', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <Form
+                <ReactiveForm
                     initialValues={{
                         hello: 'asdf'
                     }}
                 >
                     <TextField name="hello">{(bag) => <div id="testID">{bag.value}</div>}</TextField>
-                </Form>
+                </ReactiveForm>
             </FormPlugins>
         );
 
@@ -76,13 +76,13 @@ describe('TextField', () => {
 
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <Form
+                <ReactiveForm
                     initialValues={{
                         hello: 'asdf'
                     }}
                 >
                     <TextField name="hello" firstName="world" as={DummyComponent} />
-                </Form>
+                </ReactiveForm>
             </FormPlugins>
         );
 
