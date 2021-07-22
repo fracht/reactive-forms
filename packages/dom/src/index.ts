@@ -6,6 +6,7 @@ export * from './useTextField';
 
 // components
 export * from './TextField';
+export * from './SubmitButton';
 
 declare module '@reactive-forms/core' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
