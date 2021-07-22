@@ -1,5 +1,5 @@
 // main component
-export { Form as default } from './components/Form';
+export { ReactiveForm as default } from './components/ReactiveForm';
 
 // components
 export * from './components/FormContext';

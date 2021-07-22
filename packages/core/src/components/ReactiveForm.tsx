@@ -14,7 +14,7 @@ import { FormConfig, useForm } from '../hooks/useForm';
  * </Form>
  * ```
  */
-export const Form = <Values extends object>({
+export const ReactiveForm = <Values extends object>({
     children,
     ...config
 }: FormConfig<Values> & { children: React.ReactNode | React.ReactNodeArray }) => {
