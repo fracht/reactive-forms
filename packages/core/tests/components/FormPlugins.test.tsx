@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
@@ -15,7 +15,7 @@ import {
 
 const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
     return renderHook(() => useForm(config), {
-        wrapper: ({ children, plugins }: React.PropsWithChildren<{ plugins: PluginArray }>) => (
+        wrapper: ({ children, plugins }: PropsWithChildren<{ plugins: PluginArray }>) => (
             <FormPlugins plugins={plugins}>{children}</FormPlugins>
         ),
         initialProps: {
@@ -87,18 +87,18 @@ describe('FormPlugins', () => {
     it('should fail when plugin array updates', () => {
         const plugins = createPluginArray();
 
-        const { rerender } = renderPlugins({ initialValues: {} }, plugins);
+        const { result, rerender } = renderPlugins({ initialValues: {} }, plugins);
 
-        expect(() =>
-            act(() => {
-                rerender({ plugins });
-            })
-        ).not.toThrow();
+        act(() => {
+            rerender({ plugins });
+        });
 
-        expect(() =>
-            act(() => {
-                rerender({ plugins: createPluginArray() });
-            })
-        ).toThrow();
+        expect(result.error).toBe(undefined);
+
+        act(() => {
+            rerender({ plugins: createPluginArray() });
+        });
+
+        expect(result.error).not.toBe(undefined);
     });
 });

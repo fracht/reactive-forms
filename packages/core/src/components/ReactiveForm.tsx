@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode, ReactNodeArray } from 'react';
 
 import { FormContext, FormContextType } from './FormContext';
 import { FormConfig, useForm } from '../hooks/useForm';
@@ -17,7 +17,7 @@ import { FormConfig, useForm } from '../hooks/useForm';
 export const ReactiveForm = <Values extends object>({
     children,
     ...config
-}: FormConfig<Values> & { children: React.ReactNode | React.ReactNodeArray }) => {
+}: FormConfig<Values> & { children: ReactNode | ReactNodeArray }) => {
     const formBag = useForm<Values>(config);
 
     return (

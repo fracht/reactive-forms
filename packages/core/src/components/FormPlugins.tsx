@@ -1,4 +1,4 @@
-import React, { createContext, useRef } from 'react';
+import React, { createContext, PropsWithChildren, useRef } from 'react';
 import invariant from 'tiny-invariant';
 
 import { Plugin } from '../typings/Plugin';
@@ -6,7 +6,7 @@ import { PluginArray } from '../typings/PluginArray';
 
 export const FormPluginsContext = createContext<readonly Plugin[]>([]);
 
-export type FormPluginsProps = React.PropsWithChildren<{
+export type FormPluginsProps = PropsWithChildren<{
     plugins: PluginArray;
 }>;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent, FocusEvent } from 'react';
 import { useFormContext, usePluginAssertion } from '@reactive-forms/core';
 import { useStockValue } from 'stocked';
 
@@ -9,8 +9,8 @@ export type TextFieldConfig = {
 };
 
 export type TextFieldBag = {
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (e: FocusEvent<HTMLInputElement>) => void;
     value: string;
     name: string;
 };

@@ -1,36 +1,36 @@
-import React, { createElement } from 'react';
+import { ComponentProps, ComponentType, createElement, ElementType, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
-export type StrictRenderHelpers<B, C extends React.ComponentType | React.ElementType> = (
+export type StrictRenderHelpers<B, C extends ComponentType | ElementType> = (
     | {
-          children: ((bag: B) => React.ReactNode) | React.ReactNode;
+          children: ((bag: B) => ReactNode) | ReactNode;
           as?: never;
       }
     | {
-          children?: React.ReactNode;
+          children?: ReactNode;
           as: C;
       }
 ) &
-    Omit<React.ComponentProps<C>, 'children' | 'as' | keyof B>;
+    Omit<ComponentProps<C>, 'children' | 'as' | keyof B>;
 
-export type RenderHelpers<B, C extends React.ComponentType | React.ElementType> = (
+export type RenderHelpers<B, C extends ComponentType | ElementType> = (
     | {
-          children: ((bag: B) => React.ReactNode) | React.ReactNode;
+          children: ((bag: B) => ReactNode) | ReactNode;
           as?: never;
       }
     | {
-          children?: React.ReactNode;
+          children?: ReactNode;
           as?: C;
       }
 ) &
-    Omit<React.ComponentProps<C>, 'children' | 'as' | keyof B>;
+    Omit<ComponentProps<C>, 'children' | 'as' | keyof B>;
 
-type RenderComponentProps<B, C extends React.ComponentType | React.ElementType> = StrictRenderHelpers<B, C> & {
+type RenderComponentProps<B, C extends ComponentType | ElementType> = StrictRenderHelpers<B, C> & {
     bag: B;
     elementProps?: unknown;
 };
 
-export const renderComponent = <B, C extends React.ComponentType | React.ElementType>({
+export const renderComponent = <B, C extends ComponentType | ElementType>({
     as,
     children,
     bag,

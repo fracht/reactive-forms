@@ -5,6 +5,10 @@
     "dtsBundleGeneratorOptions": {
         "output": {
             "inlineDeclareExternals": true
+        },
+        "libraries": {
+            "importedLibraries": ["stocked", "yup", "react"],
+            "allowedTypesLibraries": []
         }
     }
 }
