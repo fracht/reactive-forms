@@ -1,12 +1,11 @@
-import React from 'react';
+import { ComponentType, ElementType } from 'react';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 import { TextFieldBag, TextFieldConfig, useTextField } from './useTextField';
 
-export type TextFieldProps<C extends React.ComponentType | React.ElementType> = TextFieldConfig &
-    RenderHelpers<TextFieldBag, C>;
+export type TextFieldProps<C extends ComponentType | ElementType> = TextFieldConfig & RenderHelpers<TextFieldBag, C>;
 
-export const TextField = <C extends React.ComponentType | React.ElementType = 'input'>({
+export const TextField = <C extends ComponentType | ElementType = 'input'>({
     name,
     as,
     ...renderComponentProps

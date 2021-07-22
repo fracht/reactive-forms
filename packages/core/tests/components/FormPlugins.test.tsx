@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
@@ -15,7 +15,7 @@ import {
 
 const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
     return renderHook(() => useForm(config), {
-        wrapper: ({ children, plugins }: React.PropsWithChildren<{ plugins: PluginArray }>) => (
+        wrapper: ({ children, plugins }: PropsWithChildren<{ plugins: PluginArray }>) => (
             <FormPlugins plugins={plugins}>{children}</FormPlugins>
         ),
         initialProps: {

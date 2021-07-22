@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { ChangeEvent, FocusEvent, useCallback } from 'react';
 import { FormShared, Plugin } from '@reactive-forms/core';
 
 export const domPlugin: Plugin = {
@@ -7,14 +7,14 @@ export const domPlugin: Plugin = {
         const { setFieldValue, setFieldTouched } = shared;
 
         const handleChange = useCallback(
-            (e: React.ChangeEvent<HTMLInputElement>) => {
+            (e: ChangeEvent<HTMLInputElement>) => {
                 setFieldValue(e.target.name, e.target.value);
             },
             [setFieldValue]
         );
 
         const handleBlur = useCallback(
-            (e: React.FocusEvent<HTMLInputElement>) => {
+            (e: FocusEvent<HTMLInputElement>) => {
                 setFieldTouched(e.target.name, {
                     $touched: true
                 });
