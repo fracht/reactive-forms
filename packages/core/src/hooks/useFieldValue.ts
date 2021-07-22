@@ -1,5 +1,4 @@
-import { SetStateAction } from 'react';
-import { Dispatch, useStockState } from 'stocked';
+import { Dispatch, SetStateAction, useStockState } from 'stocked';
 
 import { useFormContext } from './useFormContext';
 
