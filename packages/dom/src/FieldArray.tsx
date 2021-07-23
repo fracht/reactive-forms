@@ -9,14 +9,12 @@ export type FieldArrayProps<V, C extends ComponentType | ElementType = Component
 
 export const FieldArray = <V, C extends ComponentType | ElementType = ComponentType | ElementType>({
     name,
-    as,
     ...renderComponentProps
 }: FieldArrayProps<V, C>) => {
     const bag = useArrayField<V>({ name });
 
     return renderComponent({
         bag,
-        as,
-        ...(renderComponentProps as StrictRenderHelpers<ArrayFieldProps<V>, C>)
+        ...(renderComponentProps as unknown as StrictRenderHelpers<ArrayFieldProps<V>, C>)
     });
 };
