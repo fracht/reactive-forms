@@ -169,7 +169,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
             if (Object.keys(newErrors).length === 0) {
                 await action(currentValues, helpers);
-                setFormMeta('isSubmitting', true);
+                setFormMeta('isSubmitting', false);
             } else {
                 onValidationFailed?.(newErrors);
             }
