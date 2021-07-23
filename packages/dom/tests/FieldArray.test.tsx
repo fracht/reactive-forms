@@ -42,4 +42,33 @@ describe('FieldArray', () => {
 
         expect(wrapper.find('span').length).toBe(3);
     });
+
+    it('should render custom component, if specified', () => {
+        const RenderComponent = () => {
+            return <div id="test">from render component</div>;
+        };
+
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{}}>
+                    <FieldArray name="hello" as={RenderComponent} />
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('div').length).toBe(1);
+        expect(wrapper.find('div').prop('id')).toBe('test');
+    });
+
+    it('should call function renderer', () => {
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{}}>
+                    <FieldArray name="hello">{() => <div id="test" />}</FieldArray>
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('div').prop('id')).toBe('test');
+    });
 });
