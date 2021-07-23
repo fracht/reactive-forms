@@ -13,7 +13,8 @@
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
-        "publish": "zx ./scripts/publish.ts"
+        "publish": "zx ./scripts/publish.ts",
+        "prepublish": "zx ./scripts/prepublish.ts"
     },
     "size-limit": [
         {
