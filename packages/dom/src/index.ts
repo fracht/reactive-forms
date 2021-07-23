@@ -8,6 +8,7 @@ export * from './useTextField';
 export * from './TextField';
 export * from './SubmitButton';
 export * from './Form';
+export * from './ErrorMessage';
 export * from './FieldArray';
 
 declare module '@reactive-forms/core' {
