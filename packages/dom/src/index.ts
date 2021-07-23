@@ -6,6 +6,7 @@ export * from './useTextField';
 
 // components
 export * from './TextField';
+export * from './SubmitButton';
 export * from './Form';
 export * from './FieldArray';
 
