@@ -9,14 +9,6 @@ import { domPlugin, SubmitButton, SubmitButtonBag } from '../src';
 configureEnzyme();
 
 describe('SubmitButton', () => {
-    const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
-        return (
-            <button onClick={onClick} disabled={disabled}>
-                custom button
-            </button>
-        );
-    };
-
     it('should use default submit function and render default button', async () => {
         const submit = jest.fn();
 
@@ -38,6 +30,14 @@ describe('SubmitButton', () => {
     });
 
     it('should call function renderer', async () => {
+        const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
+            return (
+                <button onClick={onClick} disabled={disabled}>
+                    custom button
+                </button>
+            );
+        };
+
         const submit = jest.fn();
 
         const wrapper = mount(
