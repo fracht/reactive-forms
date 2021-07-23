@@ -13,7 +13,7 @@
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
-        "publish": "zx ./scripts/publish.mjs"
+        "publish": "zx ./scripts/publish.ts"
     },
     "size-limit": [
         {
@@ -29,6 +29,7 @@
         "@size-limit/preset-small-lib": "^4.10.2",
         "@types/jest": "^26.0.23",
         "@types/micromatch": "^4.0.1",
+        "@types/semver": "^7.3.7",
         "@typescript-eslint/eslint-plugin": "^4.23.0",
         "@typescript-eslint/parser": "^4.23.0",
         "danger": "^10.6.4",

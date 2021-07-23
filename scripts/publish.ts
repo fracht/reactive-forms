@@ -2,25 +2,27 @@
 
 import { join } from 'path';
 
-import semver from 'semver';
 import { $, argv, chalk, fs, question } from 'zx';
 
-const getPackages = async (rootDir) => {
+const semver = require('semver');
+
+const getPackages = async (rootDir: string) => {
     const allFiles = await fs.readdir(rootDir, { withFileTypes: true });
 
     return allFiles.filter((file) => file.isDirectory()).map((dirent) => join(rootDir, dirent.name));
 };
 
-const publishPackage = async (pkg, otp) => {
-    const command = `npm publish ${join(pkg, 'prepublish')} --tag ${argv.type === 'dev' ? 'next' : 'latest'} ${
-        argv.dry ? '--dry-run' : ''
-    } ${otp ? `--otp ${otp}` : undefined}`;
-
-    $([command]);
+const publishPackage = async (pkg: string, otp: string | undefined) => {
+    const command = `npm publish ${join(pkg, 'prepublish').replace(/\\/g, '/')} --tag ${
+        argv.type === 'dev' ? 'next' : 'latest'
+    } ${argv.dry ? '--dry-run' : ''} ${otp ? `--otp ${otp}` : ''}`;
+    $([command] as unknown as TemplateStringsArray);
 };
 
-const preparePackage = async (pkg, version) => {
-    const packageJson = await fs.readFile(join(pkg, 'package.json')).then(JSON.parse);
+const preparePackage = async (pkg: string, version: string) => {
+    const packageJson = await fs
+        .readFile(join(pkg, 'package.json'))
+        .then((data: Buffer) => JSON.parse(data.toString()));
 
     packageJson.version = version;
 
@@ -32,23 +34,20 @@ const preparePackage = async (pkg, version) => {
     delete packageJson.resolutions;
     delete packageJson.scripts;
 
-    if (!argv.dry) {
-        await fs.rm(join(pkg, 'prepublish'), { recursive: true, force: true });
-        await fs.mkdir(join(pkg, 'prepublish'), { recursive: true });
+    await fs.rm(join(pkg, 'prepublish'), { recursive: true, force: true });
+    await fs.mkdir(join(pkg, 'prepublish'), { recursive: true });
 
-        await fs.writeFile(join(pkg, 'prepublish', 'package.json'), JSON.stringify(packageJson, null, 2));
+    await fs.writeFile(join(pkg, 'prepublish', 'package.json'), JSON.stringify(packageJson, null, 2));
 
-        await fs.copy(join(pkg, 'dist'), join(pkg, 'prepublish', 'dist'));
-        await fs.copyFile(join(pkg, 'LICENSE'), join(pkg, 'prepublish', 'LICENSE'));
-        await fs.copyFile(join(pkg, 'README.md'), join(pkg, 'prepublish', 'README.md'));
-    }
+    await fs.copy(join(pkg, 'dist'), join(pkg, 'prepublish', 'dist'));
+    await fs.copyFile(join(pkg, 'LICENSE'), join(pkg, 'prepublish', 'LICENSE'));
+    await fs.copyFile(join(pkg, 'README.md'), join(pkg, 'prepublish', 'README.md'));
 };
 
-const incrementVersion = async (folder, type) => {
+const incrementVersion = async (folder: string, type: string) => {
     const packageLockPath = join(folder, 'package.json');
-    const packageJson = await fs.readFile(packageLockPath).then(JSON.parse);
-
-    const currentVersion = semver.coerce(packageJson.version);
+    const packageJson = await fs.readFile(packageLockPath).then((data: Buffer) => JSON.parse(data.toString()));
+    const currentVersion = semver.coerce(packageJson.version)!;
     const sha = await $`git rev-parse --short HEAD`;
 
     let newVersion;
@@ -102,6 +101,6 @@ await Promise.all(packages.map((pkg) => preparePackage(pkg, version)));
 
 console.log(chalk.bold('Publish all packages'));
 
-const otp = argv.dry ? undefined : await question(chalk.yellow('Please, enter OTP: '), {});
+const otp = argv.dry ? undefined : await question(chalk.yellow('Please, enter OTP: '));
 
 await Promise.all(packages.map((pkg) => publishPackage(pkg, otp)));
