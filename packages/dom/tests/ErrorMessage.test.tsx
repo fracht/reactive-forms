@@ -71,4 +71,71 @@ describe('ErrorMessage', () => {
 
         expect(wrapper.find('div').text()).toBe('message');
     });
+
+    it('should render error in span by default', () => {
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm
+                    initialValues={{ test: '' }}
+                    initialErrors={{
+                        test: {
+                            $error: 'error'
+                        }
+                    }}
+                    initialTouched={{
+                        test: {
+                            $touched: true
+                        }
+                    }}
+                >
+                    <ErrorMessage name="test" />
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('span').text()).toBe('error');
+    });
+
+    it('should call function renderer', () => {
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm
+                    initialValues={{ test: '' }}
+                    initialErrors={{
+                        test: {
+                            $error: 'error'
+                        }
+                    }}
+                    initialTouched={{
+                        test: {
+                            $touched: true
+                        }
+                    }}
+                >
+                    <ErrorMessage name="test">{({ children }) => <div>{children}</div>}</ErrorMessage>
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('div').text()).toBe('error');
+    });
+
+    it('should not render error when touched=true and error=undefined', () => {
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm
+                    initialValues={{ test: '' }}
+                    initialTouched={{
+                        test: {
+                            $touched: true
+                        }
+                    }}
+                >
+                    <ErrorMessage name="test" />
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('span').length).toBe(0);
+    });
 });
