@@ -1,13 +1,13 @@
 import { ComponentType, ElementType } from 'react';
 import { ArrayFieldProps, useArrayField } from '@reactive-forms/core';
 
-import { renderComponent, RenderHelpers } from './renderComponent';
+import { renderComponent, StrictRenderHelpers } from './renderComponent';
 
-type FieldArrayProps<V, C extends ComponentType | ElementType = 'input'> = {
+export type FieldArrayProps<V, C extends ComponentType | ElementType = ComponentType | ElementType> = {
     name: string;
-} & RenderHelpers<ArrayFieldProps<V>, C>;
+} & StrictRenderHelpers<ArrayFieldProps<V>, C>;
 
-export const FieldArray = <V, C extends ComponentType | ElementType = 'fieldset'>({
+export const FieldArray = <V, C extends ComponentType | ElementType = ComponentType | ElementType>({
     name,
     as,
     ...renderComponentProps
@@ -16,7 +16,7 @@ export const FieldArray = <V, C extends ComponentType | ElementType = 'fieldset'
 
     return renderComponent({
         bag: arrayHelpers,
-        as: as ?? 'fieldset',
-        ...(renderComponentProps as RenderHelpers<ArrayFieldProps<V>, C>)
+        as,
+        ...(renderComponentProps as StrictRenderHelpers<ArrayFieldProps<V>, C>)
     });
 };
