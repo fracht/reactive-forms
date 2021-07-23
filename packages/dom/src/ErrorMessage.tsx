@@ -1,5 +1,5 @@
 import { ComponentType, ElementType } from 'react';
-import { useField } from '@reactive-forms/core';
+import { useFieldError, useFieldTouched } from '@reactive-forms/core';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 
@@ -17,9 +17,8 @@ export const ErrorMessage = <C extends ComponentType | ElementType = 'span'>({
     children,
     ...renderComponentProps
 }: ErrorMessageType<C>) => {
-    const {
-        meta: { touched, error }
-    } = useField({ name });
+    const [touched] = useFieldTouched(name);
+    const [error] = useFieldError(name);
 
     const message = touched?.$touched && error?.$error ? error.$error : undefined;
 
