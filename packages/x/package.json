@@ -1,0 +1,45 @@
+{
+    "name": "@reactive-forms/x",
+    "version": "0.1.0",
+    "description": "Advanced Reactive Forms components for rich eXperience",
+    "author": "ReactiveForms team",
+    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/core.esm.js",
+    "source": "src/index.ts",
+    "types": "dist/core.d.ts",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
+    },
+    "scripts": {
+        "start": "aqu watch",
+        "build": "aqu build",
+        "test": "aqu test --passWithNoTests",
+        "test:watch": "aqu test --watch",
+        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
+        "lint": "eslint .",
+        "lint:fix": "npm run lint --fix"
+    },
+    "bugs": {
+        "url": "https://github.com/ArtiomTr/reactive-forms/issues"
+    },
+    "devDependencies": {
+        "@reactive-forms/core": "^0.1.0-dev.bcb779c",
+        "@types/jest": "^26.0.24",
+        "@types/react": "^17.0.14",
+        "aqu": "^0.1.1",
+        "react": "^17.0.2"
+    },
+    "peerDependencies": {
+        "@reactive-forms/core": "^0.0.1",
+        "react": ">=16"
+    }
+}

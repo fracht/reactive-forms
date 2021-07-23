@@ -27,6 +27,7 @@
         }
     ],
     "devDependencies": {
+        "@reactive-forms/core": "^0.1.0",
         "@size-limit/preset-small-lib": "^4.10.2",
         "@types/jest": "^26.0.23",
         "@types/micromatch": "^4.0.1",
