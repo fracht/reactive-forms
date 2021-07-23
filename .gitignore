@@ -3,6 +3,7 @@
 node_modules
 .cache
 dist
+prepublish
 build
 .rpt2_cache
 
