@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/dom",
-    "version": "0.0.1-dev.4",
+    "version": "0.1.0",
     "description": "> TODO: description",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -26,14 +26,13 @@
         "test:watch": "aqu test --watch",
         "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
         "lint": "eslint .",
-        "lint:fix": "npm run lint --fix",
-        "prepare": "aqu build"
+        "lint:fix": "npm run lint --fix"
     },
     "bugs": {
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
-        "@reactive-forms/core": "^0.0.1-dev.5",
+        "@reactive-forms/core": "^0.1.0-dev.bcb779c",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/enzyme": "^3.10.9",
         "@types/jest": "^26.0.24",

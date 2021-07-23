@@ -52,7 +52,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node: ['12.x', '14.x', '16.x']
+                node: ['14.x', '16.x']
                 package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
                 os: [ubuntu-latest]
 
