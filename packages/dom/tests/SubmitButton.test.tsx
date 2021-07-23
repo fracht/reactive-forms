@@ -23,7 +23,7 @@ describe('SubmitButton', () => {
         expect(wrapper.find('button').children().text()).toBe('submit');
 
         await act(async () => {
-            wrapper.find('button').simulate('click');
+            await wrapper.find('button').simulate('click');
         });
 
         expect(submit).toBeCalledTimes(1);
@@ -51,7 +51,7 @@ describe('SubmitButton', () => {
         expect(wrapper.find('button').children().text()).toBe('custom button');
 
         await act(async () => {
-            wrapper.find('button').simulate('click');
+            await wrapper.find('button').simulate('click');
         });
 
         expect(submit).toBeCalledTimes(1);

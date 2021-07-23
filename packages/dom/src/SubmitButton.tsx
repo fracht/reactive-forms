@@ -5,7 +5,7 @@ import { renderComponent, RenderHelpers } from './renderComponent';
 
 export type SubmitButtonBag = {
     onClick: (e: React.MouseEvent) => void;
-    disabled?: boolean;
+    disabled: boolean;
 };
 
 export type SubmitButtonProps<Values extends object, C extends ComponentType | ElementType = 'button'> = {
