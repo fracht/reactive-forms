@@ -10,6 +10,7 @@ export * from './SubmitButton';
 export * from './Form';
 export * from './ErrorMessage';
 export * from './FieldArray';
+export * from './FieldValue';
 
 declare module '@reactive-forms/core' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
