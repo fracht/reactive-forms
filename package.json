@@ -1,7 +1,7 @@
 {
     "name": "reactive-forms",
     "private": true,
-    "version": "0.2.0",
+    "version": "0.2.0-dev.7ae3b46",
     "description": "Complex forms with React? Easy!",
     "author": "Artiom Tretjakovas",
     "license": "MIT",
@@ -13,8 +13,8 @@
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
-        "publish": "zx ./scripts/publish.ts",
-        "publish:check": "zx ./scripts/prepublish.ts"
+        "publish": "zxpp ./scripts/publish.ts",
+        "publish:check": "zxpp ./scripts/prepublish.ts"
     },
     "size-limit": [
         {
@@ -48,6 +48,7 @@
         "semver": "^7.3.5",
         "size-limit": "^4.10.2",
         "typescript": "^4.3.4",
-        "zx": "^2.0.0"
+        "zx": "^2.0.0",
+        "zxpp": "^0.1.6"
     }
 }

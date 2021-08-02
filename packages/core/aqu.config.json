@@ -1,6 +1,6 @@
 {
     "buildOptions": {
-        "target": ["es2019", "chrome58", "firefox57", "safari11", "edge16", "node12"]
+        "target": ["es2020", "chrome79", "firefox78", "safari13", "edge90", "node12"]
     },
     "dtsBundleGeneratorOptions": {
         "libraries": {

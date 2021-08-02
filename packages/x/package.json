@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/x",
-    "version": "0.2.0",
+    "version": "0.2.0-dev.7ae3b46",
     "description": "Advanced Reactive Forms components for rich eXperience",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -32,10 +32,10 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
-        "@reactive-forms/core": "^0.1.0-dev.bcb779c",
+        "@reactive-forms/core": "^0.2.0-dev.7ae3b46",
         "@types/jest": "^26.0.24",
         "@types/react": "^17.0.14",
-        "aqu": "^0.1.1",
+        "aqu": "^0.2.1",
         "react": "^17.0.2"
     },
     "peerDependencies": {

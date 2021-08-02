@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/dom",
-    "version": "0.2.0",
+    "version": "0.2.0-dev.7ae3b46",
     "description": "> TODO: description",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -39,7 +39,7 @@
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.2",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
-        "aqu": "^0.1.1",
+        "aqu": "^0.2.1",
         "enzyme": "^3.11.0",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"
