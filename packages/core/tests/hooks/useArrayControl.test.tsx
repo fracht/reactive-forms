@@ -7,15 +7,13 @@ const renderArrayControl = <T extends object>(
     name,
     config: FormConfig<T>
 ): [RenderHookResult<undefined, ArrayControl<unknown>>, FormShared<T>] => {
-    const {
-        result: { current: bag }
-    } = renderHook(() => useForm(config));
+    const { result: bag } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
+        <FormContext.Provider value={bag.current as unknown as FormShared<object>}>{children}</FormContext.Provider>
     );
 
-    return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag];
+    return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag.current];
 };
 
 describe('setItem', () => {
