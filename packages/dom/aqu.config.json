@@ -7,7 +7,7 @@
             "inlineDeclareExternals": true
         },
         "libraries": {
-            "importedLibraries": ["stocked", "yup", "react"],
+            "importedLibraries": ["stocked", "yup", "react", "@reactive-forms/core"],
             "allowedTypesLibraries": []
         }
     }
