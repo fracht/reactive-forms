@@ -12,8 +12,12 @@ describe('useForm', () => {
             expect(initialValues).toStrictEqual(initialValues);
             expect(helpers).toBeDefined();
             expect(await helpers.validateField('test', '')).toStrictEqual({ $error: 'Required' });
-            expect(await helpers.validateField('test', 'hello')).toBeUndefined();
-            expect(await helpers.validateForm({ test: '' })).toStrictEqual({ test: { $error: 'Required' } });
+            expect(await helpers.validateField('test', 'hello')).toStrictEqual({ $error: undefined });
+            expect(await helpers.validateField('testt', 'aaaa')).toBeUndefined();
+            expect(await helpers.validateForm({ test: '' })).toStrictEqual({
+                $error: undefined,
+                test: { $error: 'Required' }
+            });
         });
 
         const { result } = renderHook(() =>
