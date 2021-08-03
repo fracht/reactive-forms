@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/dom",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "> TODO: description",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -51,7 +51,7 @@
         "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
-        "@reactive-forms/core": "^0.2.0",
+        "@reactive-forms/core": "^0.3.0",
         "react": ">=16"
     }
 }
