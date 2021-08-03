@@ -11,13 +11,14 @@ import { usePlugins } from './usePlugins';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
-import { Empty, FieldValidator } from '../typings/FieldValidator';
+import { FieldValidator } from '../typings/FieldValidator';
 import { FormHelpers } from '../typings/FormHelpers';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
+import { validatorResultToError } from '../utils/validatorResultToError';
 
 export interface FormConfig<Values extends object> {
     initialValues: Values;
@@ -90,7 +91,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             if (hasValidator(name)) {
                 if (shouldValidatePureFields || !isEqual(value, get(initialValuesRef.current, name))) {
                     const error = await runFieldLevelValidation(name, value);
-                    setFieldError(name, error);
+                    setFieldError(name, (old) => ({ ...old, ...error }));
                     return error;
                 } else {
                     setFieldError(name, undefined);
@@ -114,7 +115,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const validateForm = useCallback(
         async (values: Values): Promise<FieldError<Values>> => {
             const registryErrors = await validateAllFields(values);
-            const validateFormFnErrors: FieldError<Values> | Empty = await validateFormFn?.(values);
+            const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
             const schemaErrors = await runFormValidationSchema(values);
 
             const allErrors = merge({}, registryErrors, validateFormFnErrors, schemaErrors);

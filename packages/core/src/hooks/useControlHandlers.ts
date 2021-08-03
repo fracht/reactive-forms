@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Stock } from 'stocked';
+import { SetStateAction, Stock } from 'stocked';
 
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
@@ -13,10 +13,10 @@ export type ControlHandlersConfig<Values extends object> = {
 };
 
 export type ControlHandlers<Values extends object> = {
-    setFieldError: <V>(name: string, error: FieldError<V> | undefined) => void;
-    setFieldTouched: <V>(name: string, touched: FieldTouched<V> | undefined) => void;
-    setFieldValue: <V>(name: string, value: V) => void;
-    setFormMeta: <V>(name: keyof FormMeta, value: V) => void;
+    setFieldError: <V>(name: string, error: SetStateAction<FieldError<V> | undefined>) => void;
+    setFieldTouched: <V>(name: string, touched: SetStateAction<FieldTouched<V> | undefined>) => void;
+    setFieldValue: <V>(name: string, value: SetStateAction<V>) => void;
+    setFormMeta: <V>(name: keyof FormMeta, value: SetStateAction<V>) => void;
 
     getFieldError: <V>(name: string) => FieldError<V> | undefined;
     getFieldTouched: <V>(name: string) => FieldTouched<V> | undefined;
@@ -35,24 +35,28 @@ export const useControlHandlers = <Values extends object>({
     formMeta
 }: ControlHandlersConfig<Values>): ControlHandlers<Values> => {
     const setFormMeta = useCallback(
-        (path: keyof FormMeta, value: unknown) => formMeta.setValue(path, value),
+        (path: keyof FormMeta, value: SetStateAction<unknown>) => formMeta.setValue(path, value),
         [formMeta]
     );
     const getFormMeta = useCallback(<V>(path: keyof FormMeta) => formMeta.getValue<V>(path), [formMeta]);
 
-    const setFieldValue = useCallback(<V>(name: string, value: V) => values.setValue(name, value), [values]);
+    const setFieldValue = useCallback(
+        <V>(name: string, value: SetStateAction<V>) => values.setValue(name, value),
+        [values]
+    );
     const getFieldValue = useCallback(<V>(name: string) => values.getValue<V>(name), [values]);
     const setValues = useCallback((newValues: Values) => values.setValues(newValues), [values]);
 
     const setFieldTouched = useCallback(
-        <V>(name: string, fieldTouched: FieldTouched<V> | undefined) => touched.setValue(name, fieldTouched),
+        <V>(name: string, fieldTouched: SetStateAction<FieldTouched<V> | undefined>) =>
+            touched.setValue(name, fieldTouched),
         [touched]
     );
     const getFieldTouched = useCallback(<V>(name: string) => touched.getValue<FieldTouched<V>>(name), [touched]);
     const setTouched = useCallback((allTouched: FieldTouched<Values>) => touched.setValues(allTouched), [touched]);
 
     const setFieldError = useCallback(
-        <V>(name: string, error: FieldError<V> | undefined) => errors.setValue(name, error),
+        <V>(name: string, error: SetStateAction<FieldError<V> | undefined>) => errors.setValue(name, error),
         [errors]
     );
     const getFieldError = useCallback(<V>(name: string) => errors.getValue<FieldError<V>>(name), [errors]);
