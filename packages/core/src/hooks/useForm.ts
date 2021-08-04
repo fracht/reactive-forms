@@ -28,6 +28,8 @@ export interface FormConfig<Values extends object> {
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;
+    onValidationSucceed?: () => void;
+    onReset?: () => void;
     shouldValidatePureFields?: boolean;
 }
 
@@ -60,7 +62,9 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         schema,
         shouldValidatePureFields,
         validateForm: validateFormFn,
-        onValidationFailed
+        onValidationFailed,
+        onValidationSucceed,
+        onReset
     } = config;
 
     const control = useFormControl({ initialValues, initialErrors, initialTouched });
@@ -134,8 +138,9 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             setValues(initialValues ?? initialValuesRef.current);
             setTouched(initialTouched ?? initialTouchedRef.current);
             setErrors(initialErrors ?? initialErrorsRef.current);
+            onReset?.();
         },
-        [setValues, setTouched, setErrors]
+        [setValues, setTouched, setErrors, onReset]
     );
 
     const helpers: FormHelpers<Values> = useMemo(
@@ -169,13 +174,25 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             setTouched(setNestedValues(currentValues, { $touched: true }));
 
             if (Object.keys(newErrors).length === 0) {
+                onValidationSucceed?.();
                 await action(currentValues, helpers);
                 setFormMeta('isSubmitting', false);
             } else {
                 onValidationFailed?.(newErrors);
             }
         },
-        [onSubmit, setFormMeta, getFormMeta, values, validateForm, setErrors, setTouched, onValidationFailed, helpers]
+        [
+            onSubmit,
+            setFormMeta,
+            getFormMeta,
+            values,
+            validateForm,
+            setErrors,
+            setTouched,
+            onValidationFailed,
+            helpers,
+            onValidationSucceed
+        ]
     );
 
     const registerValidator = useCallback(
