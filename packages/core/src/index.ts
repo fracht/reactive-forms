@@ -3,7 +3,8 @@ export { ReactiveForm as default } from './components/ReactiveForm';
 
 // components
 export * from './components/Field';
-export * from './components/FormContext';
+export * from './components/ReactiveFormProvider';
+export * from './components/ReactiveFormConsumer';
 export * from './components/FormProxyProvider';
 export * from './components/FormPlugins';
 

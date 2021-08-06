@@ -2,7 +2,7 @@ import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { MappingProxy, StockProxy } from 'stocked';
 
-import { FormContext, FormProxyProvider, FormShared, useForm, useFormContext } from '../../src';
+import { FormProxyProvider, FormShared, ReactiveFormProvider, useForm, useFormContext } from '../../src';
 import { FormControlConfig } from '../../src/hooks/useFormControl';
 
 const renderFormContextWithProxy = <T extends object>(
@@ -14,9 +14,9 @@ const renderFormContextWithProxy = <T extends object>(
     } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag as unknown as FormShared<object>}>
+        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
             <FormProxyProvider proxy={proxy}>{children}</FormProxyProvider>
-        </FormContext.Provider>
+        </ReactiveFormProvider>
     );
 
     return [renderHook(() => useFormContext(), { wrapper }), bag];

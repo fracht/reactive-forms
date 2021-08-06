@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { FormContext, FormShared, useForm } from '../../src';
+import { FormShared, ReactiveFormProvider, useForm } from '../../src';
 import { useControlHandlers } from '../../src/hooks/useControlHandlers';
 
 const renderControlHandlers = () => {
@@ -16,7 +16,7 @@ const renderControlHandlers = () => {
     );
 
     const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
+        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
     );
 
     const { errors, values, touched, formMeta } = bag;

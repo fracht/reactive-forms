@@ -4,11 +4,10 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import {
     createPluginArray,
     FormConfig,
-    FormContext,
     FormPlugins,
-    FormShared,
     Plugin,
     PluginArray,
+    ReactiveFormProvider,
     useForm,
     useFormContext
 } from '../../src';
@@ -29,9 +28,7 @@ const renderForm = <T extends object>(config: FormConfig<T>, plugins: PluginArra
         result: { current: bag }
     } = renderPlugins(config, plugins);
 
-    const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
-    );
+    const wrapper = ({ children }) => <ReactiveFormProvider formBag={bag}>{children}</ReactiveFormProvider>;
 
     return renderHook(() => useFormContext(), { wrapper });
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 
-import { ArrayControl, FormConfig, FormContext, FormShared, useArrayControl, useForm } from '../../src';
+import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
 
 const renderArrayControl = <T extends object>(
     name,
@@ -10,7 +10,7 @@ const renderArrayControl = <T extends object>(
     const { result: bag } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag.current as unknown as FormShared<object>}>{children}</FormContext.Provider>
+        <ReactiveFormProvider formBag={bag.current as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
     );
 
     return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag.current];

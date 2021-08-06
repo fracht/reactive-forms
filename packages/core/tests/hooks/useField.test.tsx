@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 
-import { FieldContext, FormConfig, FormContext, FormShared, useField, useForm } from '../../src';
+import { FieldContext, FormConfig, FormShared, ReactiveFormProvider, useField, useForm } from '../../src';
 
 const renderField = <V, T extends object>(
     name: string,
@@ -12,7 +12,7 @@ const renderField = <V, T extends object>(
     } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
+        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
     );
 
     return renderHook(() => useField<V>({ name }), { wrapper });
