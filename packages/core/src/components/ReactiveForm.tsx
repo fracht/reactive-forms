@@ -1,6 +1,6 @@
-import React, { ReactNode, ReactNodeArray } from 'react';
+import React, { PropsWithChildren } from 'react';
 
-import { FormContext, FormContextType } from './FormContext';
+import { ReactiveFormProvider } from './ReactiveFormProvider';
 import { FormConfig, useForm } from '../hooks/useForm';
 
 /**
@@ -16,11 +16,14 @@ import { FormConfig, useForm } from '../hooks/useForm';
  */
 export const ReactiveForm = <Values extends object>({
     children,
+    fallback,
     ...config
-}: FormConfig<Values> & { children: ReactNode | ReactNodeArray }) => {
+}: PropsWithChildren<FormConfig<Values> & { fallback?: React.ReactNode }>) => {
     const formBag = useForm<Values>(config);
 
     return (
-        <FormContext.Provider value={formBag as unknown as FormContextType<object>}>{children}</FormContext.Provider>
+        <ReactiveFormProvider fallback={fallback} formBag={formBag}>
+            {children}
+        </ReactiveFormProvider>
     );
 };
