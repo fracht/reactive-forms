@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
@@ -16,14 +16,24 @@ import { FormHelpers } from '../typings/FormHelpers';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
+import { loadingGuard } from '../utils/loadingGuard';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
+import { useThrowError } from '../utils/useThrowError';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-export interface FormConfig<Values extends object> {
-    initialValues: Values;
-    initialTouched?: FieldTouched<Values>;
-    initialErrors?: FieldError<Values>;
+export type InitialFormStateConfig<Values extends object> =
+    | {
+          initialValues: Values;
+          initialTouched?: FieldTouched<Values>;
+          initialErrors?: FieldError<Values>;
+          load?: undefined;
+      }
+    | {
+          load: () => Promise<InitialFormState<Values>>;
+      };
+
+export interface ExtendableFormConfig<Values extends object> {
     schema?: BaseSchema<Partial<Values> | undefined>;
     onSubmit?: SubmitAction<Values>;
     validateForm?: FieldValidator<Values>;
@@ -33,6 +43,8 @@ export interface FormConfig<Values extends object> {
     shouldValidatePureFields?: boolean;
 }
 
+export type FormConfig<Values extends object> = ExtendableFormConfig<Values> & InitialFormStateConfig<Values>;
+
 export type FieldObservers<V> = {
     valueObserver: (value: V) => void;
     errorObserver: (error: FieldError<V> | undefined) => void;
@@ -40,8 +52,8 @@ export type FieldObservers<V> = {
     validator?: FieldValidator<V>;
 };
 
-export type FormResetConfig<V> = {
-    initialValues?: V;
+export type InitialFormState<V> = {
+    initialValues: V;
     initialTouched?: FieldTouched<V>;
     initialErrors?: FieldError<V>;
 };
@@ -51,13 +63,13 @@ export type DefaultFormShared<Values extends object> = Omit<ValidationRegistryCo
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
     submit: (action?: SubmitAction<Values>) => void;
+    isLoaded: boolean;
 }
 
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
+    const throwError = useThrowError();
+
     const {
-        initialValues,
-        initialErrors = {} as FieldError<Values>,
-        initialTouched = {} as FieldTouched<Values>,
         onSubmit,
         schema,
         shouldValidatePureFields,
@@ -67,16 +79,28 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         onReset
     } = config;
 
+    const {
+        initialValues = {} as Values,
+        initialErrors = {} as FieldError<Values>,
+        initialTouched = {} as FieldTouched<Values>
+    } = config.load
+        ? {
+              initialValues: undefined,
+              initialErrors: undefined,
+              initialTouched: undefined
+          }
+        : (config as {
+              initialValues: Values;
+              initialTouched?: FieldTouched<Values>;
+              initialErrors?: FieldError<Values>;
+          });
+
     const control = useFormControl({ initialValues, initialErrors, initialTouched });
     const validationRegistry = useValidationRegistry();
 
     const initialValuesRef = useRef(initialValues);
     const initialErrorsRef = useRef(initialErrors);
     const initialTouchedRef = useRef(initialTouched);
-
-    initialValuesRef.current = initialValues;
-    initialErrorsRef.current = initialErrors;
-    initialTouchedRef.current = initialTouched;
 
     const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, errors } = control;
 
@@ -87,6 +111,11 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         unregisterValidator: removeValidatorFromRegistry,
         hasValidator
     } = validationRegistry;
+
+    const loadRef = useRef(config.load);
+    loadRef.current = config.load;
+
+    const [isLoaded, setIsLoaded] = useState(!config.load);
 
     const validationValueObservers = useRef<Record<string, () => void>>({});
 
@@ -134,10 +163,21 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     );
 
     const resetForm = useCallback(
-        ({ initialErrors, initialTouched, initialValues }: FormResetConfig<Values> = {}) => {
-            setValues(initialValues ?? initialValuesRef.current);
-            setTouched(initialTouched ?? initialTouchedRef.current);
-            setErrors(initialErrors ?? initialErrorsRef.current);
+        (initialFormState?: InitialFormState<Values>) => {
+            const { initialValues, initialErrors, initialTouched } = {
+                initialValues: initialFormState?.initialValues ?? initialValuesRef.current,
+                initialTouched: initialFormState?.initialTouched ?? initialTouchedRef.current,
+                initialErrors: initialFormState?.initialErrors ?? initialErrorsRef.current
+            };
+
+            setValues(initialValues);
+            setTouched(initialTouched);
+            setErrors(initialErrors);
+
+            initialValuesRef.current = initialValues;
+            initialErrorsRef.current = initialErrors;
+            initialTouchedRef.current = initialTouched;
+
             onReset?.();
         },
         [setValues, setTouched, setErrors, onReset]
@@ -238,6 +278,18 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         [errors, updateFormValidness]
     );
 
+    useEffect(() => {
+        if (loadRef.current) {
+            loadRef
+                .current()
+                .then((value) => {
+                    resetForm(value);
+                    setIsLoaded(true);
+                })
+                .catch(throwError);
+        }
+    }, [resetForm, throwError]);
+
     const bag = {
         submit,
         resetForm,
@@ -246,10 +298,11 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         registerValidator,
         unregisterValidator,
         hasValidator,
+        isLoaded,
         ...control
     };
 
     const bagWithPlugins = usePlugins(bag, config);
 
-    return bagWithPlugins;
+    return loadingGuard(bagWithPlugins, isLoaded);
 };
