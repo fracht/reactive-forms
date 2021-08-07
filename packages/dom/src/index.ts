@@ -11,6 +11,7 @@ export * from './Form';
 export * from './ErrorMessage';
 export * from './FieldArray';
 export * from './FieldValue';
+export * from './FieldValueArray';
 
 declare module '@reactive-forms/core' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

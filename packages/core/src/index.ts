@@ -23,6 +23,7 @@ export * from './hooks/useObjectField';
 export * from './hooks/useSubmitAction';
 export * from './hooks/useValidationRegistry';
 export * from './hooks/usePluginAssertion';
+export * from './hooks/useFieldValueArray';
 
 // typings
 export * from './typings/FieldContext';

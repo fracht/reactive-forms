@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { FieldValueArrayConfig, useFieldValueArray } from '../hooks/useFieldValueArray';
+import { FieldValueArrayConfig, useFieldValueArray } from '@reactive-forms/core';
 
 export type FieldValueArrayProps<T extends object> = FieldValueArrayConfig<Omit<T, 'children'>> & {
     children: (values: Omit<T, 'children'>) => React.ReactNode;
