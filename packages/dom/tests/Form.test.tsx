@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactiveForm, { createPluginArray, FormContext, FormPlugins, useForm } from '@reactive-forms/core';
+import ReactiveForm, { createPluginArray, FormPlugins, ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
@@ -69,11 +69,11 @@ describe('Form', () => {
         });
 
         const wrapper = mount(
-            <FormContext.Provider value={bag.current}>
+            <ReactiveFormProvider formBag={bag.current}>
                 <Form>
                     <div>children</div>
                 </Form>
-            </FormContext.Provider>
+            </ReactiveFormProvider>
         );
 
         await act(async () => {
