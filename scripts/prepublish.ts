@@ -2,9 +2,9 @@
 
 import { $ } from 'zx';
 
-console.log(chalk.bold('Bootstrap'));
+console.log(chalk.bold('Installing dependencies'));
 
-await $`npx lerna bootstrap`;
+await $`npx lerna exec "npm install"`;
 
 console.log(chalk.bold('Build'));
 

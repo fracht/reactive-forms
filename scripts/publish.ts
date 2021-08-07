@@ -81,7 +81,7 @@ const incrementVersion = async (folder: string, type: string) => {
 
 console.log(chalk.bold('Bootstrapping packages'));
 
-await $`npx lerna bootstrap`;
+await $`npx lerna exec "npm install"`;
 
 console.log(chalk.bold('Building packages'));
 
