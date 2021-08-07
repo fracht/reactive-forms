@@ -24,23 +24,7 @@ describe('FieldValue', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <FieldValue name="test">{({ value }) => <span>{value}</span>}</FieldValue>
-                </ReactiveForm>
-            </FormPlugins>
-        );
-
-        expect(wrapper.find('span').text()).toBe('hello');
-    });
-
-    it('should use custom component', () => {
-        const RenderValue = ({ value }: { value: string }) => {
-            return <span>{value}</span>;
-        };
-
-        const wrapper = mount(
-            <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <FieldValue name="test" as={RenderValue} />
+                    <FieldValue name="test">{(value) => <span>{value}</span>}</FieldValue>
                 </ReactiveForm>
             </FormPlugins>
         );
