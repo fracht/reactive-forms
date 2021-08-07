@@ -32,7 +32,7 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
-        "@reactive-forms/core": "^0.1.0-dev.bcb779c",
+        "@reactive-forms/core": "^0.3.8-dev.0b818e7",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/enzyme": "^3.10.9",
         "@types/jest": "^26.0.24",

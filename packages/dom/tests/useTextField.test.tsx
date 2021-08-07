@@ -1,5 +1,12 @@
 import React, { PropsWithChildren } from 'react';
-import { createPluginArray, FormConfig, FormContext, FormPlugins, FormShared, useForm } from '@reactive-forms/core';
+import {
+    createPluginArray,
+    FormConfig,
+    FormPlugins,
+    FormShared,
+    ReactiveFormProvider,
+    useForm
+} from '@reactive-forms/core';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
@@ -22,7 +29,9 @@ const renderUseTextField = <T extends object>(
         renderHook(() => useTextField({ name }), {
             wrapper: ({ children }: PropsWithChildren<{}>) => (
                 <FormPlugins plugins={createPluginArray(domPlugin)}>
-                    <FormContext.Provider value={bag as unknown as FormShared<object>}>{children}</FormContext.Provider>
+                    <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
+                        {children}
+                    </ReactiveFormProvider>
                 </FormPlugins>
             )
         }),
