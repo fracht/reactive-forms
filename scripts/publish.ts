@@ -79,28 +79,29 @@ const incrementVersion = async (folder: string, type: string) => {
     return newVersion;
 };
 
-const checkGitTree = async () => {
-    const oldV = $.verbose;
-    $.verbose = false;
-    const result = await $`git status --porcelain -z`;
-    $.verbose = oldV;
+const checkGit = async () => {
+    const changedFiles = await $`git status --porcelain`;
 
-    const changedFiles = result.stdout.trim();
+    if (changedFiles.stdout.trim().length !== 0) {
+        console.log(chalk.red.bold('You have uncommited files. Commit them before publishing'));
 
-    if (changedFiles.length === 0) {
-        return true;
-    } else {
-        return false;
+        throw '';
+    }
+
+    const currentBranch = (await $`git branch --show-current`).stdout.toString();
+
+    if (currentBranch !== 'master') {
+        console.log(
+            chalk.red.bold(
+                `You're trying to publish package in "${currentBranch}". Publishing is available only from "master" branch`
+            )
+        );
+
+        throw '';
     }
 };
 
-const gitTreeOk = await checkGitTree();
-
-if (!gitTreeOk) {
-    console.log(chalk.red.bold('You have uncommited files. Commit them before publishing'));
-
-    throw '';
-}
+await checkGit();
 
 console.log(chalk.bold('Incrementing version'));
 
