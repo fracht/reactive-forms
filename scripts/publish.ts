@@ -79,6 +79,36 @@ const incrementVersion = async (folder: string, type: string) => {
     return newVersion;
 };
 
+const checkGit = async () => {
+    const changedFiles = await $`git status --porcelain`;
+
+    if (changedFiles.stdout.trim().length !== 0) {
+        console.log(chalk.red.bold('You have uncommited files. Commit them before publishing'));
+
+        throw '';
+    }
+
+    const currentBranch = (await $`git branch --show-current`).stdout.trim();
+
+    if (currentBranch !== 'master') {
+        console.log(
+            chalk.red.bold(
+                `You're trying to publish package in "${currentBranch}". Publishing is available only from "master" branch`
+            )
+        );
+
+        throw '';
+    }
+};
+
+await checkGit();
+
+console.log(chalk.bold('Incrementing version'));
+
+const version = await incrementVersion(process.cwd(), argv.type);
+
+console.log(chalk.green('Successfully incremented version. New version is: '), chalk.cyan.bold(version));
+
 console.log(chalk.bold('Bootstrapping packages'));
 
 await $`npx lerna exec "npm install"`;
@@ -86,12 +116,6 @@ await $`npx lerna exec "npm install"`;
 console.log(chalk.bold('Building packages'));
 
 await $`npx lerna exec "npm run build"`;
-
-console.log(chalk.bold('Incrementing version'));
-
-const version = await incrementVersion(process.cwd(), argv.type);
-
-console.log(chalk.green('Successfully incremented version. New version is: '), chalk.cyan.bold(version));
 
 const packages = await getPackages('packages');
 
