@@ -8,11 +8,13 @@ import { domPlugin, FieldValue } from '../src';
 configureEnzyme();
 
 describe('FieldValue', () => {
-    it('should render field value by default in div', () => {
+    it('should render field value by default in Fragment', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <FieldValue name="test" />
+                    <div>
+                        <FieldValue name="test" />
+                    </div>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -20,6 +22,17 @@ describe('FieldValue', () => {
         expect(wrapper.find('div').text()).toBe('hello');
     });
 
+    it('should render field value by as prop', () => {
+        const wrapper = mount(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{ test: 'hello' }}>
+                    <FieldValue name="test" as="div" />
+                </ReactiveForm>
+            </FormPlugins>
+        );
+
+        expect(wrapper.find('div').text()).toBe('hello');
+    });
     it('should call function renderer', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
