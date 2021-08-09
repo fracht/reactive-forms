@@ -1,11 +1,17 @@
-import { ComponentType, ElementType } from 'react';
+import React, { ComponentType, ElementType, Fragment, PropsWithChildren } from 'react';
 import { useFieldValue } from '@reactive-forms/core';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 
+export type FieldValueBag<V> = {
+    children: V;
+};
+
 export type FieldValueProps<V, C extends ComponentType | ElementType = 'div'> = {
     name: string;
-} & Omit<RenderHelpers<V, C>, 'as'>;
+} & RenderHelpers<FieldValueBag<V>, C, V>;
+
+const DefaultFieldValueRenderer = ({ children }: PropsWithChildren<{}>) => <Fragment>{children}</Fragment>;
 
 export const FieldValue = <V, C extends ComponentType | ElementType = 'div'>({
     name,
@@ -15,9 +21,12 @@ export const FieldValue = <V, C extends ComponentType | ElementType = 'div'>({
     const [value] = useFieldValue<V>(name);
 
     return renderComponent({
-        bag: value,
-        as: 'div',
+        bag: {
+            children: value
+        },
+        childrenBag: value,
+        as: DefaultFieldValueRenderer,
         children: children ?? value,
-        ...(renderComponentProps as RenderHelpers<V, C>)
+        ...(renderComponentProps as RenderHelpers<FieldValueBag<V>, C, V>)
     });
 };

@@ -119,6 +119,23 @@ describe('normal behaviour', () => {
 
         expect(container.querySelector('span').innerHTML).toBe('asdf');
     });
+
+    it('should render via children function (custom bag)', () => {
+        act(() => {
+            render(
+                renderComponent({
+                    bag: {
+                        value: 'asdf'
+                    },
+                    childrenBag: 'asdf',
+                    children: (value) => <span>{value}</span>
+                }),
+                container
+            );
+        });
+
+        expect(container.querySelector('span').innerHTML).toBe('asdf');
+    });
 });
 
 describe('exceptions', () => {

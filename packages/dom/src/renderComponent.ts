@@ -1,9 +1,9 @@
 import { ComponentProps, ComponentType, createElement, ElementType, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
-export type StrictRenderHelpers<B, C extends ComponentType | ElementType> = (
+export type StrictRenderHelpers<B, C extends ComponentType | ElementType, ChildrenBag = B> = (
     | {
-          children: ((bag: B) => ReactNode) | ReactNode;
+          children: ((bag: ChildrenBag) => ReactNode) | ReactNode;
           as?: never;
       }
     | {
@@ -13,9 +13,9 @@ export type StrictRenderHelpers<B, C extends ComponentType | ElementType> = (
 ) &
     Omit<ComponentProps<C>, 'children' | 'as' | keyof B>;
 
-export type RenderHelpers<B, C extends ComponentType | ElementType> = (
+export type RenderHelpers<B, C extends ComponentType | ElementType, ChildrenBag = B> = (
     | {
-          children: ((bag: B) => ReactNode) | ReactNode;
+          children: ((bag: ChildrenBag) => ReactNode) | ReactNode;
           as?: never;
       }
     | {
@@ -25,22 +25,26 @@ export type RenderHelpers<B, C extends ComponentType | ElementType> = (
 ) &
     Omit<ComponentProps<C>, 'children' | 'as' | keyof B>;
 
-type RenderComponentProps<B, C extends ComponentType | ElementType> = StrictRenderHelpers<B, C> & {
+type RenderComponentProps<B, C extends ComponentType | ElementType, ChildrenBag = B> = StrictRenderHelpers<
+    B,
+    C,
+    ChildrenBag
+> & {
     bag: B;
     elementProps?: unknown;
+    childrenBag?: ChildrenBag;
 };
 
-export const renderComponent = <B, C extends ComponentType | ElementType>({
+export const renderComponent = <B, C extends ComponentType | ElementType, ChildrenBag = B>({
     as,
     children,
     bag,
     elementProps,
+    childrenBag,
     ...other
-}: RenderComponentProps<B, C>): JSX.Element => {
-    invariant(as || typeof children === 'function', 'Cannot render: not specified renderer("children" or "as" props)');
-
+}: RenderComponentProps<B, C, ChildrenBag>): JSX.Element => {
     if (typeof children === 'function') {
-        return children(bag);
+        return children(childrenBag ?? (bag as unknown as ChildrenBag));
     }
 
     if (typeof as !== 'string' && as) {
@@ -48,8 +52,8 @@ export const renderComponent = <B, C extends ComponentType | ElementType>({
     }
 
     if (as !== undefined) {
-        return createElement(as, { ...bag, ...(elementProps as object), ...other }, children);
+        return createElement(as, { ...((elementProps ?? bag) as object), ...other }, children);
     }
 
-    throw new Error('No renderer found');
+    invariant(false, 'Cannot render: not specified renderer("children" or "as" props)');
 };
