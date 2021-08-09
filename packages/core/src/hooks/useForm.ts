@@ -70,14 +70,13 @@ export interface FormShared<Values extends object> extends DefaultFormShared<Val
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const throwError = useThrowError();
 
-    const {
-        onSubmit,
-        schema,
-        shouldValidatePureFields,
-        validateForm: validateFormFn,
-        onValidationFailed,
-        onValidationSucceed
-    } = config;
+    const { schema, shouldValidatePureFields } = config;
+
+    const onSubmit = useRefCallback(config.onSubmit);
+    const validateFormFn = useRefCallback(config.validateForm);
+    const onValidationFailed = useRefCallback(config.onValidationFailed);
+    const onValidationSucceed = useRefCallback(config.onValidationSucceed);
+    const onReset = useRefCallback(config.onReset);
 
     const {
         initialValues = {} as Values,
@@ -116,8 +115,6 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const loadRef = useRef(config.load);
     loadRef.current = config.load;
-
-    const onReset = useRefCallback(config.onReset);
 
     const [isLoaded, setIsLoaded] = useState(!config.load);
 
