@@ -19,6 +19,7 @@ import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { loadingGuard } from '../utils/loadingGuard';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
+import { useRefCallback } from '../utils/useRefCallback';
 import { useThrowError } from '../utils/useThrowError';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
@@ -75,8 +76,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         shouldValidatePureFields,
         validateForm: validateFormFn,
         onValidationFailed,
-        onValidationSucceed,
-        onReset
+        onValidationSucceed
     } = config;
 
     const {
@@ -114,6 +114,8 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const loadRef = useRef(config.load);
     loadRef.current = config.load;
+
+    const onReset = useRefCallback(config.onReset);
 
     const [isLoaded, setIsLoaded] = useState(!config.load);
 
@@ -178,7 +180,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             initialErrorsRef.current = initialErrors;
             initialTouchedRef.current = initialTouched;
 
-            onReset?.();
+            onReset();
         },
         [setValues, setTouched, setErrors, onReset]
     );
@@ -279,7 +281,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     );
 
     useEffect(() => {
-        if (loadRef.current) {
+        if (loadRef.current && !isLoaded) {
             loadRef
                 .current()
                 .then((value) => {
@@ -288,7 +290,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                 })
                 .catch(throwError);
         }
-    }, [resetForm, throwError]);
+    }, [resetForm, throwError, isLoaded]);
 
     const bag = {
         submit,
