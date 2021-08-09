@@ -102,6 +102,8 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const initialErrorsRef = useRef(initialErrors);
     const initialTouchedRef = useRef(initialTouched);
 
+    const isPending = useRef(false);
+
     const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, errors } = control;
 
     const {
@@ -281,14 +283,17 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     );
 
     useEffect(() => {
-        if (loadRef.current && !isLoaded) {
+        if (loadRef.current && !isPending.current && !isLoaded) {
+            isPending.current = true;
+
             loadRef
                 .current()
-                .then((value) => {
-                    resetForm(value);
+                .then(resetForm)
+                .catch(throwError)
+                .finally(() => {
                     setIsLoaded(true);
-                })
-                .catch(throwError);
+                    isPending.current = false;
+                });
         }
     }, [resetForm, throwError, isLoaded]);
 
