@@ -88,7 +88,7 @@ const checkGit = async () => {
         throw '';
     }
 
-    const currentBranch = (await $`git branch --show-current`).stdout.toString();
+    const currentBranch = (await $`git branch --show-current`).stdout.trim();
 
     if (currentBranch !== 'master') {
         console.log(
