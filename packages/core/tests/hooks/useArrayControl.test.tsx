@@ -10,7 +10,9 @@ const renderArrayControl = <T extends object>(
     const { result: bag } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
-        <ReactiveFormProvider formBag={bag.current as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
+        <ReactiveFormProvider formBag={bag.current as unknown as FormShared<object>}>
+            {() => children}
+        </ReactiveFormProvider>
     );
 
     return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag.current];

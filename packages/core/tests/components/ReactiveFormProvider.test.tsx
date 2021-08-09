@@ -8,7 +8,7 @@ describe('ReactiveFormProvider', () => {
         const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
 
         const wrapper = ({ children }) => (
-            <ReactiveFormProvider formBag={formBagResult.current}>{children}</ReactiveFormProvider>
+            <ReactiveFormProvider formBag={formBagResult.current}>{() => children}</ReactiveFormProvider>
         );
 
         const { result } = renderHook(() => useFormContext(), { wrapper });
@@ -21,7 +21,7 @@ describe('ReactiveFormProvider', () => {
 
         const wrapper = ({ children }) => (
             <ReactiveFormProvider formBag={{ ...formBagResult.current, isLoaded: false }}>
-                {children}
+                {() => children}
             </ReactiveFormProvider>
         );
 
