@@ -79,6 +79,20 @@ const incrementVersion = async (folder: string, type: string) => {
     return newVersion;
 };
 
+const checkGitTree = async () => {
+    const result = await $`git status --procelain`;
+
+    const changedFiles = result.stdout.trim();
+
+    if(changedFiles.length)
+}
+
+console.log(chalk.bold('Incrementing version'));
+
+const version = await incrementVersion(process.cwd(), argv.type);
+
+console.log(chalk.green('Successfully incremented version. New version is: '), chalk.cyan.bold(version));
+
 console.log(chalk.bold('Bootstrapping packages'));
 
 await $`npx lerna exec "npm install"`;
@@ -86,12 +100,6 @@ await $`npx lerna exec "npm install"`;
 console.log(chalk.bold('Building packages'));
 
 await $`npx lerna exec "npm run build"`;
-
-console.log(chalk.bold('Incrementing version'));
-
-const version = await incrementVersion(process.cwd(), argv.type);
-
-console.log(chalk.green('Successfully incremented version. New version is: '), chalk.cyan.bold(version));
 
 const packages = await getPackages('packages');
 
