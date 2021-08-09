@@ -80,11 +80,26 @@ const incrementVersion = async (folder: string, type: string) => {
 };
 
 const checkGitTree = async () => {
-    const result = await $`git status --procelain`;
+    const oldV = $.verbose;
+    $.verbose = false;
+    const result = await $`git status --porcelain -z`;
+    $.verbose = oldV;
 
     const changedFiles = result.stdout.trim();
 
-    if(changedFiles.length)
+    if (changedFiles.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const gitTreeOk = await checkGitTree();
+
+if (!gitTreeOk) {
+    console.log(chalk.red.bold('You have uncommited files. Commit them before publishing'));
+
+    throw '';
 }
 
 console.log(chalk.bold('Incrementing version'));
