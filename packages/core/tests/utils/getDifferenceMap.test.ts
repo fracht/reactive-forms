@@ -1,3 +1,5 @@
+import { ROOT_PATH } from 'stocked';
+
 import { getDifferenceMap } from '../../src/utils/getDifferenceMap';
 
 describe('getDifferenceMap', () => {
@@ -7,7 +9,7 @@ describe('getDifferenceMap', () => {
         };
 
         const equalityOutput = {
-            '': true
+            [ROOT_PATH]: true
         };
 
         expect(getDifferenceMap(obj, obj)).toStrictEqual(equalityOutput);
@@ -55,7 +57,7 @@ describe('getDifferenceMap', () => {
                     h: 'b'
                 }
             )
-        ).toStrictEqual({ '': false });
+        ).toStrictEqual({ [ROOT_PATH]: false });
 
         expect(
             getDifferenceMap(
@@ -102,7 +104,7 @@ describe('getDifferenceMap', () => {
                     h: 'b'
                 }
             )
-        ).toStrictEqual({ '': false });
+        ).toStrictEqual({ [ROOT_PATH]: false });
 
         expect(
             getDifferenceMap(
@@ -111,8 +113,54 @@ describe('getDifferenceMap', () => {
                 },
                 {}
             )
-        ).toStrictEqual({ '': false });
+        ).toStrictEqual({ [ROOT_PATH]: false });
 
-        expect(getDifferenceMap({}, {})).toStrictEqual({ '': true });
+        expect(getDifferenceMap({}, {})).toStrictEqual({ [ROOT_PATH]: true });
+    });
+
+    it('complex case', () => {
+        expect(
+            getDifferenceMap(
+                {
+                    date_from: {
+                        from: null,
+                        to: null
+                    },
+                    date_to: {
+                        from: null,
+                        to: null
+                    },
+                    ord_no: '',
+                    customer_name: '',
+                    supplier_name: '',
+                    ord_date: {
+                        from: null,
+                        to: null
+                    },
+                    status: '',
+                    sys: '',
+                    '': 'ALL'
+                },
+                {
+                    date_from: {
+                        from: null,
+                        to: null
+                    },
+                    date_to: {
+                        from: null,
+                        to: null
+                    },
+                    ord_no: '',
+                    customer_name: '',
+                    supplier_name: '',
+                    ord_date: {
+                        from: null,
+                        to: null
+                    },
+                    status: '',
+                    sys: ''
+                }
+            )
+        );
     });
 });

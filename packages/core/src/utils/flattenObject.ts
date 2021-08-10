@@ -1,7 +1,9 @@
+import { ROOT_PATH } from 'stocked';
+
 import { joinPaths } from './joinPaths';
 
 export const flattenObject = (obj: object): Record<string, unknown> => {
-    const queue: Array<[string, object]> = [['', obj]];
+    const queue: Array<[string | symbol, object]> = [[ROOT_PATH, obj]];
 
     const result: Record<string, unknown> = {};
 
