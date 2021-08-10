@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/core",
-    "version": "0.3.13",
+    "version": "0.3.14",
     "description": "Core package of Reactive Forms framework",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
