@@ -1,7 +1,7 @@
 {
     "name": "reactive-forms",
     "private": true,
-    "version": "0.3.14",
+    "version": "0.3.15",
     "description": "Complex forms with React? Easy!",
     "author": "Artiom Tretjakovas",
     "license": "MIT",
