@@ -7,7 +7,7 @@ import { flattenObject } from './flattenObject';
 export type DifferenceMap = Record<string | typeof ROOT_PATH, boolean>;
 
 const nearestChild = (parentPath: string | typeof ROOT_PATH, comparePath: string) => {
-    const indexOfDot = comparePath.indexOf('.', parentPath === ROOT_PATH ? 0 : (parentPath as string).length + 1);
+    const indexOfDot = comparePath.indexOf('.', parentPath === ROOT_PATH ? 0 : parentPath.length + 1);
 
     return indexOfDot === -1 ? comparePath : comparePath.substring(0, indexOfDot);
 };
