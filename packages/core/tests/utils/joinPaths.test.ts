@@ -7,7 +7,7 @@ describe('joinPaths', () => {
         expect(joinPaths('hello', 'this', 'is', 'test')).toBe('hello.this.is.test');
     });
     it('should filter empty paths', () => {
-        expect(joinPaths('hello', false, '', null, 'test', null, null)).toBe('hello.test');
+        expect(joinPaths('hello', false, '', null, 'test', null, null)).toBe('hello..test');
         expect(joinPaths(null, false, '', null)).toBe('');
         expect(joinPaths()).toBe('');
     });
