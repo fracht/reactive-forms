@@ -15,7 +15,6 @@ describe('useForm', () => {
             expect(await helpers.validateField('test', 'hello')).toStrictEqual({ $error: undefined });
             expect(await helpers.validateField('testt', 'aaaa')).toBeUndefined();
             expect(await helpers.validateForm({ test: '' })).toStrictEqual({
-                $error: undefined,
                 test: { $error: 'Required' }
             });
         });
