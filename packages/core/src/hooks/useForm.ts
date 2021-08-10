@@ -152,10 +152,10 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
             const schemaErrors = await runFormValidationSchema(values);
 
-            const allErrors = merge({}, registryErrors, validateFormFnErrors, schemaErrors);
+            const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors));
 
             if (shouldValidatePureFields) {
-                return allErrors;
+                return (allErrors ?? {}) as FieldError<Values>;
             } else {
                 return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
             }
