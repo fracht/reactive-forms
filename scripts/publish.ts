@@ -19,16 +19,10 @@ const publishPackage = async (pkg: string, otp: string | undefined) => {
     $([command] as unknown as TemplateStringsArray);
 };
 
-const preparePackage = async (pkg: string, version: string) => {
+const preparePackage = async (pkg: string) => {
     const packageJson = await fs
         .readFile(join(pkg, 'package.json'))
         .then((data: Buffer) => JSON.parse(data.toString()));
-
-    packageJson.version = version;
-
-    if (!argv.dry) {
-        await fs.writeFile(join(pkg, 'package.json'), JSON.stringify(packageJson, null, 4));
-    }
 
     delete packageJson.devDependencies;
     delete packageJson.resolutions;
@@ -44,13 +38,24 @@ const preparePackage = async (pkg: string, version: string) => {
     await fs.copyFile(join(pkg, 'README.md'), join(pkg, 'prepublish', 'README.md'));
 };
 
+const updatePackageVersion = async (folder: string, version: string) => {
+    const packageJsonPath = join(folder, 'package.json');
+    const packageJson = await fs.readFile(packageJsonPath).then((data: Buffer) => JSON.parse(data.toString()));
+
+    packageJson.version = version;
+
+    if (!argv.dry) {
+        await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
+    }
+};
+
 const incrementVersion = async (folder: string, type: string) => {
-    const packageLockPath = join(folder, 'package.json');
-    const packageJson = await fs.readFile(packageLockPath).then((data: Buffer) => JSON.parse(data.toString()));
+    const packageJsonPath = join(folder, 'package.json');
+    const packageJson = await fs.readFile(packageJsonPath).then((data: Buffer) => JSON.parse(data.toString()));
     const currentVersion = semver.coerce(packageJson.version)!;
     const sha = await $`git rev-parse --short HEAD`;
 
-    let newVersion;
+    let newVersion: string;
 
     switch (type) {
         case 'dev':
@@ -70,10 +75,12 @@ const incrementVersion = async (folder: string, type: string) => {
             throw new Error(`Cannot increment version: ${type} type is not recognized`);
     }
 
-    packageJson.version = newVersion;
-
     if (!argv.dry) {
-        await fs.writeFile(packageLockPath, JSON.stringify(packageJson, null, 4));
+        await updatePackageVersion(folder, newVersion);
+
+        const packages = await getPackages(join(folder, 'packages'));
+
+        await Promise.all(packages.map((pkg) => updatePackageVersion(pkg, newVersion)));
     }
 
     return newVersion;
@@ -121,7 +128,7 @@ const packages = await getPackages('packages');
 
 console.log(chalk.bold('Prepare all packages'));
 
-await Promise.all(packages.map((pkg) => preparePackage(pkg, version)));
+await Promise.all(packages.map(preparePackage));
 
 console.log(chalk.bold('Publish all packages'));
 
