@@ -39,12 +39,12 @@ export const renderComponent = <B, C extends ComponentType | ElementType, Childr
     as,
     children,
     bag,
-    elementProps,
-    childrenBag,
+    elementProps = bag,
+    childrenBag = bag as unknown as ChildrenBag,
     ...other
 }: RenderComponentProps<B, C, ChildrenBag>): JSX.Element => {
     if (typeof children === 'function') {
-        return children(childrenBag ?? (bag as unknown as ChildrenBag));
+        return children(childrenBag);
     }
 
     if (typeof as !== 'string' && as) {
@@ -52,7 +52,7 @@ export const renderComponent = <B, C extends ComponentType | ElementType, Childr
     }
 
     if (as !== undefined) {
-        return createElement(as, { ...((elementProps ?? bag) as object), ...other }, children);
+        return createElement(as, { ...(elementProps as object), ...other }, children);
     }
 
     invariant(false, 'Cannot render: not specified renderer("children" or "as" props)');
