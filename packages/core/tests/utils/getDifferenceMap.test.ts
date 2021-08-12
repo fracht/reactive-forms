@@ -80,6 +80,25 @@ describe('getDifferenceMap', () => {
             getDifferenceMap(
                 {
                     h: 'b',
+                    h_a: 'c',
+                    c: {
+                        a: 'h'
+                    }
+                },
+                {
+                    h: 'b',
+                    h_a: 'b',
+                    c: {
+                        a: 'b'
+                    }
+                }
+            )
+        ).toStrictEqual({ h_a: false, h: true, c: false });
+
+        expect(
+            getDifferenceMap(
+                {
+                    h: 'b',
                     c: {
                         a: 'h',
                         d: 'a'
