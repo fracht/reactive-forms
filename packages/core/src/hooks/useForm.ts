@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
@@ -171,9 +172,9 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                 initialErrors: initialFormState?.initialErrors ?? initialErrorsRef.current
             };
 
-            setValues(initialValues);
-            setTouched(initialTouched);
-            setErrors(initialErrors);
+            setValues(cloneDeep(initialValues));
+            setTouched(cloneDeep(initialTouched));
+            setErrors(cloneDeep(initialErrors));
 
             initialValuesRef.current = initialValues;
             initialErrorsRef.current = initialErrors;
