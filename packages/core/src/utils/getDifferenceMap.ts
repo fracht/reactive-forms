@@ -21,7 +21,7 @@ const isInnerPath = (parent: string | typeof ROOT_PATH, child: string) => {
         return child[0] === '.';
     }
 
-    return child.toString().indexOf(parent.toString() + '.') === 0;
+    return child.indexOf(parent + '.') === 0;
 };
 
 export const getDifferenceMap = (obj1: object, obj2: object): DifferenceMap => {
@@ -55,7 +55,7 @@ export const getDifferenceMap = (obj1: object, obj2: object): DifferenceMap => {
                 (innerPath, index, arr) => index === 0 || rawDiffMap[innerPath] === rawDiffMap[arr[index - 1]]
             )
         ) {
-            diffMap[curPath as string] = rawDiffMap[innerPaths[0]];
+            diffMap[curPath as string] = rawDiffMap[innerPaths[0] ?? curPath];
         } else {
             pathQueue.push(...uniq(innerPaths.map((innerPath) => nearestChild(curPath, innerPath))));
         }
