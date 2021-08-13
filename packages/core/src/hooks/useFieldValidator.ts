@@ -14,7 +14,7 @@ export type FieldValidationProps<V> = {
 };
 
 export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: UseFieldValidatorConfig<V>) => {
-    const { registerValidator, unregisterValidator } = useFormContext();
+    const { registerValidator } = useFormContext();
 
     const validate = async (value: V) => {
         if (!validatorFn && !schema) return undefined;
@@ -34,8 +34,6 @@ export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: U
     useEffect(() => {
         const validator = (value: V) => validateRef.current?.(value);
 
-        registerValidator(name, validator);
-
-        return () => unregisterValidator(name, validator);
-    }, [name, registerValidator, unregisterValidator]);
+        return registerValidator(name, validator);
+    }, [name, registerValidator]);
 };
