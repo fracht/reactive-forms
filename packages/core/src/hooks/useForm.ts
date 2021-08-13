@@ -110,7 +110,6 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         validateField: runFieldLevelValidation,
         validateAllFields,
         registerValidator: addValidatorToRegistry,
-        unregisterValidator: removeValidatorFromRegistry,
         hasValidator
     } = validationRegistry;
 
@@ -239,23 +238,21 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const registerValidator = useCallback(
         <V>(name: string, validator: FieldValidator<V>) => {
-            addValidatorToRegistry(name, validator);
+            const cleanup = addValidatorToRegistry(name, validator);
             if (!Object.prototype.hasOwnProperty.call(validationValueObservers.current, name)) {
                 validationValueObservers.current[name] = values.watch(name, (value) => validateField(name, value));
             }
-        },
-        [addValidatorToRegistry, validateField, values]
-    );
 
-    const unregisterValidator = useCallback(
-        <V>(name: string, validator: FieldValidator<V>) => {
-            removeValidatorFromRegistry(name, validator);
-            if (!hasValidator(name) && Object.prototype.hasOwnProperty.call(validationValueObservers, name)) {
-                validationValueObservers.current[name]();
-                delete validationValueObservers.current[name];
-            }
+            return () => {
+                cleanup();
+
+                if (!hasValidator(name) && Object.prototype.hasOwnProperty.call(validationValueObservers, name)) {
+                    validationValueObservers.current[name]();
+                    delete validationValueObservers.current[name];
+                }
+            };
         },
-        [hasValidator, removeValidatorFromRegistry]
+        [addValidatorToRegistry, hasValidator, validateField, values]
     );
 
     const updateFormDirtiness = useCallback(
@@ -301,7 +298,6 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         validateField,
         validateForm,
         registerValidator,
-        unregisterValidator,
         hasValidator,
         isLoaded,
         ...control

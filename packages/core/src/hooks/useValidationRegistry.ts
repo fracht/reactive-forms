@@ -11,8 +11,7 @@ import { validatorResultToError } from '../utils/validatorResultToError';
 export type ValidationRegistry = Record<string, FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
-    registerValidator: <V>(name: string, validator: FieldValidator<V>) => void;
-    unregisterValidator: <V>(name: string, validator: FieldValidator<V>) => void;
+    registerValidator: <V>(name: string, validator: FieldValidator<V>) => () => void;
     validateField: <V>(name: string, value: V) => Promise<FieldError<V> | undefined>;
     validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
     hasValidator: (name: string) => boolean;
@@ -26,16 +25,16 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
             registry.current[name] = new FunctionArray();
         }
         registry.current[name].push(validator as FieldValidator<unknown>);
-    }, []);
 
-    const unregisterValidator = useCallback(<V>(name: string, validator: FieldValidator<V>) => {
-        const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current[name];
+        return () => {
+            const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current[name];
 
-        invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
+            invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
 
-        currentValidators.remove(validator as FieldValidator<unknown>);
+            currentValidators.remove(validator as FieldValidator<unknown>);
 
-        if (currentValidators.isEmpty()) delete registry.current[name];
+            if (currentValidators.isEmpty()) delete registry.current[name];
+        };
     }, []);
 
     const validateField = useCallback(async <V>(name: string, value: V): Promise<FieldError<V> | undefined> => {
@@ -68,7 +67,6 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
     return {
         registerValidator,
-        unregisterValidator,
         validateField,
         validateAllFields,
         hasValidator
