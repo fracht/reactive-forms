@@ -215,12 +215,15 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             setErrors(newErrors);
             setTouched(setNestedValues(currentValues, { $touched: true }));
 
-            if (Object.keys(newErrors).length === 0) {
-                onValidationSucceed?.();
-                await action(currentValues, helpers);
+            try {
+                if (Object.keys(newErrors).length === 0) {
+                    onValidationSucceed?.();
+                    await action(currentValues, helpers);
+                } else {
+                    onValidationFailed?.(newErrors);
+                }
+            } finally {
                 setFormMeta('isSubmitting', false);
-            } else {
-                onValidationFailed?.(newErrors);
             }
         },
         [
