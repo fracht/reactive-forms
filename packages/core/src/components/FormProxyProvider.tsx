@@ -13,13 +13,13 @@ export type FormProxyProviderProps = PropsWithChildren<{
 export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) => {
     const { values, errors, touched, formMeta, registerValidator, ...other } = useFormContext();
 
-    const { getFieldValue } = other;
-
     const newValues = useStockContext(values, proxy);
     const newErrors = useStockContext(errors, proxy);
     const newTouched = useStockContext(touched, proxy);
 
     const handlers = useControlHandlers({ values: newValues, errors: newErrors, touched: newTouched, formMeta });
+
+    const { getFieldValue } = handlers;
 
     const interceptedRegisterValidator = useCallback(
         <V,>(name: string, validator: FieldValidator<V>) =>
@@ -29,7 +29,7 @@ export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) =
                 registerValidator,
                 (name, validator) => {
                     return registerValidator(proxy.getNormalPath(name) as string, () =>
-                        validator(proxy.getValue(name, getFieldValue(name)!))
+                        validator(getFieldValue(name)!)
                     );
                 },
                 [name, validator as FieldValidator<unknown>]
