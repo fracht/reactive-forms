@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback } from 'react';
+import React, { createContext, PropsWithChildren, useCallback } from 'react';
 import { intercept, StockProxy, useStockContext } from 'stocked';
 
 import { FormContext } from './FormContext';
@@ -9,6 +9,8 @@ import { FieldValidator } from '../typings/FieldValidator';
 export type FormProxyProviderProps = PropsWithChildren<{
     proxy: StockProxy;
 }>;
+
+export const FormProxyContext = createContext<StockProxy | undefined>(undefined);
 
 export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) => {
     const { values, errors, touched, formMeta, registerValidator, ...other } = useFormContext();
@@ -49,7 +51,7 @@ export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) =
                 registerValidator: interceptedRegisterValidator
             }}
         >
-            {children}
+            <FormProxyContext.Provider value={proxy}>{children}</FormProxyContext.Provider>
         </FormContext.Provider>
     );
 };
