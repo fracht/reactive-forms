@@ -41,7 +41,7 @@ export interface ExtendableFormConfig<Values extends object> {
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;
     onValidationSucceed?: () => void;
-    onReset?: () => void;
+    onReset?: (initialValues: Values) => void;
     shouldValidatePureFields?: boolean;
 }
 
@@ -179,7 +179,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             initialErrorsRef.current = initialErrors;
             initialTouchedRef.current = initialTouched;
 
-            onReset();
+            onReset(initialValues);
         },
         [setValues, setTouched, setErrors, onReset]
     );
