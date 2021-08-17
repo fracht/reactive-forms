@@ -41,7 +41,7 @@ export interface ExtendableFormConfig<Values extends object> {
     validateForm?: FieldValidator<Values>;
     onValidationFailed?: (errors: FieldError<Values>) => void;
     onValidationSucceed?: () => void;
-    onReset?: () => void;
+    onReset?: (initialFormState: InitialFormState<Values>) => void;
     shouldValidatePureFields?: boolean;
 }
 
@@ -165,11 +165,13 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const resetForm = useCallback(
         (initialFormState?: InitialFormState<Values>) => {
-            const { initialValues, initialErrors, initialTouched } = {
+            const nonNullableFormState = {
                 initialValues: initialFormState?.initialValues ?? initialValuesRef.current,
                 initialTouched: initialFormState?.initialTouched ?? initialTouchedRef.current,
                 initialErrors: initialFormState?.initialErrors ?? initialErrorsRef.current
             };
+
+            const { initialErrors, initialTouched, initialValues } = nonNullableFormState;
 
             setValues(cloneDeep(initialValues));
             setTouched(cloneDeep(initialTouched));
@@ -179,7 +181,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             initialErrorsRef.current = initialErrors;
             initialTouchedRef.current = initialTouched;
 
-            onReset();
+            onReset(nonNullableFormState);
         },
         [setValues, setTouched, setErrors, onReset]
     );
