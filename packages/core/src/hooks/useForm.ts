@@ -228,9 +228,12 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
             setErrors(newErrors);
             setTouched(
-                setNestedValues(mergeWith({}, currentValues, initialValuesRef.current, deepCustomizer), {
-                    $touched: true
-                })
+                setNestedValues(
+                    mergeWith({}, cloneDeep(currentValues), cloneDeep(initialValuesRef.current), deepCustomizer),
+                    {
+                        $touched: true
+                    }
+                )
             );
 
             try {
