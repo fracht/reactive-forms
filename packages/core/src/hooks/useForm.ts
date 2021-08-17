@@ -197,7 +197,11 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     );
 
     const submit = useCallback(
-        async (action: SubmitAction<Values> | undefined = onSubmit) => {
+        async (action?: SubmitAction<Values> | undefined) => {
+            if (typeof action !== 'function') {
+                action = onSubmit;
+            }
+
             invariant(
                 action,
                 'Cannot call submit, because no action specified in arguments and no default action provided.'
