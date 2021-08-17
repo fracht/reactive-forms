@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
+import mergeWith from 'lodash/mergeWith';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import type { BaseSchema } from 'yup';
@@ -67,6 +68,14 @@ export interface FormShared<Values extends object> extends DefaultFormShared<Val
     submit: (action?: SubmitAction<Values>) => void;
     isLoaded: boolean;
 }
+
+const deepCustomizer = (src1: unknown, src2: unknown, src3: unknown) => {
+    const filtered = [src1, src2, src3].filter((a) => typeof a === 'object' && a !== null);
+
+    if (filtered.length === 1) {
+        return filtered[0];
+    }
+};
 
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const throwError = useThrowError();
@@ -214,7 +223,11 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             setFormMeta('isValidating', false);
 
             setErrors(newErrors);
-            setTouched(setNestedValues(currentValues, { $touched: true }));
+            setTouched(
+                setNestedValues(mergeWith({}, currentValues, initialValuesRef.current, deepCustomizer), {
+                    $touched: true
+                })
+            );
 
             try {
                 if (Object.keys(newErrors).length === 0) {
