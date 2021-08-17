@@ -41,11 +41,11 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V
 
         setItems(newItems);
 
-        if (updateErrors && errors) {
+        if (updateErrors && Array.isArray(errors)) {
             setErrors(typeof updateErrors === 'function' ? updateErrors(errors, items) : update(errors)[0]);
         }
 
-        if (updateTouched && touched) {
+        if (updateTouched && Array.isArray(touched)) {
             setTouched(typeof updateTouched === 'function' ? updateTouched(touched, items) : update(touched)[0]);
         }
 
