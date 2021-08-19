@@ -2,8 +2,14 @@ import { deepRemoveEmpty } from '../../src/utils/deepRemoveEmpty';
 
 describe('deepRemoveEmpty', () => {
     it('should filter array', () => {
-        expect(deepRemoveEmpty([undefined, null, void 0, '', [], [[[]]], 'NOT EMPTY!'])).toStrictEqual([
+        expect(deepRemoveEmpty([undefined, null, void 0, '', [], {}, [[[]]], 'NOT EMPTY!'])).toStrictEqual([
+            undefined,
+            undefined,
+            undefined,
             '',
+            undefined,
+            undefined,
+            undefined,
             'NOT EMPTY!'
         ]);
         expect(deepRemoveEmpty([undefined, null])).toBe(undefined);
