@@ -2,7 +2,7 @@ import isObject from 'lodash/isObject';
 
 import { NestedObject } from '../typings/NestedObject';
 
-export const setNestedValues = <Example extends object, Value extends object>(
+export const setNestedValues = <Example extends object, Value>(
     exampleObject: Example,
     value: Value,
     visited: WeakMap<object, boolean> = new WeakMap(),
