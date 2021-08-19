@@ -43,7 +43,7 @@ export interface ExtendableFormConfig<Values extends object> {
     onValidationFailed?: (errors: FieldError<Values>) => void;
     onValidationSucceed?: () => void;
     onReset?: (initialFormState: InitialFormState<Values>) => void;
-    shouldValidatePureFields?: boolean;
+    disablePureFieldsValidation?: boolean;
 }
 
 export type FormConfig<Values extends object> = ExtendableFormConfig<Values> & InitialFormStateConfig<Values>;
@@ -80,7 +80,7 @@ const deepCustomizer = (src1: unknown, src2: unknown, src3: unknown) => {
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const throwError = useThrowError();
 
-    const { schema, shouldValidatePureFields } = config;
+    const { schema, disablePureFieldsValidation } = config;
 
     const onSubmit = useRefCallback(config.onSubmit);
     const validateFormFn = useRefCallback(config.validateForm);
@@ -132,7 +132,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
             if (hasValidator(name)) {
-                if (shouldValidatePureFields || !isEqual(value, get(initialValuesRef.current, name))) {
+                if (!disablePureFieldsValidation || !isEqual(value, get(initialValuesRef.current, name))) {
                     const error = await runFieldLevelValidation(name, value);
                     setFieldError(name, (old) => ({ ...old, ...error }));
                     return error;
@@ -143,7 +143,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
             return undefined;
         },
-        [runFieldLevelValidation, setFieldError, hasValidator, shouldValidatePureFields]
+        [runFieldLevelValidation, setFieldError, hasValidator, disablePureFieldsValidation]
     );
 
     const runFormValidationSchema = useCallback(
@@ -163,13 +163,13 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
             const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
 
-            if (shouldValidatePureFields) {
+            if (!disablePureFieldsValidation) {
                 return allErrors as FieldError<Values>;
             } else {
                 return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
             }
         },
-        [runFormValidationSchema, validateAllFields, validateFormFn, shouldValidatePureFields]
+        [runFormValidationSchema, validateAllFields, validateFormFn, disablePureFieldsValidation]
     );
 
     const resetForm = useCallback(
