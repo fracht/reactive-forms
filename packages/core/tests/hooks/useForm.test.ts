@@ -60,8 +60,7 @@ describe('useForm', () => {
             onValidationFailed: (errors) => {
                 expect(errors).toStrictEqual(formErrors);
             },
-            validateForm: () => formErrors,
-            shouldValidatePureFields: true
+            validateForm: () => formErrors
         };
 
         const { result } = renderHook(() => useForm(config));
