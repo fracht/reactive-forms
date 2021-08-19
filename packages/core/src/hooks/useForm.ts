@@ -61,7 +61,10 @@ export type InitialFormState<V> = {
     initialErrors?: FieldError<V>;
 };
 
-export type DefaultFormShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
+export type DefaultFormShared<Values extends object> = Omit<
+    ValidationRegistryControl,
+    'validateAllFields' | 'validateBranch'
+> &
     FormHelpers<Values>;
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
@@ -105,7 +108,13 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
           });
 
     const control = useFormControl({ initialValues, initialErrors, initialTouched });
-    const validationRegistry = useValidationRegistry();
+    const {
+        validateField: runFieldLevelValidation,
+        validateAllFields,
+        hasValidator,
+        validateBranch,
+        registerValidator
+    } = useValidationRegistry();
 
     const initialValuesRef = useRef(initialValues);
     const initialErrorsRef = useRef(initialErrors);
@@ -115,19 +124,10 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, errors } = control;
 
-    const {
-        validateField: runFieldLevelValidation,
-        validateAllFields,
-        registerValidator: addValidatorToRegistry,
-        hasValidator
-    } = validationRegistry;
-
     const loadRef = useRef(config.load);
     loadRef.current = config.load;
 
     const [isLoaded, setIsLoaded] = useState(!config.load);
-
-    const validationValueObservers = useRef<Record<string, () => void>>({});
 
     const validateField = useCallback(
         async <V>(name: string, value: V) => {
@@ -261,25 +261,6 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         ]
     );
 
-    const registerValidator = useCallback(
-        <V>(name: string, validator: FieldValidator<V>) => {
-            const cleanup = addValidatorToRegistry(name, validator);
-            if (!Object.prototype.hasOwnProperty.call(validationValueObservers.current, name)) {
-                validationValueObservers.current[name] = values.watch(name, (value) => validateField(name, value));
-            }
-
-            return () => {
-                cleanup();
-
-                if (!hasValidator(name) && Object.prototype.hasOwnProperty.call(validationValueObservers, name)) {
-                    validationValueObservers.current[name]();
-                    delete validationValueObservers.current[name];
-                }
-            };
-        },
-        [addValidatorToRegistry, hasValidator, validateField, values]
-    );
-
     const updateFormDirtiness = useCallback(
         ({ values }: BatchUpdate<unknown>) => setFormMeta('dirty', !isEqual(values, initialValuesRef.current)),
         [setFormMeta]
@@ -288,6 +269,19 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const updateFormValidness = useCallback(
         ({ values }: BatchUpdate<object>) => setFormMeta('isValid', deepRemoveEmpty(values) === undefined),
         [setFormMeta]
+    );
+
+    const validateUpdatedFields = useCallback(
+        async ({ values, origin }: BatchUpdate<object>) => {
+            const { attachPath, errors } = await validateBranch(origin, values);
+
+            const normalizedErrors = disablePureFieldsValidation
+                ? merge(setNestedValues(errors, undefined), excludeOverlaps(values, initialValuesRef.current, errors))
+                : errors;
+
+            setFieldError(attachPath as string, normalizedErrors);
+        },
+        [disablePureFieldsValidation, setFieldError, validateBranch]
     );
 
     useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
@@ -301,6 +295,8 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             }),
         [errors, updateFormValidness]
     );
+
+    useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
 
     useEffect(() => {
         if (loadRef.current && !isPending.current && !isLoaded) {
@@ -317,13 +313,13 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         }
     }, [resetForm, throwError, isLoaded]);
 
-    const bag = {
+    const bag: FormShared<Values> = {
         submit,
         resetForm,
         validateField,
         validateForm,
-        registerValidator,
         hasValidator,
+        registerValidator,
         isLoaded,
         ...control
     };
