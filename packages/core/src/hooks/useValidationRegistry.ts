@@ -70,7 +70,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
             pathsToValidate.forEach((path) => {
                 const error = validateField(path, getOrReturn(values, path));
 
-                errors = setOrReturn(error, path, errors) as FieldError<V>;
+                errors = setOrReturn(errors, path, error) as FieldError<V>;
             });
 
             return { attachPath: longestCommonPath(pathsToValidate), errors };
