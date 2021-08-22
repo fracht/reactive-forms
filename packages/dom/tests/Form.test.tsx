@@ -3,10 +3,7 @@ import ReactiveForm, { createPluginArray, FormPlugins, ReactiveFormProvider, use
 import { act, renderHook } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, Form } from '../src';
-
-configureEnzyme();
 
 describe('Form', () => {
     it('should render children', () => {

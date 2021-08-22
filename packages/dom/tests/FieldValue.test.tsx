@@ -2,10 +2,7 @@ import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, FieldValue } from '../src';
-
-configureEnzyme();
 
 describe('FieldValue', () => {
     it('should render field value by default in Fragment', () => {

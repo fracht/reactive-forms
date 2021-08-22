@@ -10,10 +10,7 @@ import {
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, TextFieldBag, useTextField } from '../src';
-
-configureEnzyme();
 
 const renderUseTextField = <T extends object>(
     name: string,

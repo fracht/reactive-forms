@@ -2,10 +2,7 @@ import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, TextField } from '../src';
-
-configureEnzyme();
 
 describe('TextField', () => {
     it('should render input by default', () => {
