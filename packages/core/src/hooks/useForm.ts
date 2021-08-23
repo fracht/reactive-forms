@@ -280,9 +280,9 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             const normalizedErrors = disablePureFieldsValidation
                 ? merge(
                       setNestedValues(onlyNecessaryErrors, undefined),
-                      excludeOverlaps(values, initialValuesRef.current, onlyNecessaryErrors)
+                      excludeOverlaps(values, getOrReturn(initialValuesRef.current, attachPath), onlyNecessaryErrors)
                   )
-                : errors;
+                : onlyNecessaryErrors;
 
             setFieldError(attachPath as string, (old) => overrideMerge(old ?? {}, normalizedErrors));
         },
