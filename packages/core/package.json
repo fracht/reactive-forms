@@ -34,7 +34,7 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "stocked": "^1.0.0-beta.14",
+        "stocked": "^1.0.0-beta.15",
         "tiny-invariant": "^1.1.0"
     },
     "resolutions": {
