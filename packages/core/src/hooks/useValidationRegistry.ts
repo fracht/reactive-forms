@@ -26,6 +26,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
     const registry = useRef<ValidationRegistry>({});
 
     const registerValidator = useCallback(<V>(name: string, validator: FieldValidator<V>) => {
+        name = normalizePath(name);
         if (!Object.prototype.hasOwnProperty.call(registry.current, name)) {
             registry.current[name] = new FunctionArray();
         }
@@ -43,6 +44,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
     }, []);
 
     const validateField = useCallback(async <V>(name: string, value: V): Promise<FieldError<V> | undefined> => {
+        name = normalizePath(name);
         if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
             const output = await (registry.current[name] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
             return validatorResultToError(output);
@@ -51,7 +53,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
     }, []);
 
     const hasValidator = useCallback(
-        (name: string) => Object.prototype.hasOwnProperty.call(registry.current, name),
+        (name: string) => Object.prototype.hasOwnProperty.call(registry.current, normalizePath(name)),
         []
     );
 
