@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import mergeWith from 'lodash/mergeWith';
-import { BatchUpdate } from 'stocked';
+import { BatchUpdate, getOrReturn } from 'stocked';
 import invariant from 'tiny-invariant';
 import type { BaseSchema } from 'yup';
 
@@ -19,6 +19,7 @@ import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { loadingGuard } from '../utils/loadingGuard';
+import { overrideMerge } from '../utils/overrideMerge';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 import { useRefCallback } from '../utils/useRefCallback';
@@ -72,8 +73,8 @@ export interface FormShared<Values extends object> extends DefaultFormShared<Val
     isLoaded: boolean;
 }
 
-const deepCustomizer = (src1: unknown, src2: unknown, src3: unknown) => {
-    const filtered = [src1, src2, src3].filter((a) => typeof a === 'object' && a !== null);
+const deepCustomizer = (src1: unknown, src2: unknown) => {
+    const filtered = [src1, src2].filter((a) => typeof a === 'object' && a !== null);
 
     if (filtered.length === 1) {
         return filtered[0];
@@ -275,11 +276,15 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         async ({ values, origin }: BatchUpdate<object>) => {
             const { attachPath, errors } = await validateBranch(origin, values);
 
+            const onlyNecessaryErrors = getOrReturn(errors, attachPath);
             const normalizedErrors = disablePureFieldsValidation
-                ? merge(setNestedValues(errors, undefined), excludeOverlaps(values, initialValuesRef.current, errors))
+                ? merge(
+                      setNestedValues(onlyNecessaryErrors, undefined),
+                      excludeOverlaps(values, initialValuesRef.current, onlyNecessaryErrors)
+                  )
                 : errors;
 
-            setFieldError(attachPath as string, normalizedErrors);
+            setFieldError(attachPath as string, (old) => overrideMerge(old ?? {}, normalizedErrors));
         },
         [disablePureFieldsValidation, setFieldError, validateBranch]
     );
