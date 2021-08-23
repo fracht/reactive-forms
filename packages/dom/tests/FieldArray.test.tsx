@@ -3,10 +3,8 @@ import { act } from 'react-dom/test-utils';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, FieldArray } from '../src';
 
-configureEnzyme();
 describe('FieldArray', () => {
     it('should rerender after items array has changed', async () => {
         const wrapper = mount(

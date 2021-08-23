@@ -2,10 +2,7 @@ import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
-import { configureEnzyme } from './configureEnzyme';
 import { domPlugin, ErrorMessage } from '../src';
-
-configureEnzyme();
 
 describe('ErrorMessage', () => {
     it('should not render empty error', () => {
