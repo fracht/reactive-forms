@@ -35,6 +35,10 @@ describe('excludeOverlaps', () => {
             })
         ).toStrictEqual({});
     });
+    it('should return 1 object if values completely different', () => {
+        const obj = { a: 'Hello' };
+        expect(excludeOverlaps({ a: { b: 0 } }, { a: { b: 1 } }, obj)).toBe(obj);
+    });
     it('should remove equal parts', () => {
         expect(
             excludeOverlaps(

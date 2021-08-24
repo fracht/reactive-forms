@@ -114,4 +114,18 @@ describe('yupToFormErrors', () => {
             }
         });
     });
+
+    it('should push to empty path if it is not specified', () => {
+        expect(
+            yupToFormErrors({
+                inner: [
+                    {
+                        message: 'hello'
+                    }
+                ]
+            } as ValidationError)
+        ).toStrictEqual({
+            $error: 'hello'
+        });
+    });
 });
