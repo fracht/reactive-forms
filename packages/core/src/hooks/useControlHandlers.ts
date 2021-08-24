@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { SetStateAction, Stock } from 'stocked';
 
 import { FieldError } from '../typings/FieldError';
@@ -34,33 +33,10 @@ export const useControlHandlers = <Values extends object>({
     touched,
     formMeta
 }: ControlHandlersConfig<Values>): ControlHandlers<Values> => {
-    const setFormMeta = useCallback(
-        (path: keyof FormMeta, value: SetStateAction<unknown>) => formMeta.setValue(path, value),
-        [formMeta]
-    );
-    const getFormMeta = useCallback(<V>(path: keyof FormMeta) => formMeta.getValue<V>(path), [formMeta]);
-
-    const setFieldValue = useCallback(
-        <V>(name: string, value: SetStateAction<V>) => values.setValue(name, value),
-        [values]
-    );
-    const getFieldValue = useCallback(<V>(name: string) => values.getValue<V>(name), [values]);
-    const setValues = useCallback((newValues: Values) => values.setValues(newValues), [values]);
-
-    const setFieldTouched = useCallback(
-        <V>(name: string, fieldTouched: SetStateAction<FieldTouched<V> | undefined>) =>
-            touched.setValue(name, fieldTouched),
-        [touched]
-    );
-    const getFieldTouched = useCallback(<V>(name: string) => touched.getValue<FieldTouched<V>>(name), [touched]);
-    const setTouched = useCallback((allTouched: FieldTouched<Values>) => touched.setValues(allTouched), [touched]);
-
-    const setFieldError = useCallback(
-        <V>(name: string, error: SetStateAction<FieldError<V> | undefined>) => errors.setValue(name, error),
-        [errors]
-    );
-    const getFieldError = useCallback(<V>(name: string) => errors.getValue<FieldError<V>>(name), [errors]);
-    const setErrors = useCallback((allErrors: FieldError<Values>) => errors.setValues(allErrors), [errors]);
+    const { setValue: setFormMeta, getValue: getFormMeta } = formMeta;
+    const { setValue: setFieldValue, getValue: getFieldValue, setValues } = values;
+    const { setValue: setFieldTouched, getValue: getFieldTouched, setValues: setTouched } = touched;
+    const { setValue: setFieldError, getValue: getFieldError, setValues: setErrors } = errors;
 
     return {
         setFormMeta,
