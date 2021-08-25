@@ -95,9 +95,176 @@ describe('validateField', () => {
             cleanup = result.current.registerValidator('custom.name', validator);
         });
 
-        await expect(result.current.validateField('custom.name', 0)).resolves.toBe(undefined);
+        await expect(result.current.validateField('custom.name', 0)).resolves.toStrictEqual({ $error: undefined });
 
-        expect(result.current.getFieldError('custom.name')).toStrictEqual(undefined);
+        expect(validator).toBeCalled();
+        expect(result.current.getFieldError('custom.name')).toStrictEqual({ $error: undefined });
+
+        act(() => {
+            cleanup();
+        });
+    });
+
+    it('should clear error if disablePureFieldsValidation enabled & value is equal to initial value', async () => {
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {
+                    custom: {
+                        name: {
+                            inner: {
+                                value: 'a'
+                            }
+                        }
+                    }
+                },
+                initialErrors: {
+                    custom: {
+                        name: {
+                            $error: 'Error',
+                            inner: {
+                                $error: 'Error',
+                                value: {
+                                    $error: 'Error'
+                                }
+                            }
+                        }
+                    }
+                },
+                disablePureFieldsValidation: true
+            })
+        );
+
+        let cleanup;
+
+        const validator = jest.fn();
+
+        act(() => {
+            cleanup = result.current.registerValidator('custom.name', validator);
+        });
+
+        await expect(
+            result.current.validateField('custom.name', {
+                inner: {
+                    value: 'a'
+                }
+            })
+        ).resolves.toStrictEqual(undefined);
+
+        expect(validator).not.toBeCalled();
+        expect(result.current.getFieldError('custom.name')).toStrictEqual({ $error: undefined });
+
+        act(() => {
+            cleanup();
+        });
+    });
+});
+
+describe('validateForm', () => {
+    it('should call all registered validators', async () => {
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {
+                    hello: 'asdf',
+                    deep: {
+                        value: 'asdf'
+                    },
+                    array: ['asdf']
+                }
+            })
+        );
+
+        const validator1 = jest.fn();
+        const validator2 = jest.fn();
+        const validator3 = jest.fn();
+        const validator4 = jest.fn();
+
+        act(() => {
+            result.current.registerValidator('hello', validator1);
+            result.current.registerValidator('deep.value', validator2);
+            result.current.registerValidator('array[1]', validator3);
+            result.current.registerValidator('not.existing.value', validator4);
+        });
+
+        validator1.mockReturnValueOnce('Error1');
+        validator2.mockReturnValueOnce(undefined);
+        validator3.mockReturnValueOnce({ $error: 'Error2' });
+        validator4.mockReturnValueOnce({ $error: 'Error3' });
+
+        await expect(
+            result.current.validateForm({
+                hello: 'value1',
+                deep: {
+                    value: 'value2'
+                },
+                array: [undefined, 'value3']
+            })
+        ).resolves.toStrictEqual({
+            hello: {
+                $error: 'Error1'
+            },
+            array: [
+                undefined,
+                {
+                    $error: 'Error2'
+                }
+            ],
+            not: {
+                existing: {
+                    value: {
+                        $error: 'Error3'
+                    }
+                }
+            }
+        });
+
+        expect(validator1).toBeCalledWith('value1');
+        expect(validator2).toBeCalledWith('value2');
+        expect(validator3).toBeCalledWith('value3');
+        expect(validator4).toBeCalledWith(undefined);
+    });
+
+    it('should run validateForm function', async () => {
+        const validateForm = jest.fn();
+
+        validateForm.mockReturnValueOnce({
+            $error: null,
+            value: {
+                $error: 'New error!!!'
+            }
+        });
+
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {
+                    value: 'asdf'
+                },
+                validateForm
+            })
+        );
+
+        await expect(
+            result.current.validateForm({
+                value: 'New value'
+            })
+        ).resolves.toStrictEqual({
+            value: {
+                $error: 'New error!!!'
+            }
+        });
+
+        expect(validateForm).toBeCalledWith({
+            value: 'New value'
+        });
+    });
+
+    it('should run validation schema', () => {
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {
+                    value: 'asdf'
+                }
+            })
+        );
     });
 });
 
