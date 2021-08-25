@@ -9,8 +9,7 @@
                 "--inspect-brk",
                 "${workspaceFolder}/packages/core/node_modules/aqu/dist/aqu.js",
                 "test",
-                "--runInBand",
-                "useForm.test.ts"
+                "--runInBand"
             ],
             "cwd": "${workspaceFolder}/packages/core",
             "console": "integratedTerminal",

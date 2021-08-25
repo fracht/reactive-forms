@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { ROOT_PATH } from 'stocked';
 
 import { FieldError, FormConfig, FormHelpers, useForm } from '../../src';
 
