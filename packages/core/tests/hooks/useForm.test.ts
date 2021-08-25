@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+import { ROOT_PATH } from 'stocked';
 
-import { FormConfig, FormHelpers, useForm } from '../../src';
+import { FieldError, FormConfig, FormHelpers, useForm } from '../../src';
 
 describe('useForm', () => {
     it('should pass helpers into onSubmit', async () => {
@@ -43,7 +44,7 @@ describe('useForm', () => {
         expect(onSubmit).toBeCalled();
     });
 
-    test('should call onValidationFailed function', () => {
+    it('should call onValidationFailed function', async () => {
         const formErrors = {
             test: {
                 $error: 'error message'
@@ -65,10 +66,50 @@ describe('useForm', () => {
 
         const { result } = renderHook(() => useForm(config));
 
-        act(() => {
-            result.current.submit();
+        await act(async () => {
+            await result.current.submit();
         });
 
         expect(onSubmit).toBeCalledTimes(0);
+    });
+
+    describe('should merge errors correctly', () => {
+        it('should merge errors attached to arrays', async () => {
+            const onSubmit = jest.fn();
+
+            const { result } = renderHook(() =>
+                useForm({
+                    initialValues: {
+                        arr: [[]]
+                    },
+                    validateForm: (values) => {
+                        if (values.arr[0].length === 0) {
+                            const arrError: FieldError<string[][]> = [];
+                            const innerError: FieldError<string[]> = [];
+
+                            arrError.$error = 'Error';
+                            innerError.$error = 'Inner error';
+
+                            arrError.push(innerError);
+
+                            return {
+                                arr: arrError
+                            };
+                        }
+
+                        return {};
+                    },
+                    onSubmit
+                })
+            );
+
+            await act(async () => {
+                await result.current.submit();
+            });
+
+            expect(result.current.getFieldError('arr').$error).toBe('Error');
+            expect(result.current.getFieldError('arr.0').$error).toBe('Inner error');
+            expect(onSubmit).toBeCalledTimes(0);
+        });
     });
 });
