@@ -17,7 +17,7 @@ export const deepRemoveEmpty = (obj: object): object | undefined => {
         const newObj = Object.keys(obj).reduce((acc, key) => {
             const value = typeof obj[key] === 'object' ? deepRemoveEmpty(obj[key]) : obj[key];
 
-            if (!isEmpty(value)) {
+            if (!isNil(value)) {
                 acc[key] = value;
             }
 
