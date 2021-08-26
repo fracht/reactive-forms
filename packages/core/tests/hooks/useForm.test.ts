@@ -110,5 +110,38 @@ describe('useForm', () => {
             expect(result.current.getFieldError('arr.0').$error).toBe('Inner error');
             expect(onSubmit).toBeCalledTimes(0);
         });
+
+        it('should merge errors attached to arrays', async () => {
+            const onSubmit = jest.fn();
+
+            const { result } = renderHook(() =>
+                useForm({
+                    initialValues: {
+                        load_models: []
+                    },
+                    validateForm: (values) => {
+                        if (values.load_models.length === 0) {
+                            const arrError: FieldError<string[]> = [];
+
+                            arrError.$error = 'Error';
+
+                            return {
+                                load_models: arrError
+                            };
+                        }
+
+                        return {};
+                    },
+                    onSubmit
+                })
+            );
+
+            await act(async () => {
+                await result.current.submit();
+            });
+
+            expect(result.current.getFieldError('load_models').$error).toBe('Error');
+            expect(onSubmit).toBeCalledTimes(0);
+        });
     });
 });
