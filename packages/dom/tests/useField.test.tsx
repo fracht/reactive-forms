@@ -10,12 +10,12 @@ import {
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
 
-import { domPlugin, TextFieldBag, useTextField } from '../src';
+import { domPlugin, FieldBag, useField } from '../src';
 
-const renderUseTextField = <T extends object>(
+const renderUseField = <V, T extends object = {}>(
     name: string,
     config: FormConfig<T>
-): [RenderHookResult<undefined, TextFieldBag>, FormShared<T>] => {
+): [RenderHookResult<undefined, FieldBag<V>>, FormShared<T>] => {
     const {
         result: { current: bag }
     } = renderHook(() => useForm(config), {
@@ -23,7 +23,7 @@ const renderUseTextField = <T extends object>(
     });
 
     return [
-        renderHook(() => useTextField({ name }), {
+        renderHook(() => useField<V>({ name }), {
             wrapper: ({ children }: PropsWithChildren<{}>) => (
                 <FormPlugins plugins={createPluginArray(domPlugin)}>
                     <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
@@ -36,9 +36,9 @@ const renderUseTextField = <T extends object>(
     ];
 };
 
-describe('useTextField', () => {
+describe('useField', () => {
     it('should change value', () => {
-        const [{ result }, { values }] = renderUseTextField('hello', {
+        const [{ result }, { values }] = renderUseField<string>('hello', {
             initialValues: {
                 hello: 'asdf'
             }
@@ -61,7 +61,7 @@ describe('useTextField', () => {
     });
 
     it('should set touched', () => {
-        const [{ result }, { touched }] = renderUseTextField('hello', {
+        const [{ result }, { touched }] = renderUseField<string>('hello', {
             initialValues: {
                 hello: 'asdf'
             }

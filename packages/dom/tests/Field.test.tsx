@@ -2,14 +2,14 @@ import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
 
-import { domPlugin, TextField } from '../src';
+import { domPlugin, Field } from '../src';
 
-describe('TextField', () => {
+describe('Field', () => {
     it('should render input by default', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" />
+                    <Field name="hello" />
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -22,7 +22,7 @@ describe('TextField', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" as="div" />
+                    <Field name="hello" as="div" />
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -35,11 +35,11 @@ describe('TextField', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" as="select">
+                    <Field name="hello" as="select">
                         <option value="1">asdf</option>
                         <option value="2">asdf</option>
                         <option value="3">asdf</option>
-                    </TextField>
+                    </Field>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -57,7 +57,7 @@ describe('TextField', () => {
                         hello: 'asdf'
                     }}
                 >
-                    <TextField name="hello">{(bag) => <div id="testID">{bag.value}</div>}</TextField>
+                    <Field name="hello">{(bag) => <div id="testID">{bag.value}</div>}</Field>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -78,7 +78,7 @@ describe('TextField', () => {
                         hello: 'asdf'
                     }}
                 >
-                    <TextField name="hello" firstName="world" as={DummyComponent} />
+                    <Field name="hello" firstName="world" as={DummyComponent} />
                 </ReactiveForm>
             </FormPlugins>
         );
