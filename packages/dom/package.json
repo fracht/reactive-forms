@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/dom",
-    "version": "0.4.6",
+    "version": "0.4.9",
     "description": "> TODO: description",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -25,6 +25,7 @@
         "test": "aqu test --passWithNoTests",
         "test:watch": "aqu test --watch",
         "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
+        "test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix"
     },

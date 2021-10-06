@@ -57,4 +57,21 @@ describe('deepRemoveEmpty', () => {
             }
         });
     });
+
+    it('should keep all properties of arrays', () => {
+        const arrayWithProps: any = [12, undefined];
+
+        arrayWithProps.$error = 'test1';
+        arrayWithProps.anyValue = 'test2';
+
+        const values = {
+            arr: arrayWithProps
+        };
+
+        const newArray: any = [12, undefined];
+        newArray.$error = 'test1';
+        newArray.anyValue = 'test2';
+
+        expect(deepRemoveEmpty(values)).toStrictEqual({ arr: newArray });
+    });
 });
