@@ -4,7 +4,7 @@
     },
     "dtsBundleGeneratorOptions": {
         "libraries": {
-            "importedLibraries": ["stocked", "react", "@reactive-forms/core"],
+            "importedLibraries": ["stocked", "react", "@reactive-forms/core", "pxth"],
             "allowedTypesLibraries": []
         }
     }

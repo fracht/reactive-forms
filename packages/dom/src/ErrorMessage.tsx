@@ -1,5 +1,6 @@
 import { ComponentType, ElementType } from 'react';
 import { useFieldError, useFieldTouched } from '@reactive-forms/core';
+import { Pxth } from 'pxth';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 
@@ -8,7 +9,7 @@ type ErrorMessageBag = {
 };
 
 type ErrorMessageType<C extends ComponentType | ElementType = 'span'> = {
-    name: string;
+    name: Pxth<unknown>;
 } & RenderHelpers<ErrorMessageBag, C>;
 
 export const ErrorMessage = <C extends ComponentType | ElementType = 'span'>({

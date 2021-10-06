@@ -1,11 +1,12 @@
 import { ChangeEvent, FocusEvent } from 'react';
 import { useFormContext, usePluginAssertion } from '@reactive-forms/core';
+import { Pxth, pxthToString } from 'pxth';
 import { useStockValue } from 'stocked';
 
 import { domPlugin } from './plugin';
 
 export type TextFieldConfig = {
-    name: string;
+    name: Pxth<string>;
 };
 
 export type TextFieldBag = {
@@ -25,7 +26,7 @@ export const useTextField = ({ name }: TextFieldConfig): TextFieldBag => {
     return {
         onChange: handleChange,
         onBlur: handleBlur,
-        name,
+        name: pxthToString(name) as string,
         value
     };
 };

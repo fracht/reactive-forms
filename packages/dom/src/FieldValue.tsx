@@ -1,5 +1,6 @@
 import React, { ComponentType, ElementType, Fragment, PropsWithChildren } from 'react';
 import { useFieldValue } from '@reactive-forms/core';
+import { Pxth } from 'pxth';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 
@@ -8,7 +9,7 @@ export type FieldValueBag<V> = {
 };
 
 export type FieldValueProps<V, C extends ComponentType | ElementType = 'div'> = {
-    name: string;
+    name: Pxth<V>;
 } & RenderHelpers<FieldValueBag<V>, C, V>;
 
 const DefaultFieldValueRenderer = ({ children }: PropsWithChildren<{}>) => <Fragment>{children}</Fragment>;

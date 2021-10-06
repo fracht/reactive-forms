@@ -1,5 +1,6 @@
 import { ChangeEvent, FocusEvent, useCallback } from 'react';
 import { FormShared, Plugin } from '@reactive-forms/core';
+import { createPxth, parseSegmentsFromString } from 'pxth';
 
 export const domPlugin: Plugin = {
     token: Symbol.for('dom'),
@@ -8,14 +9,14 @@ export const domPlugin: Plugin = {
 
         const handleChange = useCallback(
             (e: ChangeEvent<HTMLInputElement>) => {
-                setFieldValue(e.target.name, e.target.value);
+                setFieldValue(createPxth(parseSegmentsFromString(e.target.name)), e.target.value);
             },
             [setFieldValue]
         );
 
         const handleBlur = useCallback(
             (e: FocusEvent<HTMLInputElement>) => {
-                setFieldTouched(e.target.name, {
+                setFieldTouched(createPxth(parseSegmentsFromString(e.target.name)), {
                     $touched: true
                 });
             },

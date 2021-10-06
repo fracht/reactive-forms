@@ -4,7 +4,7 @@
     },
     "dtsBundleGeneratorOptions": {
         "libraries": {
-            "importedLibraries": ["stocked", "yup", "react"],
+            "importedLibraries": ["stocked", "yup", "react", "pxth"],
             "allowedTypesLibraries": []
         }
     }
