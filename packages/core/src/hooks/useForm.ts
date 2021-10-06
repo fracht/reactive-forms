@@ -138,7 +138,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                     setFieldError(name, (old) => ({ ...old, ...error }));
                     return error;
                 } else {
-                    setFieldError(name, undefined);
+                    setFieldError(name, { $error: undefined });
                 }
             }
 

@@ -5,6 +5,7 @@ import type { BaseSchema } from 'yup';
 import { useFormContext } from './useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';
 import { runYupSchema } from '../utils/runYupSchema';
+import { validatorResultToError } from '../utils/validatorResultToError';
 
 export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: string };
 
@@ -19,7 +20,7 @@ export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: U
     const validate = async (value: V) => {
         if (!validatorFn && !schema) return undefined;
 
-        const validatorErrors = await validatorFn?.(value);
+        const validatorErrors = validatorResultToError(await validatorFn?.(value));
         const schemaErrors = schema ? await runYupSchema(schema, value) : undefined;
 
         if (!schemaErrors) return validatorErrors;
@@ -32,7 +33,7 @@ export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: U
     validateRef.current = validate;
 
     useEffect(() => {
-        const validator = (value: V) => validateRef.current?.(value);
+        const validator = (value: V) => validateRef.current(value);
 
         return registerValidator(name, validator);
     }, [name, registerValidator]);

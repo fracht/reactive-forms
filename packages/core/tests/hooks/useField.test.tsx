@@ -17,6 +17,7 @@ const renderField = <V, T extends object>(
 
     return renderHook(() => useField<V>({ name }), { wrapper });
 };
+
 const config = {
     initialValues: {
         test: 'hello'
