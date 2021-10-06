@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth } from 'pxth';
 
 import {
     FieldValueArrayConfig,
@@ -29,9 +30,9 @@ describe('useField', () => {
     it('should return object of specified values', () => {
         const [{ result }, { setFieldValue }] = renderFieldValueArray(
             {
-                a: 'hello',
-                b: 'b.c.e',
-                c: 'd'
+                a: createPxth(['hello']),
+                b: createPxth(['b', 'c', 'e']),
+                c: createPxth(['d'])
             },
             {
                 initialValues: {
@@ -57,9 +58,9 @@ describe('useField', () => {
         });
 
         act(() => {
-            setFieldValue('hello', 'asdfasdf');
-            setFieldValue('b.c', { e: 'ggg' });
-            setFieldValue('d.c.d', 'aa');
+            setFieldValue(createPxth(['hello']), 'asdfasdf');
+            setFieldValue(createPxth(['b', 'c']), { e: 'ggg' });
+            setFieldValue(createPxth(['d', 'c', 'd']), 'aa');
         });
 
         expect(result.current).toStrictEqual({

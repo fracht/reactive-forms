@@ -1,4 +1,4 @@
-import { ROOT_PATH } from 'stocked';
+import { RootPathToken } from 'pxth';
 
 import { getDifferenceMap } from '../../src/utils/getDifferenceMap';
 
@@ -9,7 +9,7 @@ describe('getDifferenceMap', () => {
         };
 
         const equalityOutput = {
-            [ROOT_PATH]: true
+            [RootPathToken]: true
         };
 
         expect(getDifferenceMap(obj, obj)).toStrictEqual(equalityOutput);
@@ -57,7 +57,7 @@ describe('getDifferenceMap', () => {
                     h: 'b'
                 }
             )
-        ).toStrictEqual({ [ROOT_PATH]: false });
+        ).toStrictEqual({ [RootPathToken]: false });
 
         expect(
             getDifferenceMap(
@@ -123,7 +123,7 @@ describe('getDifferenceMap', () => {
                     h: 'b'
                 }
             )
-        ).toStrictEqual({ [ROOT_PATH]: false });
+        ).toStrictEqual({ [RootPathToken]: false });
 
         expect(
             getDifferenceMap(
@@ -132,9 +132,9 @@ describe('getDifferenceMap', () => {
                 },
                 {}
             )
-        ).toStrictEqual({ [ROOT_PATH]: false });
+        ).toStrictEqual({ [RootPathToken]: false });
 
-        expect(getDifferenceMap({}, {})).toStrictEqual({ [ROOT_PATH]: true });
+        expect(getDifferenceMap({}, {})).toStrictEqual({ [RootPathToken]: true });
     });
 
     it('complex case', () => {

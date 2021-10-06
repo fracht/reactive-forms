@@ -1,10 +1,11 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth, Pxth } from 'pxth';
 
 import { FieldContext, FormConfig, FormShared, ReactiveFormProvider, useField, useForm } from '../../src';
 
 const renderField = <V, T extends object>(
-    name: string,
+    name: Pxth<V>,
     config: FormConfig<T>
 ): RenderHookResult<undefined, FieldContext<V>> => {
     const {
@@ -36,22 +37,22 @@ const config = {
 
 describe('useField', () => {
     it('should return correct value', () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
         expect(result.current.value).toBe('hello');
     });
 
     it('should return correct error', () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
         expect(result.current.meta.error.$error).toBe('error');
     });
 
     it('should return correct touched', () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
         expect(result.current.meta.touched.$touched).toBe(true);
     });
 
     it('should setValue', async () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
 
         await act(async () => {
             await result.current.control.setValue('modified');
@@ -61,7 +62,7 @@ describe('useField', () => {
     });
 
     it('should setTouched', async () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
 
         await act(async () => {
             await result.current.control.setTouched({ $touched: false });
@@ -71,7 +72,7 @@ describe('useField', () => {
     });
 
     it('should setError', async () => {
-        const { result } = renderField<string, { test: string }>('test', config);
+        const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
 
         await act(async () => {
             await result.current.control.setError({ $error: 'modified error' });

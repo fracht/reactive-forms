@@ -1,11 +1,12 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth, Pxth } from 'pxth';
 import { Dispatch } from 'stocked';
 
 import { FieldTouched, FormConfig, FormShared, ReactiveFormProvider, useFieldTouched, useForm } from '../../src';
 
 const renderFieldTouched = <V, T extends object>(
-    name: string,
+    name: Pxth<V>,
     config: FormConfig<T>
 ): RenderHookResult<undefined, [FieldTouched<V>, Dispatch<FieldTouched<V>>]> => {
     const {
@@ -21,7 +22,7 @@ const renderFieldTouched = <V, T extends object>(
 
 describe('useFieldTouched', () => {
     it('should return current touched', () => {
-        const { result: result1 } = renderFieldTouched('hello', {
+        const { result: result1 } = renderFieldTouched(createPxth(['hello']), {
             initialValues: {
                 hello: 'asd'
             },
@@ -36,7 +37,7 @@ describe('useFieldTouched', () => {
             $touched: true
         });
 
-        const { result: result2 } = renderFieldTouched('user.name', {
+        const { result: result2 } = renderFieldTouched(createPxth(['user', 'name']), {
             initialValues: {
                 user: {
                     name: 'Hello'
@@ -56,7 +57,7 @@ describe('useFieldTouched', () => {
             $touched: false
         });
 
-        const { result: result3 } = renderFieldTouched('user', {
+        const { result: result3 } = renderFieldTouched(createPxth(['user']), {
             initialValues: {
                 user: {
                     name: 'Hello'
@@ -81,7 +82,7 @@ describe('useFieldTouched', () => {
     });
 
     it('should modify touched', () => {
-        const { result, rerender } = renderFieldTouched('hello', {
+        const { result, rerender } = renderFieldTouched(createPxth(['hello']), {
             initialValues: {
                 hello: 'asd'
             },

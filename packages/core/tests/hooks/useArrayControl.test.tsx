@@ -1,12 +1,13 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth, Pxth } from 'pxth';
 
 import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
 
-const renderArrayControl = <T extends object>(
-    name,
+const renderArrayControl = <T extends object, V>(
+    name: Pxth<V[]>,
     config: FormConfig<T>
-): [RenderHookResult<undefined, ArrayControl<unknown>>, FormShared<T>] => {
+): [RenderHookResult<undefined, ArrayControl<V>>, FormShared<T>] => {
     const { result: bag } = renderHook(() => useForm(config));
 
     const wrapper = ({ children }) => (
@@ -15,12 +16,12 @@ const renderArrayControl = <T extends object>(
         </ReactiveFormProvider>
     );
 
-    return [renderHook(() => useArrayControl<unknown>({ name }), { wrapper }), bag.current];
+    return [renderHook(() => useArrayControl<V>({ name }), { wrapper }), bag.current];
 };
 
 describe('setItem', () => {
     it('should set item', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }
@@ -30,13 +31,13 @@ describe('setItem', () => {
             result.current.setItem('hello', 0);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual(['hello', 1, 2]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual(['hello', 1, 2]);
     });
 });
 
 describe('setItems', () => {
     it('should set items', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }
@@ -46,13 +47,13 @@ describe('setItems', () => {
             result.current.setItems([3, 4, 5]);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([3, 4, 5]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([3, 4, 5]);
     });
 });
 
 describe('push', () => {
     it('should push item', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }
@@ -62,10 +63,10 @@ describe('push', () => {
             result.current.push('hello');
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1, 2, 'hello']);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1, 2, 'hello']);
     });
     it('should push multiple items', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }
@@ -75,13 +76,13 @@ describe('push', () => {
             result.current.push('hello', 15, 28.3);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1, 2, 'hello', 15, 28.3]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1, 2, 'hello', 15, 28.3]);
     });
 });
 
 describe('pop', () => {
     it('should pop item', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }
@@ -94,10 +95,10 @@ describe('pop', () => {
         });
 
         expect(item).toBe(2);
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1]);
     });
     it('should pop item & item meta', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             },
@@ -125,12 +126,12 @@ describe('pop', () => {
             result.current.pop();
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1]);
-        expect(bag.getFieldError('arr')).toStrictEqual([undefined, undefined]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
     });
     it("shouldn't pop error", async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             },
@@ -156,14 +157,14 @@ describe('pop', () => {
             result.current.pop();
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $error: 'LOL!!!'
             }
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $touched: true
@@ -171,7 +172,7 @@ describe('pop', () => {
         ]);
     });
     it('should remove all unnecessary errors', () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             },
@@ -198,8 +199,8 @@ describe('pop', () => {
             result.current.pop();
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $error: 'LOL!!!'
@@ -210,7 +211,7 @@ describe('pop', () => {
 
 describe('shift', () => {
     it('should shift item', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             },
@@ -241,15 +242,15 @@ describe('shift', () => {
         });
 
         expect(item).toBe(0);
-        expect(bag.getFieldValue('arr')).toStrictEqual([1, 2]);
-        expect(bag.getFieldError('arr')).toStrictEqual([undefined, undefined]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([1, 2]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
     });
 });
 
 describe('unshift', () => {
     it('should unshift item', async () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2]
             },
@@ -278,15 +279,15 @@ describe('unshift', () => {
         });
 
         expect(count).toBe(3);
-        expect(bag.getFieldValue('arr')).toStrictEqual([0, 1, 2]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([0, 1, 2]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $error: 'L'
             },
             undefined
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $touched: true
@@ -298,7 +299,7 @@ describe('unshift', () => {
 
 describe('swap', () => {
     it('should swap items and their meta', () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2]
             },
@@ -324,14 +325,14 @@ describe('swap', () => {
             result.current.swap(0, 1);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([2, 1]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([2, 1]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $error: 'L'
             }
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $touched: true
@@ -339,7 +340,7 @@ describe('swap', () => {
         ]);
     });
     it('should swap when error array length < items array length', () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2]
             },
@@ -363,14 +364,14 @@ describe('swap', () => {
             result.current.swap(0, 1);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([2, 1]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([2, 1]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $error: 'L'
             }
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             {
                 $touched: true
@@ -381,7 +382,7 @@ describe('swap', () => {
 
 describe('move', () => {
     it("should move item and it's meta", () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2, 3, 4]
             },
@@ -407,8 +408,8 @@ describe('move', () => {
             result.current.move(1, 3);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([1, 3, 4, 2]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([1, 3, 4, 2]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             undefined,
             undefined,
@@ -416,7 +417,7 @@ describe('move', () => {
                 $error: 'L'
             }
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             undefined,
             undefined,
@@ -429,7 +430,7 @@ describe('move', () => {
 
 describe('insert', () => {
     it('should insert item', () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2, 3, 4]
             },
@@ -457,8 +458,8 @@ describe('insert', () => {
             result.current.insert(2, 5);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([1, 2, 5, 3, 4]);
-        expect(bag.getFieldError('arr')).toStrictEqual([
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([1, 2, 5, 3, 4]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([
             undefined,
             undefined,
             undefined,
@@ -466,7 +467,7 @@ describe('insert', () => {
                 $error: 'L'
             }
         ]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([
             undefined,
             undefined,
             undefined,
@@ -479,7 +480,7 @@ describe('insert', () => {
 
 describe('removeAt', () => {
     it('should remove element at index', () => {
-        const [{ result }, bag] = renderArrayControl('arr', {
+        const [{ result }, bag] = renderArrayControl(createPxth(['arr']), {
             initialValues: {
                 arr: [1, 2, 3, 4]
             },
@@ -507,8 +508,8 @@ describe('removeAt', () => {
             result.current.removeAt(2);
         });
 
-        expect(bag.getFieldValue('arr')).toStrictEqual([1, 2, 4]);
-        expect(bag.getFieldError('arr')).toStrictEqual([undefined, undefined]);
-        expect(bag.getFieldTouched('arr')).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldValue(createPxth(['arr']))).toStrictEqual([1, 2, 4]);
+        expect(bag.getFieldError(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
+        expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([undefined, undefined]);
     });
 });
