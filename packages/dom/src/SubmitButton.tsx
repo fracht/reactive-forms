@@ -1,5 +1,6 @@
 import React, { ComponentType, ElementType, useCallback } from 'react';
 import { SubmitAction, useFormContext, useFormMeta } from '@reactive-forms/core';
+import { createPxth } from 'pxth';
 
 import { renderComponent, RenderHelpers } from './renderComponent';
 
@@ -18,7 +19,7 @@ export const SubmitButton = <Values extends object, C extends ComponentType | El
     ...other
 }: SubmitButtonProps<Values, C>) => {
     const { submit } = useFormContext<Values>();
-    const isSubmitting = useFormMeta<boolean>('isSubmitting');
+    const isSubmitting = useFormMeta(createPxth<boolean>(['isSubmitting']));
 
     const onClick = useCallback(() => {
         submit(submitAction);
