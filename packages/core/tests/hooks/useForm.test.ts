@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+import { createPxth } from 'pxth';
 
 import { FieldError, useForm } from '../../src';
 
@@ -16,10 +17,12 @@ describe('validateField', () => {
         let cleanup;
 
         act(() => {
-            cleanup = result.current.registerValidator('custom.name', validator);
+            cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
         });
 
-        await expect(result.current.validateField('custom.name', { value: 'asdf' })).resolves.toStrictEqual({
+        await expect(
+            result.current.validateField(createPxth(['custom', 'name']), { value: 'asdf' })
+        ).resolves.toStrictEqual({
             $error: 'error'
         });
 
@@ -30,14 +33,14 @@ describe('validateField', () => {
         validator.mockClear();
         validator.mockReturnValueOnce({ $error: 'newError' });
 
-        await expect(result.current.validateField('custom.name', {})).resolves.toStrictEqual({
+        await expect(result.current.validateField(createPxth<{}>(['custom', 'name']), {})).resolves.toStrictEqual({
             $error: 'newError'
         });
 
         validator.mockClear();
         validator.mockReturnValueOnce(null);
 
-        await expect(result.current.validateField('custom.name', {})).resolves.toStrictEqual({
+        await expect(result.current.validateField(createPxth<{}>(['custom', 'name']), {})).resolves.toStrictEqual({
             $error: undefined
         });
 
@@ -64,9 +67,9 @@ describe('validateField', () => {
             })
         );
 
-        await expect(result.current.validateField('custom.name', 0)).resolves.toBe(undefined);
+        await expect(result.current.validateField(createPxth(['custom', 'name']), 0)).resolves.toBe(undefined);
 
-        expect(result.current.getFieldError('custom.name')).toStrictEqual({ $error: 'Error' });
+        expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: 'Error' });
     });
 
     it('should return undefined and clear error if validator returned nothing', async () => {
@@ -92,13 +95,15 @@ describe('validateField', () => {
         const validator = jest.fn();
 
         act(() => {
-            cleanup = result.current.registerValidator('custom.name', validator);
+            cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
         });
 
-        await expect(result.current.validateField('custom.name', 0)).resolves.toStrictEqual({ $error: undefined });
+        await expect(result.current.validateField(createPxth(['custom', 'name']), 0)).resolves.toStrictEqual({
+            $error: undefined
+        });
 
         expect(validator).toBeCalled();
-        expect(result.current.getFieldError('custom.name')).toStrictEqual({ $error: undefined });
+        expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: undefined });
 
         act(() => {
             cleanup();
@@ -139,11 +144,11 @@ describe('validateField', () => {
         const validator = jest.fn();
 
         act(() => {
-            cleanup = result.current.registerValidator('custom.name', validator);
+            cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
         });
 
         await expect(
-            result.current.validateField('custom.name', {
+            result.current.validateField(createPxth(['custom', 'name']), {
                 inner: {
                     value: 'a'
                 }
@@ -151,7 +156,7 @@ describe('validateField', () => {
         ).resolves.toStrictEqual(undefined);
 
         expect(validator).not.toBeCalled();
-        expect(result.current.getFieldError('custom.name')).toStrictEqual({ $error: undefined });
+        expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: undefined });
 
         act(() => {
             cleanup();
@@ -179,10 +184,10 @@ describe('validateForm', () => {
         const validator4 = jest.fn();
 
         act(() => {
-            result.current.registerValidator('hello', validator1);
-            result.current.registerValidator('deep.value', validator2);
-            result.current.registerValidator('array[1]', validator3);
-            result.current.registerValidator('not.existing.value', validator4);
+            result.current.registerValidator(createPxth(['hello']), validator1);
+            result.current.registerValidator(createPxth(['deep.value']), validator2);
+            result.current.registerValidator(createPxth(['array[1]']), validator3);
+            result.current.registerValidator(createPxth(['not.existing.value']), validator4);
         });
 
         await act(async () => {
@@ -296,8 +301,8 @@ describe('should merge errors correctly', () => {
             await result.current.submit();
         });
 
-        expect(result.current.getFieldError('arr').$error).toBe('Error');
-        expect(result.current.getFieldError('arr.0').$error).toBe('Inner error');
+        expect(result.current.getFieldError(createPxth(['arr'])).$error).toBe('Error');
+        expect(result.current.getFieldError(createPxth(['arr', '0'])).$error).toBe('Inner error');
         expect(onSubmit).toBeCalledTimes(0);
     });
 
@@ -330,7 +335,7 @@ describe('should merge errors correctly', () => {
             await result.current.submit();
         });
 
-        expect(result.current.getFieldError('load_models').$error).toBe('Error');
+        expect(result.current.getFieldError(createPxth(['load_models'])).$error).toBe('Error');
         expect(onSubmit).toBeCalledTimes(0);
     });
 });

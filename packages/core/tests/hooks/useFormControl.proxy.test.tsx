@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth } from 'pxth';
 import { MappingProxy, StockProxy } from 'stocked';
 
 import { FormProxyProvider, FormShared, ReactiveFormProvider, useForm, useFormContext } from '../../src';
@@ -7,7 +8,7 @@ import { FormControlConfig } from '../../src/hooks/useFormControl';
 
 const renderFormContextWithProxy = <T extends object>(
     config: FormControlConfig<T>,
-    proxy: StockProxy
+    proxy: StockProxy<unknown>
 ): [RenderHookResult<undefined, FormShared<object>>, FormShared<T>] => {
     const {
         result: { current: bag }
@@ -24,10 +25,10 @@ const renderFormContextWithProxy = <T extends object>(
 
 const proxy = new MappingProxy(
     {
-        name: 'sessionInfo.currentUser.firstName',
-        surname: 'sessionInfo.currentUser.lastName'
+        name: createPxth(['sessionInfo', 'currentUser', 'firstName']),
+        surname: createPxth(['sessionInfo', 'currentUser', 'lastName'])
     },
-    'user'
+    createPxth(['user'])
 );
 
 proxy.activate();
@@ -118,7 +119,7 @@ describe('values control', () => {
         );
 
         act(() => {
-            result.current.setFieldValue('user.name', 'New name');
+            result.current.setFieldValue(createPxth(['user', 'name']), 'New name');
         });
 
         expect(bag.values.getValues()).toStrictEqual({
@@ -147,9 +148,9 @@ describe('values control', () => {
             proxy
         );
 
-        expect(result.current.getFieldValue('user.name')).toBe('Hello');
-        expect(result.current.getFieldValue('user.surname')).toBe('World');
-        expect(result.current.getFieldValue('user')).toStrictEqual({
+        expect(result.current.getFieldValue(createPxth(['user', 'name']))).toBe('Hello');
+        expect(result.current.getFieldValue(createPxth(['user', 'surname']))).toBe('World');
+        expect(result.current.getFieldValue(createPxth(['user']))).toStrictEqual({
             name: 'Hello',
             surname: 'World'
         });
@@ -210,7 +211,7 @@ describe('errors control', () => {
         );
 
         act(() => {
-            result.current.setFieldError('user.name', { $error: 'hello' });
+            result.current.setFieldError(createPxth(['user', 'name']), { $error: 'hello' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
@@ -249,8 +250,8 @@ describe('errors control', () => {
             proxy
         );
 
-        expect(result.current.getFieldError('user.name')).toStrictEqual({ $error: 'asdf' });
-        expect(result.current.getFieldError('sessionInfo')).toStrictEqual({
+        expect(result.current.getFieldError(createPxth(['user', 'name']))).toStrictEqual({ $error: 'asdf' });
+        expect(result.current.getFieldError(createPxth(['sessionInfo']))).toStrictEqual({
             currentUser: {
                 firstName: {
                     $error: 'asdf'
@@ -325,7 +326,7 @@ describe('touched control', () => {
         );
 
         act(() => {
-            result.current.setFieldTouched('user.name', { $touched: true });
+            result.current.setFieldTouched(createPxth(['user', 'name']), { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
@@ -345,7 +346,7 @@ describe('touched control', () => {
         });
 
         act(() => {
-            result.current.setFieldTouched('sessionInfo.currentUser.firstName', { $touched: true });
+            result.current.setFieldTouched(createPxth(['sessionInfo', 'currentUser', 'firstName']), { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
@@ -383,11 +384,11 @@ describe('touched control', () => {
             proxy
         );
 
-        expect(result.current.getFieldTouched('sessionInfo.currentUser.firstName')).toStrictEqual({
+        expect(result.current.getFieldTouched(createPxth(['sessionInfo', 'currentUser', 'firstName']))).toStrictEqual({
             $touched: true
         });
-        expect(result.current.getFieldTouched('user.name')).toStrictEqual({ $touched: true });
-        expect(result.current.getFieldTouched('user')).toStrictEqual({
+        expect(result.current.getFieldTouched(createPxth(['user', 'name']))).toStrictEqual({ $touched: true });
+        expect(result.current.getFieldTouched(createPxth(['user']))).toStrictEqual({
             name: {
                 $touched: true
             },

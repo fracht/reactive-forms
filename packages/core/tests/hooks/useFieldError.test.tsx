@@ -1,11 +1,12 @@
 import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth, Pxth } from 'pxth';
 import { Dispatch } from 'stocked';
 
 import { FieldError, FormConfig, FormShared, ReactiveFormProvider, useFieldError, useForm } from '../../src';
 
 const renderFieldError = <V, T extends object>(
-    name: string,
+    name: Pxth<V>,
     config: FormConfig<T>
 ): RenderHookResult<undefined, [FieldError<V>, Dispatch<FieldError<V>>]> => {
     const {
@@ -21,7 +22,7 @@ const renderFieldError = <V, T extends object>(
 
 describe('useFieldError', () => {
     it('should return current error', () => {
-        const { result: result1 } = renderFieldError('hello', {
+        const { result: result1 } = renderFieldError(createPxth(['hello']), {
             initialValues: {
                 hello: 'asd'
             },
@@ -36,7 +37,7 @@ describe('useFieldError', () => {
             $error: 'asdf'
         });
 
-        const { result: result2 } = renderFieldError('user.name', {
+        const { result: result2 } = renderFieldError(createPxth(['user', 'name']), {
             initialValues: {
                 user: {
                     name: 'Hello'
@@ -55,7 +56,7 @@ describe('useFieldError', () => {
             $error: 'errr'
         });
 
-        const { result: result3 } = renderFieldError('user', {
+        const { result: result3 } = renderFieldError(createPxth(['user']), {
             initialValues: {
                 user: {
                     name: 'Hello'
@@ -78,7 +79,7 @@ describe('useFieldError', () => {
     });
 
     it('should modify error', () => {
-        const { result, rerender } = renderFieldError('hello', {
+        const { result, rerender } = renderFieldError(createPxth(['hello']), {
             initialValues: {
                 hello: 'asd'
             },

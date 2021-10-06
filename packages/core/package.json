@@ -35,7 +35,7 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "stocked": "^1.0.0-beta.16",
+        "stocked": "^1.0.0-beta.18",
         "tiny-invariant": "^1.1.0"
     },
     "resolutions": {
@@ -47,6 +47,7 @@
         "@types/lodash": "^4.14.161",
         "@types/react": "^17.0.2",
         "aqu": "^0.1.1",
+        "pxth": "^0.2.3",
         "react": "^17.0.2",
         "react-test-renderer": "^17.0.1",
         "tslib": "^2.0.1",

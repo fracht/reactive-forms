@@ -1,5 +1,5 @@
 import isNil from 'lodash/isNil';
-import { ROOT_PATH } from 'stocked';
+import { RootPath, RootPathToken } from 'pxth';
 
-export const joinPaths = (...parts: Array<string | null | false | typeof ROOT_PATH | number>) =>
-    parts.filter((part) => !isNil(part) && part !== false && part !== ROOT_PATH).join('.');
+export const joinPaths = (...parts: Array<string | null | false | RootPath | number>) =>
+    parts.filter((part) => !isNil(part) && part !== false && part !== RootPathToken).join('.');

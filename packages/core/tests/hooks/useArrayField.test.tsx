@@ -1,10 +1,11 @@
 import React from 'react';
 import { renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { createPxth, Pxth } from 'pxth';
 
 import { ArrayFieldProps, FormConfig, FormShared, ReactiveFormProvider, useArrayField, useForm } from '../../src';
 
 const renderArrayField = <T extends object>(
-    name: string,
+    name: Pxth<T[]>,
     config: FormConfig<T>
 ): RenderHookResult<undefined, ArrayFieldProps<T>> => {
     const {
@@ -20,7 +21,7 @@ const renderArrayField = <T extends object>(
 
 describe('useArrayField', () => {
     it('should return items', () => {
-        const { result } = renderArrayField('arr', {
+        const { result } = renderArrayField(createPxth(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }

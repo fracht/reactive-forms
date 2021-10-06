@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
+import { createPxth } from 'pxth';
 
 import { FormShared, ReactiveFormProvider, useForm } from '../../src';
 import { useControlHandlers } from '../../src/hooks/useControlHandlers';
@@ -31,40 +32,40 @@ describe('should set and get single values', () => {
         const { result } = renderControlHandlers();
 
         act(() => {
-            result.current.setFieldError('test', { $error: 'error' });
+            result.current.setFieldError(createPxth(['test']), { $error: 'error' });
         });
 
-        expect(result.current.getFieldError('test')).toStrictEqual({ $error: 'error' });
+        expect(result.current.getFieldError(createPxth(['test']))).toStrictEqual({ $error: 'error' });
     });
 
     it('FieldTouched', () => {
         const { result } = renderControlHandlers();
 
         act(() => {
-            result.current.setFieldTouched('test', { $touched: true });
+            result.current.setFieldTouched(createPxth(['test']), { $touched: true });
         });
 
-        expect(result.current.getFieldTouched('test')).toStrictEqual({ $touched: true });
+        expect(result.current.getFieldTouched(createPxth(['test']))).toStrictEqual({ $touched: true });
     });
 
     it('FieldValue', () => {
         const { result } = renderControlHandlers();
 
         act(() => {
-            result.current.setFieldValue('test', 'modified');
+            result.current.setFieldValue(createPxth(['test']), 'modified');
         });
 
-        expect(result.current.getFieldValue('test')).toBe('modified');
+        expect(result.current.getFieldValue(createPxth(['test']))).toBe('modified');
     });
 
     it('FormMeta', () => {
         const { result } = renderControlHandlers();
 
         act(() => {
-            result.current.setFormMeta('isSubmitting', true);
+            result.current.setFormMeta(createPxth(['isSubmitting']), true);
         });
 
-        expect(result.current.getFormMeta('isSubmitting')).toBe(true);
+        expect(result.current.getFormMeta(createPxth(['isSubmitting']))).toBe(true);
     });
 });
 
@@ -76,7 +77,7 @@ describe('should set all values', () => {
             result.current.setErrors({ test: { $error: 'error2' } });
         });
 
-        expect(result.current.getFieldError('test')).toStrictEqual({ $error: 'error2' });
+        expect(result.current.getFieldError(createPxth(['test']))).toStrictEqual({ $error: 'error2' });
     });
 
     it('setTouched', () => {
@@ -86,7 +87,7 @@ describe('should set all values', () => {
             result.current.setTouched({ test: { $touched: true } });
         });
 
-        expect(result.current.getFieldTouched('test')).toStrictEqual({ $touched: true });
+        expect(result.current.getFieldTouched(createPxth(['test']))).toStrictEqual({ $touched: true });
     });
 
     it('setErrors', () => {
@@ -96,6 +97,6 @@ describe('should set all values', () => {
             result.current.setValues({ test: 'modified2' });
         });
 
-        expect(result.current.getFieldValue('test')).toBe('modified2');
+        expect(result.current.getFieldValue(createPxth(['test']))).toBe('modified2');
     });
 });

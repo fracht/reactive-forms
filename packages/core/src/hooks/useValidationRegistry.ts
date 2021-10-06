@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import { getOrReturn, isInnerPath, longestCommonPath, normalizePath, ROOT_PATH, setOrReturn } from 'stocked';
+import { createPxth, deepGet, deepSet, parseSegmentsFromString, Pxth, pxthToString, RootPath } from 'pxth';
+import { isInnerPath, longestCommonPath } from 'stocked';
 import invariant from 'tiny-invariant';
 
 import { FieldError } from '../typings/FieldError';
@@ -9,73 +10,70 @@ import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-export type ValidationRegistry = Record<string, FunctionArray<FieldValidator<unknown>>>;
+export type ValidationRegistry = Record<string | RootPath, FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
-    validateBranch: <V>(
-        origin: string | typeof ROOT_PATH,
-        values: V
-    ) => Promise<{ attachPath: string | typeof ROOT_PATH; errors: FieldError<V> }>;
-    registerValidator: <V>(name: string, validator: FieldValidator<V>) => () => void;
-    validateField: <V>(name: string, value: V) => Promise<FieldError<V> | undefined>;
+    validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }>;
+    registerValidator: <V>(name: Pxth<V>, validator: FieldValidator<V>) => () => void;
+    validateField: <V>(name: Pxth<V>, value: V) => Promise<FieldError<V> | undefined>;
     validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
-    hasValidator: (name: string) => boolean;
+    hasValidator: <V>(name: Pxth<V>) => boolean;
 };
 
 export const useValidationRegistry = (): ValidationRegistryControl => {
-    const registry = useRef<ValidationRegistry>({});
+    const registry = useRef({} as ValidationRegistry);
 
-    const registerValidator = useCallback(<V>(name: string, validator: FieldValidator<V>) => {
-        name = normalizePath(name);
-        if (!Object.prototype.hasOwnProperty.call(registry.current, name)) {
-            registry.current[name] = new FunctionArray();
+    const registerValidator = useCallback(<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
+        const objectKey = pxthToString(name);
+
+        if (!Object.prototype.hasOwnProperty.call(registry.current, objectKey)) {
+            registry.current[objectKey] = new FunctionArray();
         }
-        registry.current[name].push(validator as FieldValidator<unknown>);
+        registry.current[objectKey].push(validator as FieldValidator<unknown>);
 
         return () => {
-            const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current[name];
+            const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current[objectKey];
 
             invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
 
             currentValidators.remove(validator as FieldValidator<unknown>);
 
-            if (currentValidators.isEmpty()) delete registry.current[name];
+            if (currentValidators.isEmpty()) delete registry.current[objectKey];
         };
     }, []);
 
-    const validateField = useCallback(async <V>(name: string, value: V): Promise<FieldError<V> | undefined> => {
-        name = normalizePath(name);
-        if (Object.prototype.hasOwnProperty.call(registry.current, name)) {
-            const output = await (registry.current[name] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
+    const validateField = useCallback(async <V>(name: Pxth<V>, value: V): Promise<FieldError<V> | undefined> => {
+        const objectKey = pxthToString(name);
+        if (Object.prototype.hasOwnProperty.call(registry.current, objectKey)) {
+            const output = await (registry.current[objectKey] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
             return validatorResultToError(output);
         }
         return undefined;
     }, []);
 
     const hasValidator = useCallback(
-        (name: string) => Object.prototype.hasOwnProperty.call(registry.current, normalizePath(name)),
+        <V>(name: Pxth<V>) => Object.prototype.hasOwnProperty.call(registry.current, pxthToString(name)),
         []
     );
 
     const validateBranch = useCallback(
-        async <V>(
-            origin: string | typeof ROOT_PATH,
-            values: V
-        ): Promise<{ attachPath: string | typeof ROOT_PATH; errors: FieldError<V> }> => {
-            origin = normalizePath(origin as string);
+        async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }> => {
+            const stringifiedOrigin = pxthToString(origin);
+
             const pathsToValidate = Object.keys(registry.current)
-                .filter((i) => isInnerPath(origin, i) || isInnerPath(i, origin) || i === origin)
+                .filter((i) => isInnerPath(stringifiedOrigin, i) || isInnerPath(i, stringifiedOrigin) || i === origin)
                 .sort((a, b) => a.length - b.length);
 
             let errors: FieldError<V> = {} as FieldError<V>;
 
             for (const path of pathsToValidate) {
-                const error = await validateField(path, getOrReturn(values, path));
+                const realPath = createPxth(parseSegmentsFromString(path));
+                const error = await validateField(realPath, deepGet(values, realPath));
 
-                errors = setOrReturn(errors, path, error) as FieldError<V>;
+                errors = deepSet(errors, realPath, error) as FieldError<V>;
             }
 
-            return { attachPath: longestCommonPath(pathsToValidate), errors };
+            return { attachPath: createPxth(parseSegmentsFromString(longestCommonPath(pathsToValidate))), errors };
         },
         [validateField]
     );

@@ -1,19 +1,19 @@
 import isEqual from 'lodash/isEqual';
 import uniq from 'lodash/uniq';
-import { ROOT_PATH } from 'stocked';
+import { RootPath, RootPathToken } from 'pxth';
 
 import { flattenObject } from './flattenObject';
 
-export type DifferenceMap = Record<string | typeof ROOT_PATH, boolean>;
+export type DifferenceMap = Record<string | RootPath, boolean>;
 
-const nearestChild = (parentPath: string | typeof ROOT_PATH, comparePath: string) => {
-    const indexOfDot = comparePath.indexOf('.', parentPath === ROOT_PATH ? 0 : parentPath.length + 1);
+const nearestChild = (parentPath: string | RootPath, comparePath: string) => {
+    const indexOfDot = comparePath.indexOf('.', parentPath === RootPathToken ? 0 : parentPath.length + 1);
 
     return indexOfDot === -1 ? comparePath : comparePath.substring(0, indexOfDot);
 };
 
-const isInnerPath = (parent: string | typeof ROOT_PATH, child: string) => {
-    if (parent === ROOT_PATH) {
+const isInnerPath = (parent: string | RootPath, child: string) => {
+    if (parent === RootPathToken) {
         return true;
     }
 
@@ -29,11 +29,11 @@ export const getDifferenceMap = (obj1: object, obj2: object): DifferenceMap => {
     const flattenedObj2 = flattenObject(obj2);
 
     if (Object.keys(flattenedObj1).length === 0 && Object.keys(flattenedObj2).length === 0) {
-        return { [ROOT_PATH]: true };
+        return { [RootPathToken]: true };
     }
 
     if (Object.keys(flattenedObj1).length === 0 || Object.keys(flattenedObj2).length === 0) {
-        return { [ROOT_PATH]: false };
+        return { [RootPathToken]: false };
     }
 
     const rawDiffMap: DifferenceMap = {} as DifferenceMap;
@@ -45,7 +45,7 @@ export const getDifferenceMap = (obj1: object, obj2: object): DifferenceMap => {
 
     const diffMap = {} as DifferenceMap;
 
-    const pathQueue: Array<string> = [ROOT_PATH as unknown as string];
+    const pathQueue: Array<string> = [RootPathToken as unknown as string];
 
     while (pathQueue.length) {
         const curPath = pathQueue.shift()!;

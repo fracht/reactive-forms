@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+import { createPxth } from 'pxth';
 
 import { FormControlConfig, useFormControl } from '../../src/hooks/useFormControl';
 
@@ -24,7 +25,7 @@ describe('values control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setFieldValue('hello.a.b', 0);
+            result.current.setFieldValue(createPxth(['hello', 'a', 'b']), 0);
         });
 
         expect(result.current.values.getValues()).toStrictEqual({
@@ -37,7 +38,7 @@ describe('values control', () => {
         });
 
         act(() => {
-            result.current.setFieldValue('hello.a.b', 'hello');
+            result.current.setFieldValue(createPxth(['hello', 'a', 'b']), 'hello');
         });
 
         expect(result.current.values.getValues()).toStrictEqual({
@@ -57,9 +58,9 @@ describe('values control', () => {
             initialTouched: {}
         });
 
-        expect(result.current.getFieldValue('a')).toBe('asdf');
-        expect(result.current.getFieldValue('b.j')).toBe(0);
-        expect(result.current.getFieldValue('b')).toStrictEqual({
+        expect(result.current.getFieldValue(createPxth(['a']))).toBe('asdf');
+        expect(result.current.getFieldValue(createPxth(['b', 'j']))).toBe(0);
+        expect(result.current.getFieldValue(createPxth(['b']))).toStrictEqual({
             j: 0
         });
     });
@@ -85,7 +86,7 @@ describe('errors control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setFieldError('a', { $error: 'hello' });
+            result.current.setFieldError(createPxth(['a']), { $error: 'hello' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
@@ -95,7 +96,7 @@ describe('errors control', () => {
         });
 
         act(() => {
-            result.current.setFieldError('hello.a.b', { $error: 'bye' });
+            result.current.setFieldError(createPxth(['hello', 'a', 'b']), { $error: 'bye' });
         });
 
         expect(result.current.errors.getValues()).toStrictEqual({
@@ -117,9 +118,9 @@ describe('errors control', () => {
             initialTouched: {}
         });
 
-        expect(result.current.getFieldError('a')).toStrictEqual({ $error: 'asdf' });
-        expect(result.current.getFieldError('b.j')).toStrictEqual({ $error: 'hello' });
-        expect(result.current.getFieldError('b')).toStrictEqual({
+        expect(result.current.getFieldError(createPxth(['a']))).toStrictEqual({ $error: 'asdf' });
+        expect(result.current.getFieldError(createPxth(['b', 'j']))).toStrictEqual({ $error: 'hello' });
+        expect(result.current.getFieldError(createPxth(['b']))).toStrictEqual({
             j: {
                 $error: 'hello'
             }
@@ -147,7 +148,7 @@ describe('touched control', () => {
         const { result } = renderFormControl({ initialValues: { a: 'asdf' }, initialErrors: {}, initialTouched: {} });
 
         act(() => {
-            result.current.setFieldTouched('a', { $touched: true });
+            result.current.setFieldTouched(createPxth(['a']), { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
@@ -157,7 +158,7 @@ describe('touched control', () => {
         });
 
         act(() => {
-            result.current.setFieldTouched('hello.a.b', { $touched: true });
+            result.current.setFieldTouched(createPxth(['hello', 'a', 'b']), { $touched: true });
         });
 
         expect(result.current.touched.getValues()).toStrictEqual({
@@ -179,9 +180,9 @@ describe('touched control', () => {
             initialTouched: { a: { $touched: true }, b: { j: { $touched: false } } }
         });
 
-        expect(result.current.getFieldTouched('a')).toStrictEqual({ $touched: true });
-        expect(result.current.getFieldTouched('b.j')).toStrictEqual({ $touched: false });
-        expect(result.current.getFieldTouched('b')).toStrictEqual({
+        expect(result.current.getFieldTouched(createPxth(['a']))).toStrictEqual({ $touched: true });
+        expect(result.current.getFieldTouched(createPxth(['b', 'j']))).toStrictEqual({ $touched: false });
+        expect(result.current.getFieldTouched(createPxth(['b']))).toStrictEqual({
             j: {
                 $touched: false
             }
@@ -209,7 +210,7 @@ describe('formMeta control', () => {
         const initialDirty = initialMeta.dirty;
 
         act(() => {
-            result.current.setFormMeta('dirty', !initialDirty);
+            result.current.setFormMeta(createPxth(['dirty']), !initialDirty);
         });
 
         expect(result.current.formMeta.getValues()).toStrictEqual({
@@ -225,7 +226,7 @@ describe('formMeta control', () => {
             initialTouched: {}
         });
 
-        expect(result.current.getFormMeta('dirty')).toBe(false);
-        expect(result.current.getFormMeta('submitCount')).toBe(0);
+        expect(result.current.getFormMeta(createPxth(['dirty']))).toBe(false);
+        expect(result.current.getFormMeta(createPxth(['submitCount']))).toBe(0);
     });
 });

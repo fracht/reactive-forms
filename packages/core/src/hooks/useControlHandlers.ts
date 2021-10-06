@@ -1,3 +1,4 @@
+import { Pxth } from 'pxth';
 import { SetStateAction, Stock } from 'stocked';
 
 import { FieldError } from '../typings/FieldError';
@@ -12,15 +13,15 @@ export type ControlHandlersConfig<Values extends object> = {
 };
 
 export type ControlHandlers<Values extends object> = {
-    setFieldError: <V>(name: string, error: SetStateAction<FieldError<V> | undefined>) => void;
-    setFieldTouched: <V>(name: string, touched: SetStateAction<FieldTouched<V> | undefined>) => void;
-    setFieldValue: <V>(name: string, value: SetStateAction<V>) => void;
-    setFormMeta: <V>(name: keyof FormMeta, value: SetStateAction<V>) => void;
+    setFieldError: <V>(name: Pxth<V>, error: SetStateAction<FieldError<V>>) => void;
+    setFieldTouched: <V>(name: Pxth<V>, touched: SetStateAction<FieldTouched<V>>) => void;
+    setFieldValue: <V>(name: Pxth<V>, value: SetStateAction<V>) => void;
+    setFormMeta: <V>(name: Pxth<V>, value: SetStateAction<V>) => void;
 
-    getFieldError: <V>(name: string) => FieldError<V> | undefined;
-    getFieldTouched: <V>(name: string) => FieldTouched<V> | undefined;
-    getFieldValue: <V>(name: string) => V | undefined;
-    getFormMeta: <V>(name: keyof FormMeta) => V;
+    getFieldError: <V>(name: Pxth<V>) => FieldError<V>;
+    getFieldTouched: <V>(name: Pxth<V>) => FieldTouched<V>;
+    getFieldValue: <V>(name: Pxth<V>) => V;
+    getFormMeta: <V>(name: Pxth<V>) => V;
 
     setErrors: (error: FieldError<Values>) => void;
     setTouched: (touched: FieldTouched<Values>) => void;
@@ -44,11 +45,11 @@ export const useControlHandlers = <Values extends object>({
         setFieldValue,
         getFieldValue,
         setValues,
-        setFieldTouched,
-        getFieldTouched,
+        setFieldTouched: setFieldTouched as ControlHandlers<Values>['setFieldTouched'],
+        getFieldTouched: getFieldTouched as ControlHandlers<Values>['getFieldTouched'],
         setTouched,
-        setFieldError,
-        getFieldError,
+        setFieldError: setFieldError as ControlHandlers<Values>['setFieldError'],
+        getFieldError: getFieldError as ControlHandlers<Values>['getFieldError'],
         setErrors
     };
 };

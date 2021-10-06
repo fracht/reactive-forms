@@ -1,3 +1,5 @@
+import { Pxth } from 'pxth';
+
 import { ArrayControl, useArrayControl } from './useArrayControl';
 import { FieldConfig, useField } from './useField';
 import { FieldError } from '../typings/FieldError';
@@ -7,7 +9,7 @@ export type ArrayFieldConfig<V> = FieldConfig<Array<V>>;
 
 export type ArrayFieldProps<V> = {
     items: Array<V>;
-    name: string;
+    name: Pxth<Array<V>>;
     errors?: FieldError<Array<V>>;
     touched?: FieldTouched<Array<V>>;
 } & ArrayControl<V>;

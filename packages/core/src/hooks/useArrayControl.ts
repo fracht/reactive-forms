@@ -1,3 +1,5 @@
+import { Pxth } from 'pxth';
+
 import { useFormContext } from './useFormContext';
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
@@ -16,11 +18,11 @@ export type ArrayControl<V> = {
     removeAt: (index: number) => void;
 };
 
-export type ArrayControlConfig = {
-    name: string;
+export type ArrayControlConfig<V> = {
+    name: Pxth<Array<V>>;
 };
 
-export const useArrayControl = <V>({ name }: ArrayControlConfig): ArrayControl<V> => {
+export const useArrayControl = <V>({ name }: ArrayControlConfig<V>): ArrayControl<V> => {
     const { setFieldValue, setFieldTouched, setFieldError, getFieldValue, getFieldError, getFieldTouched } =
         useFormContext();
 
