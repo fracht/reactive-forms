@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
-import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import mergeWith from 'lodash/mergeWith';
-import { BatchUpdate, getOrReturn } from 'stocked';
+import { createPxth, deepGet, Pxth } from 'pxth';
+import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import type { BaseSchema } from 'yup';
 
@@ -15,6 +15,7 @@ import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FormHelpers } from '../typings/FormHelpers';
+import { FormMeta } from '../typings/FormMeta';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
@@ -81,6 +82,8 @@ const deepCustomizer = (src1: unknown, src2: unknown) => {
     }
 };
 
+const formMetaPaths = createPxth<FormMeta>([]);
+
 export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
     const throwError = useThrowError();
 
@@ -131,14 +134,14 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const [isLoaded, setIsLoaded] = useState(!config.load);
 
     const validateField = useCallback(
-        async <V>(name: string, value: V) => {
+        async <V>(name: Pxth<V>, value: V) => {
             if (hasValidator(name)) {
-                if (!disablePureFieldsValidation || !isEqual(value, get(initialValuesRef.current, name))) {
+                if (!disablePureFieldsValidation || !isEqual(value, deepGet(initialValuesRef.current, name))) {
                     const error = await runFieldLevelValidation(name, value);
                     setFieldError(name, (old) => ({ ...old, ...error }));
                     return error;
                 } else {
-                    setFieldError(name, { $error: undefined });
+                    setFieldError(name, { $error: undefined } as FieldError<V>);
                 }
             }
 
@@ -217,15 +220,15 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                 'Cannot call submit, because no action specified in arguments and no default action provided.'
             );
 
-            setFormMeta('submitCount', getFormMeta<number>('submitCount') + 1);
-            setFormMeta('isSubmitting', true);
-            setFormMeta('isValidating', true);
+            setFormMeta(formMetaPaths.submitCount, getFormMeta(formMetaPaths.submitCount) + 1);
+            setFormMeta(formMetaPaths.isSubmitting, true);
+            setFormMeta(formMetaPaths.isValid, true);
 
             const currentValues = values.getValues();
 
             const newErrors = await validateForm(currentValues);
 
-            setFormMeta('isValidating', false);
+            setFormMeta(formMetaPaths.isValid, false);
 
             setErrors(newErrors);
             setTouched(
@@ -245,7 +248,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                     onValidationFailed?.(newErrors);
                 }
             } finally {
-                setFormMeta('isSubmitting', false);
+                setFormMeta(formMetaPaths.isSubmitting, false);
             }
         },
         [
@@ -263,12 +266,13 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     );
 
     const updateFormDirtiness = useCallback(
-        ({ values }: BatchUpdate<unknown>) => setFormMeta('dirty', !isEqual(values, initialValuesRef.current)),
+        ({ values }: BatchUpdate<unknown>) =>
+            setFormMeta(formMetaPaths.dirty, !isEqual(values, initialValuesRef.current)),
         [setFormMeta]
     );
 
     const updateFormValidness = useCallback(
-        ({ values }: BatchUpdate<object>) => setFormMeta('isValid', deepRemoveEmpty(values) === undefined),
+        ({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
         [setFormMeta]
     );
 
@@ -276,15 +280,19 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         async ({ values, origin }: BatchUpdate<object>) => {
             const { attachPath, errors } = await validateBranch(origin, values);
 
-            const onlyNecessaryErrors = getOrReturn(errors, attachPath);
+            const onlyNecessaryErrors = deepGet(errors, attachPath);
             const normalizedErrors = disablePureFieldsValidation
                 ? merge(
-                      setNestedValues(onlyNecessaryErrors, undefined),
-                      excludeOverlaps(values, getOrReturn(initialValuesRef.current, attachPath), onlyNecessaryErrors)
+                      setNestedValues(onlyNecessaryErrors as object, undefined),
+                      excludeOverlaps(
+                          values,
+                          deepGet(initialValuesRef.current, attachPath) as object,
+                          onlyNecessaryErrors
+                      )
                   )
                 : onlyNecessaryErrors;
 
-            setFieldError(attachPath as string, (old) => overrideMerge(old ?? {}, normalizedErrors));
+            setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as object));
         },
         [disablePureFieldsValidation, setFieldError, validateBranch]
     );

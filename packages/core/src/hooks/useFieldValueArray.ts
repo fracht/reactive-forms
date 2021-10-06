@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Pxth } from 'pxth';
 
 import { useFormContext } from './useFormContext';
 
-export type FieldValueArrayConfig<T extends object> = Record<keyof T, string>;
+export type FieldValueArrayConfig<T extends object> = {
+    [K in keyof T]: Pxth<T[K]>;
+};
 
 export const useFieldValueArray = <T extends object>(paths: FieldValueArrayConfig<T>): T => {
     const {
@@ -20,7 +23,7 @@ export const useFieldValueArray = <T extends object>(paths: FieldValueArrayConfi
 
     useEffect(() => {
         const cleanups = Object.entries(paths).map(([to, from]) =>
-            watch(from as string, (value) => {
+            watch(from as Pxth<unknown>, (value) => {
                 setObject((prev) => ({
                     ...prev,
                     [to]: value

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import set from 'lodash/set';
+import { deepSet, Pxth } from 'pxth';
 
 import { FieldConfig, useField } from './useField';
 import { FieldError } from '../typings/FieldError';
@@ -12,9 +12,9 @@ export type ObjectFieldProps<V extends object> = {
     setValues: (value: V) => void;
     setTouched: (touched: FieldTouched<V>) => void;
     setErrors: (errors: FieldError<V>) => void;
-    setDeepValue: <T>(path: string, value: T) => void;
-    setDeepTouched: <T>(path: string, touched: FieldTouched<T>) => void;
-    setDeepError: <T>(path: string, error: FieldError<T>) => void;
+    setDeepValue: <T>(path: Pxth<T>, value: T) => void;
+    setDeepTouched: <T>(path: Pxth<T>, touched: FieldTouched<T>) => void;
+    setDeepError: <T>(path: Pxth<T>, error: FieldError<T>) => void;
     errors?: FieldError<V>;
     touched?: FieldTouched<V>;
 };
@@ -27,18 +27,21 @@ export const useObjectField = <V extends object>(contextConfig: ObjectFieldConfi
     } = useField(contextConfig);
 
     const setDeepValue = useCallback(
-        <T>(path: string, value: T) => setValues(set(values, path, value)),
+        <T>(path: Pxth<T>, value: T) => setValues(deepSet(values, path, value) as V),
         [setValues, values]
     );
 
     const setDeepTouched = useCallback(
-        <T>(path: string, newTouched: FieldTouched<T>) =>
-            setTouched(set(touched ?? ({} as FieldTouched<V>), path, newTouched)),
+        <T>(path: Pxth<T>, newTouched: FieldTouched<T>) =>
+            setTouched(
+                deepSet(touched ?? ({} as FieldTouched<V>), path, newTouched as unknown as T) as FieldTouched<V>
+            ),
         [setTouched, touched]
     );
 
     const setDeepError = useCallback(
-        <T>(path: string, error: FieldError<T>) => setErrors(set(errors ?? ({} as FieldError<V>), path, error)),
+        <T>(path: Pxth<T>, error: FieldError<T>) =>
+            setErrors(deepSet(errors ?? ({} as FieldError<V>), path, error as unknown as T) as FieldError<V>),
         [errors, setErrors]
     );
 

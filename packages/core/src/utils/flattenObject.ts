@@ -1,9 +1,9 @@
-import { ROOT_PATH } from 'stocked';
+import { RootPath, RootPathToken } from 'pxth';
 
 import { joinPaths } from './joinPaths';
 
 export const flattenObject = (obj: object): Record<string, unknown> => {
-    const queue: Array<[string | typeof ROOT_PATH, object]> = [[ROOT_PATH, obj]];
+    const queue: Array<[string | RootPath, object]> = [[RootPathToken, obj]];
 
     const result: Record<string, unknown> = {};
 

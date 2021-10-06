@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import merge from 'lodash/merge';
+import { Pxth } from 'pxth';
 import type { BaseSchema } from 'yup';
 
 import { useFormContext } from './useFormContext';
@@ -7,7 +8,7 @@ import { FieldValidator } from '../typings/FieldValidator';
 import { runYupSchema } from '../utils/runYupSchema';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: string };
+export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: Pxth<V> };
 
 export type FieldValidationProps<V> = {
     validator?: FieldValidator<V>;

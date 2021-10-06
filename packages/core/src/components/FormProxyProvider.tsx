@@ -1,4 +1,5 @@
 import React, { createContext, PropsWithChildren, useCallback } from 'react';
+import { Pxth } from 'pxth';
 import { intercept, StockProxy, useStockContext } from 'stocked';
 
 import { FormContext } from './FormContext';
@@ -7,10 +8,10 @@ import { useFormContext } from '../hooks/useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';
 
 export type FormProxyProviderProps = PropsWithChildren<{
-    proxy: StockProxy;
+    proxy: StockProxy<unknown>;
 }>;
 
-export const FormProxyContext = createContext<StockProxy | undefined>(undefined);
+export const FormProxyContext = createContext<StockProxy<unknown> | undefined>(undefined);
 
 export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) => {
     const { values, errors, touched, formMeta, registerValidator, ...other } = useFormContext();
@@ -24,17 +25,15 @@ export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) =
     const { getFieldValue } = handlers;
 
     const interceptedRegisterValidator = useCallback(
-        <V,>(name: string, validator: FieldValidator<V>) =>
+        <V,>(name: Pxth<V>, validator: FieldValidator<V>) =>
             intercept(
                 proxy,
-                name,
+                name as Pxth<unknown>,
                 registerValidator,
                 (name, validator) => {
-                    return registerValidator(proxy.getNormalPath(name) as string, () =>
-                        validator(getFieldValue(name)!)
-                    );
+                    return registerValidator(proxy.getNormalPath(name), () => validator(getFieldValue(name)!));
                 },
-                [name, validator as FieldValidator<unknown>]
+                [name as Pxth<unknown>, validator as FieldValidator<unknown>]
             ),
         [getFieldValue, proxy, registerValidator]
     );
