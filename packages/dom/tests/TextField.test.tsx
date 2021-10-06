@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
+import { createPxth } from 'pxth';
 
 import { domPlugin, TextField } from '../src';
 
@@ -8,9 +9,7 @@ describe('TextField', () => {
     it('should render input by default', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" />
-                </ReactiveForm>
+                <ReactiveForm initialValues={{}}>{() => <TextField name={createPxth(['hello'])} />}</ReactiveForm>
             </FormPlugins>
         );
 
@@ -22,7 +21,7 @@ describe('TextField', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" as="div" />
+                    {() => <TextField name={createPxth(['hello'])} as="div" />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -35,11 +34,13 @@ describe('TextField', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <TextField name="hello" as="select">
-                        <option value="1">asdf</option>
-                        <option value="2">asdf</option>
-                        <option value="3">asdf</option>
-                    </TextField>
+                    {() => (
+                        <TextField name={createPxth(['hello'])} as="select">
+                            <option value="1">asdf</option>
+                            <option value="2">asdf</option>
+                            <option value="3">asdf</option>
+                        </TextField>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -57,7 +58,11 @@ describe('TextField', () => {
                         hello: 'asdf'
                     }}
                 >
-                    <TextField name="hello">{(bag) => <div id="testID">{bag.value}</div>}</TextField>
+                    {() => (
+                        <TextField name={createPxth(['hello'])}>
+                            {(bag) => <div id="testID">{bag.value}</div>}
+                        </TextField>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -78,7 +83,7 @@ describe('TextField', () => {
                         hello: 'asdf'
                     }}
                 >
-                    <TextField name="hello" firstName="world" as={DummyComponent} />
+                    {() => <TextField name={createPxth(['hello'])} firstName="world" as={DummyComponent} />}
                 </ReactiveForm>
             </FormPlugins>
         );

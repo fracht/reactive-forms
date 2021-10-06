@@ -2,6 +2,7 @@ import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins, ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
+import { createPxth } from 'pxth';
 
 import { domPlugin, Form } from '../src';
 
@@ -10,9 +11,11 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <Form>
-                        <div id="children"></div>
-                    </Form>
+                    {() => (
+                        <Form>
+                            <div id="children"></div>
+                        </Form>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -26,9 +29,11 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    <Form>
-                        <div>children</div>
-                    </Form>
+                    {() => (
+                        <Form>
+                            <div>children</div>
+                        </Form>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -46,9 +51,11 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <Form submitAction={submit}>
-                        <div>children</div>
-                    </Form>
+                    {() => (
+                        <Form submitAction={submit}>
+                            <div>children</div>
+                        </Form>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -67,17 +74,19 @@ describe('Form', () => {
 
         const wrapper = mount(
             <ReactiveFormProvider formBag={bag.current}>
-                <Form>
-                    <div>children</div>
-                </Form>
+                {() => (
+                    <Form>
+                        <div>children</div>
+                    </Form>
+                )}
             </ReactiveFormProvider>
         );
 
         await act(async () => {
-            bag.current.setFieldValue('test', 'modified');
+            bag.current.setFieldValue(createPxth(['test']), 'modified');
             wrapper.find('form').simulate('reset');
         });
 
-        expect(bag.current.values.getValue('test')).toBe('initial');
+        expect(bag.current.values.getValue(createPxth(['test']))).toBe('initial');
     });
 });

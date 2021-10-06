@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
+import { createPxth } from 'pxth';
 
 import { domPlugin, ErrorMessage } from '../src';
 
@@ -9,7 +10,7 @@ describe('ErrorMessage', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: '' }}>
-                    <ErrorMessage name="test" />
+                    {() => <ErrorMessage name={createPxth(['test'])} />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -33,7 +34,7 @@ describe('ErrorMessage', () => {
                         }
                     }}
                 >
-                    <ErrorMessage name="test" as="div" />
+                    {() => <ErrorMessage name={createPxth(['test'])} as="div" />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -61,7 +62,7 @@ describe('ErrorMessage', () => {
                         }
                     }}
                 >
-                    <ErrorMessage name="test" as={ErrorComponent} />
+                    {() => <ErrorMessage name={createPxth(['test'])} as={ErrorComponent} />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -85,7 +86,7 @@ describe('ErrorMessage', () => {
                         }
                     }}
                 >
-                    <ErrorMessage name="test" />
+                    {() => <ErrorMessage name={createPxth(['test'])} />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -109,7 +110,11 @@ describe('ErrorMessage', () => {
                         }
                     }}
                 >
-                    <ErrorMessage name="test">{({ children }) => <div>{children}</div>}</ErrorMessage>
+                    {() => (
+                        <ErrorMessage name={createPxth(['test'])}>
+                            {({ children }) => <div>{children}</div>}
+                        </ErrorMessage>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -128,7 +133,7 @@ describe('ErrorMessage', () => {
                         }
                     }}
                 >
-                    <ErrorMessage name="test" />
+                    {() => <ErrorMessage name={createPxth(['test'])} />}
                 </ReactiveForm>
             </FormPlugins>
         );

@@ -9,11 +9,12 @@ import {
 } from '@reactive-forms/core';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { mount } from 'enzyme';
+import { createPxth, Pxth } from 'pxth';
 
 import { domPlugin, TextFieldBag, useTextField } from '../src';
 
 const renderUseTextField = <T extends object>(
-    name: string,
+    name: Pxth<string>,
     config: FormConfig<T>
 ): [RenderHookResult<undefined, TextFieldBag>, FormShared<T>] => {
     const {
@@ -27,7 +28,7 @@ const renderUseTextField = <T extends object>(
             wrapper: ({ children }: PropsWithChildren<{}>) => (
                 <FormPlugins plugins={createPluginArray(domPlugin)}>
                     <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
-                        {children}
+                        {() => children}
                     </ReactiveFormProvider>
                 </FormPlugins>
             )
@@ -38,7 +39,7 @@ const renderUseTextField = <T extends object>(
 
 describe('useTextField', () => {
     it('should change value', () => {
-        const [{ result }, { values }] = renderUseTextField('hello', {
+        const [{ result }, { values }] = renderUseTextField(createPxth(['hello']), {
             initialValues: {
                 hello: 'asdf'
             }
@@ -61,7 +62,7 @@ describe('useTextField', () => {
     });
 
     it('should set touched', () => {
-        const [{ result }, { touched }] = renderUseTextField('hello', {
+        const [{ result }, { touched }] = renderUseTextField(createPxth(['hello']), {
             initialValues: {
                 hello: 'asdf'
             }

@@ -2,6 +2,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
+import { createPxth } from 'pxth';
 
 import { domPlugin, FieldArray } from '../src';
 
@@ -10,22 +11,24 @@ describe('FieldArray', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm<{ test: number[] }> initialValues={{ test: [1, 2] }}>
-                    <FieldArray<number> name="test">
-                        {(arrayHelpers) => (
-                            <div>
-                                {arrayHelpers.items.map((value, index) => (
-                                    <span key={index}>{value}</span>
-                                ))}
-                                <button
-                                    onClick={() => {
-                                        arrayHelpers.push(3);
-                                    }}
-                                >
-                                    add item
-                                </button>
-                            </div>
-                        )}
-                    </FieldArray>
+                    {() => (
+                        <FieldArray name={createPxth<number[]>(['test'])}>
+                            {(arrayHelpers) => (
+                                <div>
+                                    {arrayHelpers.items.map((value, index) => (
+                                        <span key={index}>{value}</span>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            arrayHelpers.push(3);
+                                        }}
+                                    >
+                                        add item
+                                    </button>
+                                </div>
+                            )}
+                        </FieldArray>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -49,7 +52,7 @@ describe('FieldArray', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <FieldArray name="hello" as={RenderComponent} />
+                    {() => <FieldArray name={createPxth(['hello'])} as={RenderComponent} />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -62,7 +65,7 @@ describe('FieldArray', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    <FieldArray name="hello">{() => <div id="test" />}</FieldArray>
+                    {() => <FieldArray name={createPxth(['hello'])}>{() => <div id="test" />}</FieldArray>}
                 </ReactiveForm>
             </FormPlugins>
         );

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { mount } from 'enzyme';
+import { createPxth } from 'pxth';
 
 import { domPlugin, FieldValue } from '../src';
 
@@ -9,9 +10,11 @@ describe('FieldValue', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <div>
-                        <FieldValue name="test" />
-                    </div>
+                    {() => (
+                        <div>
+                            <FieldValue name={createPxth(['test'])} />
+                        </div>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -23,7 +26,7 @@ describe('FieldValue', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <FieldValue name="test" as="div" />
+                    {() => <FieldValue name={createPxth(['test'])} as="div" />}
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -34,7 +37,7 @@ describe('FieldValue', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    <FieldValue name="test">{(value) => <span>{value}</span>}</FieldValue>
+                    {() => <FieldValue name={createPxth(['test'])}>{(value) => <span>{value}</span>}</FieldValue>}
                 </ReactiveForm>
             </FormPlugins>
         );
