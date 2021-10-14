@@ -58,8 +58,8 @@ export const GraphView = ({ rootNode }: Graph) => {
 
         const svg = select<SVGSVGElement, SVGSVGElement>('#graph');
         const combinatedGroup = svg.append('g');
-        const nodeGroup = combinatedGroup.append('g');
         const linkGroup = combinatedGroup.append('g');
+        const nodeGroup = combinatedGroup.append('g');
 
         root.each((node, index) => {
             node._children = node.children;
