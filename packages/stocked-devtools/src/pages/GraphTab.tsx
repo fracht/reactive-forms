@@ -205,8 +205,6 @@ const rootNode: GraphNode = objectToGraph({
     children: []
 });
 
-console.log(JSON.stringify(rootNode));
-
 export const GraphTab = () => {
     return (
         <div className={classes['tab']}>

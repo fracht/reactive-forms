@@ -1,19 +1,16 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { ContractOutline } from 'react-ionicons';
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import { LocateOutline, RefreshOutline } from 'react-ionicons';
+import clsx from 'clsx';
 import {
-    BaseType,
-    ClientPointEvent,
     hierarchy,
     HierarchyNode,
     HierarchyPointNode,
-    linkHorizontal,
     linkVertical,
     select,
     Selection,
-    stratify,
     tree,
-    TreeLayout
+    TreeLayout,
+    zoom
 } from 'd3';
 
 import classes from './GraphView.module.scss';
@@ -27,8 +24,6 @@ export type Graph = {
     rootNode: GraphNode;
 };
 
-const useGraph = () => {};
-
 export const GraphView = ({ rootNode }: Graph) => {
     const elementsRef =
         useRef<{
@@ -40,16 +35,44 @@ export const GraphView = ({ rootNode }: Graph) => {
         }>();
 
     const initializeTree = useCallback((root: HierarchyNode<unknown>) => {
-        const treeLayout = tree();
+        const levelOnDescendants: Record<number, number> = {};
+
+        let maxDepth = 1;
+
+        root.each((node) => {
+            if (!(node.depth in levelOnDescendants)) {
+                levelOnDescendants[node.depth] = 0;
+            }
+
+            if (node.depth > maxDepth) {
+                maxDepth = node.depth;
+            }
+
+            levelOnDescendants[node.depth] += node.children?.length || 0;
+        });
+
+        const height = maxDepth * 100;
+        const width = Math.max(Math.max(...Object.values(levelOnDescendants)) * 30, 1000);
+
+        const treeLayout = tree().size([width, height]);
 
         const svg = select<SVGSVGElement, SVGSVGElement>('#graph');
-        const nodeGroup = svg.append('g');
-        const linkGroup = svg.append('g');
+        const combinatedGroup = svg.append('g');
+        const nodeGroup = combinatedGroup.append('g');
+        const linkGroup = combinatedGroup.append('g');
 
         root.each((node, index) => {
             node._children = node.children;
             node.id = index;
         });
+
+        const zm = zoom<SVGSVGElement, SVGSVGElement>()
+            .duration(250)
+            .on('zoom', (event) => {
+                combinatedGroup.attr('transform', event.transform);
+            });
+
+        svg.call(zm);
 
         elementsRef.current = {
             treeLayout,
@@ -57,6 +80,11 @@ export const GraphView = ({ rootNode }: Graph) => {
             linkGroup,
             nodeGroup,
             root
+        };
+
+        return () => {
+            elementsRef.current = undefined;
+            combinatedGroup.remove();
         };
     }, []);
 
@@ -70,25 +98,7 @@ export const GraphView = ({ rootNode }: Graph) => {
 
         const { treeLayout, svg, nodeGroup, linkGroup, root } = elementsRef.current;
 
-        const marginX = 20;
-        const marginY = 20;
-
-        const levelOnDescendants: Record<number, number> = {};
-
-        root.each((node) => {
-            if (!(node.depth in levelOnDescendants)) {
-                levelOnDescendants[node.depth] = 0;
-            }
-
-            levelOnDescendants[node.depth] += node.children?.length || 0;
-        });
-
-        const height = 1000;
-        const width = Math.max(Math.max(...Object.values(levelOnDescendants)) * 30, 1000);
-
         const indexes: Record<number, number> = {};
-
-        treeLayout.size([width, height]);
 
         const nodes = treeLayout(root).each((node) => {
             if (!(node.depth in indexes)) {
@@ -98,6 +108,7 @@ export const GraphView = ({ rootNode }: Graph) => {
             node.y = node.y - (indexes[node.depth]++ % 2) * 30;
         });
 
+        const [width, height] = treeLayout.size()!;
         nodes.x = width / 2;
 
         const diagonal = linkVertical();
@@ -110,13 +121,7 @@ export const GraphView = ({ rootNode }: Graph) => {
             if (node.x > right.x) right = node;
         });
 
-        const transition = svg
-            .transition()
-            .duration(500)
-            .attr('width', width + marginX)
-            .attr('height', height + marginY * 2)
-            .attr('viewBox', [left.x - marginX, marginY, width, height].join(' '));
-        // .tween('resize', window.ResizeObserver ? null : () => () => svg.dispatch('toggle'));
+        const transition = svg.transition().duration(500).attr('viewBox', [left.x, 0, width, height].join(' '));
 
         const node = nodeGroup.selectAll('g').data(nodes.descendants(), (node) => node.id);
 
@@ -174,13 +179,13 @@ export const GraphView = ({ rootNode }: Graph) => {
             .attr('fill-opacity', 0)
             .attr('stroke-opacity', 0);
 
-        const linkUpdate = links
+        links
             .merge(linkEnter)
             .transition(transition)
             .attr('d', (d) => diagonal({ source: [d.parent!.x, d.parent!.y], target: [d.x, d.y] }))
             .attr('stroke-opacity', 1);
 
-        const linkExit = links
+        links
             .exit()
             .transition(transition)
             .remove()
@@ -191,7 +196,7 @@ export const GraphView = ({ rootNode }: Graph) => {
     }, []);
 
     useEffect(() => {
-        initializeTree(hierarchy(rootNode, (node) => node.childNodes));
+        return initializeTree(hierarchy(rootNode, (node) => node.childNodes));
     }, []);
 
     useEffect(() => {
@@ -200,18 +205,15 @@ export const GraphView = ({ rootNode }: Graph) => {
 
     return (
         <div className={classes['graph']}>
-            {/* <TransformWrapper limitToBounds={false} centerOnInit={true}>
-                {({ resetTransform }) => ( */}
-            {/* <React.Fragment> */}
-            {/* <TransformComponent wrapperClass={classes['drag-wrapper']}> */}
-            <svg id="graph" />
-            {/* </TransformComponent> */}
-            {/* <button onClick={resetTransform}>
-                            <ContractOutline />
-                        </button>
-                     </React.Fragment>
-                 )}
-             </TransformWrapper> */}
+            <svg style={{ width: '100%', height: '100%' }} id="graph" />
+            <div className={classes['button-bar']}>
+                <button className={classes['button']}>
+                    <RefreshOutline color="inherit" />
+                </button>
+                <button className={classes['button']}>
+                    <LocateOutline color="inherit" />
+                </button>
+            </div>
         </div>
     );
 };
