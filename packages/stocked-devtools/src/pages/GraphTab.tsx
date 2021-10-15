@@ -1,5 +1,4 @@
-import { GraphNode } from '../components/GraphNodeView';
-import { GraphView } from '../components/GraphView';
+import { GraphNode, GraphView, NodeType } from '../components/GraphView';
 import { objectToGraph } from '../utils/objectToGraph';
 
 import classes from './GraphTab.module.scss';
@@ -204,6 +203,11 @@ const rootNode: GraphNode = objectToGraph({
     parent_invoice: { inv_id: null, inv_no: null, inv_type: null, issue_date: null, inv_status: null },
     children: []
 });
+
+rootNode.type = NodeType.HIGHLIGHT;
+rootNode.childNodes[4].type = NodeType.HIGHLIGHT;
+rootNode.childNodes[4].childNodes[5].type = NodeType.ORIGIN;
+rootNode.childNodes[4].childNodes[5].childNodes[0].type = NodeType.HIGHLIGHT;
 
 export const GraphTab = () => {
     return (

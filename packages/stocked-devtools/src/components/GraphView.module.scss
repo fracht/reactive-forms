@@ -1,6 +1,6 @@
 .graph {
-    width: 50vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background-color: #303030;
     position: relative;
@@ -28,5 +28,62 @@
 
     &:active {
         color: #9c9c9c;
+    }
+}
+
+$default-node-color: #a0a0a0;
+$highlighted-node-color: rgb(255, 217, 0);
+$origin-node-color: rgb(128, 0, 128);
+
+.node {
+    cursor: pointer;
+    pointer-events: all;
+
+    circle {
+        fill: $default-node-color;
+        border-radius: 50%;
+        transition: outline-width 0.5s ease-in-out;
+        outline: 0 solid #fff;
+    }
+
+    text {
+        font-size: 12px;
+        transform: translate(8px, 3px);
+        fill: #fff;
+    }
+
+    &--origin {
+        circle {
+            fill: $origin-node-color;
+        }
+        text {
+            fill: mix(#fff, $origin-node-color, 70%);
+        }
+    }
+
+    &--highlight {
+        circle {
+            fill: $highlighted-node-color;
+        }
+        text {
+            fill: mix(#fff, $highlighted-node-color, 70%);
+        }
+    }
+
+    $parent: &;
+
+    &--collapsed {
+        circle {
+            transition: outline-width 0.5s ease-in-out;
+            outline-width: 1.5px;
+        }
+    }
+}
+
+.link {
+    stroke: rgba(160, 160, 160, 0.767);
+
+    &--highlighted {
+        stroke: gold;
     }
 }
