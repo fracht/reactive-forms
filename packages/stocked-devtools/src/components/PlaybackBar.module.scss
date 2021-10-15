@@ -1,0 +1,21 @@
+.slider {
+    height: 3px;
+
+    &-wrapper {
+        padding: 5px 0;
+    }
+
+    &::-webkit-slider-runnable-track {
+        cursor: pointer;
+    }
+
+    &::-webkit-slider-thumb {
+        max-width: 10px;
+        max-height: 10px;
+    }
+}
+
+.playback-bar {
+    display: grid;
+    grid-template-columns: min-content 1fr min-content;
+}
