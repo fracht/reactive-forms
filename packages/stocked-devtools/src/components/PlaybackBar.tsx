@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { PauseOutline, PlayOutline, PlaySkipBackOutline, PlaySkipForwardOutline, TrashOutline } from 'react-ionicons';
+import { IconButton, Slider } from '@mui/material';
 import clsx from 'clsx';
 
-import { IconButton } from './IconButton';
+import { PauseOutline } from './icons/PauseOutline';
+import { PlayOutline } from './icons/PlayOutline';
+import { TrashOutline } from './icons/TrashOutline';
 
 import classes from './PlaybackBar.module.scss';
-
 export type PlaybackBarProps = {
     className?: string;
 };
@@ -19,22 +20,14 @@ export const PlaybackBar = ({ className }: PlaybackBarProps) => {
                 <IconButton onClick={() => setIsPlaying((d) => !d)}>
                     {isPlaying ? <PauseOutline /> : <PlayOutline />}
                 </IconButton>
-                {/* <PlaySkipBackOutline />
-                <PlaySkipForwardOutline /> */}
             </div>
             <div className={classes['slider-wrapper']}>
-                <input
-                    style={{
-                        width: '100%'
-                    }}
-                    className={classes['slider']}
-                    min={0}
-                    max={10}
-                    type="range"
-                />
+                <Slider valueLabelDisplay="auto" marks min={0} max={10} size="small" />
             </div>
             <div>
-                <TrashOutline />
+                <IconButton>
+                    <TrashOutline />
+                </IconButton>
             </div>
         </div>
     );

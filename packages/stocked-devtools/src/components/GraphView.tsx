@@ -1,7 +1,10 @@
-import { ArchiveOutline, LocateOutline, SettingsOutline } from 'react-ionicons';
+import { IconButton, Stack, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import { hierarchy, HierarchyNode } from 'd3';
 
+import { ArchiveOutline } from './icons/ArchiveOutline';
+import { LocateOutline } from './icons/LocateOutline';
+import { SettingsOutline } from './icons/SettingsOutline';
 import { useStateTree } from './useStateTree';
 
 import classes from './GraphView.module.scss';
@@ -66,17 +69,23 @@ export const GraphView = ({ rootNode }: Graph) => {
     return (
         <div className={classes['graph']}>
             <svg style={{ width: '100%', height: '100%' }} id="graph" />
-            <div className={classes['button-bar']}>
-                <button className={classes['button']}>
-                    <SettingsOutline color="inherit" />
-                </button>
-                <button className={classes['button']}>
-                    <ArchiveOutline onClick={unwrapAll} color="inherit" />
-                </button>
-                <button className={classes['button']}>
-                    <LocateOutline onClick={center} color="inherit" />
-                </button>
-            </div>
+            <Stack direction="row" spacing={1} className={classes['button-bar']}>
+                <Tooltip title="Settings">
+                    <IconButton color="inherit">
+                        <SettingsOutline />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Unwrap all nodes">
+                    <IconButton color="inherit">
+                        <ArchiveOutline onClick={unwrapAll} />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Center">
+                    <IconButton color="inherit">
+                        <LocateOutline onClick={center} />
+                    </IconButton>
+                </Tooltip>
+            </Stack>
         </div>
     );
 };
