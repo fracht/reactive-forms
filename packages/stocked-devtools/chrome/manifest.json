@@ -1,0 +1,8 @@
+{
+    "manifest_version": 2,
+    "name": "Stocked Developer Tools",
+    "description": "Adds Stocked debugging tools to the Chrome Developer Tools.",
+    "version": "0.0.1",
+    "minimum_chrome_version": "60",
+    "devtools_page": "panel.html"
+}
