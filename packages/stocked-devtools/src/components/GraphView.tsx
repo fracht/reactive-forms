@@ -95,13 +95,13 @@ export const GraphView = ({ rootNode }: Graph) => {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Unwrap all nodes">
-                    <IconButton color="inherit">
-                        <ArchiveOutline onClick={unwrapAll} />
+                    <IconButton onClick={unwrapAll} color="inherit">
+                        <ArchiveOutline />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Center">
-                    <IconButton color="inherit">
-                        <LocateOutline onClick={center} />
+                    <IconButton onClick={center} color="inherit">
+                        <LocateOutline />
                     </IconButton>
                 </Tooltip>
             </Stack>
