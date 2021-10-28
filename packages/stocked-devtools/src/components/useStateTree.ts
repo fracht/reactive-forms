@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
     BaseType,
     HierarchyNode,
@@ -36,7 +36,7 @@ export type StateTreeConfig<T> = {
     minHeight: number;
     animationDuration: number;
 
-    graphId: string;
+    svgRef: React.MutableRefObject<SVGSVGElement | null>;
 };
 
 export type StateTreeControl = {
@@ -57,7 +57,7 @@ export const useStateTree = <T>({
     minWidth,
     minHeight,
     animationDuration,
-    graphId
+    svgRef
 }: StateTreeConfig<T>): StateTreeControl => {
     const elementsRef =
         useRef<{
@@ -79,7 +79,12 @@ export const useStateTree = <T>({
                 Math.max(height * levelHeight, minHeight)
             ]);
 
-            const svg = select<SVGElement, SVGSVGElement>(`#${graphId}`);
+            const svg = select<SVGElement, SVGSVGElement>(svgRef.current!) as unknown as Selection<
+                SVGElement,
+                SVGSVGElement,
+                HTMLElement,
+                unknown
+            >;
             const rootGroup = svg.append('g');
             const linkGroup = rootGroup.append('g');
             const nodeGroup = rootGroup.append('g');
@@ -106,7 +111,7 @@ export const useStateTree = <T>({
                 rootGroup.remove();
             };
         },
-        [animationDuration, levelHeight, minHeight, minWidth, nodeWidth, graphId]
+        [nodeWidth, minWidth, levelHeight, minHeight, svgRef, animationDuration]
     );
 
     const updateTree = useCallback(
@@ -201,7 +206,9 @@ export const useStateTree = <T>({
             links
                 .merge(linkEnter)
                 .transition(currentTransition)
-                .attr('d', (d) => diagonal({ source: [d.parent!.x, d.parent!.y], target: [d.x, d.y] }))
+                .attr('d', (d) => {
+                    return diagonal({ source: [d.parent!.x, d.parent!.y], target: [d.x, d.y] });
+                })
                 .attr('stroke-opacity', 1);
 
             // link exit transitions (deleting old links)

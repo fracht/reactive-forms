@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { GraphNode, GraphView, NodeType } from '../components/GraphView';
 import { objectToGraph } from '../utils/objectToGraph';
 
@@ -5,22 +7,22 @@ import classes from './GraphTab.module.scss';
 
 const rootNode: GraphNode = objectToGraph({
     inv_id: 2872.0,
-    invoice_type: 'INV',
-    status: 'SUB',
-    inv_no: '8334',
+    invoice_type: '',
+    status: '',
+    inv_no: '',
     supplier: {
         com_id: 0.0,
-        com_name: 'SIA Fracht',
-        com_type: 'SYS',
-        reg_no: '40103253277',
-        vat_no: 'LV40103253277',
+        com_name: '',
+        com_type: '',
+        reg_no: '',
+        vat_no: '',
         reg_address: {
             loc_id: null,
-            country_code: 'LV',
-            country_name: 'Latvia',
-            city: 'Riga',
-            street: 'Pulkveza Brieza iela 8-1',
-            zip: 'LV-1010',
+            country_code: '',
+            country_name: '',
+            city: '',
+            street: '',
+            zip: '',
             longitude: null,
             latitude: null,
             place_type: null,
@@ -28,11 +30,11 @@ const rootNode: GraphNode = objectToGraph({
         },
         mail_address: {
             loc_id: null,
-            country_code: 'LV',
-            country_name: 'Latvia',
-            city: 'Riga',
-            street: 'Pulkveza Brieza iela 35-3',
-            zip: 'LV-1045',
+            country_code: '',
+            country_name: '',
+            city: '',
+            street: '',
+            zip: '',
             longitude: null,
             latitude: null,
             place_type: null,
@@ -40,16 +42,16 @@ const rootNode: GraphNode = objectToGraph({
         },
         contact_person: {
             cper_id: 2.0,
-            contact_type: 'CRGD',
-            is_private: 'N',
-            person_name_surname: 'Renatas Slenderis',
-            phone: '+37129129233',
-            email: 'renatas.slenderis@fracht.lv',
-            fax: '+37167322370',
+            contact_type: '',
+            is_private: '',
+            person_name_surname: '',
+            phone: '',
+            email: '',
+            fax: '',
             notes: null,
-            visibility: 'PUB',
-            is_editable: 'Y',
-            position: 'Member of the board',
+            visibility: '',
+            is_editable: '',
+            position: '',
             usr_id: 1.0
         },
         bank_account: {
@@ -58,8 +60,8 @@ const rootNode: GraphNode = objectToGraph({
             is_active: null,
             bank_code: null,
             bank_name: null,
-            iban: 'LV39RIKO0002930100034',
-            bank_swift: 'RIKOLV2X',
+            iban: '',
+            bank_swift: '',
             com_id: null,
             currency: null
         },
@@ -67,16 +69,16 @@ const rootNode: GraphNode = objectToGraph({
         docs: [
             {
                 document_id: 17193.0,
-                document_type: 'INVS',
-                document_date: '2021-10-12T11:51:18.000+0000',
-                file_mime_type: 'application/pdf',
-                file_name: 'CMR files.pdf',
+                document_type: '',
+                document_date: '',
+                file_mime_type: '',
+                file_name: '',
                 file_size: 93004.0,
                 document_title: null,
                 document_notes: null,
-                is_public: 'N',
+                is_public: '',
                 temporary_id: null,
-                visibility: 'PRI',
+                visibility: '',
                 mark_as_deleted: null,
                 user_roles: [],
                 valid_from: null,
@@ -87,17 +89,17 @@ const rootNode: GraphNode = objectToGraph({
     },
     customer: {
         com_id: 704.0,
-        com_name: 'Volkswagen Konzernlogistik GmbH & Co',
-        com_type: 'MF',
-        reg_no: '*704',
-        vat_no: 'DE115235745',
+        com_name: '',
+        com_type: '',
+        reg_no: '',
+        vat_no: '',
         reg_address: {
             loc_id: null,
-            country_code: 'DE',
-            country_name: 'Germany',
-            city: 'Wolfsburg',
-            street: 'Brieffach 6902',
-            zip: 'D-38436',
+            country_code: '',
+            country_name: '',
+            city: '',
+            street: '',
+            zip: '',
             longitude: null,
             latitude: null,
             place_type: null,
@@ -105,11 +107,11 @@ const rootNode: GraphNode = objectToGraph({
         },
         mail_address: {
             loc_id: null,
-            country_code: 'DE',
-            country_name: 'Germany',
-            city: 'Wolfsburg',
-            street: 'Brieffach 6902',
-            zip: 'D-38436',
+            country_code: '',
+            country_name: '',
+            city: '',
+            street: '',
+            zip: '',
             longitude: null,
             latitude: null,
             place_type: null,
@@ -117,16 +119,16 @@ const rootNode: GraphNode = objectToGraph({
         },
         contact_person: {
             cper_id: 2998.0,
-            contact_type: 'CUST.CON',
-            is_private: 'Y',
-            person_name_surname: 'Herr Oliver Schulz',
-            phone: '+4953612631472',
-            email: 'oliver.schulz1@volkswagen.de',
-            fax: '+49536195651472',
+            contact_type: '',
+            is_private: '',
+            person_name_surname: '',
+            phone: '',
+            email: '',
+            fax: '',
             notes: null,
-            visibility: 'PRI',
-            is_editable: 'Y',
-            position: 'Executive',
+            visibility: '',
+            is_editable: '',
+            position: '',
             usr_id: 1158.0
         },
         bank_account: {
@@ -144,12 +146,12 @@ const rootNode: GraphNode = objectToGraph({
         docs: [],
         duns_no: null
     },
-    issue_date: '2021-10-12T11:50:53.000+0000',
-    due_date: '2021-11-20T22:00:00.000+0000',
-    submit_date: '2021-10-12T11:51:09.000+0000',
+    issue_date: '',
+    due_date: '',
+    submit_date: '',
     receive_date: null,
     approve_date: null,
-    approve_person_name: ' ',
+    approve_person_name: '',
     paid_date: null,
     payment_term: 40.0,
     vat_percent: 0.0,
@@ -160,41 +162,41 @@ const rootNode: GraphNode = objectToGraph({
     debit_note_amount: 0.0,
     taxes_amount: 0.0,
     total_amount: 0.0,
-    currency: 'EUR',
-    notify_late_payment: 'N',
+    currency: '',
+    notify_late_payment: '',
     notify_email: null,
     notify_days_after: null,
     lines: [
         {
-            record_status: 'QRY',
+            record_status: '',
             inl_id: 2873.0,
-            review_status: 'NEW',
+            review_status: '',
             position: 1.0,
             service: null,
             trs_id: 13507.0,
             dmg_id: null,
-            load_date: '2015-05-22T17:22:00.000+0000',
-            unload_date: '2015-05-23T08:31:00.000+0000',
+            load_date: '',
+            unload_date: '',
             ctr_id: 5672.0,
-            truck_no: 'HFH644/WK568',
-            loc_from: 'DE, Hannover',
-            loc_to: 'NL, Leusden',
+            truck_no: '',
+            loc_from: '',
+            loc_to: '',
             ord_id: 4625.0,
-            ord_no: '30-004726-03',
-            ord_type: 'CON',
-            currency: 'EUR',
+            ord_no: '',
+            ord_type: '',
+            currency: '',
             subtotal_amount: 0.0,
             total_amount: 0.0,
             vat_percent: 0.0,
-            unit_code: 'VEH',
-            unit_name: 'veh.',
+            unit_code: '',
+            unit_name: '',
             unit_price: 0.0,
             qnty: 3.0,
             load_factor: 3.0,
             supplier_notes: [],
             customer_notes: [],
-            cmr_no: '5454',
-            has_errors: 'N',
+            cmr_no: '',
+            has_errors: '',
             errors: [],
             models: []
         }
@@ -210,9 +212,18 @@ rootNode.childNodes[4].childNodes[5].type = NodeType.ORIGIN;
 rootNode.childNodes[4].childNodes[5].childNodes[0].type = NodeType.HIGHLIGHT;
 
 export const GraphTab = () => {
+    const [msg, setMsg] = useState();
+
+    useEffect(() => {
+        window.addEventListener('message', (event) => {
+            setMsg(event.data);
+        });
+    }, []);
+
     return (
         <div className={classes['tab']}>
             <GraphView rootNode={rootNode} />
+            {JSON.stringify(msg)}
         </div>
     );
 };

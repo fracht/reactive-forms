@@ -5,6 +5,10 @@ import App from './App';
 
 import './global.scss';
 
+window.addEventListener('message', function (message) {
+    console.log(message);
+});
+
 ReactDOM.render(
     <React.StrictMode>
         <App />
