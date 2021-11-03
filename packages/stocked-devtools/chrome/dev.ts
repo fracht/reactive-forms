@@ -18,6 +18,6 @@ await server.listen();
 
 const EXTENSION_PATH = resolve(__dirname, '.');
 
-chromeLaunch('https://reactjs.org/', {
+chromeLaunch(argv.url ?? 'https://reactjs.org/', {
     args: [`--load-extension=${EXTENSION_PATH}`, '--auto-open-devtools-for-tabs', '--user-data-dir=./.tempUserDataDir']
 });

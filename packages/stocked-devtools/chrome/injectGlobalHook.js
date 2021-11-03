@@ -3,14 +3,32 @@
 const extensionId = chrome.runtime.id;
 
 const bridgeScript = `window.__STOCKED_DEVTOOLS_HOOK = {
+    isLoaded: false,
+    messageQueue: [],
+    onLoad: function() {
+        this.isLoaded = true;
+
+        for(const message in this.messageQueue) {
+            window.postMessage(message);
+        }
+
+        this.messageQueue = [];
+    },
     raiseEvent: function (e, data) {
-        window.postMessage({
+        const message = {
             event: e,
             data,
             extensionId: "${extensionId}"
-        });
+        };
+
+        if(this.isLoaded) {
+            window.postMessage(message);
+        } else {
+            this.messageQueue.push(message);
+        }
     }
-};`;
+};
+`;
 
 function injectScript(code) {
     const script = document.createElement('script');
@@ -29,9 +47,9 @@ window.addEventListener('message', function ({ source, data }) {
         return;
     }
 
-    console.log('message sent');
-
     chrome.runtime.sendMessage(extensionId, data);
 });
 
 injectScript(bridgeScript);
+
+chrome.runtime.sendMessage(extensionId, { type: 'internal', event: 'load' });
