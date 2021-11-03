@@ -16,6 +16,7 @@
 $default-node-color: #a0a0a0;
 $highlighted-node-color: rgb(255, 217, 0);
 $origin-node-color: rgb(128, 0, 128);
+$condition-transition: 250ms ease-in-out;
 
 .node {
     cursor: pointer;
@@ -24,7 +25,7 @@ $origin-node-color: rgb(128, 0, 128);
     circle {
         fill: $default-node-color;
         border-radius: 50%;
-        transition: outline-width 0.5s ease-in-out;
+        transition: outline-width 0.5s ease-in-out, fill $condition-transition;
         outline: 0 solid #fff;
     }
 
@@ -32,6 +33,7 @@ $origin-node-color: rgb(128, 0, 128);
         font-size: 12px;
         transform: translate(8px, 3px);
         fill: #fff;
+        transition: fill $condition-transition;
     }
 
     &--origin {
@@ -64,7 +66,7 @@ $origin-node-color: rgb(128, 0, 128);
 
 .link {
     stroke: rgba(160, 160, 160, 0.767);
-
+    transition: stroke $condition-transition;
     &--highlighted {
         stroke: gold;
     }

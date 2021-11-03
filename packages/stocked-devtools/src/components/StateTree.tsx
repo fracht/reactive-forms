@@ -7,65 +7,58 @@ import { ArchiveOutline } from './icons/ArchiveOutline';
 import { LocateOutline } from './icons/LocateOutline';
 import { SettingsOutline } from './icons/SettingsOutline';
 import { useStateTree } from './useStateTree';
+import { NodeCondition, StockStateNode } from '../utils/StockInfo';
 
 import classes from './GraphView.module.scss';
 
-export type GraphNode = {
-    childNodes: GraphNode[];
-} & GraphNodeData;
-
-export enum NodeType {
-    ORIGIN,
-    HIGHLIGHT,
-    DEFAULT
-}
-
-export type GraphNodeData = {
-    allChildren: HierarchyNode<GraphNode>[];
+type RealStockStateNode = StockStateNode & {
     id: number;
-    name: string;
-    type: NodeType;
+    allChildren: HierarchyNode<RealStockStateNode>[];
 };
 
-export type Graph = {
-    rootNode: GraphNode;
-};
-
-const getNodeClassName = (node: HierarchyNode<GraphNode>) => {
+const getNodeClassName = (node: HierarchyNode<RealStockStateNode>) => {
     return clsx(
         classes['node'],
-        (node.children ?? []).length !== node.data.allChildren.length && classes['node--collapsed'],
-        node.data.type === NodeType.HIGHLIGHT && classes['node--highlight'],
-        node.data.type === NodeType.ORIGIN && classes['node--origin']
+        (node.children ?? []).length !== node.data.childNodes.length && classes['node--collapsed'],
+        node.data.condition === NodeCondition.HIGHLIGHT && classes['node--highlight'],
+        node.data.condition === NodeCondition.ORIGIN && classes['node--origin']
     );
 };
 
-const getLinkClassName = (node: HierarchyNode<GraphNode>) => {
-    const typesToHighlight = [NodeType.HIGHLIGHT, NodeType.ORIGIN];
+const getLinkClassName = (node: HierarchyNode<RealStockStateNode>) => {
+    const typesToHighlight = [NodeCondition.HIGHLIGHT, NodeCondition.ORIGIN];
 
     const shouldHighlight =
-        typesToHighlight.includes(node.data.type) && node.parent && typesToHighlight.includes(node.parent.data.type);
+        typesToHighlight.includes(node.data.condition) &&
+        node.parent &&
+        typesToHighlight.includes(node.parent.data.condition);
 
     return clsx(classes['link'], shouldHighlight && classes['link--highlighted']);
 };
 
-const getNodeName = (node: HierarchyNode<GraphNode>) => node.data.name;
+const getNodeName = (node: HierarchyNode<RealStockStateNode>) => node.data.name;
 
-const getNodeId = (node: HierarchyNode<GraphNode>) => node.data.id;
+const getNodeId = (node: HierarchyNode<RealStockStateNode>) => node.data.id;
 
-const hasChildren = (node: HierarchyNode<GraphNode>) => node.data.allChildren.length > 0;
+const hasChildren = (node: HierarchyNode<RealStockStateNode>) => node.data.childNodes.length > 0;
 
-const getAllChildren = (node: HierarchyNode<GraphNode>) => node.data.allChildren;
+const getAllChildren = (node: HierarchyNode<RealStockStateNode>) => node.data.allChildren;
 
-export const GraphView = ({ rootNode }: Graph) => {
+export type StateTreeProps = {
+    rootNode: StockStateNode;
+};
+
+export const StateTree = ({ rootNode }: StateTreeProps) => {
     const svgRef = useRef<SVGSVGElement>(null);
 
     const hierarchyRootNode = useMemo(
         () =>
-            hierarchy(rootNode, (d) => d.childNodes).each((node, index) => {
-                node.data.allChildren = node.children ?? [];
-                node.data.id = index;
-            }),
+            hierarchy(rootNode as RealStockStateNode, (d) => d.childNodes as RealStockStateNode[]).each(
+                (node, index) => {
+                    node.data.allChildren = node.children ?? [];
+                    node.data.id = index;
+                }
+            ),
         [rootNode]
     );
 

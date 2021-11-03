@@ -92,7 +92,9 @@ export const useStateTree = <T>({
             const zoomBehavior = zoom<SVGElement, SVGSVGElement>()
                 .duration(animationDuration)
                 .on('zoom', (event) => {
-                    rootGroup.attr('transform', event.transform);
+                    if (event.sourceEvent.type !== 'dblclick') {
+                        rootGroup.attr('transform', event.transform);
+                    }
                 });
 
             svg.call(zoomBehavior);
@@ -167,7 +169,7 @@ export const useStateTree = <T>({
                 .attr('class', getNodeClassName)
                 .attr('fill-opacity', 0)
                 .attr('stroke-opacity', 0)
-                .on('click', (_, node) => {
+                .on('dblclick', (e, node) => {
                     if (hasChildren(node)) {
                         node.children = node.children ? undefined : (getAllChildren(node) as HierarchyPointNode<T>[]);
                         updateTree(node);
@@ -182,7 +184,7 @@ export const useStateTree = <T>({
                 animationDuration
             ) as unknown as Transition<BaseType, unknown, BaseType, unknown>;
 
-            svg.transition(currentTransition).attr('viewBox', [minX, 0, width, height].join(' '));
+            svg.transition(currentTransition).attr('viewBox', [minX - 10, -10, width + 20, height + 20].join(' '));
 
             // merging nodes transition (updating old nodes to new positions)
             nodeGroups
@@ -205,6 +207,7 @@ export const useStateTree = <T>({
             // merging links transition (updating old links to new positions)
             links
                 .merge(linkEnter)
+                .attr('class', getLinkClassName)
                 .transition(currentTransition)
                 .attr('d', (d) => {
                     return diagonal({ source: [d.parent!.x, d.parent!.y], target: [d.x, d.y] });
@@ -230,6 +233,10 @@ export const useStateTree = <T>({
     }, []);
 
     useEffect(() => {
+        if (elementsRef.current) {
+            elementsRef.current.root = rootNode;
+        }
+
         updateTree();
     }, [updateTree, rootNode]);
 

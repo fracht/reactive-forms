@@ -8,7 +8,7 @@ const bridgeScript = `window.__STOCKED_DEVTOOLS_HOOK = {
     onLoad: function() {
         this.isLoaded = true;
 
-        for(const message in this.messageQueue) {
+        for(const message of this.messageQueue) {
             window.postMessage(message);
         }
 

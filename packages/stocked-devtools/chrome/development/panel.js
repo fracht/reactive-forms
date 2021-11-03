@@ -1,8 +1,12 @@
 let isLoaded = false;
+let devPanel;
 
 const notifyGlobalHoook = () => {
     if (isLoaded) {
         chrome.devtools.inspectedWindow.eval('window.__STOCKED_DEVTOOLS_HOOK.onLoad();');
+        if (devPanel) {
+            devPanel.postMessage({ event: 'refresh' });
+        }
     }
 };
 
@@ -16,6 +20,7 @@ chrome.devtools.panels.create('Stocked dev tools', '', './development/index.html
 
         isLoaded = true;
         notifyGlobalHoook();
+        devPanel = panelWindow;
 
         chrome.runtime.sendMessage(chrome.runtime.id, 'loaded');
     });
