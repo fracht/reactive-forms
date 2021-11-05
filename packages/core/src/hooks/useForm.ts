@@ -95,6 +95,8 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const onValidationSucceed = useRefCallback(config.onValidationSucceed);
     const onReset = useRefCallback(config.onReset);
 
+    const paths = useMemo(() => createPxth<Values>([]), []);
+
     const {
         initialValues = {} as Values,
         initialErrors = {} as FieldError<Values>,
@@ -204,9 +206,10 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             ...control,
             validateField,
             validateForm,
-            resetForm
+            resetForm,
+            paths
         }),
-        [control, resetForm, validateField, validateForm]
+        [control, resetForm, validateField, validateForm, paths]
     );
 
     const submit = useCallback(
@@ -334,6 +337,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         hasValidator,
         registerValidator,
         isLoaded,
+        paths,
         ...control
     };
 

@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/core",
-    "version": "0.5.2",
+    "version": "0.5.4",
     "description": "Core package of Reactive Forms framework",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -35,8 +35,8 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "pxth": "^0.2.3",
-        "stocked": "^1.0.0-beta.18",
+        "pxth": "^0.2.4",
+        "stocked": "^1.0.0-beta.21",
         "tiny-invariant": "^1.1.0"
     },
     "resolutions": {

@@ -9,7 +9,22 @@ const semver = require('semver');
 const getPackages = async (rootDir: string) => {
     const allFiles = await fs.readdir(rootDir, { withFileTypes: true });
 
-    return allFiles.filter((file) => file.isDirectory()).map((dirent) => join(rootDir, dirent.name));
+    const allDirs = allFiles.filter((file) => file.isDirectory());
+    const allDirsContainingPackage = (
+        await Promise.all(
+            allDirs.map(async (dirent) => {
+                try {
+                    await fs.access(join(rootDir, dirent.name, 'package.json'));
+
+                    return join(rootDir, dirent.name);
+                } catch {
+                    return undefined;
+                }
+            })
+        )
+    ).filter((value) => value !== undefined);
+
+    return allDirsContainingPackage as string[];
 };
 
 const publishPackage = async (pkg: string, otp: string | undefined) => {
