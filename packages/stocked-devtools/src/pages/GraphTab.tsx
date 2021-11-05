@@ -212,11 +212,13 @@ import classes from './GraphTab.module.scss';
 // rootNode.childNodes[4].childNodes[5].childNodes[0].type = NodeType.HIGHLIGHT;
 
 export const GraphTab = () => {
-    const { stocks } = useContext(AppStateContext);
+    const { stocks, selectedStockId } = useContext(AppStateContext);
 
     return (
         <div className={classes['tab']}>
-            {stocks[0] && stocks[0].stateHistory.length > 0 && <StateTree rootNode={stocks[0].stateHistory.at(-1)!} />}
+            {selectedStockId !== -1 && stocks[selectedStockId] && stocks[selectedStockId].stateHistory.length > 0 && (
+                <StateTree key={selectedStockId} rootNode={stocks[selectedStockId].stateHistory.at(-1)!} />
+            )}
         </div>
     );
 };
