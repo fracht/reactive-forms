@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, useCallback } from 'react';
+import React, { createContext, useCallback } from 'react';
 import { Pxth } from 'pxth';
 import { intercept, StockProxy, useStockContext } from 'stocked';
 
@@ -7,13 +7,14 @@ import { useControlHandlers } from '../hooks/useControlHandlers';
 import { useFormContext } from '../hooks/useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';
 
-export type FormProxyProviderProps = PropsWithChildren<{
-    proxy: StockProxy<unknown>;
-}>;
+export type FormProxyProviderProps<V> = {
+    proxy: StockProxy<V>;
+    children: React.ReactNode | ((path: Pxth<V>) => React.ReactNode);
+};
 
 export const FormProxyContext = createContext<StockProxy<unknown> | undefined>(undefined);
 
-export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) => {
+export const FormProxyProvider = <V,>({ proxy, children }: FormProxyProviderProps<V>) => {
     const { values, errors, touched, formMeta, registerValidator, ...other } = useFormContext();
 
     const newValues = useStockContext(values, proxy);
@@ -50,7 +51,9 @@ export const FormProxyProvider = ({ proxy, children }: FormProxyProviderProps) =
                 registerValidator: interceptedRegisterValidator
             }}
         >
-            <FormProxyContext.Provider value={proxy}>{children}</FormProxyContext.Provider>
+            <FormProxyContext.Provider value={proxy}>
+                {typeof children === 'function' ? children(proxy.path) : children}
+            </FormProxyContext.Provider>
         </FormContext.Provider>
     );
 };
