@@ -17,9 +17,9 @@ export const FormProxyContext = createContext<StockProxy<unknown> | undefined>(u
 export const FormProxyProvider = <V,>({ proxy, children }: FormProxyProviderProps<V>) => {
     const { values, errors, touched, formMeta, registerValidator, ...other } = useFormContext();
 
-    const newValues = useStockContext(values, proxy);
-    const newErrors = useStockContext(errors, proxy);
-    const newTouched = useStockContext(touched, proxy);
+    const newValues = useStockContext(values, proxy as StockProxy<unknown>);
+    const newErrors = useStockContext(errors, proxy as StockProxy<unknown>);
+    const newTouched = useStockContext(touched, proxy as StockProxy<unknown>);
 
     const handlers = useControlHandlers({ values: newValues, errors: newErrors, touched: newTouched, formMeta });
 
@@ -28,7 +28,7 @@ export const FormProxyProvider = <V,>({ proxy, children }: FormProxyProviderProp
     const interceptedRegisterValidator = useCallback(
         <V,>(name: Pxth<V>, validator: FieldValidator<V>) =>
             intercept(
-                proxy,
+                proxy as StockProxy<unknown>,
                 name as Pxth<unknown>,
                 registerValidator,
                 (name, validator) => {
@@ -51,7 +51,7 @@ export const FormProxyProvider = <V,>({ proxy, children }: FormProxyProviderProp
                 registerValidator: interceptedRegisterValidator
             }}
         >
-            <FormProxyContext.Provider value={proxy}>
+            <FormProxyContext.Provider value={proxy as StockProxy<unknown>}>
                 {typeof children === 'function' ? children(proxy.path) : children}
             </FormProxyContext.Provider>
         </FormContext.Provider>
