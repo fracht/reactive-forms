@@ -1,7 +1,81 @@
+import React from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
 
-import { FieldError, useForm } from '../../src';
+import { FieldError, ReactiveFormProvider, useFieldError, useForm } from '../../src';
+
+describe('validateUpdatedFields', () => {
+    it('should run field-level validations when field value changes', async () => {
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {}
+            })
+        );
+
+        const somePxth = createPxth(['some', 'deep', 'path']);
+
+        const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
+            wrapper: ({ children }) => (
+                <ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
+            )
+        });
+
+        const validator = jest.fn();
+        validator.mockReturnValue('error');
+
+        let cleanup;
+
+        act(() => {
+            cleanup = result.current.registerValidator(somePxth, validator);
+            result.current.setFieldValue(somePxth, 'asdf');
+        });
+
+        await waitForNextUpdate({ timeout: 100 });
+
+        expect(errorResult.current[0]).toStrictEqual({
+            $error: 'error'
+        });
+
+        act(() => {
+            cleanup();
+        });
+    });
+    it('should run field-level validations when parent value changes', async () => {
+        const { result } = renderHook(() =>
+            useForm({
+                initialValues: {}
+            })
+        );
+
+        const somePxth = createPxth(['some', 'deep', 'path']);
+
+        const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
+            wrapper: ({ children }) => (
+                <ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
+            )
+        });
+
+        const validator = jest.fn();
+        validator.mockReturnValue('error');
+
+        let cleanup;
+
+        act(() => {
+            cleanup = result.current.registerValidator(somePxth, validator);
+            result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
+        });
+
+        await waitForNextUpdate({ timeout: 100 });
+
+        expect(errorResult.current[0]).toStrictEqual({
+            $error: 'error'
+        });
+
+        act(() => {
+            cleanup();
+        });
+    });
+});
 
 describe('validateField', () => {
     it('should run field-level validation', async () => {
