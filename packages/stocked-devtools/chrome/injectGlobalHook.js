@@ -15,6 +15,11 @@ const bridgeScript = `window.__STOCKED_DEVTOOLS_HOOK = {
         this.messageQueue = [];
     },
     raiseEvent: function (e, data) {
+        if(data.data && Array.isArray(data.data.paths)) {
+            data.data.paths = data.data.paths.map(function(value) {
+                return typeof value === 'symbol' ? '__ROOT_PATH' : value;
+            });
+        }
         const message = {
             event: e,
             data,
