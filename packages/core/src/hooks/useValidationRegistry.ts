@@ -61,7 +61,12 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
             const stringifiedOrigin = pxthToString(origin);
 
             const pathsToValidate = Object.keys(registry.current)
-                .filter((i) => isInnerPath(stringifiedOrigin, i) || isInnerPath(i, stringifiedOrigin) || i === origin)
+                .filter(
+                    (i) =>
+                        isInnerPath(stringifiedOrigin, i) ||
+                        isInnerPath(i, stringifiedOrigin) ||
+                        i === stringifiedOrigin
+                )
                 .sort((a, b) => a.length - b.length);
 
             let errors: FieldError<V> = {} as FieldError<V>;
@@ -69,7 +74,6 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
             for (const path of pathsToValidate) {
                 const realPath = createPxth(parseSegmentsFromString(path));
                 const error = await validateField(realPath, deepGet(values, realPath));
-
                 errors = deepSet(errors, realPath, error) as FieldError<V>;
             }
 
