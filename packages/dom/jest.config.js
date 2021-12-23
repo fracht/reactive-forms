@@ -7,5 +7,5 @@ module.exports = {
             tsconfig: 'tsconfig.test.json'
         }
     },
-    setupFiles: [path.resolve(__dirname, '..', '..', '..', 'tests', 'enzyme.config.js')]
+    setupFiles: [path.resolve(__dirname, '..', '..', '..', 'packages', 'dom', 'tests', 'enzyme.config.js')]
 };

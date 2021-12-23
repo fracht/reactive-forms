@@ -7,7 +7,7 @@
     "license": "MIT",
     "repository": "ArtiomTr/reactive-forms",
     "scripts": {
-        "build": "lerna exec -- \"npm run build\"",
+        "build": "turbo run build --scope=@reactive-forms/*",
         "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
@@ -27,7 +27,6 @@
         }
     ],
     "devDependencies": {
-        "@reactive-forms/core": "^0.1.0",
         "@size-limit/preset-small-lib": "^4.10.2",
         "@types/jest": "^26.0.23",
         "@types/micromatch": "^4.0.1",
@@ -35,19 +34,41 @@
         "@typescript-eslint/eslint-plugin": "^4.23.0",
         "@typescript-eslint/parser": "^4.23.0",
         "danger": "^10.6.4",
-        "eslint": "^7.26.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-prettier": "^3.4.0",
-        "eslint-plugin-react": "^7.23.2",
-        "eslint-plugin-react-hooks": "^4.2.0",
-        "eslint-plugin-simple-import-sort": "^7.0.0",
-        "lerna": "^4.0.0",
         "micromatch": "^4.0.4",
         "prettier": "^2.3.0",
         "react": "^17.0.2",
         "semver": "^7.3.5",
         "size-limit": "^4.10.2",
+        "turbo": "^1.0.21",
         "typescript": "^4.3.4",
         "zxpp": "^0.1.6"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "turbo": {
+        "pipeline": {
+            "build": {
+                "dependsOn": [
+                    "^build"
+                ],
+                "outputs": [
+                    "dist/**"
+                ],
+                "cache": true
+            },
+            "test": {
+                "dependsOn": [
+                    "^build"
+                ],
+                "outputs": []
+            },
+            "lint": {
+                "outputs": []
+            },
+            "dev": {
+                "cache": false
+            }
+        }
     }
 }
