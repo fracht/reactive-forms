@@ -75,14 +75,5 @@ jobs:
             - name: Install global dependencies
               run: npm install
 
-            - name: Lint
-              run: yarn lint
-              working-directory: ${{ matrix.package }}
-
-            - name: Test
-              run: yarn test --ci --coverage --maxWorkers=2
-              working-directory: ${{ matrix.package }}
-
-            - name: Build
-              run: yarn build
-              working-directory: ${{ matrix.package }}
+            - name: Linting, testing & building ${{ matrix.package }}
+              run: npx turbo run lint test build --scope=${{ matrix.package }}
