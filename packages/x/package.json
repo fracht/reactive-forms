@@ -26,13 +26,15 @@
         "test:watch": "aqu test --watch",
         "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
         "lint": "eslint .",
-        "lint:fix": "npm run lint --fix"
+        "lint:fix": "npm run lint --fix",
+        "prepublish": "reactive-publisher"
     },
     "bugs": {
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
         "@reactive-forms/core": "*",
+        "@reactive-tools/publisher": "*",
         "@types/jest": "^26.0.24",
         "@types/react": "^17.0.14",
         "aqu": "^0.1.1",
