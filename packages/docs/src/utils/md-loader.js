@@ -4,7 +4,7 @@ const fm = require('gray-matter');
 // Adds layouts for markdown
 // (Shamelessly stolen from formik)
 // @see https://github.com/formium/formik/blob/master/docs/src/lib/docs/md-loader.js
-module.exports = async function(src) {
+module.exports = async function (src) {
     const callback = this.async();
     const { content, data } = fm(src);
     const layout = data.layout || 'Docs';
