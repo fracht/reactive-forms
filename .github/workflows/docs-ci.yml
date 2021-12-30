@@ -2,7 +2,7 @@ name: Documentation CI
 on:
     pull_request:
         paths:
-            - 'docs/**'
+            - 'packages/docs/**'
         branches: [master]
 
 jobs:
@@ -26,10 +26,9 @@ jobs:
             - name: Building base package
               run: npm run build
 
-            - name: Deleting node_modules folder & Installing dependencies
-              working-directory: ./docs
+            - name: Installing dependencies
               run: npm i
 
             - name: Building
               run: npm run build
-              working-directory: ./docs
+              working-directory: ./packages/docs
