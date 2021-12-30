@@ -6,16 +6,16 @@ type FieldPrivileges = {
     isEditable?: boolean;
 };
 
-type PrimitivesToPrivileges<T> = Extract<T, string | number | Date | boolean | null> extends never
+export type Privileges<T> = Extract<T, string | number | Date | boolean | null> extends never
     ? FieldPrivileges & ObjectPrivileges<T>
     : FieldPrivileges;
 
 type ObjectPrivileges<T> = {
-    [P in keyof T]?: PrimitivesToPrivileges<T[P] extends Array<unknown> ? T[P][0] : T[P]>;
+    [P in keyof T]?: Privileges<T[P] extends Array<unknown> ? T[P][0] : T[P]>;
 };
 
 export type PrivilegesContextType<T extends object> = {
-    fields: ObjectPrivileges<T>;
+    fields: Privileges<T>;
 };
 
 export const PrivilegesContext = createContext<PrivilegesContextType<object> | undefined>(undefined);
