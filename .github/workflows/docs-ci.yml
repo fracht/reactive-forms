@@ -20,15 +20,14 @@ jobs:
             - name: Install npm 17.x
               run: npm i -g npm@latest
 
-            - name: Installing dependencies for base package
+            - name: Installing dependencies for packages
               run: npm ci
 
-            - name: Building base package
+            - name: Building packages
               run: npm run build
 
             - name: Installing dependencies
               run: npm i
 
             - name: Building
-              run: npm run build
-              working-directory: ./packages/docs
+              run: npm run build -w reactive-docs

@@ -22,7 +22,7 @@ jobs:
               uses: giautm/matrix-git-generator@master
               with:
                   filters: |
-                      packages/*/**:3
+                      packages/!(docs)/**:3
     coverage:
         name: Coverage report
         needs: [generate_matrix]
