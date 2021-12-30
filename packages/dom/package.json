@@ -35,6 +35,7 @@
     },
     "devDependencies": {
         "@reactive-forms/core": "*",
+        "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/enzyme": "^3.10.9",
@@ -44,7 +45,6 @@
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
         "aqu": "^0.1.1",
         "enzyme": "^3.11.0",
-        "eslint-config-reactive-forms": "*",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"
     },

@@ -46,7 +46,8 @@
         "zxpp": "^0.1.6"
     },
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "packages/tools/*"
     ],
     "turbo": {
         "pipeline": {
