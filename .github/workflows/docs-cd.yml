@@ -28,22 +28,22 @@ jobs:
             - name: Install deps and build (with cache)
               uses: bahmutov/npm-install@v1
               with:
-                  working-directory: ./docs
+                  working-directory: ./packages/docs
 
             - name: Generating API documentation
               run: npm run docs:gen
 
             - name: Generating page indexes
-              working-directory: ./docs
+              working-directory: ./packages/docs
               run: npm run generate:page-indexes
 
             - name: Building
               run: npm run build
-              working-directory: ./docs
+              working-directory: ./packages/docs
 
             - name: Exporting
               run: npm run export
-              working-directory: ./docs
+              working-directory: ./packages/docs
 
             - name: Publishing to github-pages
               run: |
@@ -51,7 +51,7 @@ jobs:
                   git config --global user.email $user_email
                   git remote set-url origin https://${github_token}@github.com/${repository}
                   npm run push-gh-pages
-              working-directory: ./docs
+              working-directory: ./packages/docs
               env:
                   user_name: 'github-actions[bot]'
                   user_email: 'github-actions[bot]@users.noreply.github.com'
