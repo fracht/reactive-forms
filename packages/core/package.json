@@ -27,7 +27,8 @@
         "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
         "test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
         "lint": "eslint .",
-        "lint:fix": "npm run lint --fix"
+        "lint:fix": "npm run lint --fix",
+        "prepublish": "reactive-publisher"
     },
     "bugs": {
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
@@ -43,6 +44,8 @@
         "@types/react": "^17.0.2"
     },
     "devDependencies": {
+        "@reactive-tools/eslint-config": "*",
+        "@reactive-tools/publisher": "npm:publisher@*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/jest": "^26.0.23",
         "@types/lodash": "^4.14.161",
@@ -50,7 +53,7 @@
         "aqu": "^0.1.1",
         "react": "^17.0.2",
         "react-test-renderer": "^17.0.1",
-        "tslib": "^2.0.1",
+        "tslib": "^2.3.1",
         "typescript": "^4.2.4",
         "yup": "^0.32.9"
     },

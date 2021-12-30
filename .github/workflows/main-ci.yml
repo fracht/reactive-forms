@@ -41,9 +41,13 @@ jobs:
             - name: Install npm 17.x
               run: npm i -g npm@latest
 
+            - name: Installing dependencies
+              run: npm install
+
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
+                  skip-step: install
                   working-directory: ${{ matrix.package }}
                   test-script: npm run test:coverage
     build:
@@ -71,21 +75,5 @@ jobs:
             - name: Install global dependencies
               run: npm install
 
-            - name: Install global dependencies
-              run: npm install
-
-            - name: Install dependencies
-              run: npm install
-              working-directory: ${{ matrix.package }}
-
-            - name: Lint
-              run: yarn lint
-              working-directory: ${{ matrix.package }}
-
-            - name: Test
-              run: yarn test --ci --coverage --maxWorkers=2
-              working-directory: ${{ matrix.package }}
-
-            - name: Build
-              run: yarn build
-              working-directory: ${{ matrix.package }}
+            - name: Linting, testing & building ${{ matrix.package }}
+              run: npx turbo run lint test build --scope=${{ matrix.package }}
