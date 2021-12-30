@@ -2,7 +2,7 @@ name: CI
 on:
     pull_request:
         paths-ignore:
-            - 'docs/**'
+            - 'packages/docs/**'
             - 'examples/**'
         branches: [master]
     workflow_dispatch:

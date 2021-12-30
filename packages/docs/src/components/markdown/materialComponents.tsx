@@ -20,7 +20,7 @@ export const materialComponents: Components = {
     tbody: TableBody,
     thead: TableHead,
     th: ({ children }) => <TableCell>{children}</TableCell>,
-    td: ({ children, ...oth }) => <TableCell>{children}</TableCell>,
+    td: ({ children }) => <TableCell>{children}</TableCell>,
     p: Paragraph,
     code: Code,
     pre: ({ children }) => <React.Fragment>{children}</React.Fragment>

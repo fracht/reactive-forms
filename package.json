@@ -8,7 +8,7 @@
     "repository": "ArtiomTr/reactive-forms",
     "scripts": {
         "build": "turbo run build --scope=@reactive-forms/*",
-        "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./docs/pages/api-reference src/**/*.ts src/**/*.tsx",
+        "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./packages/docs/pages/api-reference src/**/*.ts src/**/*.tsx",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
@@ -27,6 +27,7 @@
         }
     ],
     "devDependencies": {
+        "@reactive-tools/eslint-config": "*",
         "@size-limit/preset-small-lib": "^4.10.2",
         "@types/inquirer": "^8.1.3",
         "@types/jest": "^26.0.23",
