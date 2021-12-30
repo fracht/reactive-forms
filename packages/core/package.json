@@ -45,7 +45,7 @@
     },
     "devDependencies": {
         "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "*",
+        "@reactive-tools/publisher": "npm:publisher@*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/jest": "^26.0.23",
         "@types/lodash": "^4.14.161",
