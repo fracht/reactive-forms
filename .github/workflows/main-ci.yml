@@ -22,19 +22,30 @@ jobs:
               uses: actions/github-script@v5
               with:
                   script: |
-                      let output = '';
+                      let output = "";
                       try {
-                        await exec.exec('git fetch --all --depth=1');
-                      } catch {};
+                          await exec.exec("git fetch --all --depth=1");
+                      } catch {}
 
-                      await exec.exec("/bin/bash", ["-c", `"git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD | grep -oP '(?<=packages/)(\w+)' | uniq"`], {
-                        listeners: {
-                          stdout: (data) => {
-                            output += data.toString();
+                      await exec.exec(
+                          "bash",
+                          [
+                              "-c",
+                              `"git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD | grep -oP '(?<=packages/)(\\w+)' | uniq"`,
+                          ],
+                          {
+                              listeners: {
+                                  stdout: (data) => {
+                                      output += data.toString();
+                                  },
+                              },
                           }
-                        }
-                      });
-                      return output.split('\n').map(dir => dir.trim()).filter(dir => dir.length > 0);
+                      );
+                      return output
+                          .split("\n")
+                          .map((dir) => dir.trim())
+                          .filter((dir) => dir.length > 0);
+
     coverage:
         name: Coverage report
         needs: [generate_matrix]
