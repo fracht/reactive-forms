@@ -12,40 +12,17 @@ jobs:
         runs-on: ubuntu-latest
         if: "!contains(github.event.head_commit.message, '[skip ci]')"
         outputs:
-            packages: ${{ steps.changed_packages.outputs.result }}
+            packages: ${{ steps.changed_packages.outputs.matrix }}
         steps:
             - name: Checkout
               uses: actions/checkout@v2
 
             - name: Find changed packages
               id: changed_packages
-              uses: actions/github-script@v5
+              uses: giautm/matrix-git-generator@master
               with:
-                  script: |
-                      let output = "";
-                      try {
-                          await exec.exec("git fetch --all --depth=1");
-                      } catch {}
-
-                      await exec.exec(
-                          "bash",
-                          [
-                              "-c",
-                              `"/usr/bin/git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD | /usr/bin/grep -oP '(?<=packages/)(\\w+)' | /usr/bin/uniq"`,
-                          ],
-                          {
-                              listeners: {
-                                  stdout: (data) => {
-                                      output += data.toString();
-                                  },
-                              },
-                          }
-                      );
-                      return output
-                          .split("\n")
-                          .map((dir) => dir.trim())
-                          .filter((dir) => dir.length > 0);
-
+                  filters: |
+                      packages/*/**:3
     coverage:
         name: Coverage report
         needs: [generate_matrix]
