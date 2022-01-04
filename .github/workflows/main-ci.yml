@@ -23,6 +23,10 @@ jobs:
               with:
                   script: |
                       let output = '';
+                      try {
+                        await exec.exec('git fetch --all --depth=1');
+                      } catch {};
+
                       await exec.exec(`git diff --name-only ${context.payload.pull_request.base.ref}...HEAD | grep -oP '(?<=packages/)(\w+)' | uniq`, [], {
                         listeners: {
                           stdout: (data) => {
