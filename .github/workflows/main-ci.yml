@@ -27,7 +27,7 @@ jobs:
                         await exec.exec('git fetch --all --depth=1');
                       } catch {};
 
-                      await exec.exec(`git diff --name-only ${context.payload.pull_request.base.ref}...HEAD | grep -oP '(?<=packages/)(\w+)' | uniq`, [], {
+                      await exec.exec(`git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD | grep -oP '(?<=packages/)(\w+)' | uniq`, [], {
                         listeners: {
                           stdout: (data) => {
                             output += data.toString();
