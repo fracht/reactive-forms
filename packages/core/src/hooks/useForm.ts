@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import mergeWith from 'lodash/mergeWith';
-import { createPxth, deepGet, Pxth } from 'pxth';
+import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
 import type { BaseSchema } from 'yup';
@@ -12,6 +12,7 @@ import { useFormControl } from './useFormControl';
 import { usePlugins } from './usePlugins';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { FieldError } from '../typings/FieldError';
+import { FieldPostProcessor } from '../typings/FieldPostProcessor';
 import { FieldTouched } from '../typings/FieldTouched';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FormHelpers } from '../typings/FormHelpers';
@@ -94,6 +95,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
     const onValidationFailed = useRefCallback(config.onValidationFailed);
     const onValidationSucceed = useRefCallback(config.onValidationSucceed);
     const onReset = useRefCallback(config.onReset);
+    const postprocessors = useRef<Array<FieldPostProcessor<unknown>>>([]);
 
     const paths = useMemo(() => createPxth<Values>([]), []);
 
@@ -128,12 +130,31 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const isPending = useRef(false);
 
-    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, getFormMeta, values, errors } = control;
+    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
 
     const loadRef = useRef(config.load);
     loadRef.current = config.load;
 
     const [isLoaded, setIsLoaded] = useState(!config.load);
+
+    const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
+        postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
+
+        return () =>
+            postprocessors.current.splice(
+                postprocessors.current.indexOf(postprocessor as FieldPostProcessor<unknown>),
+                1
+            );
+    }, []);
+
+    const postprocess = useCallback((values: Values) => {
+        let processedValues = cloneDeep(values);
+        postprocessors.current.forEach(({ path, update }) => {
+            processedValues = deepSet(processedValues, path, update(deepGet(values, path))) as Values;
+        });
+
+        return processedValues;
+    }, []);
 
     const validateField = useCallback(
         async <V>(name: Pxth<V>, value: V) => {
@@ -207,9 +228,10 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
             validateField,
             validateForm,
             resetForm,
-            paths
+            paths,
+            registerPostprocessor
         }),
-        [control, resetForm, validateField, validateForm, paths]
+        [control, validateField, validateForm, resetForm, paths, registerPostprocessor]
     );
 
     const submit = useCallback(
@@ -223,11 +245,11 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
                 'Cannot call submit, because no action specified in arguments and no default action provided.'
             );
 
-            setFormMeta(formMetaPaths.submitCount, getFormMeta(formMetaPaths.submitCount) + 1);
+            setFormMeta(formMetaPaths.submitCount, (prev) => prev + 1);
             setFormMeta(formMetaPaths.isSubmitting, true);
             setFormMeta(formMetaPaths.isValid, true);
 
-            const currentValues = values.getValues();
+            const currentValues = postprocess(values.getValues());
 
             const newErrors = await validateForm(currentValues);
 
@@ -257,14 +279,14 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         [
             onSubmit,
             setFormMeta,
-            getFormMeta,
             values,
             validateForm,
             setErrors,
             setTouched,
             onValidationFailed,
             helpers,
-            onValidationSucceed
+            onValidationSucceed,
+            postprocess
         ]
     );
 
@@ -331,14 +353,10 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
 
     const bag: FormShared<Values> = {
         submit,
-        resetForm,
-        validateField,
-        validateForm,
         hasValidator,
         registerValidator,
         isLoaded,
-        paths,
-        ...control
+        ...helpers
     };
 
     const bagWithPlugins = usePlugins(bag, config);

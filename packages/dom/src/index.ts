@@ -3,6 +3,7 @@ import { ChangeEvent, FocusEvent } from 'react';
 export * from './renderComponent';
 export * from './plugin';
 export * from './useTextField';
+export * from './useUncontrolledField';
 
 // components
 export * from './TextField';
