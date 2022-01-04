@@ -31,7 +31,7 @@ jobs:
                           "bash",
                           [
                               "-c",
-                              `"git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD | grep -oP '(?<=packages/)(\\w+)' | uniq"`,
+                              `"git diff --name-only origin/${context.payload.pull_request.base.ref} HEAD"`,
                           ],
                           {
                               listeners: {
