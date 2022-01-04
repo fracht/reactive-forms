@@ -23,7 +23,7 @@ jobs:
               with:
                   script: |
                       let output = '';
-                      await exec.exec(`git diff --name-only ${github.base_ref}...${github.head_ref} | grep -oP '(?<=packages/)(\w+)' | uniq`, [], {
+                      await exec.exec(`git diff --name-only ${context.payload.pull_request.base.ref}...${context.ref} | grep -oP '(?<=packages/)(\w+)' | uniq`, [], {
                         listeners: {
                           stdout: (data) => {
                             output += data.toString();
