@@ -56,8 +56,6 @@ const checkGit = async () => {
     }
 };
 
-await checkGit();
-
 const options: { type: string } = await inquirer.prompt([
     {
         type: 'list',
@@ -69,6 +67,8 @@ const options: { type: string } = await inquirer.prompt([
 
 const { type } = options;
 process.env.TYPE = type;
+
+await checkGit();
 
 const packages = await getPackages('packages');
 
