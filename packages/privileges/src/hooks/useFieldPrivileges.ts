@@ -1,8 +1,10 @@
-import { usePrivilegesContext } from '../hooks/usePrivilegesContext';
-import { Pxth, deepGet } from 'pxth';
-import { Privileges } from '../PrivilegesContext';
+import { Pxth } from 'pxth';
 
-export const useFieldPrivileges = <V>(path: Pxth<V>): Privileges<V> => {
-    const privileges = usePrivilegesContext();
-    return deepGet(privileges, path) as unknown as Privileges<V>;
+import { getFieldPrivileges } from '../getFieldPrivileges';
+import { usePrivilegesContext } from '../hooks/usePrivilegesContext';
+import { FieldPrivileges } from '..';
+
+export const useFieldPrivileges = <V>(path: Pxth<V>): FieldPrivileges => {
+    const context = usePrivilegesContext();
+    return getFieldPrivileges(path, context);
 };
