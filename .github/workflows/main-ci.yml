@@ -57,7 +57,7 @@ jobs:
         strategy:
             matrix:
                 node: ['14.x', '16.x']
-                package: ${{ needs.generate_matrix.outputs.packages }}
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
                 os: [ubuntu-latest]
 
         steps:
