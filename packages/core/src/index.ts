@@ -29,6 +29,8 @@ export * from './hooks/useFieldValueArray';
 export * from './typings/FieldContext';
 export * from './typings/FieldValidator';
 export * from './typings/FieldError';
+export * from './typings/FieldMeta';
+export * from './typings/FormMeta';
 export * from './typings/FieldTouched';
 export * from './typings/SubmitAction';
 export * from './typings/FormHelpers';

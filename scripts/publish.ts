@@ -6,25 +6,6 @@ import { join } from 'path';
 
 import inquirer from 'inquirer';
 
-const options: { dry: boolean; type: string } = await inquirer.prompt([
-    {
-        type: 'list',
-        choices: ['dev', 'patch', 'minor', 'major'],
-        name: 'type',
-        message: 'How to increment version?'
-    },
-    {
-        type: 'confirm',
-        name: 'dry',
-        message: 'Use dry?'
-    }
-]);
-
-process.env.TYPE = options.type;
-const { dry, type } = options;
-
-$`turbo run prepublish`;
-
 const getPackages = async (rootDir: string) => {
     const allFiles = await fs.readdir(rootDir, { withFileTypes: true });
 
@@ -49,7 +30,7 @@ const getPackages = async (rootDir: string) => {
 const publishPackage = async (pkg: string, otp: string | undefined) => {
     const command = `npm publish ${join(pkg, 'prepublish').replace(/\\/g, '/')} --tag ${
         type === 'dev' ? 'next' : 'latest'
-    } ${dry ? '--dry-run' : ''} ${otp ? `--otp ${otp}` : ''}`;
+    } ${argv.dry ? '--dry-run' : ''} ${otp ? `--otp ${otp}` : ''}`;
     $([command] as unknown as TemplateStringsArray);
 };
 
@@ -75,12 +56,26 @@ const checkGit = async () => {
     }
 };
 
+const options: { type: string } = await inquirer.prompt([
+    {
+        type: 'list',
+        choices: ['dev', 'patch', 'minor', 'major'],
+        name: 'type',
+        message: 'How to increment version?'
+    }
+]);
+
+const { type } = options;
+process.env.TYPE = type;
+
 await checkGit();
 
 const packages = await getPackages('packages');
 
 console.log(chalk.bold('Publish all packages'));
 
-const otp = dry ? undefined : await question(chalk.yellow('Please, enter OTP: '));
+await $`npx turbo run prepublish --scope=@reactive-forms/*`;
+
+const otp = argv.dry ? undefined : await question(chalk.yellow('Please, enter OTP: '));
 
 await Promise.all(packages.map((pkg) => publishPackage(pkg, otp)));
