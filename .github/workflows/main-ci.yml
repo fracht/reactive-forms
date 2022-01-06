@@ -57,7 +57,7 @@ jobs:
         strategy:
             matrix:
                 node: ['14.x', '16.x']
-                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
+                package: ${{ needs.generate_matrix.outputs.packages }}
                 os: [ubuntu-latest]
 
         steps:
@@ -74,6 +74,9 @@ jobs:
 
             - name: Install global dependencies
               run: npm install
+
+            - name: Log matrix.package
+              run: echo matrix.package
 
             - name: Linting, testing & building ${{ matrix.package }}
               run: npx turbo run lint test build --scope=${{ matrix.package }}
