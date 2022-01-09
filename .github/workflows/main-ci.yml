@@ -24,7 +24,7 @@ jobs:
     coverage:
         name: Coverage report
         needs: [generate_matrix]
-        if: "needs.generate_matrix.outputs.packages-paths == '[]'"
+        if: "needs.generate_matrix.outputs.packages-paths != '[]'"
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -51,6 +51,7 @@ jobs:
                   test-script: npm run test:coverage
     build:
         needs: [generate_matrix]
+        if: "needs.generate_matrix.outputs.packages-names != '[]'"
         name: Build, lint, and test ${{ matrix.package-name }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
@@ -60,7 +61,6 @@ jobs:
                 os: [ubuntu-latest]
 
         steps:
-            - run: echo "${{ needs.generate_matrix.outputs.packages-names }}"
             - name: Checkout
               uses: actions/checkout@v2
 
