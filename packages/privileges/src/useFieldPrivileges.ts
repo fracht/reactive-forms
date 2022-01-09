@@ -1,10 +1,17 @@
+import { useFormContext, usePluginAssertion } from '@reactive-forms/core';
 import { Pxth } from 'pxth';
 
+import { FieldPrivileges } from './typings/FieldPrivileges';
 import { getFieldPrivileges } from './getFieldPrivileges';
-import { usePrivilegesContext } from './usePrivilegesContext';
-import { FieldPrivileges } from '.';
+import { privilegesPlugin } from './plugin';
 
 export const useFieldPrivileges = <V>(path: Pxth<V>): FieldPrivileges => {
-    const context = usePrivilegesContext();
-    return getFieldPrivileges(path, context);
+    usePluginAssertion(
+        privilegesPlugin,
+        'Privileges plugin is required to use privileges. Please add privilegesPlugin to <FormPlugins>.'
+    );
+
+    const context = useFormContext();
+
+    return getFieldPrivileges(path, context.privileges);
 };

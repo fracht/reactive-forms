@@ -1,6 +1,7 @@
 import { createPxth, deepGet, getPxthSegments, Pxth, pxthToString, RootPathToken } from 'pxth';
 
-import { FieldPrivileges, PrivilegesContextType } from '.';
+import { FieldPrivileges } from './typings/FieldPrivileges';
+import { FormPrivileges } from './typings/FormPrivileges';
 
 const getParentPath = <V>(path: Pxth<V>) => {
     const pathSegments = getPxthSegments(path);
@@ -15,7 +16,7 @@ const getParentPath = <V>(path: Pxth<V>) => {
 const mergePrivileges = <V, T extends object>(
     privs: FieldPrivileges,
     path: Pxth<V>,
-    context: PrivilegesContextType<T>
+    privileges: FormPrivileges<T>
 ): FieldPrivileges => {
     if (
         (privs.disabled !== undefined && privs.isEditable !== undefined && privs.visible !== undefined) ||
@@ -24,7 +25,7 @@ const mergePrivileges = <V, T extends object>(
         return privs;
     }
 
-    const currentPrivileges: FieldPrivileges = deepGet(context, path);
+    const currentPrivileges: FieldPrivileges = deepGet(privileges, path);
     if (currentPrivileges) {
         privs.disabled = privs.disabled ?? currentPrivileges.disabled;
         privs.isEditable = privs.isEditable ?? currentPrivileges.isEditable;
@@ -33,12 +34,12 @@ const mergePrivileges = <V, T extends object>(
 
     const parentPath = getParentPath(path);
 
-    return mergePrivileges(privs, parentPath, context);
+    return mergePrivileges(privs, parentPath, privileges);
 };
 
 export const getFieldPrivileges = <V, T extends object>(
     path: Pxth<V>,
-    context: PrivilegesContextType<T>
+    privileges: FormPrivileges<T>
 ): FieldPrivileges => {
-    return mergePrivileges({}, path, context);
+    return mergePrivileges({}, path, privileges);
 };

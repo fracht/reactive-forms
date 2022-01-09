@@ -1,11 +1,13 @@
 import React from 'react';
+import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
 
-import { PrivilegesContext, PrivilegesContextType, useFieldPrivileges } from '../src';
+import { privilegesPlugin } from '../src/plugin';
+import { useFieldPrivileges } from '../src/useFieldPrivileges';
 
 describe('UseFieldPrivileges', () => {
-    it('should get privilege directly by path', () => {
+    it('should return privileges', () => {
         const privs = {
             visible: true,
             isEditable: false,
@@ -14,107 +16,28 @@ describe('UseFieldPrivileges', () => {
 
         const { result } = renderHook(() => useFieldPrivileges(createPxth(['fields', 'some', 'path'])), {
             wrapper: ({ children }) => (
-                <PrivilegesContext.Provider
-                    value={
-                        {
+                <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
+                    <ReactiveForm<{ some: { path: number } }>
+                        initialValues={{ some: { path: 1 } }}
+                        // FIXME typescript can't find types
+                        privileges={{
                             fields: {
                                 some: {
-                                    path: privs
+                                    disabled: true,
+                                    path: {
+                                        visible: true,
+                                        isEditable: false
+                                    }
                                 }
                             }
-                        } as PrivilegesContextType<{ some: { path: number } }>
-                    }
-                >
-                    {children}
-                </PrivilegesContext.Provider>
+                        }}
+                    >
+                        {() => children}
+                    </ReactiveForm>
+                </FormPlugins>
             )
         });
 
         expect(result.current).toStrictEqual(privs);
-    });
-
-    it('should merge privileges from parent', () => {
-        const privs = {
-            visible: true,
-            isEditable: false,
-            disabled: true
-        };
-
-        const { result } = renderHook(() => useFieldPrivileges(createPxth(['fields', 'some', 'path'])), {
-            wrapper: ({ children }) => (
-                <PrivilegesContext.Provider
-                    value={
-                        {
-                            fields: {
-                                some: privs
-                            }
-                        } as PrivilegesContextType<{ some: { path: number } }>
-                    }
-                >
-                    {children}
-                </PrivilegesContext.Provider>
-            )
-        });
-
-        expect(result.current).toStrictEqual(privs);
-    });
-
-    it('should merge privileges from multiple parents', () => {
-        const { result } = renderHook(() => useFieldPrivileges(createPxth(['fields', 'some', 'path'])), {
-            wrapper: ({ children }) => (
-                <PrivilegesContext.Provider
-                    value={
-                        {
-                            fields: {
-                                disabled: false,
-                                some: {
-                                    isEditable: true,
-                                    path: {
-                                        visible: true
-                                    }
-                                }
-                            }
-                        } as PrivilegesContextType<{ some: { path: number } }>
-                    }
-                >
-                    {children}
-                </PrivilegesContext.Provider>
-            )
-        });
-
-        expect(result.current).toStrictEqual({
-            disabled: false,
-            isEditable: true,
-            visible: true
-        });
-    });
-
-    it('should return partial privileges object', () => {
-        const { result } = renderHook(() => useFieldPrivileges(createPxth(['fields', 'some', 'path'])), {
-            wrapper: ({ children }) => (
-                <PrivilegesContext.Provider
-                    value={
-                        {
-                            fields: {
-                                some: {
-                                    isEditable: true,
-                                    path: {
-                                        visible: true
-                                    }
-                                }
-                            }
-                        } as PrivilegesContextType<{ some: { path: number } }>
-                    }
-                >
-                    {children}
-                </PrivilegesContext.Provider>
-            )
-        });
-
-        expect(result.current).toStrictEqual({
-            disabled: undefined,
-            isEditable: true,
-            visible: true
-        });
     });
 });
