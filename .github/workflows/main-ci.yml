@@ -21,7 +21,7 @@ jobs:
 
             - name: Find changed packages
               id: changed_packages
-              uses: alexshukel/get-changed-workspaces-action@v1
+              uses: alexshukel/get-changed-workspaces-action@v1.0.0
     coverage:
         name: Coverage report
         if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
