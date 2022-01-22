@@ -33,14 +33,14 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "dependencies": {
-        "@reactive-forms/core": "*"
+        "@reactive-forms/core": "^0.5.7"
     },
     "devDependencies": {
         "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
         "@types/jest": "^26.0.24",
         "@types/react": "^17.0.14",
-        "aqu": "^0.1.1",
+        "aqu": "^0.3.2",
         "react": "^17.0.2"
     },
     "peerDependencies": {
