@@ -31,7 +31,7 @@ const publishPackage = async (pkg: string, otp: string | undefined) => {
     const command = `npm publish ${join(pkg, 'prepublish').replace(/\\/g, '/')} --tag ${
         type === 'dev' ? 'next' : 'latest'
     } ${argv.dry ? '--dry-run' : ''} ${otp ? `--otp ${otp}` : ''}`;
-    $([command] as unknown as TemplateStringsArray);
+    await $([command] as unknown as TemplateStringsArray);
 };
 
 const checkGit = async () => {

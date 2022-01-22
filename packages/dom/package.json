@@ -36,7 +36,7 @@
     "devDependencies": {
         "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "npm:publisher@*",
+        "@reactive-tools/publisher": "*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/enzyme": "^3.10.9",
         "@types/jest": "^26.0.24",
