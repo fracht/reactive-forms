@@ -9,7 +9,7 @@ import invariant from 'tiny-invariant';
 import type { BaseSchema } from 'yup';
 
 import { useFormControl } from './useFormControl';
-import { usePlugins } from './usePlugins';
+import { usePluginBagDecorators, usePluginConfigDecorators } from './usePlugins';
 import { useValidationRegistry, ValidationRegistryControl } from './useValidationRegistry';
 import { FieldError } from '../typings/FieldError';
 import { FieldPostProcessor } from '../typings/FieldPostProcessor';
@@ -85,7 +85,9 @@ const deepCustomizer = (src1: unknown, src2: unknown) => {
 
 const formMetaPaths = createPxth<FormMeta>([]);
 
-export const useForm = <Values extends object>(config: FormConfig<Values>): FormShared<Values> => {
+export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
+    const config = usePluginConfigDecorators(initialConfig);
+
     const throwError = useThrowError();
 
     const { schema, disablePureFieldsValidation } = config;
@@ -359,7 +361,7 @@ export const useForm = <Values extends object>(config: FormConfig<Values>): Form
         ...helpers
     };
 
-    const bagWithPlugins = usePlugins(bag, config);
+    const bagWithPlugins = usePluginBagDecorators(bag, config);
 
     return loadingGuard(bagWithPlugins, isLoaded);
 };

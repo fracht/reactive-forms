@@ -20,7 +20,7 @@
         "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
     },
     "scripts": {
-        "dev": "aqu watch",
+        "dev": "aqu watch --no-cleanup",
         "build": "aqu build",
         "test": "aqu test --passWithNoTests",
         "test:watch": "aqu test --watch",

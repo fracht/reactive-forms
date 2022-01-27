@@ -1,0 +1,33 @@
+{
+    "name": "@reactive-forms/autosave",
+    "version": "0.5.8",
+    "main": "index.js",
+    "scripts": {
+        "build": "aqu build",
+        "dev": "aqu watch",
+        "test": "aqu test --passWithNoTests",
+        "test:watch": "aqu test --watch",
+        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
+        "test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
+        "lint": "eslint .",
+        "lint:fix": "npm run lint --fix",
+        "prepublish": "reactive-publisher"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "@reactive-forms/core": "*",
+        "@reactive-tools/publisher": "*",
+        "aqu": "^0.3.2"
+    },
+    "peerDependencies": {
+        "@reactive-forms/core": "^0.5.0",
+        "react": ">=16"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21",
+        "tiny-invariant": "^1.2.0"
+    }
+}
