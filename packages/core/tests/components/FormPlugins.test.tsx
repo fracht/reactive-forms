@@ -41,7 +41,8 @@ describe('FormPlugins', () => {
 
         const dummyPlugin: Plugin = {
             token: Symbol.for('dummy'),
-            useDecorator: dummyDecorator
+            useBagDecorator: dummyDecorator,
+            useConfigDecorator: dummyDecorator
         };
 
         renderForm(
@@ -65,7 +66,8 @@ describe('FormPlugins', () => {
 
         const dummyPlugin: Plugin = {
             token: Symbol.for('dummy'),
-            useDecorator: dummyDecorator
+            useBagDecorator: dummyDecorator,
+            useConfigDecorator: (a) => a
         };
 
         const { result } = renderForm(
