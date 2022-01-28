@@ -32,10 +32,8 @@
     "bugs": {
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
-    "dependencies": {
-        "@reactive-forms/core": "^0.5.7"
-    },
     "devDependencies": {
+        "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
         "@types/jest": "^26.0.24",
@@ -46,5 +44,8 @@
     "peerDependencies": {
         "@reactive-forms/core": "^0.6.0",
         "react": ">=16"
+    },
+    "dependencies": {
+        "@reactive-forms/core": "^0.6.0"
     }
 }
