@@ -1,7 +1,24 @@
 {
     "name": "@reactive-forms/autosave",
     "version": "0.6.1",
-    "main": "index.js",
+    "description": "> TODO: description",
+    "author": "ReactiveForms team",
+    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/autosave.esm.js",
+    "source": "src/index.ts",
+    "types": "dist/autosave.d.ts",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
+    },
     "scripts": {
         "build": "aqu build",
         "dev": "aqu watch",
@@ -14,9 +31,6 @@
         "prepublish": "reactive-publisher"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "description": "",
     "devDependencies": {
         "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
