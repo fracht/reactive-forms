@@ -19,6 +19,7 @@
     "description": "",
     "devDependencies": {
         "@reactive-forms/core": "*",
+        "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
         "aqu": "^0.3.2"
     },
@@ -27,7 +28,6 @@
         "react": ">=16"
     },
     "dependencies": {
-        "@reactive-tools/eslint-config": "*",
         "lodash": "^4.17.21",
         "tiny-invariant": "^1.2.0"
     }
