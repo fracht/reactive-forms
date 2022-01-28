@@ -9,6 +9,10 @@ export const localSaveService: AutoSaveService<unknown> = {
     load: async (key) => {
         const item = localStorage.getItem(prefix.concat(key));
 
-        return item;
+        if (typeof item === 'string') {
+            return JSON.parse(item);
+        }
+
+        return undefined;
     }
 };

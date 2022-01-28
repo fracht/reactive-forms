@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { FormConfig, FormShared, Plugin } from '@reactive-forms/core';
 import isNil from 'lodash/isNil';
+import isObject from 'lodash/isObject';
 import invariant from 'tiny-invariant';
 
 import { AutoSaveContext } from './internal/AutoSaveContext';
@@ -43,7 +44,12 @@ export const autosavePlugin: Plugin = {
 
         if (isFirstTime.current && !isNil(autoSaveKey)) {
             if (autoSaveKey in autoSaveLoadedValuesCache) {
-                form.setValues(autoSaveLoadedValuesCache[autoSaveKey] as T);
+                const autosavedValue = autoSaveLoadedValuesCache[autoSaveKey] as T;
+
+                if (isObject(autosavedValue)) {
+                    form.setValues(autosavedValue);
+                }
+
                 isFirstTime.current = false;
             } else if (autoSaveKey in queuedAutoSaveLoads) {
                 throw queuedAutoSaveLoads[autoSaveKey];
