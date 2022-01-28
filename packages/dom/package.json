@@ -55,7 +55,7 @@
         "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
-        "@reactive-forms/core": "^0.5.0",
+        "@reactive-forms/core": "^0.6.0",
         "react": ">=16"
     }
 }
