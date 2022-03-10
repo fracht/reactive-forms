@@ -1,8 +1,6 @@
 import { useCallback, useRef } from 'react';
-import get from 'lodash/get';
-import set from 'lodash/set';
-import { createPxth, deepGet, deepSet, parseSegmentsFromString, Pxth, pxthToString, RootPath } from 'pxth';
-import { isInnerPath, longestCommonPath } from 'stocked';
+import { deepGet, deepSet, getPxthSegments, isInnerPxth, longestCommonPxth, Pxth, samePxth } from 'pxth';
+import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';
 
 import { FieldError } from '../typings/FieldError';
@@ -10,7 +8,7 @@ import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-export type ValidationRegistry = Record<string | RootPath, FunctionArray<FieldValidator<unknown>>>;
+export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
     validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }>;
@@ -21,63 +19,59 @@ export type ValidationRegistryControl = {
 };
 
 export const useValidationRegistry = (): ValidationRegistryControl => {
-    const registry = useRef({} as ValidationRegistry);
+    const registry = useRef<ValidationRegistry>(new PxthMap());
 
     const registerValidator = useCallback(<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
-        const objectKey = pxthToString(name);
-
-        if (!Object.prototype.hasOwnProperty.call(registry.current, objectKey)) {
-            registry.current[objectKey] = new FunctionArray();
+        if (!registry.current.has(name)) {
+            registry.current.set(name, new FunctionArray());
         }
-        registry.current[objectKey].push(validator as FieldValidator<unknown>);
+
+        registry.current.get(name).push(validator as FieldValidator<unknown>);
 
         return () => {
-            const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current[objectKey];
+            const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current.get(name);
 
             invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
 
             currentValidators.remove(validator as FieldValidator<unknown>);
 
-            if (currentValidators.isEmpty()) delete registry.current[objectKey];
+            if (currentValidators.isEmpty()) {
+                registry.current.remove(name);
+            }
         };
     }, []);
 
     const validateField = useCallback(async <V>(name: Pxth<V>, value: V): Promise<FieldError<V> | undefined> => {
-        const objectKey = pxthToString(name);
-        if (Object.prototype.hasOwnProperty.call(registry.current, objectKey)) {
-            const output = await (registry.current[objectKey] as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
+        if (registry.current.has(name)) {
+            const output = await (registry.current.get(name) as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
             return validatorResultToError(output);
         }
+
         return undefined;
     }, []);
 
-    const hasValidator = useCallback(
-        <V>(name: Pxth<V>) => Object.prototype.hasOwnProperty.call(registry.current, pxthToString(name)),
-        []
-    );
+    const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
     const validateBranch = useCallback(
         async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }> => {
-            const stringifiedOrigin = pxthToString(origin);
-
-            const pathsToValidate = Object.keys(registry.current)
+            const pathsToValidate = registry.current
+                .keys()
                 .filter(
                     (i) =>
-                        isInnerPath(stringifiedOrigin, i) ||
-                        isInnerPath(i, stringifiedOrigin) ||
-                        i === stringifiedOrigin
+                        isInnerPxth(origin as Pxth<unknown>, i) ||
+                        isInnerPxth(i, origin as Pxth<unknown>) ||
+                        samePxth(origin as Pxth<unknown>, i)
                 )
-                .sort((a, b) => a.length - b.length);
+                .sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
             let errors: FieldError<V> = {} as FieldError<V>;
 
             for (const path of pathsToValidate) {
-                const realPath = createPxth(parseSegmentsFromString(path));
-                const error = await validateField(realPath, deepGet(values, realPath));
-                errors = deepSet(errors, realPath, error) as FieldError<V>;
+                const error = await validateField(path, deepGet(values, path));
+                errors = deepSet(errors, path, error) as FieldError<V>;
             }
 
-            return { attachPath: createPxth(parseSegmentsFromString(longestCommonPath(pathsToValidate))), errors };
+            return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };
         },
         [validateField]
     );
@@ -85,12 +79,14 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
     const validateAllFields = useCallback(async <V extends object>(values: V): Promise<FieldError<V>> => {
         const reducedErrors: FieldError<V> = {} as FieldError<V>;
 
-        const allValidatorKeys = Object.keys(registry.current).sort((a, b) => a.length - b.length);
+        const allValidatorKeys = registry.current
+            .keys()
+            .sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
         for (const key of allValidatorKeys) {
-            const error = await registry.current[key].lazyAsyncCall(get(values, key));
+            const error = await registry.current.get(key).lazyAsyncCall(deepGet(values, key));
             if (error) {
-                set(reducedErrors, key, validatorResultToError(error));
+                deepSet(reducedErrors, key, validatorResultToError(error));
             }
         }
 
