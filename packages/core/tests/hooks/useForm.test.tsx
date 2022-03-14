@@ -259,9 +259,9 @@ describe('validateForm', () => {
 
         act(() => {
             result.current.registerValidator(createPxth(['hello']), validator1);
-            result.current.registerValidator(createPxth(['deep.value']), validator2);
-            result.current.registerValidator(createPxth(['array[1]']), validator3);
-            result.current.registerValidator(createPxth(['not.existing.value']), validator4);
+            result.current.registerValidator(createPxth(['deep', 'value']), validator2);
+            result.current.registerValidator(createPxth(['array', '1']), validator3);
+            result.current.registerValidator(createPxth(['not', 'existing', 'value']), validator4);
         });
 
         await act(async () => {
