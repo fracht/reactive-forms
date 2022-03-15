@@ -5,6 +5,12 @@ import { FieldPrivileges } from './typings/FieldPrivileges';
 import { getFieldPrivileges } from './getFieldPrivileges';
 import { privilegesPlugin } from './plugin';
 
+export const defaultPrivileges: FieldPrivileges = {
+    disabled: false,
+    isEditable: true,
+    visible: true
+};
+
 export const useFieldPrivileges = <V>(path: Pxth<V>): FieldPrivileges => {
     usePluginAssertion(
         privilegesPlugin,
@@ -12,6 +18,10 @@ export const useFieldPrivileges = <V>(path: Pxth<V>): FieldPrivileges => {
     );
 
     const context = useFormContext();
+
+    if (!context.privileges) {
+        return defaultPrivileges;
+    }
 
     return getFieldPrivileges(path, context.privileges);
 };

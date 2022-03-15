@@ -1,4 +1,4 @@
-import { createPxth, deepGet, getPxthSegments, Pxth, pxthToString, RootPathToken } from 'pxth';
+import { createPxth, deepGet, getPxthSegments, Pxth } from 'pxth';
 
 import { FieldPrivileges } from './typings/FieldPrivileges';
 import { FormPrivileges } from './typings/FormPrivileges';
@@ -13,33 +13,29 @@ const getParentPath = <V>(path: Pxth<V>) => {
     return createPxth(pathSegments);
 };
 
-const mergePrivileges = <V, T extends object>(
-    privs: FieldPrivileges,
-    path: Pxth<V>,
-    privileges: FormPrivileges<T>
-): FieldPrivileges => {
-    if (
-        (privs.disabled !== undefined && privs.isEditable !== undefined && privs.visible !== undefined) ||
-        pxthToString(path) === RootPathToken
-    ) {
-        return privs;
-    }
-
-    const currentPrivileges: FieldPrivileges = deepGet(privileges, path);
-    if (currentPrivileges) {
-        privs.disabled = privs.disabled ?? currentPrivileges.disabled;
-        privs.isEditable = privs.isEditable ?? currentPrivileges.isEditable;
-        privs.visible = privs.visible ?? currentPrivileges.visible;
-    }
-
-    const parentPath = getParentPath(path);
-
-    return mergePrivileges(privs, parentPath, privileges);
-};
-
 export const getFieldPrivileges = <V, T extends object>(
     path: Pxth<V>,
     privileges: FormPrivileges<T>
 ): FieldPrivileges => {
-    return mergePrivileges({}, path, privileges);
+    const mergedPrivileges: FieldPrivileges = {};
+
+    let currentPath = path as Pxth<unknown>;
+
+    while (getPxthSegments(currentPath).length > 0) {
+        const currentPrivileges: FieldPrivileges = deepGet(privileges.fields, path);
+
+        if (currentPrivileges) {
+            mergedPrivileges.disabled ??= currentPrivileges.disabled;
+            mergedPrivileges.isEditable ??= currentPrivileges.isEditable;
+            mergedPrivileges.visible ??= currentPrivileges.visible;
+        }
+
+        currentPath = getParentPath(path);
+    }
+
+    mergedPrivileges.disabled ??= privileges.fields.disabled;
+    mergedPrivileges.isEditable ??= privileges.fields.isEditable;
+    mergedPrivileges.visible ??= privileges.fields.visible;
+
+    return mergedPrivileges;
 };

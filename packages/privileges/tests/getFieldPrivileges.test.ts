@@ -5,9 +5,11 @@ import { getFieldPrivileges } from '../src/getFieldPrivileges';
 describe('getFieldPrivileges', () => {
     it('should merge privileges from upper nodes', () => {
         const privileges = getFieldPrivileges<number, { some: { nested: { path: number } } }>(
-            createPxth(['fields', 'some', 'nested', 'path']),
+            createPxth(['some', 'nested', 'path']),
             {
                 fields: {
+                    disabled: true,
+                    isEditable: false,
                     some: {
                         isEditable: true,
                         nested: {

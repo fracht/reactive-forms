@@ -4,29 +4,51 @@ import { renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
 
 import { privilegesPlugin } from '../src/plugin';
-import { useFieldPrivileges } from '../src/useFieldPrivileges';
+import { defaultPrivileges, useFieldPrivileges } from '../src/useFieldPrivileges';
 
 describe('UseFieldPrivileges', () => {
-    it('should return privileges', () => {
-        const privs = {
-            visible: true,
-            isEditable: false,
-            disabled: true
-        };
+    it('should throw an error', () => {
+        const { result } = renderHook(() => useFieldPrivileges(createPxth(['asdf'])), {
+            wrapper: ({ children }) => <ReactiveForm initialValues={{}}>{() => children}</ReactiveForm>
+        });
 
-        const { result } = renderHook(() => useFieldPrivileges(createPxth(['fields', 'some', 'path'])), {
+        expect(result.error).toBeDefined();
+    });
+
+    it('should return default privileges', () => {
+        const { result } = renderHook(() => useFieldPrivileges(createPxth(['asdf'])), {
             wrapper: ({ children }) => (
                 <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
-                    <ReactiveForm<{ some: { path: number } }>
-                        initialValues={{ some: { path: 1 } }}
-                        // FIXME typescript can't find types
+                    <ReactiveForm initialValues={{}}>{() => children}</ReactiveForm>
+                </FormPlugins>
+            )
+        });
+
+        expect(result.current).toStrictEqual(defaultPrivileges);
+    });
+
+    it('should return merged privileges', () => {
+        const { result } = renderHook(() => useFieldPrivileges(createPxth(['some/', 'nested.', ']path['])), {
+            wrapper: ({ children }) => (
+                <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
+                    <ReactiveForm
+                        initialValues={{
+                            'some/': {
+                                'nested.': {
+                                    ']path[': 42
+                                }
+                            }
+                        }}
                         privileges={{
                             fields: {
-                                some: {
-                                    disabled: true,
-                                    path: {
-                                        visible: true,
-                                        isEditable: false
+                                disabled: true,
+                                'some/': {
+                                    isEditable: false,
+                                    visible: false,
+                                    'nested.': {
+                                        ']path[': {
+                                            visible: true
+                                        }
                                     }
                                 }
                             }
@@ -38,6 +60,10 @@ describe('UseFieldPrivileges', () => {
             )
         });
 
-        expect(result.current).toStrictEqual(privs);
+        expect(result.current).toStrictEqual({
+            visible: true,
+            isEditable: false,
+            disabled: true
+        });
     });
 });

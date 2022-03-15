@@ -1,6 +1,6 @@
 import { FieldPrivileges } from './FieldPrivileges';
 import { ObjectPrivileges } from './ObjectPrivileges';
 
-export type Privileges<T> = Extract<T, string | number | Date | boolean | null> extends never
-    ? FieldPrivileges & ObjectPrivileges<T>
-    : FieldPrivileges;
+type Primitive = string | number | boolean | bigint | symbol | null | undefined;
+
+export type Privileges<T> = T extends Primitive ? FieldPrivileges : FieldPrivileges & ObjectPrivileges<T>;
