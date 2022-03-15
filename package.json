@@ -51,35 +51,5 @@
         "packages/*",
         "tools/*"
     ],
-    "turbo": {
-        "pipeline": {
-            "build": {
-                "dependsOn": [
-                    "^build"
-                ],
-                "outputs": [
-                    "dist/**"
-                ]
-            },
-            "test": {
-                "dependsOn": [
-                    "build"
-                ],
-                "outputs": []
-            },
-            "lint": {
-                "outputs": []
-            },
-            "dev": {
-                "cache": false
-            },
-            "prepublish": {
-                "cache": true,
-                "dependsOn": [
-                    "lint",
-                    "build"
-                ]
-            }
-        }
-    }
+    "packageManager": "npm@7.19.1"
 }
