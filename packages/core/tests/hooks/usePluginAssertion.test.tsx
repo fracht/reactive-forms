@@ -14,10 +14,11 @@ describe('usePluginAssertion', () => {
         const dummyDecorator = (value) => value;
 
         const { result } = renderUsePluginAssertion(
-            { token: Symbol.for('a'), useDecorator: dummyDecorator },
+            { token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
             createPluginArray({
                 token: Symbol.for('b'),
-                useDecorator: dummyDecorator
+                useBagDecorator: dummyDecorator,
+                useConfigDecorator: dummyDecorator
             })
         );
 
@@ -28,7 +29,7 @@ describe('usePluginAssertion', () => {
         const dummyDecorator = (value) => value;
 
         const { result } = renderUsePluginAssertion(
-            { token: Symbol.for('a'), useDecorator: dummyDecorator },
+            { token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
             createPluginArray()
         );
 
@@ -39,10 +40,11 @@ describe('usePluginAssertion', () => {
         const dummyDecorator = (value) => value;
 
         const { result } = renderUsePluginAssertion(
-            { token: Symbol.for('a'), useDecorator: dummyDecorator },
+            { token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
             createPluginArray({
                 token: Symbol.for('a'),
-                useDecorator: dummyDecorator
+                useBagDecorator: dummyDecorator,
+                useConfigDecorator: dummyDecorator
             })
         );
 

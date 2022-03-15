@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/core",
-    "version": "0.5.7",
+    "version": "0.6.3",
     "description": "Core package of Reactive Forms framework",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -20,7 +20,7 @@
         "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
     },
     "scripts": {
-        "dev": "aqu watch",
+        "dev": "aqu watch --no-cleanup",
         "build": "aqu build",
         "test": "aqu test --passWithNoTests",
         "test:watch": "aqu test --watch",
@@ -36,8 +36,8 @@
     "dependencies": {
         "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
-        "pxth": "^0.3.0",
-        "stocked": "^1.0.0-beta.23",
+        "pxth": "^0.5.0",
+        "stocked": "^1.0.0-beta.25",
         "tiny-invariant": "^1.1.0"
     },
     "resolutions": {
@@ -45,12 +45,12 @@
     },
     "devDependencies": {
         "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "npm:publisher@*",
+        "@reactive-tools/publisher": "*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/jest": "^26.0.23",
         "@types/lodash": "^4.14.161",
         "@types/react": "^17.0.2",
-        "aqu": "^0.1.1",
+        "aqu": "^0.3.2",
         "react": "^17.0.2",
         "react-test-renderer": "^17.0.1",
         "tslib": "^2.3.1",

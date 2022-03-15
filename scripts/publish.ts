@@ -2,6 +2,7 @@
 
 /// <reference types="zx" />
 
+import { spawn } from 'child_process';
 import { join } from 'path';
 
 import inquirer from 'inquirer';
@@ -27,11 +28,11 @@ const getPackages = async (rootDir: string) => {
     return allDirsContainingPackage as string[];
 };
 
-const publishPackage = async (pkg: string, otp: string | undefined) => {
+const publishPackage = async (pkg: string, otp: string | undefined, type: string) => {
     const command = `npm publish ${join(pkg, 'prepublish').replace(/\\/g, '/')} --tag ${
         type === 'dev' ? 'next' : 'latest'
     } ${argv.dry ? '--dry-run' : ''} ${otp ? `--otp ${otp}` : ''}`;
-    $([command] as unknown as TemplateStringsArray);
+    await $([command] as unknown as TemplateStringsArray);
 };
 
 const checkGit = async () => {
@@ -56,26 +57,58 @@ const checkGit = async () => {
     }
 };
 
-const options: { type: string } = await inquirer.prompt([
-    {
-        type: 'list',
-        choices: ['dev', 'patch', 'minor', 'major'],
-        name: 'type',
-        message: 'How to increment version?'
+const prepublish = () => {
+    return new Promise((resolve, reject) => {
+        const child = spawn('npx turbo run prepublish --scope=@reactive-forms/*', {
+            stdio: ['ignore', 'pipe', 'pipe'],
+            cwd: process.cwd(),
+            shell: true,
+            windowsHide: true
+        });
+
+        child.stdout.on('data', (data) => process.stdout.write(data));
+        child.stderr.on('data', (data) => process.stderr.write(data));
+
+        child.on('exit', (code) => {
+            child.on('close', () => {
+                if (code === 0) {
+                    resolve(undefined);
+                } else {
+                    reject(code);
+                }
+            });
+        });
+    });
+};
+
+const main = async () => {
+    const options: { type: string } = await inquirer.prompt([
+        {
+            type: 'list',
+            choices: ['dev', 'patch', 'minor', 'major'],
+            name: 'type',
+            message: 'How to increment version?'
+        }
+    ]);
+
+    const { type } = options;
+    process.env.TYPE = type;
+
+    await checkGit();
+
+    const packages = await getPackages('packages');
+
+    await prepublish();
+
+    console.log(chalk.bold('Publish all packages'));
+
+    let otp: string | undefined = undefined;
+
+    if (!argv.dry) {
+        otp = await question(chalk.yellow('Please, enter OTP: '));
     }
-]);
 
-const { type } = options;
-process.env.TYPE = type;
+    await Promise.all(packages.map((pkg) => publishPackage(pkg, otp, type)));
+};
 
-await checkGit();
-
-const packages = await getPackages('packages');
-
-console.log(chalk.bold('Publish all packages'));
-
-await $`npx turbo run prepublish --scope=@reactive-forms/*`;
-
-const otp = argv.dry ? undefined : await question(chalk.yellow('Please, enter OTP: '));
-
-await Promise.all(packages.map((pkg) => publishPackage(pkg, otp)));
+await main();

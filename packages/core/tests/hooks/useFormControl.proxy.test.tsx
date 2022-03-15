@@ -56,7 +56,7 @@ describe('values control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -115,7 +115,7 @@ describe('values control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -145,7 +145,7 @@ describe('values control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         expect(result.current.getFieldValue(createPxth(['user', 'name']))).toBe('Hello');
@@ -164,7 +164,7 @@ describe('errors control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -207,7 +207,7 @@ describe('errors control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -247,7 +247,7 @@ describe('errors control', () => {
                 },
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         expect(result.current.getFieldError(createPxth(['user', 'name']))).toStrictEqual({ $error: 'asdf' });
@@ -270,7 +270,7 @@ describe('touched control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -322,7 +322,7 @@ describe('touched control', () => {
                 initialErrors: {},
                 initialTouched: {}
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         act(() => {
@@ -381,7 +381,7 @@ describe('touched control', () => {
                     }
                 }
             },
-            proxy
+            proxy as MappingProxy<unknown>
         );
 
         expect(result.current.getFieldTouched(createPxth(['sessionInfo', 'currentUser', 'firstName']))).toStrictEqual({

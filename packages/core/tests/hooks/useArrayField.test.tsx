@@ -21,7 +21,7 @@ const renderArrayField = <T extends object>(
 
 describe('useArrayField', () => {
     it('should return items', () => {
-        const { result } = renderArrayField(createPxth(['arr']), {
+        const { result } = renderArrayField(createPxth<{ arr: number[] }[]>(['arr']), {
             initialValues: {
                 arr: [0, 1, 2]
             }

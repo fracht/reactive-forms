@@ -4,7 +4,8 @@ import { createPxth, parseSegmentsFromString } from 'pxth';
 
 export const domPlugin: Plugin = {
     token: Symbol.for('dom'),
-    useDecorator: <T extends object>(shared: FormShared<T>) => {
+    useConfigDecorator: (config) => config,
+    useBagDecorator: <T extends object>(shared: FormShared<T>) => {
         const { setFieldValue, setFieldTouched } = shared;
 
         const handleChange = useCallback(
