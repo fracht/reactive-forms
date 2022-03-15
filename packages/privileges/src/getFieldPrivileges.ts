@@ -2,6 +2,7 @@ import { createPxth, deepGet, getPxthSegments, Pxth } from 'pxth';
 
 import { FieldPrivileges } from './typings/FieldPrivileges';
 import { FormPrivileges } from './typings/FormPrivileges';
+import { defaultPrivileges } from './useFieldPrivileges';
 
 const getParentPath = <V>(path: Pxth<V>) => {
     const pathSegments = getPxthSegments(path);
@@ -13,6 +14,12 @@ const getParentPath = <V>(path: Pxth<V>) => {
     return createPxth(pathSegments);
 };
 
+const mergePrivileges = (acc: FieldPrivileges, privileges: FieldPrivileges) => {
+    acc.disabled ??= privileges.disabled;
+    acc.isEditable ??= privileges.isEditable;
+    acc.visible ??= privileges.visible;
+};
+
 export const getFieldPrivileges = <V, T extends object>(
     path: Pxth<V>,
     privileges: FormPrivileges<T>
@@ -22,20 +29,17 @@ export const getFieldPrivileges = <V, T extends object>(
     let currentPath = path as Pxth<unknown>;
 
     while (getPxthSegments(currentPath).length > 0) {
-        const currentPrivileges: FieldPrivileges = deepGet(privileges.fields, path);
+        const currentPrivileges: FieldPrivileges | undefined = deepGet(privileges.fields, path);
 
         if (currentPrivileges) {
-            mergedPrivileges.disabled ??= currentPrivileges.disabled;
-            mergedPrivileges.isEditable ??= currentPrivileges.isEditable;
-            mergedPrivileges.visible ??= currentPrivileges.visible;
+            mergePrivileges(mergedPrivileges, currentPrivileges);
         }
 
         currentPath = getParentPath(path);
     }
 
-    mergedPrivileges.disabled ??= privileges.fields.disabled;
-    mergedPrivileges.isEditable ??= privileges.fields.isEditable;
-    mergedPrivileges.visible ??= privileges.fields.visible;
+    mergePrivileges(mergedPrivileges, privileges.fields);
+    mergePrivileges(mergedPrivileges, defaultPrivileges);
 
     return mergedPrivileges;
 };

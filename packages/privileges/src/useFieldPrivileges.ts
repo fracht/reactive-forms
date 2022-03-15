@@ -1,4 +1,5 @@
-import { useFormContext, usePluginAssertion } from '@reactive-forms/core';
+import { useContext } from 'react';
+import { FormProxyContext, useFormContext, usePluginAssertion } from '@reactive-forms/core';
 import { Pxth } from 'pxth';
 
 import { FieldPrivileges } from './typings/FieldPrivileges';
@@ -18,9 +19,14 @@ export const useFieldPrivileges = <V>(path: Pxth<V>): FieldPrivileges => {
     );
 
     const context = useFormContext();
+    const proxyContext = useContext(FormProxyContext);
 
     if (!context.privileges) {
         return defaultPrivileges;
+    }
+
+    if (proxyContext) {
+        path = proxyContext.getNormalPath(path);
     }
 
     return getFieldPrivileges(path, context.privileges);

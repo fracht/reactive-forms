@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
+import ReactiveForm, { createPluginArray, FormPlugins, FormProxyProvider } from '@reactive-forms/core';
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
+import { MappingProxy } from 'stocked';
 
 import { privilegesPlugin } from '../src/plugin';
 import { defaultPrivileges, useFieldPrivileges } from '../src/useFieldPrivileges';
@@ -64,6 +65,53 @@ describe('UseFieldPrivileges', () => {
             visible: true,
             isEditable: false,
             disabled: true
+        });
+    });
+
+    it('should return privileges for proxied path', () => {
+        const proxy = new MappingProxy<{ F1: number }>(
+            {
+                F1: createPxth(['values', 'real', 'R1'])
+            },
+            createPxth(['values', 'proxy'])
+        );
+
+        proxy.activate();
+
+        const { result } = renderHook(() => useFieldPrivileges(createPxth(['values', 'proxy', 'F1'])), {
+            wrapper: ({ children }) => (
+                <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
+                    <ReactiveForm
+                        initialValues={{
+                            values: {
+                                real: {
+                                    R1: 42
+                                }
+                            }
+                        }}
+                        privileges={{
+                            fields: {
+                                values: {
+                                    real: {
+                                        R1: {
+                                            isEditable: false,
+                                            visible: true
+                                        }
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        {() => <FormProxyProvider proxy={proxy}>{() => children}</FormProxyProvider>}
+                    </ReactiveForm>
+                </FormPlugins>
+            )
+        });
+
+        expect(result.current).toStrictEqual({
+            isEditable: false,
+            visible: true,
+            disabled: false
         });
     });
 });
