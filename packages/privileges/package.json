@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/privileges",
-    "version": "0.5.7",
+    "version": "0.6.3",
     "description": "Package for field privileges",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -21,7 +21,7 @@
     "devDependencies": {
         "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "npm:publisher@*",
+        "@reactive-tools/publisher": "*",
         "@testing-library/react-hooks": "^7.0.2",
         "aqu": "^0.1.1",
         "react": "^17.0.2",
