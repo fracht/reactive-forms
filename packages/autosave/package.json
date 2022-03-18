@@ -38,7 +38,7 @@
         "aqu": "^0.3.2"
     },
     "peerDependencies": {
-        "@reactive-forms/core": "^0.6.0",
+        "@reactive-forms/core": "^0.7.0",
         "react": ">=16"
     },
     "dependencies": {
