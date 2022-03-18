@@ -15,7 +15,7 @@
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
         "publish": "zxpp ./scripts/publish.ts",
-        "publish:check": "turbo run build lint test"
+        "publish:check": "turbo run build lint test --scope=@reactive-forms/* --include-dependencies --no-deps"
     },
     "size-limit": [
         {
