@@ -1,10 +1,11 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { createPxth, getPxthSegments } from 'pxth';
+import { createPxth, getPxthSegments, Pxth } from 'pxth';
 import { MappingProxy } from 'stocked';
 
-import { ReactiveFormProvider, useForm } from '../../src';
+import { FieldInnerError, FieldValidator, ReactiveFormProvider, useForm } from '../../src';
 import { useProxyInterception } from '../../src/hooks/useProxyInterception';
+import { NestedObject } from '../../src/typings/NestedObject';
 
 type ProxyValue = {
     id: number;
@@ -47,8 +48,8 @@ const renderUseProxyInterception = () => {
 
     proxy.activate();
 
-    const registerValidator = jest.fn();
-    const validateField = jest.fn();
+    const registerValidator = jest.fn(bag.current.registerValidator);
+    const validateField = jest.fn(bag.current.validateField);
 
     const { result } = renderHook(() => useProxyInterception(proxy), {
         wrapper: ({ children }) => {
@@ -56,8 +57,14 @@ const renderUseProxyInterception = () => {
                 <ReactiveFormProvider
                     formBag={{
                         ...bag.current,
-                        registerValidator,
-                        validateField
+                        registerValidator: registerValidator as <V>(
+                            name: Pxth<V>,
+                            validator: FieldValidator<V>
+                        ) => () => void,
+                        validateField: validateField as <V>(
+                            name: Pxth<V>,
+                            value: V
+                        ) => Promise<NestedObject<FieldInnerError, V>>
                     }}
                 >
                     {() => children}
@@ -80,10 +87,9 @@ describe('useProxyInterception', () => {
 
         expect(getPxthSegments(registerValidator.mock.calls[0][0])).toStrictEqual(['values', 'real', 'data']);
 
-        const interceptedValidator = registerValidator.mock.calls[0][1];
-        interceptedValidator({
-            p_address: 'asdf',
-            p_birthDate: new Date(100)
+        result.current.validateField(proxiedFieldPath, {
+            address: 'asdf',
+            birthDate: new Date(100)
         });
 
         expect(validator.mock.calls[0][0]).toStrictEqual({
