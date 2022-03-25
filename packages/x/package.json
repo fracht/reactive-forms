@@ -1,6 +1,6 @@
 {
     "name": "@reactive-forms/x",
-    "version": "0.6.3",
+    "version": "0.7.5",
     "description": "Advanced Reactive Forms components for rich eXperience",
     "author": "ReactiveForms team",
     "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
@@ -42,7 +42,7 @@
         "react": "^17.0.2"
     },
     "peerDependencies": {
-        "@reactive-forms/core": "^0.6.0",
+        "@reactive-forms/core": "^0.7.0",
         "react": ">=16"
     },
     "dependencies": {

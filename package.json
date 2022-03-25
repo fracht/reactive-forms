@@ -15,7 +15,7 @@
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
         "publish": "zxpp ./scripts/publish.ts",
-        "publish:check": "turbo run build lint test"
+        "publish:check": "turbo run build lint test --scope=@reactive-forms/* --include-dependencies --no-deps"
     },
     "size-limit": [
         {
@@ -51,35 +51,5 @@
         "packages/*",
         "tools/*"
     ],
-    "turbo": {
-        "pipeline": {
-            "build": {
-                "dependsOn": [
-                    "^build"
-                ],
-                "outputs": [
-                    "dist/**"
-                ]
-            },
-            "test": {
-                "dependsOn": [
-                    "build"
-                ],
-                "outputs": []
-            },
-            "lint": {
-                "outputs": []
-            },
-            "dev": {
-                "cache": false
-            },
-            "prepublish": {
-                "cache": true,
-                "dependsOn": [
-                    "lint",
-                    "build"
-                ]
-            }
-        }
-    }
+    "packageManager": "npm@7.19.1"
 }
