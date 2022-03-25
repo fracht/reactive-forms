@@ -1,11 +1,71 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins, FormProxyProvider } from '@reactive-forms/core';
 import { renderHook } from '@testing-library/react-hooks';
-import { createPxth } from 'pxth';
+import { createPxth, Pxth } from 'pxth';
 import { MappingProxy } from 'stocked';
 
 import { privilegesPlugin } from '../src/plugin';
 import { defaultPrivileges, useFieldPrivileges } from '../src/useFieldPrivileges';
+
+const renderUseFieldPrivilegesWithProxy = (pxth: Pxth<unknown>) => {
+    const proxy = new MappingProxy(
+        {
+            F1: createPxth(['values', 'real', 'R1']),
+            F2: createPxth(['values', 'real', 'hello']),
+            F3: createPxth(['values', 'real', '123', '/././.'])
+        },
+        createPxth(['values', 'proxy'])
+    );
+
+    proxy.activate();
+
+    return renderHook(() => useFieldPrivileges(pxth), {
+        wrapper: ({ children }) => (
+            <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
+                <ReactiveForm
+                    initialValues={{
+                        values: {
+                            real: {
+                                R1: 42,
+                                hello: {
+                                    asdf: 'string',
+                                    fdsa: 123
+                                }
+                            }
+                        }
+                    }}
+                    privileges={{
+                        fields: {
+                            values: {
+                                real: {
+                                    isEditable: false,
+                                    visible: false,
+                                    disabled: true,
+
+                                    R1: {
+                                        isEditable: false,
+                                        visible: true,
+                                        disabled: true
+                                    },
+
+                                    hello: {
+                                        asdf: {
+                                            isEditable: false,
+                                            visible: true,
+                                            disabled: false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }}
+                >
+                    {() => <FormProxyProvider proxy={proxy}>{() => children}</FormProxyProvider>}
+                </ReactiveForm>
+            </FormPlugins>
+        )
+    });
+};
 
 describe('UseFieldPrivileges', () => {
     it('should throw an error', () => {
@@ -68,45 +128,28 @@ describe('UseFieldPrivileges', () => {
         });
     });
 
-    it('should return privileges for proxied path', () => {
-        const proxy = new MappingProxy<{ F1: number }>(
-            {
-                F1: createPxth(['values', 'real', 'R1'])
-            },
-            createPxth(['values', 'proxy'])
-        );
+    it('should return privileges for exact match of proxied path', () => {
+        const { result } = renderUseFieldPrivilegesWithProxy(createPxth(['values', 'proxy', 'F1']));
 
-        proxy.activate();
-
-        const { result } = renderHook(() => useFieldPrivileges(createPxth(['values', 'proxy', 'F1'])), {
-            wrapper: ({ children }) => (
-                <FormPlugins plugins={createPluginArray(privilegesPlugin)}>
-                    <ReactiveForm
-                        initialValues={{
-                            values: {
-                                real: {
-                                    R1: 42
-                                }
-                            }
-                        }}
-                        privileges={{
-                            fields: {
-                                values: {
-                                    real: {
-                                        R1: {
-                                            isEditable: false,
-                                            visible: true
-                                        }
-                                    }
-                                }
-                            }
-                        }}
-                    >
-                        {() => <FormProxyProvider proxy={proxy}>{() => children}</FormProxyProvider>}
-                    </ReactiveForm>
-                </FormPlugins>
-            )
+        expect(result.current).toStrictEqual({
+            isEditable: false,
+            visible: true,
+            disabled: true
         });
+    });
+
+    it('should return privileges for longest common path', () => {
+        const { result } = renderUseFieldPrivilegesWithProxy(createPxth(['values', 'proxy']));
+
+        expect(result.current).toStrictEqual({
+            isEditable: false,
+            visible: false,
+            disabled: true
+        });
+    });
+
+    it('should return privileges for nested path of proxy', () => {
+        const { result } = renderUseFieldPrivilegesWithProxy(createPxth(['values', 'proxy', 'F2', 'asdf']));
 
         expect(result.current).toStrictEqual({
             isEditable: false,
