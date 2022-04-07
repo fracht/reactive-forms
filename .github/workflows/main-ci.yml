@@ -4,7 +4,7 @@ on:
         paths-ignore:
             - 'packages/docs/**'
             - 'examples/**'
-        branches: [master]
+        branches: [main]
     workflow_dispatch:
 jobs:
     generate_matrix:
