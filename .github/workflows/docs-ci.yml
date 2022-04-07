@@ -3,7 +3,7 @@ on:
     pull_request:
         paths:
             - 'packages/docs/**'
-        branches: [master]
+        branches: [main]
 
 jobs:
     test_pull_request:
