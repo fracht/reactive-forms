@@ -46,10 +46,10 @@ const checkGit = async () => {
 
     const currentBranch = (await $`git branch --show-current`).stdout.trim();
 
-    if (currentBranch !== 'master') {
+    if (currentBranch !== 'main') {
         console.log(
             chalk.red.bold(
-                `You're trying to publish package in "${currentBranch}". Publishing is available only from "master" branch`
+                `You're trying to publish package in "${currentBranch}". Publishing is available only from "main" branch`
             )
         );
 
