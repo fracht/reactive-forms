@@ -16,7 +16,7 @@ export const autoSavePlugin: Plugin = {
         return config;
     },
     useBagDecorator: <T extends object>(form: FormShared<T>, config: FormConfig<T>) => {
-        useAutoSave(config.autoSaveKey, form);
+        useAutoSave({ autoSaveKey: config.autoSaveKey, onAutoSaveLoaded: config.onAutoSaveLoaded }, form);
 
         return form;
     }
