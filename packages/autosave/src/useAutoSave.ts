@@ -5,7 +5,15 @@ import invariant from 'tiny-invariant';
 import { AutoSaveKey } from './AutoSaveKey';
 import { AutoSaveContext } from './internal/AutoSaveContext';
 
-export const useAutoSave = <T extends object>(autoSaveKey: AutoSaveKey | undefined, formBag: FormShared<T>) => {
+export type AutoSaveConfig<T extends object> = {
+    autoSaveKey?: AutoSaveKey;
+    onAutoSaveLoaded?: (values: T) => void;
+};
+
+export const useAutoSave = <T extends object>(
+    { autoSaveKey, onAutoSaveLoaded }: AutoSaveConfig<T>,
+    formBag: FormShared<T>
+) => {
     const autoSaveConfig = useContext(AutoSaveContext);
 
     invariant(isNil(autoSaveKey) || !isNil(autoSaveConfig), 'AutoSave key is set up, but AutoSaveService is not.');
@@ -30,6 +38,7 @@ export const useAutoSave = <T extends object>(autoSaveKey: AutoSaveKey | undefin
             const value = autoSaveConfig.load(autoSaveKey);
             if (!isNil(value)) {
                 formBag.setValues(value as T);
+                onAutoSaveLoaded?.(value as T);
             }
         }
     }

@@ -10,5 +10,6 @@ declare module '@reactive-forms/core' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     export interface ExtendableFormConfig<Values extends object> {
         autoSaveKey?: AutoSaveKey;
+        onAutoSaveLoaded?: (values: Values) => void;
     }
 }
