@@ -37,8 +37,8 @@ export const useAutoSave = <T extends object>(
     useEffect(() => {
         if (isFirstTime.current) {
             isFirstTime.current = false;
-            const value = service.load(autoSaveKey);
-            if (!isNil(value)) {
+            const [loaded, value] = service.load(autoSaveKey);
+            if (loaded) {
                 formBag.setValues(value as T);
                 config?.onLoaded?.(value as T);
             }
