@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { FormShared } from '@reactive-forms/core';
-import isNil from 'lodash/isNil';
 import invariant from 'tiny-invariant';
 
 import { AutoSaveContext } from './internal/AutoSaveContext';
