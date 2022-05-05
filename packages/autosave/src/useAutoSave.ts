@@ -1,45 +1,55 @@
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { FormShared } from '@reactive-forms/core';
 import isNil from 'lodash/isNil';
-import { useContext, useEffect, useRef } from 'react';
 import invariant from 'tiny-invariant';
-import { AutoSaveKey } from './AutoSaveKey';
+
 import { AutoSaveContext } from './internal/AutoSaveContext';
+import { AutoSaveService } from './AutoSaveService';
 
 export type AutoSaveConfig<T extends object> = {
-    autoSaveKey?: AutoSaveKey;
-    onAutoSaveLoaded?: (values: T) => void;
+    onLoaded?: (values: T) => void;
+    service?: AutoSaveService<T>;
+};
+
+export type AutoSaveControl = {
+    remove: () => void;
 };
 
 export const useAutoSave = <T extends object>(
-    { autoSaveKey, onAutoSaveLoaded }: AutoSaveConfig<T>,
-    formBag: FormShared<T>
-) => {
-    const autoSaveConfig = useContext(AutoSaveContext);
+    formBag: FormShared<T>,
+    autoSaveKey: string,
+    config?: AutoSaveConfig<T>
+): AutoSaveControl => {
+    const contextService = useContext(AutoSaveContext);
 
-    invariant(isNil(autoSaveKey) || !isNil(autoSaveConfig), 'AutoSave key is set up, but AutoSaveService is not.');
+    const service = contextService || config?.service;
+
+    invariant(service, 'Cannot apply auto save on form - no AutoSaveService provided.');
+
+    useEffect(() => {
+        return formBag.values.watchAll((values) => {
+            service.save(autoSaveKey, values);
+        });
+    }, [service, autoSaveKey, formBag.values]);
 
     const isFirstTime = useRef(true);
 
     useEffect(() => {
-        const save = autoSaveConfig?.save;
-
-        if (!isNil(autoSaveKey) && !isNil(save)) {
-            return formBag.values.watchAll((values) => {
-                save(autoSaveKey, values);
-            });
-        }
-
-        return undefined;
-    }, [autoSaveConfig, autoSaveKey, formBag.values]);
-
-    if (isFirstTime.current) {
-        isFirstTime.current = false;
-        if (!isNil(autoSaveKey) && !isNil(autoSaveConfig)) {
-            const value = autoSaveConfig.load(autoSaveKey);
+        if (isFirstTime.current) {
+            isFirstTime.current = false;
+            const value = service.load(autoSaveKey);
             if (!isNil(value)) {
                 formBag.setValues(value as T);
-                onAutoSaveLoaded?.(value as T);
+                config?.onLoaded?.(value as T);
             }
         }
-    }
+    }, [autoSaveKey, config, formBag, service]);
+
+    const removeAutoSave = useCallback(() => {
+        service.remove(autoSaveKey);
+    }, [autoSaveKey, service]);
+
+    return {
+        remove: removeAutoSave
+    };
 };
