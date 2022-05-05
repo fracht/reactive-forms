@@ -23,7 +23,7 @@ export const localSaveService: AutoSaveService<unknown> = {
         const item = localStorage.getItem(prefix.concat(key));
 
         if (typeof item === 'string') {
-            return [false, JSON.parse(item)];
+            return [true, JSON.parse(item)];
         }
 
         return [false, null];
