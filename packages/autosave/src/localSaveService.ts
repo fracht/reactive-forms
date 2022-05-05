@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant';
+
 import { AutoSaveService } from './AutoSaveService';
 
 const prefix = 'reactiveForms.';
@@ -13,18 +14,19 @@ export const localSaveService: AutoSaveService<unknown> = {
     },
     load: (key) => {
         if (isServer()) {
+            // eslint-disable-next-line no-console
             console.warn('Warning! Values were not loaded, LocalSaveService works only in browser.');
 
-            return null;
+            return [false, null];
         }
 
         const item = localStorage.getItem(prefix.concat(key));
 
         if (typeof item === 'string') {
-            return JSON.parse(item);
+            return [false, JSON.parse(item)];
         }
 
-        return null;
+        return [false, null];
     },
     remove: (key) => {
         invariant(!isServer(), 'Cannot remove auto save - LocalSaveService works only in browser.');
