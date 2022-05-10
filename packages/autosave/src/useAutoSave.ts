@@ -34,13 +34,17 @@ export const useAutoSave = <T extends object>(
     const isFirstTime = useRef(true);
 
     useEffect(() => {
-        if (isFirstTime.current) {
-            isFirstTime.current = false;
-            const [loaded, value] = service.load(autoSaveKey);
+        const load = async () => {
+            const [loaded, value] = await service.load(autoSaveKey);
             if (loaded) {
                 formBag.setValues(value as T);
                 config?.onLoaded?.(value as T);
             }
+        };
+
+        if (isFirstTime.current) {
+            isFirstTime.current = false;
+            load();
         }
     }, [autoSaveKey, config, formBag, service]);
 

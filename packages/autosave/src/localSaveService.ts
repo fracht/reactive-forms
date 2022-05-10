@@ -12,7 +12,7 @@ export const localSaveService: AutoSaveService<unknown> = {
 
         localStorage.setItem(prefix.concat(key), JSON.stringify(value));
     },
-    load: (key) => {
+    load: async (key) => {
         if (isServer()) {
             // eslint-disable-next-line no-console
             console.warn('Warning! Values were not loaded, LocalSaveService works only in browser.');
