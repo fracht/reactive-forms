@@ -59,7 +59,7 @@ const checkGit = async () => {
 
 const prepublish = () => {
     return new Promise((resolve, reject) => {
-        const child = spawn('npx turbo run prepublish --scope=@reactive-forms/* --no-cache', {
+        const child = spawn('npx turbo run prepublish --scope=@reactive-forms/*', {
             stdio: ['ignore', 'pipe', 'pipe'],
             cwd: process.cwd(),
             shell: true,
