@@ -11,11 +11,9 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    {() => (
-                        <Form>
-                            <div id="children"></div>
-                        </Form>
-                    )}
+                    <Form>
+                        <div id="children"></div>
+                    </Form>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -29,11 +27,9 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    {() => (
-                        <Form>
-                            <div>children</div>
-                        </Form>
-                    )}
+                    <Form>
+                        <div>children</div>
+                    </Form>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -51,11 +47,9 @@ describe('Form', () => {
         const wrapper = mount(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
-                    {() => (
-                        <Form submitAction={submit}>
-                            <div>children</div>
-                        </Form>
-                    )}
+                    <Form submitAction={submit}>
+                        <div>children</div>
+                    </Form>
                 </ReactiveForm>
             </FormPlugins>
         );
@@ -74,11 +68,9 @@ describe('Form', () => {
 
         const wrapper = mount(
             <ReactiveFormProvider formBag={bag.current}>
-                {() => (
-                    <Form>
-                        <div>children</div>
-                    </Form>
-                )}
+                <Form>
+                    <div>children</div>
+                </Form>
             </ReactiveFormProvider>
         );
 
