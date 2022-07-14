@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
@@ -20,24 +20,17 @@ import { FormMeta } from '../typings/FormMeta';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
-import { loadingGuard } from '../utils/loadingGuard';
 import { overrideMerge } from '../utils/overrideMerge';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 import { useRefCallback } from '../utils/useRefCallback';
-import { useThrowError } from '../utils/useThrowError';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-export type InitialFormStateConfig<Values extends object> =
-    | {
-          initialValues: Values;
-          initialTouched?: FieldTouched<Values>;
-          initialErrors?: FieldError<Values>;
-          load?: undefined;
-      }
-    | {
-          load: () => Promise<InitialFormState<Values>>;
-      };
+export type InitialFormStateConfig<Values extends object> = {
+    initialValues: Values;
+    initialTouched?: FieldTouched<Values>;
+    initialErrors?: FieldError<Values>;
+};
 
 export interface ExtendableFormConfig<Values extends object> {
     schema?: BaseSchema<Partial<Values> | undefined>;
@@ -72,7 +65,6 @@ export type DefaultFormShared<Values extends object> = Omit<
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
     submit: (action?: SubmitAction<Values>) => void;
-    isLoaded: boolean;
 }
 
 const deepCustomizer = (src1: unknown, src2: unknown) => {
@@ -87,8 +79,6 @@ const formMetaPaths = createPxth<FormMeta>([]);
 
 export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
     const config = usePluginConfigDecorators(initialConfig);
-
-    const throwError = useThrowError();
 
     const { schema, disablePureFieldsValidation } = config;
 
@@ -105,17 +95,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
         initialValues = {} as Values,
         initialErrors = {} as FieldError<Values>,
         initialTouched = {} as FieldTouched<Values>
-    } = config.load
-        ? {
-              initialValues: undefined,
-              initialErrors: undefined,
-              initialTouched: undefined
-          }
-        : (config as {
-              initialValues: Values;
-              initialTouched?: FieldTouched<Values>;
-              initialErrors?: FieldError<Values>;
-          });
+    } = config;
 
     const control = useFormControl({ initialValues, initialErrors, initialTouched });
     const {
@@ -130,14 +110,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
     const initialErrorsRef = useRef(initialErrors);
     const initialTouchedRef = useRef(initialTouched);
 
-    const isPending = useRef(false);
-
     const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
-
-    const loadRef = useRef(config.load);
-    loadRef.current = config.load;
-
-    const [isLoaded, setIsLoaded] = useState(!config.load);
 
     const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
         postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
@@ -338,30 +311,14 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
     useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
 
-    useEffect(() => {
-        if (loadRef.current && !isPending.current && !isLoaded) {
-            isPending.current = true;
-
-            loadRef
-                .current()
-                .then(resetForm)
-                .catch(throwError)
-                .finally(() => {
-                    setIsLoaded(true);
-                    isPending.current = false;
-                });
-        }
-    }, [resetForm, throwError, isLoaded]);
-
     const bag: FormShared<Values> = {
         submit,
         hasValidator,
         registerValidator,
-        isLoaded,
         ...helpers
     };
 
     const bagWithPlugins = usePluginBagDecorators(bag, config);
 
-    return loadingGuard(bagWithPlugins, isLoaded);
+    return bagWithPlugins;
 };

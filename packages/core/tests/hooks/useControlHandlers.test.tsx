@@ -17,7 +17,7 @@ const renderControlHandlers = () => {
     );
 
     const wrapper = ({ children }) => (
-        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
+        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
     );
 
     const { errors, values, touched, formMeta } = bag;

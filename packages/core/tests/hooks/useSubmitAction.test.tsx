@@ -9,7 +9,7 @@ describe('useSubmitAction', () => {
         const onSubmit = jest.fn();
         const wrapper = ({ children }) => (
             <ReactiveForm initialValues={{ test: 42 }} onSubmit={onSubmit}>
-                {() => children}
+                {children}
             </ReactiveForm>
         );
 
@@ -27,7 +27,7 @@ describe('useSubmitAction', () => {
         const action = jest.fn();
         const wrapper = ({ children }) => (
             <ReactiveForm initialValues={{ test: 42 }} onSubmit={onSubmit}>
-                {() => children}
+                {children}
             </ReactiveForm>
         );
 

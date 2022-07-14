@@ -21,7 +21,7 @@ const renderUseFieldValidator = <V, T extends object>(
     } = renderHook(() => useForm(formConfig));
 
     const wrapper = ({ children }) => (
-        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
+        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
     );
 
     return [renderHook(() => useFieldValidator<V>(config), { wrapper }), bag.validateField] as const;

@@ -15,9 +15,7 @@ describe('validateUpdatedFields', () => {
         const somePxth = createPxth(['some', 'deep', 'path']);
 
         const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
-            wrapper: ({ children }) => (
-                <ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
-            )
+            wrapper: ({ children }) => <ReactiveFormProvider formBag={result.current}>{children}</ReactiveFormProvider>
         });
 
         const validator = jest.fn();
@@ -50,9 +48,7 @@ describe('validateUpdatedFields', () => {
         const somePxth = createPxth(['some', 'deep', 'path']);
 
         const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
-            wrapper: ({ children }) => (
-                <ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
-            )
+            wrapper: ({ children }) => <ReactiveFormProvider formBag={result.current}>{children}</ReactiveFormProvider>
         });
 
         const validator = jest.fn();

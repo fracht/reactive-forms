@@ -8,25 +8,11 @@ describe('ReactiveFormProvider', () => {
         const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
 
         const wrapper = ({ children }) => (
-            <ReactiveFormProvider formBag={formBagResult.current}>{() => children}</ReactiveFormProvider>
+            <ReactiveFormProvider formBag={formBagResult.current}>{children}</ReactiveFormProvider>
         );
 
         const { result } = renderHook(() => useFormContext(), { wrapper });
 
         expect(result.current).toBe(formBagResult.current);
-    });
-
-    it('should not render children while form is not loaded', () => {
-        const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
-
-        const wrapper = ({ children }) => (
-            <ReactiveFormProvider formBag={{ ...formBagResult.current, isLoaded: false }}>
-                {() => children}
-            </ReactiveFormProvider>
-        );
-
-        const { result } = renderHook(() => useFormContext(), { wrapper });
-
-        expect(result.current).toBe(undefined);
     });
 });
