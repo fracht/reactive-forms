@@ -1,3 +1,5 @@
+import util from 'util';
+
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
@@ -108,6 +110,42 @@ describe('useProxyInterception', () => {
         expect(validateField.mock.calls[0][1]).toStrictEqual({
             p_address: 'asdf',
             p_birthDate: new Date(100)
+        });
+    });
+
+    it('intercepted validateField should return error object of real values shape', async () => {
+        const { result } = renderUseProxyInterception();
+
+        const realFieldPath = createPxth(['values', 'real', 'data']);
+        const proxiedFieldPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
+
+        result.current.registerValidator(proxiedFieldPath, (value: ProxyValue['person']) => {
+            if (!value.address) {
+                return {
+                    address: {
+                        $error: 'error 1'
+                    },
+                    birthDate: {
+                        $error: 'error 2'
+                    }
+                };
+            }
+
+            return '';
+        });
+
+        await result.current.validateField(proxiedFieldPath, {
+            address: '',
+            birthDate: new Date(100)
+        });
+
+        expect(result.current.errors.getValue(realFieldPath)).toStrictEqual({
+            p_address: {
+                $error: 'error 1'
+            },
+            p_birthDate: {
+                $error: 'error 2'
+            }
         });
     });
 });

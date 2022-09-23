@@ -27,16 +27,26 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
                 (name, validator) => {
                     const normalPath = proxy.getNormalPath(name);
 
-                    return registerValidator(normalPath, (realValue) =>
-                        validator(
+                    const proxiedValidator: FieldValidator<V> = async (realValue) => {
+                        let realError: unknown = {};
+
+                        const proxiedError = await validator(
                             proxy.getValue(name, <U>(path: Pxth<U>) =>
                                 deepGet<U>(
                                     realValue,
                                     relativePxth(normalPath as Pxth<unknown>, path as Pxth<unknown>) as Pxth<U>
                                 )
                             )
-                        )
-                    );
+                        );
+
+                        proxy.setValue<unknown>(name, proxiedError, <U>(path: Pxth<U>, innerValue: U) => {
+                            realError = deepSet(realError as object, relativePxth(normalPath, path), innerValue);
+                        });
+
+                        return realError as ReturnType<FieldValidator<V>>;
+                    };
+
+                    return registerValidator(normalPath as unknown as Pxth<V>, proxiedValidator);
                 },
                 [name as Pxth<unknown>, validator as FieldValidator<unknown>]
             ),
