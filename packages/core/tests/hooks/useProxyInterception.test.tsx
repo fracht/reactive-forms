@@ -77,28 +77,63 @@ const renderUseProxyInterception = () => {
 };
 
 describe('useProxyInterception', () => {
-    it('registerValidator should register intercepted validator', () => {
+    it('intercepted registerValidator should get normal path', () => {
         const { result, registerValidator } = renderUseProxyInterception();
 
-        const proxiedFieldPath = createPxth(['values', 'proxy', 'person']);
-
+        const proxiedPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
         const validator = jest.fn();
-        result.current.registerValidator(proxiedFieldPath, validator);
+
+        result.current.registerValidator(proxiedPath, validator);
 
         expect(getPxthSegments(registerValidator.mock.calls[0][0])).toStrictEqual(['values', 'real', 'data']);
+    });
 
-        result.current.validateField(proxiedFieldPath, {
-            address: 'asdf',
-            birthDate: new Date(100)
+    it('intercepted registerValidator should register intercepted validator function correctly', async () => {
+        const { result, registerValidator } = renderUseProxyInterception();
+
+        const proxiedPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
+        const validator = jest.fn((value: ProxyValue['person']) => {
+            if (!value.address) {
+                return {
+                    address: {
+                        $error: 'error 1'
+                    },
+                    birthDate: {
+                        $error: 'error 2'
+                    }
+                };
+            }
+
+            return '';
         });
 
+        result.current.registerValidator(proxiedPath, validator);
+
+        const interceptedValidator = registerValidator.mock.calls[0][1];
+
+        const date = new Date();
+        const realValues = {
+            p_address: '',
+            p_birthDate: date
+        };
+        const error = await interceptedValidator(realValues);
+
         expect(validator.mock.calls[0][0]).toStrictEqual({
-            address: 'asdf',
-            birthDate: new Date(100)
+            address: '',
+            birthDate: date
+        });
+
+        expect(error).toStrictEqual({
+            p_address: {
+                $error: 'error 1'
+            },
+            p_birthDate: {
+                $error: 'error 2'
+            }
         });
     });
 
-    it('intercepted validateField should call real validateField with real values', () => {
+    it('intercepted validateField should call validateField with real path and real values', () => {
         const { result, validateField } = renderUseProxyInterception();
 
         const proxiedFieldPath = createPxth(['values', 'proxy', 'person']);
@@ -109,5 +144,32 @@ describe('useProxyInterception', () => {
             p_address: 'asdf',
             p_birthDate: new Date(100)
         });
+    });
+
+    it('intercepted registerValidator should call real registerValidator', () => {
+        const { result, registerValidator } = renderUseProxyInterception();
+
+        const realPath = createPxth(['values', 'real', 'data']);
+        const validator = jest.fn();
+
+        result.current.registerValidator(realPath, validator);
+
+        expect(registerValidator.mock.calls[0][0]).toBe(realPath);
+        expect(registerValidator.mock.calls[0][1]).toBe(validator);
+    });
+
+    it('intercepted validateField should call real validateField', () => {
+        const { result, validateField } = renderUseProxyInterception();
+
+        const realPath = createPxth(['values', 'real', 'data']);
+        const values = {
+            p_address: 'hello',
+            p_birthDate: new Date()
+        };
+
+        result.current.validateField(realPath, values);
+
+        expect(validateField.mock.calls[0][0]).toBe(realPath);
+        expect(validateField.mock.calls[0][1]).toBe(values);
     });
 });

@@ -5,12 +5,7 @@
             "name": "Debug Core Tests",
             "type": "node",
             "request": "launch",
-            "runtimeArgs": [
-                "--inspect-brk",
-                "${workspaceFolder}/packages/core/node_modules/aqu/dist/aqu.js",
-                "test",
-                "--runInBand"
-            ],
+            "runtimeArgs": ["--inspect-brk", "${workspaceFolder}/node_modules/aqu/dist/aqu.js", "test", "--runInBand"],
             "cwd": "${workspaceFolder}/packages/core",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
