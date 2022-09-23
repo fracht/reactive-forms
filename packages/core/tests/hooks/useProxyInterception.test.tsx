@@ -1,5 +1,3 @@
-import util from 'util';
-
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
@@ -146,5 +144,32 @@ describe('useProxyInterception', () => {
             p_address: 'asdf',
             p_birthDate: new Date(100)
         });
+    });
+
+    it('intercepted registerValidator should call real registerValidator', () => {
+        const { result, registerValidator } = renderUseProxyInterception();
+
+        const realPath = createPxth(['values', 'real', 'data']);
+        const validator = jest.fn();
+
+        result.current.registerValidator(realPath, validator);
+
+        expect(registerValidator.mock.calls[0][0]).toBe(realPath);
+        expect(registerValidator.mock.calls[0][1]).toBe(validator);
+    });
+
+    it('intercepted validateField should call real validateField', () => {
+        const { result, validateField } = renderUseProxyInterception();
+
+        const realPath = createPxth(['values', 'real', 'data']);
+        const values = {
+            p_address: 'hello',
+            p_birthDate: new Date()
+        };
+
+        result.current.validateField(realPath, values);
+
+        expect(validateField.mock.calls[0][0]).toBe(realPath);
+        expect(validateField.mock.calls[0][1]).toBe(values);
     });
 });
