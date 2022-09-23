@@ -27,7 +27,7 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
                 (name, validator) => {
                     const normalPath = proxy.getNormalPath(name);
 
-                    const proxiedValidator: FieldValidator<V> = async (realValue) => {
+                    const interceptedValidator: FieldValidator<V> = async (realValue) => {
                         let realError: unknown = {};
 
                         const proxiedError = await validator(
@@ -46,7 +46,7 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
                         return realError as ReturnType<FieldValidator<V>>;
                     };
 
-                    return registerValidator(normalPath as unknown as Pxth<V>, proxiedValidator);
+                    return registerValidator(normalPath as unknown as Pxth<V>, interceptedValidator);
                 },
                 [name as Pxth<unknown>, validator as FieldValidator<unknown>]
             ),

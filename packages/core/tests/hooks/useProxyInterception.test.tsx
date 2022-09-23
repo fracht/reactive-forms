@@ -79,47 +79,22 @@ const renderUseProxyInterception = () => {
 };
 
 describe('useProxyInterception', () => {
-    it('registerValidator should register intercepted validator', () => {
+    it('intercepted registerValidator should get normal path', () => {
         const { result, registerValidator } = renderUseProxyInterception();
 
-        const proxiedFieldPath = createPxth(['values', 'proxy', 'person']);
-
+        const proxiedPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
         const validator = jest.fn();
-        result.current.registerValidator(proxiedFieldPath, validator);
+
+        result.current.registerValidator(proxiedPath, validator);
 
         expect(getPxthSegments(registerValidator.mock.calls[0][0])).toStrictEqual(['values', 'real', 'data']);
-
-        result.current.validateField(proxiedFieldPath, {
-            address: 'asdf',
-            birthDate: new Date(100)
-        });
-
-        expect(validator.mock.calls[0][0]).toStrictEqual({
-            address: 'asdf',
-            birthDate: new Date(100)
-        });
     });
 
-    it('intercepted validateField should call real validateField with real values', () => {
-        const { result, validateField } = renderUseProxyInterception();
+    it('intercepted registerValidator should register intercepted validator function correctly', async () => {
+        const { result, registerValidator } = renderUseProxyInterception();
 
-        const proxiedFieldPath = createPxth(['values', 'proxy', 'person']);
-
-        result.current.validateField(proxiedFieldPath, { address: 'asdf', birthDate: new Date(100) });
-        expect(getPxthSegments(validateField.mock.calls[0][0])).toStrictEqual(['values', 'real', 'data']);
-        expect(validateField.mock.calls[0][1]).toStrictEqual({
-            p_address: 'asdf',
-            p_birthDate: new Date(100)
-        });
-    });
-
-    it('intercepted validateField should return error object of real values shape', async () => {
-        const { result } = renderUseProxyInterception();
-
-        const realFieldPath = createPxth(['values', 'real', 'data']);
-        const proxiedFieldPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
-
-        result.current.registerValidator(proxiedFieldPath, (value: ProxyValue['person']) => {
+        const proxiedPath = createPxth<ProxyValue['person']>(['values', 'proxy', 'person']);
+        const validator = jest.fn((value: ProxyValue['person']) => {
             if (!value.address) {
                 return {
                     address: {
@@ -134,18 +109,42 @@ describe('useProxyInterception', () => {
             return '';
         });
 
-        await result.current.validateField(proxiedFieldPath, {
+        result.current.registerValidator(proxiedPath, validator);
+
+        const interceptedValidator = registerValidator.mock.calls[0][1];
+
+        const date = new Date();
+        const realValues = {
+            p_address: '',
+            p_birthDate: date
+        };
+        const error = await interceptedValidator(realValues);
+
+        expect(validator.mock.calls[0][0]).toStrictEqual({
             address: '',
-            birthDate: new Date(100)
+            birthDate: date
         });
 
-        expect(result.current.errors.getValue(realFieldPath)).toStrictEqual({
+        expect(error).toStrictEqual({
             p_address: {
                 $error: 'error 1'
             },
             p_birthDate: {
                 $error: 'error 2'
             }
+        });
+    });
+
+    it('intercepted validateField should call validateField with real path and real values', () => {
+        const { result, validateField } = renderUseProxyInterception();
+
+        const proxiedFieldPath = createPxth(['values', 'proxy', 'person']);
+
+        result.current.validateField(proxiedFieldPath, { address: 'asdf', birthDate: new Date(100) });
+        expect(getPxthSegments(validateField.mock.calls[0][0])).toStrictEqual(['values', 'real', 'data']);
+        expect(validateField.mock.calls[0][1]).toStrictEqual({
+            p_address: 'asdf',
+            p_birthDate: new Date(100)
         });
     });
 });
