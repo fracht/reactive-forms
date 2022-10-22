@@ -1,4 +1,4 @@
-import { ComponentProps, ComponentType, createElement, ElementType, ReactNode } from 'react';
+import React, { ComponentProps, ComponentType, createElement, ElementType, Fragment, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
 export type StrictRenderHelpers<B, C extends ComponentType | ElementType, ChildrenBag = B> = (
@@ -44,7 +44,7 @@ export const renderComponent = <B, C extends ComponentType | ElementType, Childr
     ...other
 }: RenderComponentProps<B, C, ChildrenBag>): JSX.Element => {
     if (typeof children === 'function') {
-        return children(childrenBag);
+        return <Fragment>{children(childrenBag)}</Fragment>;
     }
 
     if (typeof as !== 'string' && as) {

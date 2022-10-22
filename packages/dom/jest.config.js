@@ -1,11 +1,12 @@
-const path = require('path');
-
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-    globals: {
-        'ts-jest': {
-            tsconfig: 'tsconfig.test.json'
-        }
+    transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|cjs|jsx)$'"],
+    preset: 'ts-jest/presets/js-with-babel',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'cjs', 'mjs', 'json', 'node'],
+    collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx,cjs,mjs}'],
+    testMatch: ['<rootDir>/**/*.(spec|test).{ts,tsx,js,jsx,cjs,mjs}'],
+    testEnvironmentOptions: {
+        url: 'http://localhost'
     },
-    setupFiles: [path.resolve(__dirname, '..', '..', '..', 'packages', 'dom', 'tests', 'enzyme.config.js')]
+    watchPlugins: ['jest-watch-typeahead\\filename.js', 'jest-watch-typeahead\\testname.js'],
+    testEnvironment: 'jsdom'
 };

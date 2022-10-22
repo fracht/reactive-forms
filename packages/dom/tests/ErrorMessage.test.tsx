@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { domPlugin, ErrorMessage } from '../src';
 
 describe('ErrorMessage', () => {
     it('should not render empty error', () => {
-        const wrapper = mount(
+        const { getByRole } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: '' }}>
                     {() => <ErrorMessage name={createPxth(['test'])} />}
@@ -15,11 +15,11 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('span').length).toBe(0);
+        expect(() => getByRole('span')).toThrow();
     });
 
     it('should render error element', () => {
-        const wrapper = mount(
+        const { getByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm
                     initialValues={{ test: '' }}
@@ -39,7 +39,7 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('div').text()).toBe('test');
+        expect(getByText('test')).toBeDefined();
     });
 
     it('should render error component', () => {
@@ -47,7 +47,7 @@ describe('ErrorMessage', () => {
             return children !== undefined ? <div>{children}</div> : null;
         };
 
-        const wrapper = mount(
+        const { findByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm
                     initialValues={{ test: '' }}
@@ -67,11 +67,11 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('div').text()).toBe('message');
+        expect(findByText('message')).toBeDefined();
     });
 
     it('should render error in span by default', () => {
-        const wrapper = mount(
+        const { findByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm
                     initialValues={{ test: '' }}
@@ -91,11 +91,11 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('span').text()).toBe('error');
+        expect(findByText('error')).toBeDefined();
     });
 
     it('should call function renderer', () => {
-        const wrapper = mount(
+        const { findByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm
                     initialValues={{ test: '' }}
@@ -119,11 +119,11 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('div').text()).toBe('error');
+        expect(findByText('error')).toBeDefined();
     });
 
     it('should not render error when touched=true and error=undefined', () => {
-        const wrapper = mount(
+        const { getByRole } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm
                     initialValues={{ test: '' }}
@@ -138,6 +138,6 @@ describe('ErrorMessage', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('span').length).toBe(0);
+        expect(() => getByRole('span')).toThrow();
     });
 });

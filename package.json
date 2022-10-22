@@ -9,7 +9,6 @@
     "scripts": {
         "build": "turbo run build --scope=@reactive-forms/*",
         "test": "turbo run test --scope=@reactive-forms/*",
-        "docs:gen": "node docs/tools/docgen/docgen.js --exclude \"src/typings/*\" --exclude \"src/utils/*\" --exclude \"src/**/index.ts\" --base src --tsconfig=./tsconfig.json --out=./packages/docs/pages/api-reference src/**/*.ts src/**/*.tsx",
         "format:all": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
@@ -40,7 +39,6 @@
         "inquirer": "^7.3.3",
         "micromatch": "^4.0.4",
         "prettier": "^2.5.1",
-        "react": "^17.0.2",
         "semver": "^7.3.5",
         "size-limit": "^4.10.2",
         "turbo": "^1.0.28",
@@ -51,5 +49,5 @@
         "packages/*",
         "tools/*"
     ],
-    "packageManager": "npm@7.19.1"
+    "packageManager": "npm@8.19.2"
 }

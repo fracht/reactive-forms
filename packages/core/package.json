@@ -41,18 +41,16 @@
         "tiny-invariant": "^1.1.0"
     },
     "resolutions": {
-        "@types/react": "^17.0.2"
+        "@types/react": "^18.0.21"
     },
     "devDependencies": {
         "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
-        "@testing-library/react-hooks": "^7.0.1",
         "@types/jest": "^26.0.23",
         "@types/lodash": "^4.14.161",
-        "@types/react": "^17.0.2",
+        "@types/react": "^18.0.21",
         "aqu": "^0.3.2",
-        "react": "^17.0.2",
-        "react-test-renderer": "^17.0.1",
+        "react": "^18.2.0",
         "tslib": "^2.3.1",
         "typescript": "^4.2.4",
         "yup": "^0.32.9"
