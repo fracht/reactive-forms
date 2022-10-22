@@ -32,17 +32,22 @@
     },
     "keywords": [],
     "devDependencies": {
-        "@reactive-forms/core": "*",
-        "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "*",
-        "aqu": "^0.3.2"
-    },
-    "peerDependencies": {
-        "@reactive-forms/core": "^0.8.0",
-        "react": ">=16"
+        "@babel/core": "^7.19.6",
+        "@reactive-forms/core": "workspace:*",
+        "@reactive-tools/eslint-config": "workspace:*",
+        "@reactive-tools/publisher": "workspace:*",
+        "@types/node": "^14.11.2",
+        "@types/react": "17.0.50",
+        "aqu": "^0.4.3",
+        "react": "^17.0.2",
+        "tslib": "^2.3.1"
     },
     "dependencies": {
         "lodash": "^4.17.21",
         "tiny-invariant": "^1.2.0"
+    },
+    "peerDependencies": {
+        "@reactive-forms/core": "^0.8.0",
+        "react": "^17.0.2"
     }
 }

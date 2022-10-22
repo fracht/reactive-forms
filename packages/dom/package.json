@@ -34,28 +34,33 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
-        "@reactive-forms/core": "*",
-        "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "*",
+        "@babel/core": "^7.19.6",
+        "@reactive-forms/core": "workspace:*",
+        "@reactive-tools/eslint-config": "workspace:*",
+        "@reactive-tools/publisher": "workspace:*",
         "@testing-library/react-hooks": "^7.0.1",
         "@types/enzyme": "^3.10.9",
         "@types/jest": "^26.0.24",
-        "@types/react": "^17.0.2",
+        "@types/react": "17.0.50",
         "@types/react-dom": "^17.0.2",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
-        "aqu": "^0.3.2",
+        "aqu": "^0.4.3",
         "enzyme": "^3.11.0",
+        "pxth": "^0.6.0",
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "stocked": "^1.0.0-beta.28"
     },
     "resolutions": {
-        "@types/react": "^17.0.2"
+        "@types/react": "^17.0.50"
     },
     "dependencies": {
         "tiny-invariant": "^1.1.0"
     },
     "peerDependencies": {
         "@reactive-forms/core": "^0.8.0",
-        "react": ">=16"
+        "pxth": "^0.6.0",
+        "react": ">=16",
+        "stocked": "^1.0.0-beta.28"
     }
 }
