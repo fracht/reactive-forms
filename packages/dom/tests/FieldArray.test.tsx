@@ -12,7 +12,7 @@ describe('FieldArray', () => {
                 {(arrayHelpers) => (
                     <div>
                         {arrayHelpers.items.map((value, index) => (
-                            <span role="span" key={index}>
+                            <span role="item" key={index}>
                                 {value}
                             </span>
                         ))}
@@ -37,42 +37,45 @@ describe('FieldArray', () => {
             }
         );
 
-        expect(getAllByRole('span').length).toBe(2);
+        expect(getAllByRole('item').length).toBe(2);
         expect(getByText('1')).toBeDefined();
 
         waitFor(async () => {
             fireEvent.click(getByRole('button'));
 
-            expect((await findAllByRole('span')).length).toBe(3);
+            expect((await findAllByRole('item')).length).toBe(3);
         });
     });
 
-    // it('should render custom component, if specified', () => {
-    //     const RenderComponent = () => {
-    //         return <div id="test">from render component</div>;
-    //     };
+    it('should render custom component, if specified', () => {
+        const RenderComponent = () => {
+            return <div data-testid="test">from render component</div>;
+        };
 
-    //     const wrapper = mount(
-    //         <FormPlugins plugins={createPluginArray(domPlugin)}>
-    //             <ReactiveForm initialValues={{}}>
-    //                 {() => <FieldArray name={createPxth(['hello'])} as={RenderComponent} />}
-    //             </ReactiveForm>
-    //         </FormPlugins>
-    //     );
+        const { getByTestId } = render(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{}}>
+                    {() => <FieldArray name={createPxth<unknown[]>(['hello'])} as={RenderComponent} />}
+                </ReactiveForm>
+            </FormPlugins>
+        );
 
-    //     expect(wrapper.find('div').length).toBe(1);
-    //     expect(wrapper.find('div').prop('id')).toBe('test');
-    // });
+        expect(getByTestId('test')).toBeDefined();
+    });
 
-    // it('should call function renderer', () => {
-    //     const wrapper = mount(
-    //         <FormPlugins plugins={createPluginArray(domPlugin)}>
-    //             <ReactiveForm initialValues={{}}>
-    //                 {() => <FieldArray name={createPxth(['hello'])}>{() => <div id="test" />}</FieldArray>}
-    //             </ReactiveForm>
-    //         </FormPlugins>
-    //     );
+    it('should call function renderer', () => {
+        const { getByTestId } = render(
+            <FormPlugins plugins={createPluginArray(domPlugin)}>
+                <ReactiveForm initialValues={{}}>
+                    {() => (
+                        <FieldArray name={createPxth<unknown[]>(['hello'])}>
+                            {() => <div data-testid="test" />}
+                        </FieldArray>
+                    )}
+                </ReactiveForm>
+            </FormPlugins>
+        );
 
-    //     expect(wrapper.find('div').prop('id')).toBe('test');
-    // });
+        expect(getByTestId('test')).toBeDefined();
+    });
 });
