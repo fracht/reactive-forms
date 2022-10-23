@@ -1,70 +1,47 @@
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { render } from '@testing-library/react';
 
 import { renderComponent } from '../src/renderComponent';
 
-let container: HTMLDivElement = null;
-
-beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-});
-
-afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-});
-
-describe('normal behaviour', () => {
+describe('normal behavior', () => {
     it('should render element and pass bag', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        'attr-test': 'test'
-                    },
-                    as: 'span',
-                    children: undefined
-                }),
-                container
-            );
-        });
+        const { getByTestId } = render(
+            renderComponent({
+                bag: {
+                    'data-testid': 'test'
+                },
+                as: 'span',
+                children: undefined
+            })
+        );
 
-        expect(container.querySelector('span').getAttribute('attr-test')).toBe('test');
+        expect(getByTestId('test')).toBeDefined();
     });
 
     it('should render element and pass children', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {},
-                    as: 'span',
-                    children: 'Hello world!'
-                }),
-                container
-            );
-        });
+        const { getByText } = render(
+            renderComponent({
+                bag: {},
+                as: 'span',
+                children: 'Hello world!'
+            })
+        );
 
-        expect(container.querySelector('span').textContent).toBe('Hello world!');
+        expect(getByText('Hello world!')).toBeDefined();
     });
 
     it('should pass elementProps to element', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {},
-                    as: 'span',
-                    elementProps: {
-                        'custom-prop': 'asdf'
-                    }
-                }),
-                container
-            );
-        });
+        const { getByTestId } = render(
+            renderComponent({
+                bag: {},
+                as: 'span',
+                elementProps: {
+                    'data-testid': 'test'
+                }
+            })
+        );
 
-        expect(container.querySelector('span').getAttribute('custom-prop')).toBe('asdf');
+        expect(getByTestId('test')).toBeDefined();
     });
 
     it('should not pass elementProps to component', () => {
@@ -72,86 +49,71 @@ describe('normal behaviour', () => {
             return <div>Hello</div>;
         });
 
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {},
-                    as: MockComponent,
-                    elementProps: {
-                        'custom-prop': 'asdf'
-                    }
-                }),
-                container
-            );
-        });
+        render(
+            renderComponent({
+                bag: {},
+                as: MockComponent,
+                elementProps: {
+                    'custom-prop': 'asdf'
+                }
+            })
+        );
 
         expect(MockComponent).toBeCalledWith(expect.not.objectContaining({ 'custom-prop': 'asdf' }), expect.anything());
     });
 
     it('should render custom component', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    as: ({ prop }) => <span>{prop}</span>,
-                    bag: {
-                        prop: 'asdf'
-                    }
-                }),
-                container
-            );
-        });
+        const { getByText } = render(
+            renderComponent({
+                as: ({ prop }) => <span>{prop}</span>,
+                bag: {
+                    prop: 'asdf'
+                }
+            })
+        );
 
-        expect(container.querySelector('span').innerHTML).toBe('asdf');
+        expect(getByText('asdf')).toBeDefined();
     });
 
     it('should render via children function', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        prop: 'asdf'
-                    },
-                    children: ({ prop }) => <span>{prop}</span>
-                }),
-                container
-            );
-        });
+        const { getByText } = render(
+            renderComponent({
+                bag: {
+                    prop: 'asdf'
+                },
+                children: ({ prop }) => <span>{prop}</span>
+            })
+        );
 
-        expect(container.querySelector('span').innerHTML).toBe('asdf');
+        expect(getByText('asdf')).toBeDefined();
     });
 
     it('should render via children function (custom bag)', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        value: 'asdf'
-                    },
-                    childrenBag: 'asdf',
-                    children: (value) => <span>{value}</span>
-                }),
-                container
-            );
-        });
+        const { getByText } = render(
+            renderComponent({
+                bag: {
+                    value: 'asdf'
+                },
+                childrenBag: 'asdf',
+                children: (value) => <span>{value}</span>
+            })
+        );
 
-        expect(container.querySelector('span').innerHTML).toBe('asdf');
+        expect(getByText('asdf')).toBeDefined();
     });
 
     it('should render via children function (children bag null)', () => {
-        act(() => {
-            render(
-                renderComponent({
-                    bag: {
-                        value: 'asdf'
-                    },
-                    childrenBag: null,
-                    children: (value) => <span>{value}</span>
-                }),
-                container
-            );
-        });
+        const { getByTestId } = render(
+            renderComponent({
+                bag: {
+                    value: 'asdf'
+                },
+                childrenBag: null,
+                children: (value) => <span data-testid="test">{value}</span>
+            })
+        );
 
-        expect(container.querySelector('span').innerHTML).toBe('');
+        expect(getByTestId('test').innerHTML).toBe('');
     });
 });
 
