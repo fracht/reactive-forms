@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 
 import { domPlugin, SubmitButton, SubmitButtonBag } from '../src';
 
 describe('SubmitButton', () => {
-    it('should use default submit function and render default button', () => {
+    it('should use default submit function and render default button', async () => {
         const submit = jest.fn();
 
         const { getByRole } = render(
@@ -18,14 +18,14 @@ describe('SubmitButton', () => {
 
         expect(getByRole('button').innerHTML).toBe('submit');
 
-        waitFor(() => {
+        await act(() => {
             fireEvent.click(getByRole('button'));
-
-            expect(submit).toBeCalledTimes(1);
         });
+
+        expect(submit).toBeCalledTimes(1);
     });
 
-    it('should call function renderer', () => {
+    it('should call function renderer', async () => {
         const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
             return (
                 <button onClick={onClick} disabled={disabled}>
@@ -46,11 +46,11 @@ describe('SubmitButton', () => {
 
         expect(getByRole('button').innerHTML).toBe('custom button');
 
-        waitFor(async () => {
+        await act(() => {
             fireEvent.click(getByRole('button'));
-
-            expect(submit).toBeCalledTimes(1);
         });
+
+        expect(submit).toBeCalledTimes(1);
     });
 
     it('should call custom action', async () => {
@@ -65,12 +65,12 @@ describe('SubmitButton', () => {
             </FormPlugins>
         );
 
-        waitFor(async () => {
+        await act(() => {
             fireEvent.click(getByRole('button'));
-
-            expect(action).toBeCalledTimes(1);
-            expect(submit).toBeCalledTimes(0);
         });
+
+        expect(action).toBeCalledTimes(1);
+        expect(submit).toBeCalledTimes(0);
     });
 
     it('button should be disabled while submitting', () => {
