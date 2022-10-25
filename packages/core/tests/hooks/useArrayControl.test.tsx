@@ -2,15 +2,7 @@ import React from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { createPxth, Pxth } from 'pxth';
 
-import {
-    ArrayControl,
-    FieldInnerError,
-    FormConfig,
-    FormShared,
-    ReactiveFormProvider,
-    useArrayControl,
-    useForm
-} from '../../src';
+import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
 
 const renderArrayControl = <T extends object, V>(
     name: Pxth<V[]>,
