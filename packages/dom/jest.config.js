@@ -10,7 +10,6 @@
   testEnvironmentOptions: {
       url: 'http://localhost'
   },
-  watchPlugins: ['jest-watch-typeahead\\filename.js', 'jest-watch-typeahead\\testname.js'],
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
