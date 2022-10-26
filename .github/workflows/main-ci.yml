@@ -38,18 +38,20 @@ jobs:
               with:
                   node-version: 14.x
 
-            - name: Install npm 17.x
-              run: npm i -g npm@latest
+            - name: Install pnpm 7.14.0
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                version: 7.14.0
 
             - name: Installing dependencies
-              run: npm install
+              run: pnpm install
 
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
                   working-directory: ${{ matrix.path }}
-                  test-script: npm run test:coverage
+                  test-script: pnpm run test:coverage
     build:
         needs: [generate_matrix]
         if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
@@ -70,11 +72,13 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
-            - name: Install npm 17.x
-              run: npm i -g npm@latest
+            - name: Install pnpm 7.14.0
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                version: 7.14.0
 
             - name: Install global dependencies
-              run: npm install
+              run: pnpm install
 
             - name: Linting, testing & building ${{ matrix.name }}
-              run: npx turbo run lint test build --filter=...${{ matrix.name }}...
+              run: pnpx turbo run lint test build --filter=...${{ matrix.name }}...
