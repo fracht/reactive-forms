@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { domPlugin, FieldValue } from '../src';
 
 describe('FieldValue', () => {
     it('should render field value by default in Fragment', () => {
-        const wrapper = mount(
+        const { getByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
                     {() => (
@@ -19,11 +19,11 @@ describe('FieldValue', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('div').text()).toBe('hello');
+        expect(getByText('hello')).toBeDefined();
     });
 
     it('should render field value by as prop', () => {
-        const wrapper = mount(
+        const { getByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
                     {() => <FieldValue name={createPxth(['test'])} as="div" />}
@@ -31,17 +31,19 @@ describe('FieldValue', () => {
             </FormPlugins>
         );
 
-        expect(wrapper.find('div').text()).toBe('hello');
+        expect(getByText('hello')).toBeDefined();
     });
     it('should call function renderer', () => {
-        const wrapper = mount(
+        const { getByText } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{ test: 'hello' }}>
-                    {() => <FieldValue name={createPxth(['test'])}>{(value) => <span>{value}</span>}</FieldValue>}
+                    {() => (
+                        <FieldValue name={createPxth<string>(['test'])}>{(value) => <span>{value}</span>}</FieldValue>
+                    )}
                 </ReactiveForm>
             </FormPlugins>
         );
 
-        expect(wrapper.find('span').text()).toBe('hello');
+        expect(getByText('hello')).toBeDefined();
     });
 });

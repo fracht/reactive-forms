@@ -1,32 +1,31 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins, ReactiveFormProvider, useForm } from '@reactive-forms/core';
-import { act, renderHook } from '@testing-library/react-hooks';
-import { mount } from 'enzyme';
+import { fireEvent, render, renderHook, waitFor } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { domPlugin, Form } from '../src';
 
 describe('Form', () => {
     it('should render children', () => {
-        const wrapper = mount(
+        const { getByTestId } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
                     {() => (
                         <Form>
-                            <div id="children"></div>
+                            <div data-testid="children"></div>
                         </Form>
                     )}
                 </ReactiveForm>
             </FormPlugins>
         );
 
-        expect(wrapper.find('#children').length).toBe(1);
+        expect(getByTestId('children')).toBeDefined();
     });
 
     it('should call submit function', async () => {
         const submit = jest.fn();
 
-        const wrapper = mount(
+        const { getByRole } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}} onSubmit={submit}>
                     {() => (
@@ -38,17 +37,17 @@ describe('Form', () => {
             </FormPlugins>
         );
 
-        await act(async () => {
-            wrapper.find('form').simulate('submit');
-        });
+        waitFor(() => {
+            fireEvent.submit(getByRole('form'));
 
-        expect(submit).toBeCalledTimes(1);
+            expect(submit).toBeCalledTimes(1);
+        });
     });
 
     it('should call provided submitAction', async () => {
         const submit = jest.fn();
 
-        const wrapper = mount(
+        const { getByRole } = render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={{}}>
                     {() => (
@@ -60,11 +59,11 @@ describe('Form', () => {
             </FormPlugins>
         );
 
-        await act(async () => {
-            wrapper.find('form').simulate('submit');
-        });
+        waitFor(() => {
+            fireEvent.submit(getByRole('form'));
 
-        expect(submit).toBeCalledTimes(1);
+            expect(submit).toBeCalledTimes(1);
+        });
     });
 
     it('should call onReset function', async () => {
@@ -72,21 +71,21 @@ describe('Form', () => {
             wrapper: ({ children }) => <FormPlugins plugins={createPluginArray(domPlugin)}>{children}</FormPlugins>
         });
 
-        const wrapper = mount(
+        const { getByRole } = render(
             <ReactiveFormProvider formBag={bag.current}>
                 {() => (
-                    <Form>
+                    <Form role="form">
                         <div>children</div>
                     </Form>
                 )}
             </ReactiveFormProvider>
         );
 
-        await act(async () => {
+        waitFor(() => {
             bag.current.setFieldValue(createPxth(['test']), 'modified');
-            wrapper.find('form').simulate('reset');
-        });
+            fireEvent.reset(getByRole('form'));
 
-        expect(bag.current.values.getValue(createPxth(['test']))).toBe('initial');
+            expect(bag.current.values.getValue(createPxth(['test']))).toBe('initial');
+        });
     });
 });

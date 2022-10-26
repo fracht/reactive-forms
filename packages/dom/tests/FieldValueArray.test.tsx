@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { domPlugin, FieldValueArray } from '../src';
@@ -11,7 +11,7 @@ describe('FieldValueArray', () => {
 
         const children = jest.fn(() => <div></div>);
 
-        mount(
+        render(
             <FormPlugins plugins={createPluginArray(domPlugin)}>
                 <ReactiveForm initialValues={initialValues}>
                     {() => (

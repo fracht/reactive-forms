@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { FormEvent, useCallback } from 'react';
 import { SubmitAction, useFormContext } from '@reactive-forms/core';
 
 export type FormProps<Values extends object> = React.PropsWithChildren<{
@@ -10,7 +10,7 @@ export const Form = <Values extends object>({ children, submitAction, ...other }
     const { submit, resetForm } = useFormContext<Values>();
 
     const onSubmit = useCallback(
-        (e) => {
+        (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             submit(submitAction);
         },

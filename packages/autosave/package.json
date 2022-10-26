@@ -35,7 +35,9 @@
         "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",
-        "aqu": "^0.3.2"
+        "@types/react": "^18.0.21",
+        "aqu": "^0.4.3",
+        "react": "^18.2.0"
     },
     "peerDependencies": {
         "@reactive-forms/core": "^0.8.0",
