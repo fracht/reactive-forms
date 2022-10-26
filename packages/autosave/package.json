@@ -36,7 +36,7 @@
         "@reactive-forms/core": "workspace:*",
         "@reactive-tools/eslint-config": "workspace:*",
         "@reactive-tools/publisher": "workspace:*",
-        "@types/react": "^18.0.21",
+        "@types/react": "18.0.23",
         "aqu": "^0.4.3",
         "react": "^18.2.0",
         "typescript": "^4.8.4"
