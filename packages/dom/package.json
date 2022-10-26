@@ -35,9 +35,9 @@
     },
     "devDependencies": {
         "@babel/core": "^7.19.6",
-        "@reactive-forms/core": "*",
-        "@reactive-tools/eslint-config": "*",
-        "@reactive-tools/publisher": "*",
+        "@reactive-forms/core": "workspace:*",
+        "@reactive-tools/eslint-config": "workspace:*",
+        "@reactive-tools/publisher": "workspace:*",
         "@testing-library/react": "^13.4.0",
         "@types/jest": "^26.0.24",
         "@types/react": "^18.0.21",

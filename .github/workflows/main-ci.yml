@@ -77,4 +77,4 @@ jobs:
               run: npm install
 
             - name: Linting, testing & building ${{ matrix.name }}
-              run: npx turbo run lint test build --scope=${{ matrix.name }} --include-dependencies --no-deps
+              run: npx turbo run lint test build --filter=...${{ matrix.name }}...
