@@ -33,6 +33,7 @@
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
     },
     "devDependencies": {
+        "@babel/core": "^7.19.6",
         "@reactive-forms/core": "*",
         "@reactive-tools/eslint-config": "*",
         "@reactive-tools/publisher": "*",

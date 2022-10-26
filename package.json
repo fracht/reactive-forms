@@ -49,5 +49,5 @@
         "packages/*",
         "tools/*"
     ],
-    "packageManager": "npm@8.19.2"
+    "packageManager": "pnpm@7.14.0"
 }
