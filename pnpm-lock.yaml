@@ -66,7 +66,7 @@ importers:
       '@babel/core': ^7.19.6
       '@reactive-tools/eslint-config': workspace:*
       '@reactive-tools/publisher': workspace:*
-      '@testing-library/react': ^13.4.0
+      '@testing-library/react-hooks': ^8.0.1
       '@types/jest': ^26.0.23
       '@types/lodash': ^4.14.161
       '@types/react': 18.0.21
@@ -75,8 +75,7 @@ importers:
       lodash: ^4.17.19
       lodash-es: ^4.17.15
       pxth: ^0.6.0
-      react: ^18.2.0
-      react-dom: ^18.2.0
+      react: 18.2.0
       stocked: ^1.0.0-beta.28
       tiny-invariant: ^1.1.0
       ts-jest: ^29.0.3
@@ -93,14 +92,13 @@ importers:
       '@babel/core': 7.19.6
       '@reactive-tools/eslint-config': link:../../tools/eslint-config
       '@reactive-tools/publisher': link:../../tools/publisher
-      '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+      '@testing-library/react-hooks': 8.0.1_iapumuv4e6jcjznwuxpf4tt22e
       '@types/jest': 26.0.24
       '@types/lodash': 4.14.186
       '@types/react': 18.0.21
       aqu: 0.4.3_@babel+core@7.19.6
       jest: 29.2.2
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
       ts-jest: 29.0.3_fxe5mizohawh6cjruma5lyyrna
       tslib: 2.4.0
       typescript: 4.8.4
@@ -2190,6 +2188,28 @@ packages:
       dom-accessibility-api: 0.5.14
       lz-string: 1.4.4
       pretty-format: 27.5.1
+    dev: true
+
+  /@testing-library/react-hooks/8.0.1_iapumuv4e6jcjznwuxpf4tt22e:
+    resolution: {integrity: sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      '@types/react': ^16.9.0 || ^17.0.0
+      react: ^16.9.0 || ^17.0.0
+      react-dom: ^16.9.0 || ^17.0.0
+      react-test-renderer: ^16.9.0 || ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react-dom:
+        optional: true
+      react-test-renderer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.19.4
+      '@types/react': 18.0.21
+      react: 18.2.0
+      react-error-boundary: 3.1.4_react@18.2.0
     dev: true
 
   /@testing-library/react/13.4.0_biqbaboplfbrettd7655fr4n2y:
@@ -8413,6 +8433,16 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: true
+
+  /react-error-boundary/3.1.4_react@18.2.0:
+    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.19.4
+      react: 18.2.0
     dev: true
 
   /react-is/16.13.1:
