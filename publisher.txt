@@ -1,0 +1,10 @@
+publish.ts:
+1. Check for uncomitted files and current branch
+2. Get packages from packages dir
+3. Run reactive-publisher for each package
+4. Publish each package
+
+reactive-publisher:
+1. Increment version -
+2. Delete some fields from package.json +
+3. Create prepublish folder with package.json, dist, LICENCE and README +

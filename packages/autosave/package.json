@@ -13,7 +13,8 @@
         "dist"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "directory": "publish"
     },
     "repository": {
         "type": "git",
@@ -28,7 +29,7 @@
         "test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
-        "prepublish": "reactive-publisher"
+        "prepublishOnly": "rm -rf ./publish && clean-publish"
     },
     "keywords": [],
     "devDependencies": {

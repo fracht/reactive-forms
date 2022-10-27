@@ -1,0 +1,12 @@
+{
+    "withoutPublish": true,
+    "tempDir": "publish",
+    "files": [
+        "src",
+        "tests",
+        ".turbo",
+        "tsconfig.json",
+        "tsconfig.test.json",
+        "aqu.config.json"
+    ]
+}

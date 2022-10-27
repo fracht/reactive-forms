@@ -13,7 +13,7 @@
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
-        "publish": "zxpp ./scripts/publish.ts",
+        "publish": "pnpm publish -r",
         "publish:check": "turbo run build lint test --filter=...@reactive-forms/*..."
     },
     "size-limit": [
@@ -30,6 +30,7 @@
         "@octokit/core": "^4.1.0",
         "@reactive-tools/eslint-config": "workspace:*",
         "@size-limit/preset-small-lib": "^4.10.2",
+        "clean-publish": "^4.0.1",
         "danger": "^10.6.4",
         "prettier": "^2.5.1",
         "size-limit": "^4.10.2",

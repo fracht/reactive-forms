@@ -7,6 +7,7 @@ importers:
       '@octokit/core': ^4.1.0
       '@reactive-tools/eslint-config': workspace:*
       '@size-limit/preset-small-lib': ^4.10.2
+      clean-publish: ^4.0.1
       danger: ^10.6.4
       prettier: ^2.5.1
       size-limit: ^4.10.2
@@ -15,6 +16,7 @@ importers:
       '@octokit/core': 4.1.0
       '@reactive-tools/eslint-config': link:tools/eslint-config
       '@size-limit/preset-small-lib': 4.12.0_size-limit@4.12.0
+      clean-publish: 4.0.1
       danger: 10.9.0_@octokit+core@4.1.0
       prettier: 2.7.1
       size-limit: 4.12.0
@@ -57,6 +59,7 @@ importers:
       '@types/lodash': ^4.14.161
       '@types/react': 18.0.23
       aqu: ^0.4.3
+      clean-publish: ^4.0.1
       jest: ^29.2.2
       lodash: ^4.17.19
       lodash-es: ^4.17.15
@@ -83,6 +86,7 @@ importers:
       '@types/lodash': 4.14.186
       '@types/react': 18.0.23
       aqu: 0.4.3_@babel+core@7.19.6
+      clean-publish: 4.0.1
       jest: 29.2.2
       react: 18.2.0
       ts-jest: 29.0.3_fxe5mizohawh6cjruma5lyyrna
@@ -3576,6 +3580,17 @@ packages:
       define-property: 0.2.5
       isobject: 3.0.1
       static-extend: 0.1.2
+    dev: true
+
+  /clean-publish/4.0.1:
+    resolution: {integrity: sha512-6v0bh5kQD5FDlxBgXDVNNc6KmAB7iIP/GHD91q9xsGVZT5XB9Y8TNqB7dL5u9PTZlBeLpBw+A1AseRlEEJLSWA==}
+    engines: {node: '>= 16.0.0'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      fast-glob: 3.2.12
+      lilconfig: 2.0.6
+      micromatch: 4.0.5
     dev: true
 
   /cli-cursor/3.1.0:

@@ -13,7 +13,8 @@
         "dist"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "directory": "publish"
     },
     "repository": {
         "type": "git",
@@ -28,7 +29,7 @@
         "test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
-        "prepublish": "reactive-publisher"
+        "prepublishOnly": "rm -rf ./publish && clean-publish"
     },
     "bugs": {
         "url": "https://github.com/ArtiomTr/reactive-forms/issues"
@@ -49,6 +50,7 @@
         "@types/lodash": "^4.14.161",
         "@types/react": "18.0.23",
         "aqu": "^0.4.3",
+        "clean-publish": "^4.0.1",
         "jest": "^29.2.2",
         "react": "18.2.0",
         "ts-jest": "^29.0.3",
