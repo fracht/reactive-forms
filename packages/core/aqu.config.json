@@ -1,7 +1,7 @@
 {
     "buildOptions": {
         "target": ["es2019", "chrome58", "firefox57", "safari11", "edge18", "node12"],
-        "preserveSymlinks": true
+        "preserveSymlinks": false
     },
     "dtsBundleGeneratorOptions": {
         "libraries": {
