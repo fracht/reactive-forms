@@ -30,7 +30,7 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
-                  test-script: pnpm run test:coverage --filter=[${{ github.base_ref }}...${{ github.head_ref }}]
+                  test-script: pnpm run test:coverage --filter=[$GITHUB_BASE_REF...$GITHUB_HEAD_REF]
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
