@@ -52,6 +52,9 @@ jobs:
             - name: Install global dependencies
               run: pnpm install
 
+            - name: Fetch base branch
+              run: git fetch --all
+
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=[${{ github.base_ref }}...${{ github.head_ref }}]
 
