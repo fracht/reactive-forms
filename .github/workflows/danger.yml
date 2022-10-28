@@ -28,6 +28,6 @@ jobs:
               run: pnpm install
 
             - name: Danger
-              run: pnpx danger ci
+              run: pnpm danger ci
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

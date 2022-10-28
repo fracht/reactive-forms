@@ -7,29 +7,9 @@ on:
         branches: [main]
     workflow_dispatch:
 jobs:
-    generate_matrix:
-        name: Get changed packages
-        runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, '[skip ci]')"
-        outputs:
-            names: ${{ steps.changed_packages.outputs.names }}
-            paths: ${{ steps.changed_packages.outputs.paths }}
-            empty: ${{ steps.changed_packages.outputs.empty }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v2
-
-            - name: Find changed packages
-              id: changed_packages
-              uses: alexshukel/get-changed-workspaces-action@v1.0.0
     coverage:
         name: Coverage report
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
-        needs: [generate_matrix]
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                path: ${{ fromJson(needs.generate_matrix.outputs.paths) }}
         steps:
             - uses: actions/checkout@v1
 
@@ -51,16 +31,13 @@ jobs:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
                   working-directory: ${{ matrix.path }}
-                  test-script: pnpm run test:coverage
+                  test-script: pnpm run test:coverage --filter=[main...HEAD]
     build:
-        needs: [generate_matrix]
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
         name: Build, lint, and test ${{ matrix.name }} package on Node ${{ matrix.node }} and ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 node: ['14.x', '16.x']
-                name: ${{ fromJson(needs.generate_matrix.outputs.names) }}
                 os: [ubuntu-latest]
 
         steps:
@@ -80,5 +57,5 @@ jobs:
             - name: Install global dependencies
               run: pnpm install
 
-            - name: Linting, testing & building ${{ matrix.name }}
-              run: pnpx turbo run lint test build --filter=...${{ matrix.name }}...
+            - name: Linting, testing & building changed packages
+              run: pnpm turbo run lint test build --filter=[main...HEAD]
