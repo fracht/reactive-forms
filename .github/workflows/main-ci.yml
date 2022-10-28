@@ -26,6 +26,9 @@ jobs:
             - name: Installing dependencies
               run: pnpm install
 
+            - name: Fetch base branch
+              run: git fetch origin
+
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -53,7 +56,7 @@ jobs:
               run: pnpm install
 
             - name: Fetch base branch
-              run: git fetch --all
+              run: git fetch origin
 
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=[origin/$GITHUB_BASE_REF]
