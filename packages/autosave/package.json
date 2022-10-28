@@ -29,7 +29,8 @@
         "test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
-        "prepublishOnly": "rm -rf ./publish && clean-publish"
+        "prepublishOnly": "rimraf ./prepared-package && clean-publish",
+        "postpublish": "rimraf ./prepared-package"
     },
     "keywords": [],
     "devDependencies": {
@@ -40,6 +41,7 @@
         "@types/react": "18.0.23",
         "aqu": "^0.4.3",
         "react": "^18.2.0",
+        "rimraf": "^3.0.2",
         "tslib": "^2.3.1",
         "typescript": "^4.8.4"
     },
