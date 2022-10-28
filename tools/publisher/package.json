@@ -2,10 +2,10 @@
     "name": "@reactive-tools/publisher",
     "private": true,
     "main": "./index.ts",
-    "bin": {
-        "reactive-publisher": "./index.ts"
-    },
     "devDependencies": {
         "zxpp": "^0.1.6"
+    },
+    "bin": {
+        "reactive-publisher": "./index.ts"
     }
 }

@@ -1,39 +1,30 @@
 {
     "name": "@reactive-forms/core",
-    "version": "0.8.11",
     "description": "Core package of Reactive Forms framework",
-    "author": "ReactiveForms team",
-    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-    "license": "MIT",
+    "version": "0.8.11",
     "main": "dist/index.js",
     "module": "dist/core.esm.js",
-    "source": "src/index.ts",
     "types": "dist/core.d.ts",
-    "files": [
-        "dist"
-    ],
+    "bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
+    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+    "repository": "ArtiomTr/reactive-forms.git",
+    "author": "ReactiveForms team",
+    "license": "MIT",
     "publishConfig": {
         "access": "public",
         "directory": "prepared-package"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
-    },
     "scripts": {
-        "dev": "aqu watch --no-cleanup",
         "build": "aqu build",
-        "test": "jest --passWithNoTests",
-        "test:watch": "jest --passWithNoTests --watch",
-        "test:coverage": "jest --passWithNoTests --coverage --json --silent --ci --outputFile=\"report.json\"",
-        "test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
+        "dev": "aqu watch --no-cleanup",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
+        "postpublish": "rimraf ./prepared-package",
         "prepublishOnly": "rimraf ./prepared-package && clean-publish",
-        "postpublish": "rimraf ./prepared-package"
-    },
-    "bugs": {
-        "url": "https://github.com/ArtiomTr/reactive-forms/issues"
+        "test": "jest --passWithNoTests",
+        "test:coverage": "jest --passWithNoTests --coverage --json --silent --ci --outputFile=\"report.json\"",
+        "test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
+        "test:watch": "jest --passWithNoTests --watch"
     },
     "dependencies": {
         "lodash": "^4.17.19",
@@ -62,5 +53,9 @@
     },
     "peerDependencies": {
         "react": ">=16"
-    }
+    },
+    "files": [
+        "dist"
+    ],
+    "source": "src/index.ts"
 }

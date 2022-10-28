@@ -1,38 +1,32 @@
 {
     "name": "@reactive-forms/x",
-    "version": "0.8.11",
     "description": "Advanced Reactive Forms components for rich eXperience",
-    "author": "ReactiveForms team",
-    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-    "license": "MIT",
+    "version": "0.8.11",
     "main": "dist/index.js",
     "module": "dist/core.esm.js",
-    "source": "src/index.ts",
     "types": "dist/core.d.ts",
-    "files": [
-        "dist"
-    ],
+    "bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
+    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+    "repository": "ArtiomTr/reactive-forms.git",
+    "author": "ReactiveForms team",
+    "license": "MIT",
     "publishConfig": {
         "access": "public",
         "directory": "prepared-package"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ArtiomTr/reactive-forms.git"
-    },
     "scripts": {
-        "start": "aqu watch",
         "build": "aqu build",
-        "test": "aqu test --passWithNoTests",
-        "test:watch": "aqu test --watch",
-        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
         "lint": "eslint .",
         "lint:fix": "npm run lint --fix",
+        "postpublish": "rimraf ./prepared-package",
         "prepublishOnly": "rimraf ./prepared-package && clean-publish",
-        "postpublish": "rimraf ./prepared-package"
+        "start": "aqu watch",
+        "test": "aqu test --passWithNoTests",
+        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
+        "test:watch": "aqu test --watch"
     },
-    "bugs": {
-        "url": "https://github.com/ArtiomTr/reactive-forms/issues"
+    "dependencies": {
+        "@reactive-forms/core": "^0.8.0"
     },
     "devDependencies": {
         "@babel/core": "^7.19.6",
@@ -50,7 +44,8 @@
         "@reactive-forms/core": "^0.8.0",
         "react": ">=16"
     },
-    "dependencies": {
-        "@reactive-forms/core": "^0.8.0"
-    }
+    "files": [
+        "dist"
+    ],
+    "source": "src/index.ts"
 }
