@@ -30,23 +30,19 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
-                  test-script: pnpm run test:coverage --filter=[main...HEAD]
+                  test-script: pnpm run test:coverage --filter=[${{ github.base_ref }}...${{ github.head_ref }}]
     build:
-        name: Build, lint, and test changed packages on Node ${{ matrix.node }} and ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
-        strategy:
-            matrix:
-                node: ['14.x', '16.x']
-                os: [ubuntu-latest]
+        name: Build, lint, and test changed packages on Node 16
+        runs-on: ubuntu-latest
 
         steps:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Use Node ${{ matrix.node }}
+            - name: Use Node 16
               uses: actions/setup-node@v1
               with:
-                  node-version: ${{ matrix.node }}
+                  node-version: 16
 
             - name: Install pnpm 7.14.0
               uses: pnpm/action-setup@v2.2.4
@@ -57,7 +53,7 @@ jobs:
               run: pnpm install
 
             - name: Linting, testing & building changed packages
-              run: pnpm turbo run lint test build --filter=[main...HEAD]
+              run: pnpm turbo run lint test build --filter=[${{ github.base_ref }}...${{ github.head_ref }}]
 
             - name: Check files format
               run: pnpm run format:check
