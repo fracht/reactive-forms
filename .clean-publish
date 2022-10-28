@@ -1,6 +1,6 @@
 {
     "withoutPublish": true,
-    "tempDir": "publish",
+    "tempDir": "prepared-package",
     "files": [
         "src",
         "tests",

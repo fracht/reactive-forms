@@ -14,7 +14,7 @@
     ],
     "publishConfig": {
         "access": "public",
-        "directory": "publish"
+        "directory": "prepared-package"
     },
     "repository": {
         "type": "git",

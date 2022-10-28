@@ -13,7 +13,6 @@
         "size": "npm run build && size-limit",
         "size:analyze": "size-limit --why",
         "lint": "eslint .",
-        "publish": "pnpm publish -r",
         "publish:check": "turbo run build lint test --filter=...@reactive-forms/*..."
     },
     "size-limit": [
