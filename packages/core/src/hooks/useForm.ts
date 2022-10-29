@@ -29,339 +29,339 @@ import { useThrowError } from '../utils/useThrowError';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
 export type InitialFormStateConfig<Values extends object> =
-    | {
-          initialValues: Values;
-          initialTouched?: FieldTouched<Values>;
-          initialErrors?: FieldError<Values>;
-          load?: undefined;
-      }
-    | {
-          load: () => Promise<InitialFormState<Values>>;
-      };
+	| {
+			initialValues: Values;
+			initialTouched?: FieldTouched<Values>;
+			initialErrors?: FieldError<Values>;
+			load?: undefined;
+	  }
+	| {
+			load: () => Promise<InitialFormState<Values>>;
+	  };
 
 export interface ExtendableFormConfig<Values extends object> {
-    schema?: BaseSchema<Partial<Values> | undefined>;
-    onSubmit?: SubmitAction<Values>;
-    validateForm?: FieldValidator<Values>;
-    onValidationFailed?: (errors: FieldError<Values>) => void;
-    onValidationSucceed?: () => void;
-    onReset?: (initialFormState: InitialFormState<Values>) => void;
-    disablePureFieldsValidation?: boolean;
+	schema?: BaseSchema<Partial<Values> | undefined>;
+	onSubmit?: SubmitAction<Values>;
+	validateForm?: FieldValidator<Values>;
+	onValidationFailed?: (errors: FieldError<Values>) => void;
+	onValidationSucceed?: () => void;
+	onReset?: (initialFormState: InitialFormState<Values>) => void;
+	disablePureFieldsValidation?: boolean;
 }
 
 export type FormConfig<Values extends object> = ExtendableFormConfig<Values> & InitialFormStateConfig<Values>;
 
 export type FieldObservers<V> = {
-    valueObserver: (value: V) => void;
-    errorObserver: (error: FieldError<V> | undefined) => void;
-    touchObserver: (touched: FieldTouched<V> | undefined) => void;
-    validator?: FieldValidator<V>;
+	valueObserver: (value: V) => void;
+	errorObserver: (error: FieldError<V> | undefined) => void;
+	touchObserver: (touched: FieldTouched<V> | undefined) => void;
+	validator?: FieldValidator<V>;
 };
 
 export type InitialFormState<V> = {
-    initialValues: V;
-    initialTouched?: FieldTouched<V>;
-    initialErrors?: FieldError<V>;
+	initialValues: V;
+	initialTouched?: FieldTouched<V>;
+	initialErrors?: FieldError<V>;
 };
 
 export type DefaultFormShared<Values extends object> = Omit<
-    ValidationRegistryControl,
-    'validateAllFields' | 'validateBranch'
+	ValidationRegistryControl,
+	'validateAllFields' | 'validateBranch'
 > &
-    FormHelpers<Values>;
+	FormHelpers<Values>;
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
-    submit: (action?: SubmitAction<Values>) => void;
-    isLoaded: boolean;
+	submit: (action?: SubmitAction<Values>) => void;
+	isLoaded: boolean;
 }
 
 const deepCustomizer = (src1: unknown, src2: unknown) => {
-    const filtered = [src1, src2].filter((a) => typeof a === 'object' && a !== null);
+	const filtered = [src1, src2].filter((a) => typeof a === 'object' && a !== null);
 
-    if (filtered.length === 1) {
-        return filtered[0];
-    }
+	if (filtered.length === 1) {
+		return filtered[0];
+	}
 };
 
 const formMetaPaths = createPxth<FormMeta>([]);
 
 export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
-    const config = usePluginConfigDecorators(initialConfig);
+	const config = usePluginConfigDecorators(initialConfig);
 
-    const throwError = useThrowError();
+	const throwError = useThrowError();
 
-    const { schema, disablePureFieldsValidation } = config;
+	const { schema, disablePureFieldsValidation } = config;
 
-    const onSubmit = useRefCallback(config.onSubmit);
-    const validateFormFn = useRefCallback(config.validateForm);
-    const onValidationFailed = useRefCallback(config.onValidationFailed);
-    const onValidationSucceed = useRefCallback(config.onValidationSucceed);
-    const onReset = useRefCallback(config.onReset);
-    const postprocessors = useRef<Array<FieldPostProcessor<unknown>>>([]);
+	const onSubmit = useRefCallback(config.onSubmit);
+	const validateFormFn = useRefCallback(config.validateForm);
+	const onValidationFailed = useRefCallback(config.onValidationFailed);
+	const onValidationSucceed = useRefCallback(config.onValidationSucceed);
+	const onReset = useRefCallback(config.onReset);
+	const postprocessors = useRef<Array<FieldPostProcessor<unknown>>>([]);
 
-    const paths = useMemo(() => createPxth<Values>([]), []);
+	const paths = useMemo(() => createPxth<Values>([]), []);
 
-    const {
-        initialValues = {} as Values,
-        initialErrors = {} as FieldError<Values>,
-        initialTouched = {} as FieldTouched<Values>
-    } = config.load
-        ? {
-              initialValues: undefined,
-              initialErrors: undefined,
-              initialTouched: undefined
-          }
-        : (config as {
-              initialValues: Values;
-              initialTouched?: FieldTouched<Values>;
-              initialErrors?: FieldError<Values>;
-          });
+	const {
+		initialValues = {} as Values,
+		initialErrors = {} as FieldError<Values>,
+		initialTouched = {} as FieldTouched<Values>,
+	} = config.load
+		? {
+				initialValues: undefined,
+				initialErrors: undefined,
+				initialTouched: undefined,
+		  }
+		: (config as {
+				initialValues: Values;
+				initialTouched?: FieldTouched<Values>;
+				initialErrors?: FieldError<Values>;
+		  });
 
-    const control = useFormControl({ initialValues, initialErrors, initialTouched });
-    const {
-        validateField: runFieldLevelValidation,
-        validateAllFields,
-        hasValidator,
-        validateBranch,
-        registerValidator
-    } = useValidationRegistry();
+	const control = useFormControl({ initialValues, initialErrors, initialTouched });
+	const {
+		validateField: runFieldLevelValidation,
+		validateAllFields,
+		hasValidator,
+		validateBranch,
+		registerValidator,
+	} = useValidationRegistry();
 
-    const initialValuesRef = useRef(initialValues);
-    const initialErrorsRef = useRef(initialErrors);
-    const initialTouchedRef = useRef(initialTouched);
+	const initialValuesRef = useRef(initialValues);
+	const initialErrorsRef = useRef(initialErrors);
+	const initialTouchedRef = useRef(initialTouched);
 
-    const isPending = useRef(false);
+	const isPending = useRef(false);
 
-    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
+	const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
 
-    const loadRef = useRef(config.load);
-    loadRef.current = config.load;
+	const loadRef = useRef(config.load);
+	loadRef.current = config.load;
 
-    const [isLoaded, setIsLoaded] = useState(!config.load);
+	const [isLoaded, setIsLoaded] = useState(!config.load);
 
-    const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
-        postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
+	const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
+		postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
 
-        return () =>
-            postprocessors.current.splice(
-                postprocessors.current.indexOf(postprocessor as FieldPostProcessor<unknown>),
-                1
-            );
-    }, []);
+		return () =>
+			postprocessors.current.splice(
+				postprocessors.current.indexOf(postprocessor as FieldPostProcessor<unknown>),
+				1,
+			);
+	}, []);
 
-    const postprocess = useCallback((values: Values) => {
-        let processedValues = cloneDeep(values);
-        postprocessors.current.forEach(({ path, update }) => {
-            processedValues = deepSet(processedValues, path, update(deepGet(values, path))) as Values;
-        });
+	const postprocess = useCallback((values: Values) => {
+		let processedValues = cloneDeep(values);
+		postprocessors.current.forEach(({ path, update }) => {
+			processedValues = deepSet(processedValues, path, update(deepGet(values, path))) as Values;
+		});
 
-        return processedValues;
-    }, []);
+		return processedValues;
+	}, []);
 
-    const validateField = useCallback(
-        async <V>(name: Pxth<V>, value: V) => {
-            if (hasValidator(name)) {
-                if (!disablePureFieldsValidation || !isEqual(value, deepGet(initialValuesRef.current, name))) {
-                    const error = await runFieldLevelValidation(name, value);
-                    setFieldError(name, (old) => ({ ...old, ...error }));
-                    return error;
-                } else {
-                    setFieldError(name, { $error: undefined } as FieldError<V>);
-                }
-            }
+	const validateField = useCallback(
+		async <V>(name: Pxth<V>, value: V) => {
+			if (hasValidator(name)) {
+				if (!disablePureFieldsValidation || !isEqual(value, deepGet(initialValuesRef.current, name))) {
+					const error = await runFieldLevelValidation(name, value);
+					setFieldError(name, (old) => ({ ...old, ...error }));
+					return error;
+				} else {
+					setFieldError(name, { $error: undefined } as FieldError<V>);
+				}
+			}
 
-            return undefined;
-        },
-        [runFieldLevelValidation, setFieldError, hasValidator, disablePureFieldsValidation]
-    );
+			return undefined;
+		},
+		[runFieldLevelValidation, setFieldError, hasValidator, disablePureFieldsValidation],
+	);
 
-    const runFormValidationSchema = useCallback(
-        (values: Values): Promise<FieldError<Values> | undefined> => {
-            if (!schema) return Promise.resolve(undefined);
+	const runFormValidationSchema = useCallback(
+		(values: Values): Promise<FieldError<Values> | undefined> => {
+			if (!schema) return Promise.resolve(undefined);
 
-            return runYupSchema(schema, values);
-        },
-        [schema]
-    );
+			return runYupSchema(schema, values);
+		},
+		[schema],
+	);
 
-    const validateForm = useCallback(
-        async (values: Values): Promise<FieldError<Values>> => {
-            const registryErrors = await validateAllFields(values);
-            const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
-            const schemaErrors = await runFormValidationSchema(values);
+	const validateForm = useCallback(
+		async (values: Values): Promise<FieldError<Values>> => {
+			const registryErrors = await validateAllFields(values);
+			const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
+			const schemaErrors = await runFormValidationSchema(values);
 
-            const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
+			const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
 
-            if (!disablePureFieldsValidation) {
-                return allErrors as FieldError<Values>;
-            } else {
-                return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
-            }
-        },
-        [runFormValidationSchema, validateAllFields, validateFormFn, disablePureFieldsValidation]
-    );
+			if (!disablePureFieldsValidation) {
+				return allErrors as FieldError<Values>;
+			} else {
+				return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
+			}
+		},
+		[runFormValidationSchema, validateAllFields, validateFormFn, disablePureFieldsValidation],
+	);
 
-    const resetForm = useCallback(
-        (initialFormState?: InitialFormState<Values>) => {
-            const nonNullableFormState = {
-                initialValues: initialFormState?.initialValues ?? initialValuesRef.current,
-                initialTouched: initialFormState?.initialTouched ?? initialTouchedRef.current,
-                initialErrors: initialFormState?.initialErrors ?? initialErrorsRef.current
-            };
+	const resetForm = useCallback(
+		(initialFormState?: InitialFormState<Values>) => {
+			const nonNullableFormState = {
+				initialValues: initialFormState?.initialValues ?? initialValuesRef.current,
+				initialTouched: initialFormState?.initialTouched ?? initialTouchedRef.current,
+				initialErrors: initialFormState?.initialErrors ?? initialErrorsRef.current,
+			};
 
-            const { initialErrors, initialTouched, initialValues } = nonNullableFormState;
+			const { initialErrors, initialTouched, initialValues } = nonNullableFormState;
 
-            setValues(cloneDeep(initialValues));
-            setTouched(cloneDeep(initialTouched));
-            setErrors(cloneDeep(initialErrors));
+			setValues(cloneDeep(initialValues));
+			setTouched(cloneDeep(initialTouched));
+			setErrors(cloneDeep(initialErrors));
 
-            initialValuesRef.current = initialValues;
-            initialErrorsRef.current = initialErrors;
-            initialTouchedRef.current = initialTouched;
+			initialValuesRef.current = initialValues;
+			initialErrorsRef.current = initialErrors;
+			initialTouchedRef.current = initialTouched;
 
-            onReset(nonNullableFormState);
-        },
-        [setValues, setTouched, setErrors, onReset]
-    );
+			onReset(nonNullableFormState);
+		},
+		[setValues, setTouched, setErrors, onReset],
+	);
 
-    const helpers: FormHelpers<Values> = useMemo(
-        () => ({
-            ...control,
-            validateField,
-            validateForm,
-            resetForm,
-            paths,
-            registerPostprocessor
-        }),
-        [control, validateField, validateForm, resetForm, paths, registerPostprocessor]
-    );
+	const helpers: FormHelpers<Values> = useMemo(
+		() => ({
+			...control,
+			validateField,
+			validateForm,
+			resetForm,
+			paths,
+			registerPostprocessor,
+		}),
+		[control, validateField, validateForm, resetForm, paths, registerPostprocessor],
+	);
 
-    const submit = useCallback(
-        async (action?: SubmitAction<Values> | undefined) => {
-            if (typeof action !== 'function') {
-                action = onSubmit;
-            }
+	const submit = useCallback(
+		async (action?: SubmitAction<Values> | undefined) => {
+			if (typeof action !== 'function') {
+				action = onSubmit;
+			}
 
-            invariant(
-                action,
-                'Cannot call submit, because no action specified in arguments and no default action provided.'
-            );
+			invariant(
+				action,
+				'Cannot call submit, because no action specified in arguments and no default action provided.',
+			);
 
-            setFormMeta(formMetaPaths.submitCount, (prev) => prev + 1);
-            setFormMeta(formMetaPaths.isSubmitting, true);
-            setFormMeta(formMetaPaths.isValid, true);
+			setFormMeta(formMetaPaths.submitCount, (prev) => prev + 1);
+			setFormMeta(formMetaPaths.isSubmitting, true);
+			setFormMeta(formMetaPaths.isValid, true);
 
-            const currentValues = postprocess(values.getValues());
+			const currentValues = postprocess(values.getValues());
 
-            const newErrors = await validateForm(currentValues);
+			const newErrors = await validateForm(currentValues);
 
-            setFormMeta(formMetaPaths.isValid, false);
+			setFormMeta(formMetaPaths.isValid, false);
 
-            setErrors(newErrors);
-            setTouched(
-                setNestedValues(
-                    mergeWith({}, cloneDeep(currentValues), cloneDeep(initialValuesRef.current), deepCustomizer),
-                    {
-                        $touched: true
-                    }
-                )
-            );
+			setErrors(newErrors);
+			setTouched(
+				setNestedValues(
+					mergeWith({}, cloneDeep(currentValues), cloneDeep(initialValuesRef.current), deepCustomizer),
+					{
+						$touched: true,
+					},
+				),
+			);
 
-            try {
-                if (Object.keys(newErrors).length === 0) {
-                    onValidationSucceed?.();
-                    await action(currentValues, helpers);
-                } else {
-                    onValidationFailed?.(newErrors);
-                }
-            } finally {
-                setFormMeta(formMetaPaths.isSubmitting, false);
-            }
-        },
-        [
-            onSubmit,
-            setFormMeta,
-            values,
-            validateForm,
-            setErrors,
-            setTouched,
-            onValidationFailed,
-            helpers,
-            onValidationSucceed,
-            postprocess
-        ]
-    );
+			try {
+				if (Object.keys(newErrors).length === 0) {
+					onValidationSucceed?.();
+					await action(currentValues, helpers);
+				} else {
+					onValidationFailed?.(newErrors);
+				}
+			} finally {
+				setFormMeta(formMetaPaths.isSubmitting, false);
+			}
+		},
+		[
+			onSubmit,
+			setFormMeta,
+			values,
+			validateForm,
+			setErrors,
+			setTouched,
+			onValidationFailed,
+			helpers,
+			onValidationSucceed,
+			postprocess,
+		],
+	);
 
-    const updateFormDirtiness = useCallback(
-        ({ values }: BatchUpdate<unknown>) =>
-            setFormMeta(formMetaPaths.dirty, !isEqual(values, initialValuesRef.current)),
-        [setFormMeta]
-    );
+	const updateFormDirtiness = useCallback(
+		({ values }: BatchUpdate<unknown>) =>
+			setFormMeta(formMetaPaths.dirty, !isEqual(values, initialValuesRef.current)),
+		[setFormMeta],
+	);
 
-    const updateFormValidness = useCallback(
-        ({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
-        [setFormMeta]
-    );
+	const updateFormValidness = useCallback(
+		({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
+		[setFormMeta],
+	);
 
-    const validateUpdatedFields = useCallback(
-        async ({ values, origin }: BatchUpdate<object>) => {
-            const { attachPath, errors } = await validateBranch(origin, values);
+	const validateUpdatedFields = useCallback(
+		async ({ values, origin }: BatchUpdate<object>) => {
+			const { attachPath, errors } = await validateBranch(origin, values);
 
-            const onlyNecessaryErrors = deepGet(errors, attachPath);
-            const normalizedErrors = disablePureFieldsValidation
-                ? merge(
-                      setNestedValues(onlyNecessaryErrors as object, undefined),
-                      excludeOverlaps(
-                          values,
-                          deepGet(initialValuesRef.current, attachPath) as object,
-                          onlyNecessaryErrors
-                      )
-                  )
-                : onlyNecessaryErrors;
+			const onlyNecessaryErrors = deepGet(errors, attachPath);
+			const normalizedErrors = disablePureFieldsValidation
+				? merge(
+						setNestedValues(onlyNecessaryErrors as object, undefined),
+						excludeOverlaps(
+							values,
+							deepGet(initialValuesRef.current, attachPath) as object,
+							onlyNecessaryErrors,
+						),
+				  )
+				: onlyNecessaryErrors;
 
-            setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as object));
-        },
-        [disablePureFieldsValidation, setFieldError, validateBranch]
-    );
+			setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as object));
+		},
+		[disablePureFieldsValidation, setFieldError, validateBranch],
+	);
 
-    useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
+	useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
 
-    useEffect(
-        () =>
-            errors.watchBatchUpdates((batchUpdate) => {
-                if (batchUpdate.paths.length > 0) {
-                    updateFormValidness(batchUpdate);
-                }
-            }),
-        [errors, updateFormValidness]
-    );
+	useEffect(
+		() =>
+			errors.watchBatchUpdates((batchUpdate) => {
+				if (batchUpdate.paths.length > 0) {
+					updateFormValidness(batchUpdate);
+				}
+			}),
+		[errors, updateFormValidness],
+	);
 
-    useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
+	useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
 
-    useEffect(() => {
-        if (loadRef.current && !isPending.current && !isLoaded) {
-            isPending.current = true;
+	useEffect(() => {
+		if (loadRef.current && !isPending.current && !isLoaded) {
+			isPending.current = true;
 
-            loadRef
-                .current()
-                .then(resetForm)
-                .catch(throwError)
-                .finally(() => {
-                    setIsLoaded(true);
-                    isPending.current = false;
-                });
-        }
-    }, [resetForm, throwError, isLoaded]);
+			loadRef
+				.current()
+				.then(resetForm)
+				.catch(throwError)
+				.finally(() => {
+					setIsLoaded(true);
+					isPending.current = false;
+				});
+		}
+	}, [resetForm, throwError, isLoaded]);
 
-    const bag: FormShared<Values> = {
-        submit,
-        hasValidator,
-        registerValidator,
-        isLoaded,
-        ...helpers
-    };
+	const bag: FormShared<Values> = {
+		submit,
+		hasValidator,
+		registerValidator,
+		isLoaded,
+		...helpers,
+	};
 
-    const bagWithPlugins = usePluginBagDecorators(bag, config);
+	const bagWithPlugins = usePluginBagDecorators(bag, config);
 
-    return loadingGuard(bagWithPlugins, isLoaded);
+	return loadingGuard(bagWithPlugins, isLoaded);
 };

@@ -3,75 +3,75 @@ import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import { createPxth } from 'pxth';
 
 import {
-    FieldValueArrayConfig,
-    FormConfig,
-    FormShared,
-    ReactiveFormProvider,
-    useFieldValueArray,
-    useForm
+	FieldValueArrayConfig,
+	FormConfig,
+	FormShared,
+	ReactiveFormProvider,
+	useFieldValueArray,
+	useForm,
 } from '../../src';
 
 const renderFieldValueArray = <V extends object, T extends object>(
-    paths: FieldValueArrayConfig<V>,
-    config: FormConfig<T>
+	paths: FieldValueArrayConfig<V>,
+	config: FormConfig<T>,
 ): [RenderHookResult<undefined, V>, FormShared<T>] => {
-    const {
-        result: { current: bag }
-    } = renderHook(() => useForm(config));
+	const {
+		result: { current: bag },
+	} = renderHook(() => useForm(config));
 
-    const wrapper = ({ children }) => (
-        <ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
-    );
+	const wrapper = ({ children }) => (
+		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
+	);
 
-    return [renderHook(() => useFieldValueArray<V>(paths), { wrapper }), bag];
+	return [renderHook(() => useFieldValueArray<V>(paths), { wrapper }), bag];
 };
 
 describe('useField', () => {
-    it('should return object of specified values', () => {
-        const [{ result }, { setFieldValue }] = renderFieldValueArray(
-            {
-                a: createPxth(['hello']),
-                b: createPxth(['b', 'c', 'e']),
-                c: createPxth(['d'])
-            },
-            {
-                initialValues: {
-                    hello: 'asdf',
-                    b: {
-                        c: {
-                            e: 'bbbb'
-                        }
-                    },
-                    d: {
-                        a: 'hello'
-                    }
-                }
-            }
-        );
+	it('should return object of specified values', () => {
+		const [{ result }, { setFieldValue }] = renderFieldValueArray(
+			{
+				a: createPxth(['hello']),
+				b: createPxth(['b', 'c', 'e']),
+				c: createPxth(['d']),
+			},
+			{
+				initialValues: {
+					hello: 'asdf',
+					b: {
+						c: {
+							e: 'bbbb',
+						},
+					},
+					d: {
+						a: 'hello',
+					},
+				},
+			},
+		);
 
-        expect(result.current).toStrictEqual({
-            a: 'asdf',
-            b: 'bbbb',
-            c: {
-                a: 'hello'
-            }
-        });
+		expect(result.current).toStrictEqual({
+			a: 'asdf',
+			b: 'bbbb',
+			c: {
+				a: 'hello',
+			},
+		});
 
-        act(() => {
-            setFieldValue(createPxth(['hello']), 'asdfasdf');
-            setFieldValue(createPxth(['b', 'c']), { e: 'ggg' });
-            setFieldValue(createPxth(['d', 'c', 'd']), 'aa');
-        });
+		act(() => {
+			setFieldValue(createPxth(['hello']), 'asdfasdf');
+			setFieldValue(createPxth(['b', 'c']), { e: 'ggg' });
+			setFieldValue(createPxth(['d', 'c', 'd']), 'aa');
+		});
 
-        expect(result.current).toStrictEqual({
-            a: 'asdfasdf',
-            b: 'ggg',
-            c: {
-                a: 'hello',
-                c: {
-                    d: 'aa'
-                }
-            }
-        });
-    });
+		expect(result.current).toStrictEqual({
+			a: 'asdfasdf',
+			b: 'ggg',
+			c: {
+				a: 'hello',
+				c: {
+					d: 'aa',
+				},
+			},
+		});
+	});
 });
