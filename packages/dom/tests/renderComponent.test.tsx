@@ -65,7 +65,7 @@ describe('normal behavior', () => {
 	it('should render custom component', () => {
 		const { getByText } = render(
 			renderComponent({
-				as: ({ prop }) => <span>{prop}</span>,
+				as: ({ prop }: { prop: string }) => <span>{prop}</span>,
 				bag: {
 					prop: 'asdf',
 				},
