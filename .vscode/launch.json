@@ -1,15 +1,15 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug Core Tests",
-            "type": "node",
-            "request": "launch",
-            "runtimeArgs": ["--inspect-brk", "${workspaceFolder}/node_modules/aqu/dist/aqu.js", "test", "--runInBand"],
-            "cwd": "${workspaceFolder}/packages/core",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "port": 9229
-        }
-    ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Core Tests",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": ["--inspect-brk", "${workspaceFolder}/node_modules/aqu/dist/aqu.js", "test", "--runInBand"],
+			"cwd": "${workspaceFolder}/packages/core",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"port": 9229
+		}
+	]
 }

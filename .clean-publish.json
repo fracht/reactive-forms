@@ -3,7 +3,7 @@
 	"tempDir": "prepared-package",
 	"packageManager": "pnpm",
 	"files": [
-        "src",
+		"src",
 		".storybook",
 		"aqu.config.json",
 		"tsconfig.json",
@@ -12,5 +12,5 @@
 		"coverage",
 		"tests",
 		"tsconfig.test.json"
-    ]
+	]
 }

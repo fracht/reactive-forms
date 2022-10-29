@@ -1,41 +1,45 @@
-import { useEffect, useRef } from 'react';
 import merge from 'lodash/merge';
 import { Pxth } from 'pxth';
-import type { BaseSchema } from 'yup';
+import { useEffect, useRef } from 'react';
 
-import { useFormContext } from './useFormContext';
 import { FieldValidator } from '../typings/FieldValidator';
 import { runYupSchema } from '../utils/runYupSchema';
 import { validatorResultToError } from '../utils/validatorResultToError';
+import { useFormContext } from './useFormContext';
+import type { BaseSchema } from 'yup';
 
 export type UseFieldValidatorConfig<V> = FieldValidationProps<V> & { name: Pxth<V> };
 
 export type FieldValidationProps<V> = {
-    validator?: FieldValidator<V>;
-    schema?: BaseSchema<Partial<V> | V | undefined>;
+	validator?: FieldValidator<V>;
+	schema?: BaseSchema<Partial<V> | V | undefined>;
 };
 
-export const useFieldValidator = <V>({ name, validator: validatorFn, schema }: UseFieldValidatorConfig<V>) => {
-    const { registerValidator } = useFormContext();
+export const useFieldValidator = <V>({ name, validator: validatorFunction, schema }: UseFieldValidatorConfig<V>) => {
+	const { registerValidator } = useFormContext();
 
-    const validate = async (value: V) => {
-        if (!validatorFn && !schema) return undefined;
+	const validate = async (value: V) => {
+		if (!validatorFunction && !schema) {
+			return;
+		}
 
-        const validatorErrors = validatorResultToError(await validatorFn?.(value));
-        const schemaErrors = schema ? await runYupSchema(schema, value) : undefined;
+		const validatorErrors = validatorResultToError(await validatorFunction?.(value));
+		const schemaErrors = schema ? await runYupSchema(schema, value) : undefined;
 
-        if (!schemaErrors) return validatorErrors;
+		if (!schemaErrors) {
+			return validatorErrors;
+		}
 
-        return merge(schemaErrors, validatorErrors);
-    };
+		return merge(schemaErrors, validatorErrors);
+	};
 
-    const validateRef = useRef(validate);
+	const validateReference = useRef(validate);
 
-    validateRef.current = validate;
+	validateReference.current = validate;
 
-    useEffect(() => {
-        const validator = (value: V) => validateRef.current(value);
+	useEffect(() => {
+		const validator = (value: V) => validateReference.current(value);
 
-        return registerValidator(name, validator);
-    }, [name, registerValidator]);
+		return registerValidator(name, validator);
+	}, [name, registerValidator]);
 };

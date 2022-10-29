@@ -1,148 +1,135 @@
 import { FunctionArray } from '../../src/utils/FunctionArray';
 
 describe('Function array push and remove', () => {
-    it('should add', () => {
-        const arr = new FunctionArray<() => void>();
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.call();
-        expect(fn).toBeCalled();
-    });
+	it('should add', () => {
+		const array = new FunctionArray<() => void>();
+		const function_ = jest.fn();
+		array.push(function_);
+		array.call();
+		expect(function_).toBeCalled();
+	});
 
-    it('should remove', () => {
-        const arr = new FunctionArray<() => void>();
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.call();
-        arr.remove(fn);
-        arr.call();
-        expect(fn).toBeCalledTimes(1);
-    });
+	it('should remove', () => {
+		const array = new FunctionArray<() => void>();
+		const function_ = jest.fn();
+		array.push(function_);
+		array.call();
+		array.remove(function_);
+		array.call();
+		expect(function_).toBeCalledTimes(1);
+	});
 
-    it('should be empty', () => {
-        const arr = new FunctionArray<() => void>();
-        const fn1 = jest.fn();
-        const fn2 = jest.fn();
-        arr.push(fn1);
-        arr.push(fn2);
-        arr.call();
-        arr.remove(fn1);
-        arr.call();
-        arr.remove(fn2);
-        arr.call();
-        expect(fn1).toBeCalledTimes(1);
-        expect(fn2).toBeCalledTimes(2);
-        expect(arr.isEmpty()).toBeTruthy();
-    });
+	it('should be empty', () => {
+		const array = new FunctionArray<() => void>();
+		const function1 = jest.fn();
+		const function2 = jest.fn();
+		array.push(function1, function2);
+		array.call();
+		array.remove(function1);
+		array.call();
+		array.remove(function2);
+		array.call();
+		expect(function1).toBeCalledTimes(1);
+		expect(function2).toBeCalledTimes(2);
+		expect(array.isEmpty()).toBeTruthy();
+	});
 });
 
 describe('FunctionArray call and lazy call', () => {
-    it('should call all', () => {
-        const arr = new FunctionArray();
+	it('should call all', () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn();
-        fn.mockReturnValue(10);
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
-        const out = arr.call();
-        expect(out).toStrictEqual([10, 10, 10]);
-        expect(fn).toBeCalledTimes(3);
-    });
+		const function_ = jest.fn();
+		function_.mockReturnValue(10);
+		array.push(function_, function_, function_);
+		const out = array.call();
+		expect(out).toStrictEqual([10, 10, 10]);
+		expect(function_).toBeCalledTimes(3);
+	});
 
-    it('should call only first', () => {
-        const arr = new FunctionArray();
+	it('should call only first', () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
+		const function_ = jest.fn();
+		array.push(function_, function_, function_);
 
-        fn.mockReturnValueOnce(15);
+		function_.mockReturnValueOnce(15);
 
-        const lazyValue = arr.lazyCall();
+		const lazyValue = array.lazyCall();
 
-        expect(lazyValue).toBe(15);
-        expect(fn).toBeCalledTimes(1);
-    });
+		expect(lazyValue).toBe(15);
+		expect(function_).toBeCalledTimes(1);
+	});
 
-    it('should call until get value', () => {
-        const arr = new FunctionArray();
+	it('should call until get value', () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
+		const function_ = jest.fn();
+		array.push(function_, function_, function_);
 
-        fn.mockReturnValueOnce(undefined);
-        fn.mockReturnValueOnce(10);
+		function_.mockReturnValueOnce();
+		function_.mockReturnValueOnce(10);
 
-        const lazyValue = arr.lazyCall();
+		const lazyValue = array.lazyCall();
 
-        expect(lazyValue).toBe(10);
-        expect(fn).toBeCalledTimes(2);
-    });
+		expect(lazyValue).toBe(10);
+		expect(function_).toBeCalledTimes(2);
+	});
 
-    it('should return undefined', () => {
-        const arr = new FunctionArray();
+	it('should return undefined', () => {
+		const array = new FunctionArray();
 
-        const output = arr.lazyCall();
+		const output = array.lazyCall();
 
-        expect(output).toBe(undefined);
-    });
+		expect(output).toBe(undefined);
+	});
 });
 
 describe('FunctionArray async call and lazy async call', () => {
-    it('should call all', async () => {
-        const arr = new FunctionArray();
+	it('should call all', async () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn(() => Promise.resolve(5));
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
-        const output = await arr.asyncCall();
-        expect(output).toStrictEqual([5, 5, 5]);
-        expect(fn).toBeCalledTimes(3);
-    });
+		const function_ = jest.fn(() => Promise.resolve(5));
+		array.push(function_, function_, function_);
+		const output = await array.asyncCall();
+		expect(output).toStrictEqual([5, 5, 5]);
+		expect(function_).toBeCalledTimes(3);
+	});
 
-    it('should call only first', async () => {
-        const arr = new FunctionArray();
+	it('should call only first', async () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
+		const function_ = jest.fn();
+		array.push(function_, function_, function_);
 
-        fn.mockImplementation(() => Promise.resolve(15));
+		function_.mockImplementation(() => Promise.resolve(15));
 
-        const lazyValue = await arr.lazyAsyncCall();
+		const lazyValue = await array.lazyAsyncCall();
 
-        expect(lazyValue).toBe(15);
-        expect(fn).toBeCalledTimes(1);
-    });
+		expect(lazyValue).toBe(15);
+		expect(function_).toBeCalledTimes(1);
+	});
 
-    it('should call until get value', async () => {
-        const arr = new FunctionArray();
+	it('should call until get value', async () => {
+		const array = new FunctionArray();
 
-        const fn = jest.fn();
-        arr.push(fn);
-        arr.push(fn);
-        arr.push(fn);
+		const function_ = jest.fn();
+		array.push(function_, function_, function_);
 
-        fn.mockImplementationOnce(() => Promise.resolve(undefined));
-        fn.mockImplementationOnce(() => Promise.resolve(10));
+		function_.mockImplementationOnce(() => Promise.resolve());
+		function_.mockImplementationOnce(() => Promise.resolve(10));
 
-        const lazyValue = await arr.lazyAsyncCall();
+		const lazyValue = await array.lazyAsyncCall();
 
-        expect(lazyValue).toBe(10);
-        expect(fn).toBeCalledTimes(2);
-    });
+		expect(lazyValue).toBe(10);
+		expect(function_).toBeCalledTimes(2);
+	});
 
-    it('should return undefined', async () => {
-        const arr = new FunctionArray();
+	it('should return undefined', async () => {
+		const array = new FunctionArray();
 
-        const output = await arr.lazyAsyncCall();
+		const output = await array.lazyAsyncCall();
 
-        expect(output).toBe(undefined);
-    });
+		expect(output).toBe(undefined);
+	});
 });

@@ -1,14 +1,14 @@
-// main component
+// Main component
 export { ReactiveForm as default } from './components/ReactiveForm';
 
-// components
+// Components
 export * from './components/Field';
 export * from './components/ReactiveFormProvider';
 export * from './components/ReactiveFormConsumer';
 export * from './components/FormProxyProvider';
 export * from './components/FormPlugins';
 
-// hooks
+// Hooks
 export * from './hooks/useField';
 export * from './hooks/useArrayControl';
 export * from './hooks/useArrayField';
@@ -25,7 +25,7 @@ export * from './hooks/useValidationRegistry';
 export * from './hooks/usePluginAssertion';
 export * from './hooks/useFieldValueArray';
 
-// typings
+// Typings
 export * from './typings/FieldContext';
 export * from './typings/FieldValidator';
 export * from './typings/FieldError';

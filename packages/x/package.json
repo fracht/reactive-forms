@@ -1,52 +1,52 @@
 {
-    "name": "@reactive-forms/x",
-    "description": "Advanced Reactive Forms components for rich eXperience",
-    "version": "0.8.11",
-    "main": "dist/index.js",
-    "module": "dist/core.esm.js",
-    "types": "dist/core.d.ts",
-    "bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
-    "homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-    "repository": "ArtiomTr/reactive-forms.git",
-    "author": "ReactiveForms team",
-    "license": "MIT",
-    "publishConfig": {
-        "access": "public",
-        "directory": "prepared-package"
-    },
-    "scripts": {
-        "build": "aqu build",
-        "lint": "eslint .",
-        "lint:fix": "npm run lint --fix",
-        "postpublish": "rimraf ./prepared-package",
-        "prepublishOnly": "rimraf ./prepared-package && clean-publish",
-        "start": "aqu watch",
-        "test": "aqu test --passWithNoTests",
-        "test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
-        "test:watch": "aqu test --watch"
-    },
-    "dependencies": {
-        "@reactive-forms/core": "^0.8.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.19.6",
-        "@reactive-forms/core": "workspace:*",
-        "@sirse-dev/eslint-config": "^1.0.12",
-        "@types/jest": "^26.0.24",
-        "@types/react": "18.0.23",
-        "aqu": "^0.4.3",
-        "eslint": "^8.26.0",
-        "prettier": "^2.5.1",
-        "react": "^18.2.0",
-        "rimraf": "^3.0.2",
-        "typescript": "^4.8.4"
-    },
-    "peerDependencies": {
-        "@reactive-forms/core": "^0.8.0",
-        "react": ">=16"
-    },
-    "files": [
-        "dist"
-    ],
-    "source": "src/index.ts"
+	"name": "@reactive-forms/x",
+	"description": "Advanced Reactive Forms components for rich eXperience",
+	"version": "0.8.11",
+	"main": "dist/index.js",
+	"module": "dist/core.esm.js",
+	"types": "dist/core.d.ts",
+	"bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
+	"homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
+	"repository": "ArtiomTr/reactive-forms.git",
+	"author": "ReactiveForms team",
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public",
+		"directory": "prepared-package"
+	},
+	"scripts": {
+		"build": "aqu build",
+		"lint": "eslint .",
+		"lint:fix": "npm run lint --fix",
+		"postpublish": "rimraf ./prepared-package",
+		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
+		"start": "aqu watch",
+		"test": "aqu test --passWithNoTests",
+		"test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
+		"test:watch": "aqu test --watch"
+	},
+	"dependencies": {
+		"@reactive-forms/core": "^0.8.0"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.19.6",
+		"@reactive-forms/core": "workspace:*",
+		"@sirse-dev/eslint-config": "^1.0.12",
+		"@types/jest": "^26.0.24",
+		"@types/react": "18.0.23",
+		"aqu": "^0.4.3",
+		"eslint": "^8.26.0",
+		"prettier": "^2.5.1",
+		"react": "^18.2.0",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.8.4"
+	},
+	"peerDependencies": {
+		"@reactive-forms/core": "^0.8.0",
+		"react": ">=16"
+	},
+	"files": [
+		"dist"
+	],
+	"source": "src/index.ts"
 }
