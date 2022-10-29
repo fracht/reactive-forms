@@ -11,7 +11,10 @@ jobs:
         name: Coverage report
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v1
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0
 
             - name: Use Node 14.x
               uses: actions/setup-node@v1
@@ -26,21 +29,20 @@ jobs:
             - name: Installing dependencies
               run: pnpm install
 
-            - name: Fetch base branch
-              run: git fetch origin
-
             - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
-                  test-script: pnpm run test:coverage --filter=...[origin/${{ github.head_ref }}]
+                  test-script: pnpm run test:coverage --filter=...[origin/${{ github.base_ref }}]
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0
 
             - name: Use Node 16
               uses: actions/setup-node@v1
@@ -55,11 +57,8 @@ jobs:
             - name: Install global dependencies
               run: pnpm install
 
-            - name: Fetch base branch
-              run: git fetch origin
-
             - name: Linting, testing & building changed packages
-              run: pnpm turbo run lint test build --filter=...[origin/${{ github.head_ref }}]
+              run: pnpm turbo run lint test build --filter=...[origin/${{ github.base_ref }}]
 
             - name: Check files format
               run: pnpm run format:check
