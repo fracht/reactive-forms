@@ -9,5 +9,11 @@
 	"bracketSpacing": true,
 	"embeddedLanguageFormatting": "auto",
 	"jsxSingleQuote": false,
-	"endOfLine": "auto"
+	"endOfLine": "auto",
+	"overrides": [
+		{
+			"files": ".clean-publish",
+			"options": { "parser": "json" }
+		}
+	]
 }

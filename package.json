@@ -8,8 +8,8 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "turbo run build --filter=@reactive-forms/*",
-		"format": "syncpack format && prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
-		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json}\"",
+		"format": "syncpack format && prettier --write \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
 		"lint": "eslint .",
 		"publish:check": "turbo run build lint test --filter=...@reactive-forms/*...",
 		"size": "npm run build && size-limit",
