@@ -1,8 +1,8 @@
 {
-    "withoutPublish": true,
+	"withoutPublish": true,
 	"tempDir": "prepared-package",
 	"packageManager": "pnpm",
-    "files": [
+	"files": [
         "src",
 		".storybook",
 		"aqu.config.json",

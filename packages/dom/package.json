@@ -35,7 +35,6 @@
         "@babel/core": "^7.19.6",
         "@reactive-forms/core": "workspace:*",
         "@reactive-tools/eslint-config": "workspace:*",
-        "@reactive-tools/publisher": "workspace:*",
         "@testing-library/react": "^13.4.0",
         "@types/jest": "^26.0.24",
         "@types/react": "18.0.23",

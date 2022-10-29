@@ -31,7 +31,6 @@ importers:
       '@babel/core': ^7.19.6
       '@reactive-forms/core': workspace:*
       '@reactive-tools/eslint-config': workspace:*
-      '@reactive-tools/publisher': workspace:*
       '@types/react': 18.0.23
       aqu: ^0.4.3
       lodash: ^4.17.21
@@ -47,7 +46,6 @@ importers:
       '@babel/core': 7.19.6
       '@reactive-forms/core': link:../core
       '@reactive-tools/eslint-config': link:../../tools/eslint-config
-      '@reactive-tools/publisher': link:../../tools/publisher
       '@types/react': 18.0.23
       aqu: 0.4.3_@babel+core@7.19.6
       react: 18.2.0
@@ -60,7 +58,6 @@ importers:
     specifiers:
       '@babel/core': ^7.19.6
       '@reactive-tools/eslint-config': workspace:*
-      '@reactive-tools/publisher': workspace:*
       '@testing-library/react-hooks': ^8.0.1
       '@types/jest': ^26.0.23
       '@types/lodash': ^4.14.161
@@ -88,7 +85,6 @@ importers:
     devDependencies:
       '@babel/core': 7.19.6
       '@reactive-tools/eslint-config': link:../../tools/eslint-config
-      '@reactive-tools/publisher': link:../../tools/publisher
       '@testing-library/react-hooks': 8.0.1_i2izv7j3km4zzxbpzq2d4xtojy
       '@types/jest': 26.0.24
       '@types/lodash': 4.14.186
@@ -109,7 +105,6 @@ importers:
       '@babel/core': ^7.19.6
       '@reactive-forms/core': workspace:*
       '@reactive-tools/eslint-config': workspace:*
-      '@reactive-tools/publisher': workspace:*
       '@testing-library/react': ^13.4.0
       '@types/jest': ^26.0.24
       '@types/react': 18.0.23
@@ -134,7 +129,6 @@ importers:
       '@babel/core': 7.19.6
       '@reactive-forms/core': link:../core
       '@reactive-tools/eslint-config': link:../../tools/eslint-config
-      '@reactive-tools/publisher': link:../../tools/publisher
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
       '@types/jest': 26.0.24
       '@types/react': 18.0.23
@@ -155,7 +149,6 @@ importers:
       '@babel/core': ^7.19.6
       '@reactive-forms/core': ^0.8.0
       '@reactive-tools/eslint-config': workspace:*
-      '@reactive-tools/publisher': workspace:*
       '@types/jest': ^26.0.24
       '@types/react': 18.0.23
       aqu: ^0.4.3
@@ -167,7 +160,6 @@ importers:
     devDependencies:
       '@babel/core': 7.19.6
       '@reactive-tools/eslint-config': link:../../tools/eslint-config
-      '@reactive-tools/publisher': link:../../tools/publisher
       '@types/jest': 26.0.24
       '@types/react': 18.0.23
       aqu: 0.4.3_@babel+core@7.19.6
@@ -199,12 +191,6 @@ importers:
       eslint-plugin-simple-import-sort: 7.0.0_eslint@7.32.0
       prettier: 2.7.1
       typescript: 4.8.4
-
-  tools/publisher:
-    specifiers:
-      zxpp: ^0.1.6
-    devDependencies:
-      zxpp: 0.1.6
 
 packages:
 
@@ -1650,20 +1636,6 @@ packages:
       prettier: 2.7.1
     dev: true
 
-  /@esbuild-plugins/node-resolve/0.1.4_esbuild@0.12.29:
-    resolution: {integrity: sha512-haFQ0qhxEpqtWWY0kx1Y5oE3sMyO1PcoSiWEPrAw6tm/ZOOLXjSs6Q+v1v9eyuVF0nNt50YEvrcrvENmyoMv5g==}
-    peerDependencies:
-      esbuild: '*'
-    dependencies:
-      '@types/resolve': 1.20.2
-      debug: 4.3.4
-      esbuild: 0.12.29
-      escape-string-regexp: 4.0.0
-      resolve: 1.22.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@esbuild-plugins/node-resolve/0.1.4_esbuild@0.15.12:
     resolution: {integrity: sha512-haFQ0qhxEpqtWWY0kx1Y5oE3sMyO1PcoSiWEPrAw6tm/ZOOLXjSs6Q+v1v9eyuVF0nNt50YEvrcrvENmyoMv5g==}
     peerDependencies:
@@ -2484,12 +2456,6 @@ packages:
       '@babel/types': 7.19.4
     dev: true
 
-  /@types/fs-extra/9.0.13:
-    resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
-    dependencies:
-      '@types/node': 16.18.1
-    dev: true
-
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
@@ -2544,19 +2510,8 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node-fetch/2.6.2:
-    resolution: {integrity: sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==}
-    dependencies:
-      '@types/node': 16.18.1
-      form-data: 3.0.1
-    dev: true
-
   /@types/node/12.20.55:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
-    dev: true
-
-  /@types/node/16.18.1:
-    resolution: {integrity: sha512-Z659t5cj2Tt2SaqbJxXRo5EaU86E4l2CxtklCY1VftxYXhR81Z75UsugwdI7l5MUAR1I+l8sdt3B5Y++ZV76WQ==}
     dev: true
 
   /@types/node/18.11.6:
@@ -3237,11 +3192,6 @@ packages:
   /array-union/2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
-
-  /array-union/3.0.1:
-    resolution: {integrity: sha512-1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==}
-    engines: {node: '>=12'}
-    dev: true
 
   /array-unique/0.3.2:
     resolution: {integrity: sha512-SleRWjh9JUud2wH1hPs9rZBZ33H6T9HOiL0uwGnGx9FpE6wKGyfWugmbkEOIs6qWrZhg0LWeLziLrEwQJhs5mQ==}
@@ -4947,12 +4897,6 @@ packages:
     dev: true
     optional: true
 
-  /esbuild/0.12.29:
-    resolution: {integrity: sha512-w/XuoBCSwepyiZtIRsKsetiLDUVGPVw1E/R3VTFSecIy8UR7Cq3SOtwKHJMFoVqqVG36aGkzh4e8BvpO1Fdc7g==}
-    hasBin: true
-    requiresBuild: true
-    dev: true
-
   /esbuild/0.15.12:
     resolution: {integrity: sha512-PcT+/wyDqJQsRVhaE9uX/Oq4XLrFh0ce/bs2TJh4CSaw9xuvI+xFrH2nAYOADbhQjUgAhNWC5LKoUsakm4dxng==}
     engines: {node: '>=12'}
@@ -5635,15 +5579,6 @@ packages:
       mime-types: 2.1.35
     dev: true
 
-  /form-data/3.0.1:
-    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
-    engines: {node: '>= 6'}
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      mime-types: 2.1.35
-    dev: true
-
   /form-data/4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
@@ -5909,18 +5844,6 @@ packages:
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0
-
-  /globby/12.2.0:
-    resolution: {integrity: sha512-wiSuFQLZ+urS9x2gGPl1H5drc5twabmm4m2gTR27XDFyjUHJUNsS8o/2aKyIF6IoBaR630atdher0XJ5g6OMmA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dependencies:
-      array-union: 3.0.1
-      dir-glob: 3.0.1
-      fast-glob: 3.2.12
-      ignore: 5.2.0
-      merge2: 1.4.1
-      slash: 4.0.0
-    dev: true
 
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
@@ -6511,10 +6434,6 @@ packages:
   /is-unicode-supported/0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
-    dev: true
-
-  /is-url/1.2.4:
-    resolution: {integrity: sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==}
     dev: true
 
   /is-weakmap/2.0.1:
@@ -10881,37 +10800,4 @@ packages:
       nanoclone: 0.2.1
       property-expr: 2.0.5
       toposort: 2.0.2
-    dev: true
-
-  /zx/2.1.0:
-    resolution: {integrity: sha512-7mCJ92ev894l94w5aXkdQoZ9iE6qXERLMPp/uMhTumGKtyhvN8tWprqFFHiXGS/31HxEy1NtNd9NHmYjGHd85A==}
-    engines: {node: '>= 14.8.0'}
-    hasBin: true
-    dependencies:
-      '@types/fs-extra': 9.0.13
-      '@types/minimist': 1.2.2
-      '@types/node': 16.18.1
-      '@types/node-fetch': 2.6.2
-      chalk: 4.1.2
-      fs-extra: 10.1.0
-      globby: 12.2.0
-      minimist: 1.2.7
-      node-fetch: 2.6.7
-      which: 2.0.2
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
-  /zxpp/0.1.6:
-    resolution: {integrity: sha512-nxTINeMTfLZhmBNagG9w+OWfyI75bKtf9nFaD79mmvEZNTZM4IpCF8Jn74fKzyMvay7mVn9ygYQI4KQdekOAnA==}
-    engines: {node: '>=14.8.0'}
-    hasBin: true
-    dependencies:
-      '@esbuild-plugins/node-resolve': 0.1.4_esbuild@0.12.29
-      esbuild: 0.12.29
-      is-url: 1.2.4
-      zx: 2.1.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
     dev: true
