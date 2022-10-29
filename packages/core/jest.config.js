@@ -1,7 +1,7 @@
 /**
  * @type {import('ts-jest').JestConfigWithTsJest}
  */
- const config = {
+const config = {
     transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|cjs|jsx)$'"],
     preset: 'ts-jest',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'cjs', 'mjs', 'json', 'node'],
@@ -12,11 +12,13 @@
     },
     testEnvironment: 'jsdom',
     transform: {
-      '^.+\\.tsx?$': ['ts-jest', {
-        tsconfig: './tsconfig.test.json'
-      }]
+        '^.+\\.tsx?$': [
+            'ts-jest',
+            {
+                tsconfig: './tsconfig.test.json'
+            }
+        ]
     }
-  };
-  
-  module.exports = config;
-  
+};
+
+module.exports = config;
