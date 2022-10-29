@@ -1,14 +1,14 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "noImplicitReturns": false,
-        "noImplicitThis": false,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "suppressImplicitAnyIndexErrors": false,
-        "strict": false,
-        "alwaysStrict": false,
-        "jsx": "react",
-        "esModuleInterop": true
-    }
+	"compilerOptions": {
+		"module": "commonjs",
+		"noImplicitReturns": false,
+		"noImplicitThis": false,
+		"noImplicitAny": false,
+		"strictNullChecks": false,
+		"suppressImplicitAnyIndexErrors": false,
+		"strict": false,
+		"alwaysStrict": false,
+		"jsx": "react",
+		"esModuleInterop": true
+	}
 }

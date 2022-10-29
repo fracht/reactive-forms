@@ -1,25 +1,25 @@
 {
-    "sortFirst": [
-        "name",
-        "description",
-        "version",
-        "private",
-        "sideEffects",
-        "main",
-        "module",
-        "types",
-        "bugs",
-        "homepage",
-        "repository",
-        "author",
-        "license",
-        "keywords",
-        "publishConfig",
-        "scripts",
-        "dependencies",
-        "devDependencies",
-        "peerDependencies",
-        "pnpm"
-    ],
-    "indent": "\t"
+	"sortFirst": [
+		"name",
+		"description",
+		"version",
+		"private",
+		"sideEffects",
+		"main",
+		"module",
+		"types",
+		"bugs",
+		"homepage",
+		"repository",
+		"author",
+		"license",
+		"keywords",
+		"publishConfig",
+		"scripts",
+		"dependencies",
+		"devDependencies",
+		"peerDependencies",
+		"pnpm"
+	],
+	"indent": "\t"
 }
