@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
 import { MappingProxy } from 'stocked';
 

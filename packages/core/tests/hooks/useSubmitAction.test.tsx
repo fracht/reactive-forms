@@ -1,5 +1,5 @@
-import React from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import React, { PropsWithChildren } from 'react';
+import { act, renderHook } from '@testing-library/react';
 
 import ReactiveForm from '../../src';
 import { useSubmitAction } from '../../src/hooks/useSubmitAction';
@@ -7,7 +7,7 @@ import { useSubmitAction } from '../../src/hooks/useSubmitAction';
 describe('useSubmitAction', () => {
 	it('should return default submit', async () => {
 		const onSubmit = jest.fn();
-		const wrapper = ({ children }) => (
+		const wrapper = ({ children }: PropsWithChildren) => (
 			<ReactiveForm initialValues={{ test: 42 }} onSubmit={onSubmit}>
 				{() => children}
 			</ReactiveForm>
@@ -25,7 +25,7 @@ describe('useSubmitAction', () => {
 	it('should call provided action', async () => {
 		const onSubmit = jest.fn();
 		const action = jest.fn();
-		const wrapper = ({ children }) => (
+		const wrapper = ({ children }: PropsWithChildren) => (
 			<ReactiveForm initialValues={{ test: 42 }} onSubmit={onSubmit}>
 				{() => children}
 			</ReactiveForm>

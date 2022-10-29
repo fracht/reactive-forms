@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { FieldError, ReactiveFormProvider, useFieldError, useForm } from '../../src';
@@ -14,7 +14,7 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
+		const { result: errorResult } = renderHook(() => useFieldError(somePxth), {
 			wrapper: ({ children }) => (
 				<ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
 			),
@@ -23,17 +23,15 @@ describe('validateUpdatedFields', () => {
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
-		let cleanup;
+		let cleanup: () => void;
 
-		act(() => {
+		waitFor(async () => {
 			cleanup = result.current.registerValidator(somePxth, validator);
 			result.current.setFieldValue(somePxth, 'asdf');
-		});
 
-		await waitForNextUpdate({ timeout: 100 });
-
-		expect(errorResult.current[0]).toStrictEqual({
-			$error: 'error',
+			expect(errorResult.current[0]).toStrictEqual({
+				$error: 'error',
+			});
 		});
 
 		act(() => {
@@ -49,7 +47,7 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
+		const { result: errorResult } = renderHook(() => useFieldError(somePxth), {
 			wrapper: ({ children }) => (
 				<ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
 			),
@@ -58,17 +56,15 @@ describe('validateUpdatedFields', () => {
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
-		let cleanup;
+		let cleanup: () => void;
 
-		act(() => {
+		waitFor(async () => {
 			cleanup = result.current.registerValidator(somePxth, validator);
 			result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
-		});
 
-		await waitForNextUpdate({ timeout: 100 });
-
-		expect(errorResult.current[0]).toStrictEqual({
-			$error: 'error',
+			expect(errorResult.current[0]).toStrictEqual({
+				$error: 'error',
+			});
 		});
 
 		act(() => {
@@ -88,7 +84,7 @@ describe('validateField', () => {
 		const validator = jest.fn();
 		validator.mockReturnValueOnce('error');
 
-		let cleanup;
+		let cleanup: () => void;
 
 		act(() => {
 			cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
@@ -164,7 +160,7 @@ describe('validateField', () => {
 			}),
 		);
 
-		let cleanup;
+		let cleanup: () => void;
 
 		const validator = jest.fn();
 
@@ -213,7 +209,7 @@ describe('validateField', () => {
 			}),
 		);
 
-		let cleanup;
+		let cleanup: () => void;
 
 		const validator = jest.fn();
 
@@ -247,7 +243,7 @@ describe('validateForm', () => {
 					deep: {
 						value: 'asdf',
 					},
-					array: ['asdf'],
+					array: ['asdf'] as Array<undefined | string>,
 				},
 			}),
 		);
@@ -346,7 +342,7 @@ describe('should merge errors correctly', () => {
 		const onSubmit = jest.fn();
 
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<{ arr: unknown[][] }>({
 				initialValues: {
 					arr: [[]],
 				},
@@ -384,7 +380,7 @@ describe('should merge errors correctly', () => {
 		const onSubmit = jest.fn();
 
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<{ load_models: unknown[] }>({
 				initialValues: {
 					load_models: [],
 				},
