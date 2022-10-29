@@ -6,15 +6,15 @@ const notLoadedFunction = (name: string) => () => {
 };
 
 const getErrorHandler = (name: string): ProxyHandler<object> => {
-	const function_ = notLoadedFunction(name);
+	const fn = notLoadedFunction(name);
 
 	return {
-		get: function_,
-		set: function_,
-		deleteProperty: function_,
-		has: function_,
-		defineProperty: function_,
-		ownKeys: function_,
+		get: fn,
+		set: fn,
+		deleteProperty: fn,
+		has: fn,
+		defineProperty: fn,
+		ownKeys: fn,
 	};
 };
 

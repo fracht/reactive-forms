@@ -1,4 +1,5 @@
 import { deepRemoveEmpty } from '../../src/utils/deepRemoveEmpty';
+let a;
 
 describe('deepRemoveEmpty', () => {
 	it('should filter array', () => {
@@ -17,7 +18,7 @@ describe('deepRemoveEmpty', () => {
 	});
 
 	it('should handle nulls', () => {
-		expect(deepRemoveEmpty(null)).toBe(undefined);
+		expect(deepRemoveEmpty(null as unknown as object)).toBe(undefined);
 	});
 
 	it('should shake objects', () => {

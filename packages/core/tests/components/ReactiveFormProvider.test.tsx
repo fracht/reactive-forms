@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { ReactiveFormProvider, useForm, useFormContext } from '../../src';
 
@@ -7,7 +7,7 @@ describe('ReactiveFormProvider', () => {
 	it('should pass context to children', () => {
 		const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
 
-		const wrapper = ({ children }) => (
+		const wrapper = ({ children }: PropsWithChildren) => (
 			<ReactiveFormProvider formBag={formBagResult.current}>{() => children}</ReactiveFormProvider>
 		);
 
@@ -19,7 +19,7 @@ describe('ReactiveFormProvider', () => {
 	it('should not render children while form is not loaded', () => {
 		const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
 
-		const wrapper = ({ children }) => (
+		const wrapper = ({ children }: PropsWithChildren) => (
 			<ReactiveFormProvider formBag={{ ...formBagResult.current, isLoaded: false }}>
 				{() => children}
 			</ReactiveFormProvider>

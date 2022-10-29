@@ -9,15 +9,15 @@ export const domPlugin: Plugin = {
 		const { setFieldValue, setFieldTouched } = shared;
 
 		const handleChange = useCallback(
-			(e: ChangeEvent<HTMLInputElement>) => {
-				setFieldValue(createPxth(parseSegmentsFromString(e.target.name)), e.target.value);
+			(event: ChangeEvent<HTMLInputElement>) => {
+				setFieldValue(createPxth(parseSegmentsFromString(event.target.name)), event.target.value);
 			},
 			[setFieldValue],
 		);
 
 		const handleBlur = useCallback(
-			(e: FocusEvent<HTMLInputElement>) => {
-				setFieldTouched(createPxth(parseSegmentsFromString(e.target.name)), {
+			(event: FocusEvent<HTMLInputElement>) => {
+				setFieldTouched(createPxth(parseSegmentsFromString(event.target.name)), {
 					$touched: true,
 				});
 			},

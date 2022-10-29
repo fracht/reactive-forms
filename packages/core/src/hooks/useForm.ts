@@ -85,12 +85,28 @@ const deepCustomizer = (source1: unknown, source2: unknown) => {
 
 const formMetaPaths = createPxth<FormMeta>([]);
 
+// Const getInitialFormState = <Values extends object>(config: FormConfig<Values>): Partial<InitialFormState<Values>> => {
+// 	If (config.load) {
+// 		Return {
+// 			InitialValues: undefined,
+// 			InitialErrors: undefined,
+// 			InitialTouched: undefined,
+// 		};
+// 	}
+
+// 	Return {
+// 		InitialValues: config.initialValues,
+// 		InitialErrors: config.initialErrors,
+// 		InitialTouched: config.initialTouched,
+// 	};
+// };
+
 export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
 	const config = usePluginConfigDecorators(initialConfig);
 
 	const throwError = useThrowError();
 
-	const { schema, disablePureFieldsValidation } = config;
+	const { schema, disablePureFieldsValidation, load } = config;
 
 	const onSubmit = useReferenceCallback(config.onSubmit);
 	const validateFormFunction = useReferenceCallback(config.validateForm);
@@ -105,6 +121,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		initialValues = {} as Values,
 		initialErrors = {} as FieldError<Values>,
 		initialTouched = {} as FieldTouched<Values>,
+		// eslint-disable-next-line unicorn/consistent-destructuring
 	} = config.load
 		? {
 				initialValues: undefined,
@@ -134,10 +151,10 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 	const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
 
-	const loadReference = useRef(config.load);
-	loadReference.current = config.load;
+	const loadReference = useRef(load);
+	loadReference.current = load;
 
-	const [isLoaded, setIsLoaded] = useState(!config.load);
+	const [isLoaded, setIsLoaded] = useState(!load);
 
 	const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
 		postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
@@ -178,7 +195,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	const runFormValidationSchema = useCallback(
 		(values: Values): Promise<FieldError<Values> | undefined> => {
 			if (!schema) {
-				return Promise.resolve();
+				return Promise.resolve() as Promise<undefined>;
 			}
 
 			return runYupSchema(schema, values);
@@ -315,7 +332,8 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 			const onlyNecessaryErrors = deepGet(errors, attachPath);
 			const normalizedErrors = disablePureFieldsValidation
 				? merge(
-						setNestedValues(onlyNecessaryErrors as object),
+						// eslint-disable-next-line unicorn/no-useless-undefined
+						setNestedValues(onlyNecessaryErrors as object, undefined),
 						excludeOverlaps(
 							values,
 							deepGet(initialValuesReference.current, attachPath) as object,

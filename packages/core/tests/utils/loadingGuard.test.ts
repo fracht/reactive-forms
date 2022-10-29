@@ -33,7 +33,7 @@ describe('loadingGuard', () => {
 		expect(() => object_.a).toThrow();
 		expect(() => (object_['a'] = 'a')).toThrow();
 		expect(() => 'a' in object_).toThrow();
-		expect(() => delete object_.a).toThrow();
+		expect(() => delete (object_ as { a?: string }).a).toThrow();
 		expect(() => (object_['c'] = 'a')).toThrow();
 		expect(() => Object.keys(object_)).toThrow();
 	});

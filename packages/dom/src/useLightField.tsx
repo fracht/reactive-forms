@@ -20,8 +20,8 @@ export type LightFieldConfig = {
 export type LightFieldBag = [LightFieldInputBag, FieldMeta<string>];
 
 export type LightFieldInputBag = {
-	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onBlur: (e: FocusEvent<HTMLInputElement>) => void;
+	onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+	onBlur: (event: FocusEvent<HTMLInputElement>) => void;
 	name: string;
 };
 

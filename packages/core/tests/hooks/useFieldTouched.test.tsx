@@ -1,6 +1,6 @@
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { createPxth, Pxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Dispatch } from 'stocked';
 
 import { FieldTouched, FormConfig, FormShared, ReactiveFormProvider, useFieldTouched, useForm } from '../../src';
@@ -8,12 +8,12 @@ import { FieldTouched, FormConfig, FormShared, ReactiveFormProvider, useFieldTou
 const renderFieldTouched = <V, T extends object>(
 	name: Pxth<V>,
 	config: FormConfig<T>,
-): RenderHookResult<undefined, [FieldTouched<V>, Dispatch<FieldTouched<V>>]> => {
+): RenderHookResult<undefined, [FieldTouched<V> | undefined, Dispatch<FieldTouched<V>>]> => {
 	const {
 		result: { current: bag },
 	} = renderHook(() => useForm(config));
 
-	const wrapper = ({ children }) => (
+	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
 	);
 

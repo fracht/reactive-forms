@@ -1,3 +1,25 @@
 {
-	"extends": "@sirse-dev/eslint-config"
+	"extends": "@sirse-dev/eslint-config",
+	"root": true,
+	"rules": {
+		"unicorn/prevent-abbreviations": "off",
+		"unicorn/no-array-reduce": "off",
+		"unicorn/no-null": "off"
+	},
+	"overrides": [
+		{
+			"files": "**/*.{tsx,jsx}",
+			"rules": {
+				"@typescript-eslint/naming-convention": [
+					"error",
+					{
+						"selector": ["variableLike"],
+						"format": ["camelCase", "PascalCase"],
+						"leadingUnderscore": "allow",
+						"trailingUnderscore": "forbid"
+					}
+				]
+			}
+		}
+	]
 }

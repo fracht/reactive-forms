@@ -31,8 +31,8 @@
 	"devDependencies": {
 		"@babel/core": "^7.19.6",
 		"@reactive-forms/core": "workspace:*",
-		"@sirse-dev/eslint-config": "^1.0.12",
 		"@types/jest": "^26.0.24",
+		"@types/node": "^18.11.7",
 		"@types/react": "18.0.23",
 		"aqu": "^0.4.3",
 		"eslint": "^8.26.0",

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { string } from 'yup';
 
 import {
@@ -20,7 +20,7 @@ const renderUseFieldValidator = <V, T extends object>(
 		result: { current: bag },
 	} = renderHook(() => useForm(formConfig));
 
-	const wrapper = ({ children }) => (
+	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
 	);
 

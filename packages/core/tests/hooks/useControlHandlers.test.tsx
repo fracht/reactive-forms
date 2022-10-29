@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { FormShared, ReactiveFormProvider, useForm } from '../../src';
 import { useControlHandlers } from '../../src/hooks/useControlHandlers';
@@ -16,7 +16,7 @@ const renderControlHandlers = () => {
 		}),
 	);
 
-	const wrapper = ({ children }) => (
+	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
 	);
 

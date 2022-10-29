@@ -4,13 +4,13 @@ import invariant from 'tiny-invariant';
 export class FunctionArray<T extends (...arguments_: any[]) => any> {
 	private items: Array<T> = [];
 
-	public call = (...arguments_: Parameters<T>): ReturnType<T>[] => {
-		return this.items.map((function_) => function_(...arguments_));
+	public call = (...args: Parameters<T>): ReturnType<T>[] => {
+		return this.items.map((fn) => fn(...args));
 	};
 
-	public lazyCall = (...arguments_: Parameters<T>): ReturnType<T> | undefined => {
+	public lazyCall = (...args: Parameters<T>): ReturnType<T> | undefined => {
 		for (const item of this.items) {
-			const output = item(...arguments_);
+			const output = item(...args);
 			if (output !== null && output !== undefined && output !== void 0) {
 				return output;
 			}
@@ -18,13 +18,13 @@ export class FunctionArray<T extends (...arguments_: any[]) => any> {
 		return undefined;
 	};
 
-	public asyncCall = async (...arguments_: Parameters<T>): Promise<ReturnType<T>[]> => {
-		return Promise.all(this.items.map(async (function_) => await function_(...arguments_)));
+	public asyncCall = async (...args: Parameters<T>): Promise<ReturnType<T>[]> => {
+		return Promise.all(this.items.map(async (fn) => await fn(...args)));
 	};
 
-	public lazyAsyncCall = async (...arguments_: Parameters<T>): Promise<ReturnType<T> | undefined> => {
+	public lazyAsyncCall = async (...args: Parameters<T>): Promise<ReturnType<T> | undefined> => {
 		for (const item of this.items) {
-			const output = await item(...arguments_);
+			const output = await item(...args);
 			if (output !== null && output !== undefined && output !== void 0) {
 				return output;
 			}
@@ -32,12 +32,12 @@ export class FunctionArray<T extends (...arguments_: any[]) => any> {
 		return undefined;
 	};
 
-	public push = (function_: T) => {
-		this.items.push(function_);
+	public push = (...fns: T[]) => {
+		this.items.push(...fns);
 	};
 
-	public remove = (function_: T) => {
-		const index = this.items.indexOf(function_);
+	public remove = (fn: T) => {
+		const index = this.items.indexOf(fn);
 
 		invariant(index !== -1, 'Could not remove, because function does not exist in array.');
 

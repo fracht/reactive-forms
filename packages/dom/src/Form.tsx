@@ -10,8 +10,8 @@ export const Form = <Values extends object>({ children, submitAction, ...other }
 	const { submit, resetForm } = useFormContext<Values>();
 
 	const onSubmit = useCallback(
-		(e: FormEvent<HTMLFormElement>) => {
-			e.preventDefault();
+		(event: FormEvent<HTMLFormElement>) => {
+			event.preventDefault();
 			submit(submitAction);
 		},
 		[submit, submitAction],

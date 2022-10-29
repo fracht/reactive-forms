@@ -1,6 +1,6 @@
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { createPxth, Pxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
 
@@ -10,7 +10,7 @@ const renderArrayControl = <T extends object, V>(
 ): [RenderHookResult<undefined, ArrayControl<V>>, FormShared<T>] => {
 	const { result: bag } = renderHook(() => useForm(config));
 
-	const wrapper = ({ children }) => (
+	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag.current as unknown as FormShared<object>}>
 			{() => children}
 		</ReactiveFormProvider>

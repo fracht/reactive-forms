@@ -35,10 +35,10 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.19.6",
-		"@sirse-dev/eslint-config": "^1.0.12",
 		"@testing-library/react-hooks": "^8.0.1",
 		"@types/jest": "^26.0.23",
 		"@types/lodash": "^4.14.161",
+		"@types/node": "^18.11.7",
 		"@types/react": "18.0.23",
 		"aqu": "^0.4.3",
 		"clean-publish": "^4.0.1",

@@ -17,9 +17,8 @@
 		"noUnusedParameters": true,
 		"allowSyntheticDefaultImports": true,
 		"noFallthroughCasesInSwitch": true,
-		"rootDir": "./src",
 		"strict": true,
 		"importHelpers": true
 	},
-	"include": ["src", "types"]
+	"include": ["src", "tests"]
 }

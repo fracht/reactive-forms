@@ -7,7 +7,7 @@ import { getErrorPath } from '../constants';
 import { FieldError } from '../typings/FieldError';
 
 export const yupToFormErrors = <V>(yupError: ValidationError): FieldError<V> => {
-	const isArray = yupError.inner?.some((value) => !isNaN(+toPath(value.path)[0]));
+	const isArray = yupError.inner?.some((value) => !Number.isNaN(+toPath(value.path)[0]));
 
 	const errors: FieldError<V> = isArray ? ([] as unknown as FieldError<V>) : ({} as FieldError<V>);
 

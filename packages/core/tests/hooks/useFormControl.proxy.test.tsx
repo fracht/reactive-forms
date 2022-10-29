@@ -1,6 +1,6 @@
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
 import { createPxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { MappingProxy, StockProxy } from 'stocked';
 
 import { FormProxyProvider, FormShared, ReactiveFormProvider, useForm, useFormContext } from '../../src';
@@ -14,7 +14,7 @@ const renderFormContextWithProxy = <T extends object>(
 		result: { current: bag },
 	} = renderHook(() => useForm(config));
 
-	const wrapper = ({ children }) => (
+	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
 			{() => <FormProxyProvider proxy={proxy}>{children}</FormProxyProvider>}
 		</ReactiveFormProvider>

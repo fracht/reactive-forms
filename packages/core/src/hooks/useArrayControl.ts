@@ -149,10 +149,10 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig<V>): ArrayContro
 
 	const move = useReferenceCallback((from: number, to: number) =>
 		updateArray(
-			(items) => {
+			<T>(items: T[]) => {
 				const item = items[from];
 				if (items.length <= to) {
-					items.push(...Array.from({ length: to - items.length + 1 }));
+					items.push(...(Array.from({ length: to - items.length + 1 }) as T[]));
 				}
 				items.splice(from, 1);
 				items.splice(to, 0, item);

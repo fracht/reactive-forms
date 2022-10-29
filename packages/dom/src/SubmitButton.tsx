@@ -5,7 +5,7 @@ import React, { ComponentType, ElementType, useCallback } from 'react';
 import { renderComponent, RenderHelpers } from './renderComponent';
 
 export type SubmitButtonBag = {
-	onClick: (e: React.MouseEvent) => void;
+	onClick: (event: React.MouseEvent) => void;
 	disabled: boolean;
 };
 

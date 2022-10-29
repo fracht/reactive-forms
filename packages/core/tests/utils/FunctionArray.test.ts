@@ -67,7 +67,7 @@ describe('FunctionArray call and lazy call', () => {
 		const function_ = jest.fn();
 		array.push(function_, function_, function_);
 
-		function_.mockReturnValueOnce();
+		function_.mockReturnValueOnce(undefined);
 		function_.mockReturnValueOnce(10);
 
 		const lazyValue = array.lazyCall();

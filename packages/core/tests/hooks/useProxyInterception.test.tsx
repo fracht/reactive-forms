@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { MappingProxy } from 'stocked';
 
 import { FieldInnerError, FieldValidator, ReactiveFormProvider, useForm } from '../../src';
@@ -52,7 +52,7 @@ const renderUseProxyInterception = () => {
 	const validateField = jest.fn(bag.current.validateField);
 
 	const { result } = renderHook(() => useProxyInterception(proxy), {
-		wrapper: ({ children }) => {
+		wrapper: ({ children }: PropsWithChildren) => {
 			return (
 				<ReactiveFormProvider
 					formBag={{

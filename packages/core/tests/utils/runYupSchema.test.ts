@@ -57,7 +57,7 @@ describe('object schema', () => {
 			{
 				a: '',
 				b: {
-					c: undefined,
+					c: undefined as string | undefined,
 				},
 			},
 			{
