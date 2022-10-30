@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { renderHook, waitFor } from '@testing-library/react';
+import { render, renderHook } from '@testing-library/react';
 
 import {
 	createPluginArray,
@@ -14,10 +14,7 @@ import {
 
 const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
 	return renderHook(() => useForm(config), {
-		wrapper: ({ children }: PropsWithChildren) => <FormPlugins plugins={plugins}>{children}</FormPlugins>,
-		initialProps: {
-			plugins,
-		},
+		wrapper: ({ children }) => <FormPlugins plugins={plugins}>{children}</FormPlugins>
 	});
 };
 
@@ -86,11 +83,9 @@ describe('FormPlugins', () => {
 	it('should fail when plugin array updates', async () => {
 		const plugins = createPluginArray();
 
-		const { rerender } = renderPlugins({ initialValues: {} }, plugins);
+		const {rerender} = render(<FormPlugins plugins={plugins} />)
 
-		waitFor(() => {
-			expect(() => rerender({ plugins })).not.toThrow();
-			expect(() => rerender({ plugins: createPluginArray() })).toThrow();
-		});
+		expect(() => rerender(<FormPlugins plugins={plugins} />)).not.toThrow();
+		expect(() => rerender(<FormPlugins plugins={createPluginArray()} />)).toThrow();
 	});
 });
