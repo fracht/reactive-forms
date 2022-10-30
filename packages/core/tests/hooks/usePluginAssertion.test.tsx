@@ -15,9 +15,7 @@ describe('usePluginAssertion', () => {
 			return bag;
 		});
 
-		let error = null;
-
-		try {
+		const assertPlugins = () => {
 			renderUsePluginAssertion(
 				{
 					token: Symbol.for('a'),
@@ -30,11 +28,9 @@ describe('usePluginAssertion', () => {
 					useConfigDecorator: dummyDecorator,
 				}),
 			);
-		} catch (err) {
-			error = err;
-		}
+		};
 
-		expect(error).not.toBe(null);
+		expect(assertPlugins).toThrow();
 	});
 
 	it('should throw error when plugin array is empty', () => {
@@ -42,9 +38,7 @@ describe('usePluginAssertion', () => {
 			return bag;
 		});
 
-		let error = null;
-
-		try {
+		const assertPlugins = () => {
 			renderUsePluginAssertion(
 				{
 					token: Symbol.for('a'),
@@ -53,11 +47,9 @@ describe('usePluginAssertion', () => {
 				},
 				createPluginArray(),
 			);
-		} catch (err) {
-			error = err;
-		}
+		};
 
-		expect(error).not.toBe(null);
+		expect(assertPlugins).toThrow();
 	});
 
 	it('should not throw error when plugin is specified', () => {
@@ -65,9 +57,7 @@ describe('usePluginAssertion', () => {
 			return bag;
 		});
 
-		let error = null;
-
-		try {
+		const assertPlugins = () => {
 			renderUsePluginAssertion(
 				{
 					token: Symbol.for('a'),
@@ -80,10 +70,8 @@ describe('usePluginAssertion', () => {
 					useConfigDecorator: dummyDecorator,
 				}),
 			);
-		} catch (err) {
-			error = err;
-		}
+		};
 
-		expect(error).toBe(null);
+		expect(assertPlugins).not.toThrow();
 	});
 });
