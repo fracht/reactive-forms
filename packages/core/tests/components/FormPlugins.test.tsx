@@ -14,7 +14,7 @@ import {
 
 const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
 	return renderHook(() => useForm(config), {
-		wrapper: ({ children }) => <FormPlugins plugins={plugins}>{children}</FormPlugins>
+		wrapper: ({ children }) => <FormPlugins plugins={plugins}>{children}</FormPlugins>,
 	});
 };
 
@@ -83,7 +83,7 @@ describe('FormPlugins', () => {
 	it('should fail when plugin array updates', async () => {
 		const plugins = createPluginArray();
 
-		const {rerender} = render(<FormPlugins plugins={plugins} />)
+		const { rerender } = render(<FormPlugins plugins={plugins} />);
 
 		expect(() => rerender(<FormPlugins plugins={plugins} />)).not.toThrow();
 		expect(() => rerender(<FormPlugins plugins={createPluginArray()} />)).toThrow();

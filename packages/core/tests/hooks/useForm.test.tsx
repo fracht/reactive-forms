@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { FieldError, ReactiveFormProvider, useFieldError, useForm } from '../../src';
@@ -25,13 +25,13 @@ describe('validateUpdatedFields', () => {
 
 		let cleanup: () => void;
 
-		waitFor(async () => {
+		await act(async () => {
 			cleanup = result.current.registerValidator(somePxth, validator);
 			result.current.setFieldValue(somePxth, 'asdf');
+		});
 
-			expect(errorResult.current[0]).toStrictEqual({
-				$error: 'error',
-			});
+		expect(errorResult.current[0]).toStrictEqual({
+			$error: 'error',
 		});
 
 		act(() => {
@@ -58,13 +58,13 @@ describe('validateUpdatedFields', () => {
 
 		let cleanup: () => void;
 
-		waitFor(async () => {
+		await act(async () => {
 			cleanup = result.current.registerValidator(somePxth, validator);
 			result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
+		});
 
-			expect(errorResult.current[0]).toStrictEqual({
-				$error: 'error',
-			});
+		expect(errorResult.current[0]).toStrictEqual({
+			$error: 'error',
 		});
 
 		act(() => {

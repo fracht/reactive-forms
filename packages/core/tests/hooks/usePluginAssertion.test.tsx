@@ -10,7 +10,7 @@ const renderUsePluginAssertion = (check: Plugin, specified: PluginArray) => {
 };
 
 describe('usePluginAssertion', () => {
-	it('should throw error when plugin not found',  () => {
+	it('should throw error when plugin not found', () => {
 		const dummyDecorator = jest.fn((bag) => {
 			return bag;
 		});
@@ -29,7 +29,7 @@ describe('usePluginAssertion', () => {
 					useBagDecorator: dummyDecorator,
 					useConfigDecorator: dummyDecorator,
 				}),
-			)
+			);
 		} catch (err) {
 			error = err;
 		}
@@ -52,7 +52,7 @@ describe('usePluginAssertion', () => {
 					useConfigDecorator: dummyDecorator,
 				},
 				createPluginArray(),
-			)
+			);
 		} catch (err) {
 			error = err;
 		}
@@ -79,7 +79,7 @@ describe('usePluginAssertion', () => {
 					useBagDecorator: dummyDecorator,
 					useConfigDecorator: dummyDecorator,
 				}),
-			)
+			);
 		} catch (err) {
 			error = err;
 		}
