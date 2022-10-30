@@ -19,12 +19,12 @@ describe('ReactiveFormProvider', () => {
 	it('should not render children while form is not loaded', () => {
 		const { result: formBagResult } = renderHook(() => useForm({ initialValues: {} }));
 
-		const { getByText } = render(
+		const { queryByText } = render(
 			<ReactiveFormProvider formBag={{ ...formBagResult.current, isLoaded: false }}>
 				{() => <div>children</div>}
 			</ReactiveFormProvider>,
 		);
 
-		expect(() => getByText('children')).toThrow();
+		expect(queryByText('children')).toBe(null);
 	});
 });
