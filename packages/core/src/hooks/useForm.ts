@@ -26,24 +26,11 @@ import { setNestedValues } from '../utils/setNestedValues';
 import { useRefCallback } from '../utils/useRefCallback';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
-<<<<<<< HEAD
 export type InitialFormStateConfig<Values extends object> = {
-    initialValues: Values;
-    initialTouched?: FieldTouched<Values>;
-    initialErrors?: FieldError<Values>;
+	initialValues: Values;
+	initialTouched?: FieldTouched<Values>;
+	initialErrors?: FieldError<Values>;
 };
-=======
-export type InitialFormStateConfig<Values extends object> =
-	| {
-			initialValues: Values;
-			initialTouched?: FieldTouched<Values>;
-			initialErrors?: FieldError<Values>;
-			load?: undefined;
-	  }
-	| {
-			load: () => Promise<InitialFormState<Values>>;
-	  };
->>>>>>> main
 
 export interface ExtendableFormConfig<Values extends object> {
 	schema?: BaseSchema<Partial<Values> | undefined>;
@@ -77,12 +64,7 @@ export type DefaultFormShared<Values extends object> = Omit<
 	FormHelpers<Values>;
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
-<<<<<<< HEAD
-    submit: (action?: SubmitAction<Values>) => void;
-=======
 	submit: (action?: SubmitAction<Values>) => void;
-	isLoaded: boolean;
->>>>>>> main
 }
 
 const deepCustomizer = (src1: unknown, src2: unknown) => {
@@ -98,13 +80,7 @@ const formMetaPaths = createPxth<FormMeta>([]);
 export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
 	const config = usePluginConfigDecorators(initialConfig);
 
-<<<<<<< HEAD
-    const { schema, disablePureFieldsValidation } = config;
-=======
-	const throwError = useThrowError();
-
 	const { schema, disablePureFieldsValidation } = config;
->>>>>>> main
 
 	const onSubmit = useRefCallback(config.onSubmit);
 	const validateFormFn = useRefCallback(config.validateForm);
@@ -115,29 +91,11 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 	const paths = useMemo(() => createPxth<Values>([]), []);
 
-<<<<<<< HEAD
-    const {
-        initialValues = {} as Values,
-        initialErrors = {} as FieldError<Values>,
-        initialTouched = {} as FieldTouched<Values>
-    } = config;
-=======
 	const {
 		initialValues = {} as Values,
 		initialErrors = {} as FieldError<Values>,
 		initialTouched = {} as FieldTouched<Values>,
-	} = config.load
-		? {
-				initialValues: undefined,
-				initialErrors: undefined,
-				initialTouched: undefined,
-		  }
-		: (config as {
-				initialValues: Values;
-				initialTouched?: FieldTouched<Values>;
-				initialErrors?: FieldError<Values>;
-		  });
->>>>>>> main
+	} = config;
 
 	const control = useFormControl({ initialValues, initialErrors, initialTouched });
 	const {
@@ -152,24 +110,10 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	const initialErrorsRef = useRef(initialErrors);
 	const initialTouchedRef = useRef(initialTouched);
 
-<<<<<<< HEAD
-    const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
-
-    const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
-        postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
-=======
-	const isPending = useRef(false);
-
 	const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
-
-	const loadRef = useRef(config.load);
-	loadRef.current = config.load;
-
-	const [isLoaded, setIsLoaded] = useState(!config.load);
 
 	const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
 		postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
->>>>>>> main
 
 		return () =>
 			postprocessors.current.splice(
@@ -367,14 +311,14 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 	useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
 
-    const bag: FormShared<Values> = {
-        submit,
-        hasValidator,
-        registerValidator,
-        ...helpers
-    };
+	const bag: FormShared<Values> = {
+		submit,
+		hasValidator,
+		registerValidator,
+		...helpers,
+	};
 
 	const bagWithPlugins = usePluginBagDecorators(bag, config);
 
-    return bagWithPlugins;
+	return bagWithPlugins;
 };
