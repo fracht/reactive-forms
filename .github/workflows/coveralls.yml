@@ -1,32 +1,36 @@
 name: Test Coveralls
 
 on:
-  push:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-    branches: [main]
-  workflow_dispatch:
+    push:
+        paths:
+            - 'src/**'
+            - 'tests/**'
+        branches: [main]
+    workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
 
-    - uses: actions/checkout@v1
+            - name: Use Node.js 10.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 10.x
 
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
+            - name: Install pnpm 7.14.0
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.14.0
 
-    - name: npm install, npm test:coverage
-      run: |
-        npm install
-        npm run test:coverage
+            - name: pnpm install, pnpm test:coverage
+              run: |
+                  pnpm install
+                  pnpm run test:coverage
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Coveralls
+              uses: coverallsapp/github-action@master
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}

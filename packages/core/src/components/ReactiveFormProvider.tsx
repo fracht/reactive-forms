@@ -4,12 +4,12 @@ import { FormContext } from './FormContext';
 import { FormShared } from '../hooks/useForm';
 
 export type ReactiveFormProviderProps<Values extends object> = PropsWithChildren<{
-    formBag: FormShared<Values>;
+	formBag: FormShared<Values>;
 }>;
 
 export const ReactiveFormProvider = <Values extends object>({
-    children,
-    formBag
+	children,
+	formBag,
 }: ReactiveFormProviderProps<Values>) => (
-    <FormContext.Provider value={formBag as unknown as FormShared<object>}>{children}</FormContext.Provider>
+	<FormContext.Provider value={formBag as unknown as FormShared<object>}>{children}</FormContext.Provider>
 );

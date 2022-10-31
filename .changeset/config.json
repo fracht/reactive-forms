@@ -1,0 +1,10 @@
+{
+	"$schema": "https://unpkg.com/@changesets/config@2.0.1/schema.json",
+	"changelog": "@changesets/cli/changelog",
+	"commit": false,
+	"fixed": [["@reactive-forms/*"]],
+	"linked": [],
+	"access": "restricted",
+	"baseBranch": "main",
+	"ignore": []
+}

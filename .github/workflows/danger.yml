@@ -19,13 +19,15 @@ jobs:
               with:
                   node-version: 14.x
 
-            - name: Install npm 17.x
-              run: npm i -g npm@latest
+            - name: Install pnpm 7.14.0
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.14.0
 
             - name: Install dependencies
-              run: npm install
+              run: pnpm install
 
             - name: Danger
-              run: npx danger ci
+              run: pnpm danger ci
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

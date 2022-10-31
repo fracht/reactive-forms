@@ -4,7 +4,7 @@ import { ReactiveFormProvider } from './ReactiveFormProvider';
 import { FormConfig, FormShared, useForm } from '../hooks/useForm';
 
 export type ReactiveFormProps<Values extends object> = FormConfig<Values> & {
-    children: ((shared: FormShared<Values>) => React.ReactNode) | React.ReactNode;
+	children: ((shared: FormShared<Values>) => React.ReactNode) | React.ReactNode;
 };
 
 /**
@@ -19,11 +19,11 @@ export type ReactiveFormProps<Values extends object> = FormConfig<Values> & {
  * ```
  */
 export const ReactiveForm = <Values extends object>({ children, ...config }: ReactiveFormProps<Values>) => {
-    const formBag = useForm<Values>(config);
+	const formBag = useForm<Values>(config);
 
-    return (
-        <ReactiveFormProvider formBag={formBag}>
-            {typeof children === 'function' ? children(formBag) : children}
-        </ReactiveFormProvider>
-    );
+	return (
+		<ReactiveFormProvider formBag={formBag}>
+			{typeof children === 'function' ? children(formBag) : children}
+		</ReactiveFormProvider>
+	);
 };
