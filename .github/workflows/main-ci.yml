@@ -62,3 +62,6 @@ jobs:
 
             - name: Check files format
               run: pnpm run format:check
+
+            - name: Check for changeset existence
+              run: changeset status --since=main
