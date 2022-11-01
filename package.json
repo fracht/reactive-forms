@@ -15,7 +15,7 @@
 		"size": "npm run build && size-limit",
 		"size:analyze": "size-limit --why",
 		"test": "turbo run test --filter=@reactive-forms/*",
-		"release": "pnpm build && pnpm publish",
+		"release": "pnpm build && pnpm publish -r",
 		"bump": "changeset version && pnpm i --lockfile-only"
 	},
 	"devDependencies": {
