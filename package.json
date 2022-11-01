@@ -14,7 +14,8 @@
 		"publish:check": "turbo run build lint test --filter=...@reactive-forms/*...",
 		"size": "npm run build && size-limit",
 		"size:analyze": "size-limit --why",
-		"test": "turbo run test --filter=@reactive-forms/*"
+		"test": "turbo run test --filter=@reactive-forms/*",
+		"release": "pnpm build && pnpm publish"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.25.0",
