@@ -85,9 +85,11 @@ jobs:
 
     changeset:
         name: Check for changeset existence
-        if: ${{ contains(fromJSON(github.event.pull_request.labels), "chore") }}
+        if: ${{ contains(fromJSON(github.event.pull_request.labels), 'chore') }}
 
         steps:
+            - run: echo "${{ fromJSON(github.event.pull_request.labels) }}"
+
             - name: Checkout
               uses: actions/checkout@v3
               with:
