@@ -105,5 +105,8 @@ jobs:
               with:
                   version: 7.x.x
 
+            - name: Install global dependencies
+              run: pnpm install
+
             - name: Run changeset status
               run: pnpm changeset status --since=origin/main
