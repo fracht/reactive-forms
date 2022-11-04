@@ -90,6 +90,8 @@ jobs:
         steps:
             - run: echo ${{ github.event.pull_request.labels }}
 
+            - run: echo ${{ contains(github.event.pull_request.labels, 'chore') }}
+
             # - name: Checkout
             #   uses: actions/checkout@v3
             #   with:
