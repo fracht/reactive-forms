@@ -48,17 +48,11 @@ jobs:
               with:
                   version: 7.x.x
 
-            - name: Installing dependencies
-              run: pnpm install
-
             - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  skip-step: install
                   test-script: pnpm run test:coverage
                   package-manager: pnpm
-                  coverage-file: report.json
-                  base-coverage-file: report.json
                   working-directory: ${{ matrix.path }}
     build:
         name: Build, lint, and test changed packages on Node 16
