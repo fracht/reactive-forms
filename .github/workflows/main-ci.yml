@@ -85,7 +85,6 @@ jobs:
 
     changeset:
         name: Check for changeset existence
-        if: ${{ contains(fromJSON(github.event.pull_request.labels), 'chore') }}
         runs-on: ubuntu-latest
 
         steps:
