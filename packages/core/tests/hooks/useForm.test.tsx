@@ -1,8 +1,27 @@
-import React from 'react';
 import { act, renderHook } from '@testing-library/react';
-import { createPxth } from 'pxth';
+import { createPxth, Pxth } from 'pxth';
+import { Stock } from 'stocked';
 
-import { FieldError, ReactiveFormProvider, useFieldError, useForm } from '../../src';
+import { FieldError, FieldInnerError, useForm } from '../../src';
+
+const waitForStockValueUpdate = async <T,>(stock: Stock<object>, path: Pxth<T>, triggerUpdate: () => void) => {
+	let watchCleanup: () => void = () => {
+		// initialize function
+	};
+
+	const value = await new Promise<T>((resolve) => {
+		watchCleanup = stock.watch(path, (value) => {
+			resolve(value);
+		});
+
+		triggerUpdate();
+	});
+
+	return {
+		value,
+		watchCleanup,
+	};
+};
 
 describe('validateUpdatedFields', () => {
 	it('should run field-level validations when field value changes', async () => {
@@ -14,28 +33,27 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult } = renderHook(() => useFieldError(somePxth), {
-			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
-			),
-		});
-
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
 		let cleanup: () => void;
 
-		await act(async () => {
-			cleanup = result.current.registerValidator(somePxth, validator);
-			result.current.setFieldValue(somePxth, 'asdf');
-		});
+		const { value: newError, watchCleanup } = await waitForStockValueUpdate<FieldInnerError>(
+			result.current.errors,
+			somePxth as Pxth<FieldInnerError>,
+			() => {
+				cleanup = result.current.registerValidator(somePxth, validator);
+				result.current.setFieldValue(somePxth, 'asdf');
+			},
+		);
 
-		expect(errorResult.current[0]).toStrictEqual({
+		expect(newError).toStrictEqual({
 			$error: 'error',
 		});
 
 		act(() => {
 			cleanup();
+			watchCleanup();
 		});
 	});
 	it('should run field-level validations when parent value changes', async () => {
@@ -47,28 +65,27 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult } = renderHook(() => useFieldError(somePxth), {
-			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={result.current}>{() => children}</ReactiveFormProvider>
-			),
-		});
-
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
 		let cleanup: () => void;
 
-		await act(async () => {
-			cleanup = result.current.registerValidator(somePxth, validator);
-			result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
-		});
+		const { value: newError, watchCleanup } = await waitForStockValueUpdate<FieldInnerError>(
+			result.current.errors,
+			somePxth as Pxth<FieldInnerError>,
+			() => {
+				cleanup = result.current.registerValidator(somePxth, validator);
+				result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
+			},
+		);
 
-		expect(errorResult.current[0]).toStrictEqual({
+		expect(newError).toStrictEqual({
 			$error: 'error',
 		});
 
 		act(() => {
 			cleanup();
+			watchCleanup();
 		});
 	});
 });
