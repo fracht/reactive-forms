@@ -49,14 +49,11 @@ jobs:
             - name: Installing dependencies
               run: pnpm install
 
-            - name: Debug
-              run: echo ${{ matrix.path }}
-
             - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
-                  test-script: pnpm turbo run test:coverage --filter=...[origin/${{ github.base_ref }}]
+                  test-script: pnpm run test:coverage
                   package-manager: pnpm
                   coverage-file: report.json
                   base-coverage-file: report.json
