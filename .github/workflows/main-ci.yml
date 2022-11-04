@@ -35,6 +35,8 @@ jobs:
                   skip-step: install
                   test-script: pnpm turbo run test:coverage --filter=...[origin/${{ github.base_ref }}]
                   package-manager: pnpm
+                  coverage-file: report.json
+                  base-coverage-file: report.json
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
