@@ -85,24 +85,25 @@ jobs:
 
     changeset:
         name: Check for changeset existence
-        if: ${{ contains(github.event.pull_request.labels, 'chore') }}
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
+            - run: echo ${{ github.event.pull_request.labels }}
 
-            - name: Use Node 16
-              uses: actions/setup-node@v1
-              with:
-                  node-version: 16
+            # - name: Checkout
+            #   uses: actions/checkout@v3
+            #   with:
+            #       fetch-depth: 0
 
-            - name: Install pnpm 7.x.x
-              uses: pnpm/action-setup@v2.2.4
-              with:
-                  version: 7.x.x
+            # - name: Use Node 16
+            #   uses: actions/setup-node@v1
+            #   with:
+            #       node-version: 16
 
-            - name: Run changeset status
-              run: pnpm changeset status --since=origin/main
+            # - name: Install pnpm 7.x.x
+            #   uses: pnpm/action-setup@v2.2.4
+            #   with:
+            #       version: 7.x.x
+
+            # - name: Run changeset status
+            #   run: pnpm changeset status --since=origin/main
