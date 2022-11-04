@@ -5,6 +5,7 @@ on:
             - 'packages/docs/**'
             - 'examples/**'
         branches: [main]
+        types: [labeled, opened, synchronize, reopened]
     workflow_dispatch:
 jobs:
     generate_matrix:
@@ -88,9 +89,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - run: echo ${{ github.event.pull_request.labels }}
+            - run: echo ${{ fromJSON(github.event.pull_request.labels) }}
 
-            - run: echo ${{ contains(github.event.pull_request.labels, 'chore') }}
+            - run: echo ${{ github.event.pull_request.labels.*.name, 'chore') }}
 
             # - name: Checkout
             #   uses: actions/checkout@v3
