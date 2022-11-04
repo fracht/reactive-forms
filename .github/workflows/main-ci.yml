@@ -21,7 +21,9 @@ jobs:
 
             - name: Find changed packages
               id: changed_packages
-              uses: alexshukel/get-changed-workspaces-action@v1.0.0
+              uses: alexshukel/get-changed-workspaces-action@v1.1.0
+              with:
+                  filter: '@reactive-forms/*'
     coverage:
         name: Coverage report
         if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
