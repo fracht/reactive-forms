@@ -5,7 +5,6 @@ on:
             - 'packages/docs/**'
             - 'examples/**'
         branches: [main]
-        types: [labeled, opened, synchronize, reopened]
     workflow_dispatch:
 jobs:
     generate_matrix:
@@ -83,30 +82,3 @@ jobs:
 
             - name: Check files format
               run: pnpm run format:check
-
-    changeset:
-        name: Check for changeset existence
-        runs-on: ubuntu-latest
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'chore') }}
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-
-            - name: Use Node 16
-              uses: actions/setup-node@v1
-              with:
-                  node-version: 16
-
-            - name: Install pnpm 7.x.x
-              uses: pnpm/action-setup@v2.2.4
-              with:
-                  version: 7.x.x
-
-            - name: Install global dependencies
-              run: pnpm install
-
-            - name: Run changeset status
-              run: pnpm changeset status --since=origin/main
