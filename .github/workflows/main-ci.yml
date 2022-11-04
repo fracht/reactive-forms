@@ -34,6 +34,7 @@ jobs:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   skip-step: install
                   test-script: pnpm turbo run test:coverage --filter=...[origin/${{ github.base_ref }}]
+                  package-manager: pnpm
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
