@@ -1,9 +1,6 @@
 name: Size Limit
 on:
     pull_request:
-        paths-ignore:
-            - 'packages/docs/**'
-            - 'examples/**'
         branches: [main]
     workflow_dispatch:
 jobs:
