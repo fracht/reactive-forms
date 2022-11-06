@@ -18,9 +18,6 @@
 		"prepublish": {
 			"cache": true,
 			"dependsOn": ["lint", "build"]
-		},
-		"test:coverage": {
-			"dependsOn": ["build"]
 		}
 	}
 }

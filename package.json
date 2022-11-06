@@ -16,7 +16,8 @@
 		"release": "pnpm build && pnpm publish -r",
 		"size": "npm run build && size-limit",
 		"size:analyze": "size-limit --why",
-		"test": "turbo run test --filter=@reactive-forms/*"
+		"test": "turbo run test --filter=@reactive-forms/*",
+		"turbo": "turbo"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.25.0",
