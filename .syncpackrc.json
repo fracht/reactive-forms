@@ -21,5 +21,7 @@
 		"peerDependencies",
 		"pnpm"
 	],
-	"indent": "\t"
+	"indent": "\t",
+	"peer": false,
+	"workspace": false
 }

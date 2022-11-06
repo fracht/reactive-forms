@@ -9,7 +9,7 @@
 	"scripts": {
 		"build": "turbo run build --filter=@reactive-forms/*",
 		"bump": "changeset version && pnpm i --lockfile-only",
-		"format": "syncpack format && prettier --write \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
+		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
 		"lint": "eslint .",
 		"publish:check": "turbo run build lint test --filter=...@reactive-forms/*...",
@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@changesets/cli": "^2.25.0",
 		"@octokit/core": "^4.1.0",
-		"@reactive-tools/eslint-config": "workspace:*",
+		"@reactive-tools/eslint-config": "0.0.0",
 		"@size-limit/preset-small-lib": "^4.10.2",
 		"clean-publish": "^4.0.1",
 		"danger": "^10.6.4",

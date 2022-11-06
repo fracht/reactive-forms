@@ -26,9 +26,6 @@
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
 		"test:watch": "jest --passWithNoTests --watch"
 	},
-	"dependencies": {
-		"@reactive-forms/core": "^0.8.12"
-	},
 	"devDependencies": {
 		"@babel/core": "^7.19.6",
 		"@reactive-forms/core": "workspace:*",
