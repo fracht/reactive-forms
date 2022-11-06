@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { act, renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth, Pxth } from 'pxth';
 
 import { FieldContext, FormConfig, FormShared, ReactiveFormProvider, useField, useForm } from '../../src';
@@ -7,7 +7,7 @@ import { FieldContext, FormConfig, FormShared, ReactiveFormProvider, useField, u
 const renderField = <V, T extends object>(
 	name: Pxth<V>,
 	config: FormConfig<T>,
-): RenderHookResult<undefined, FieldContext<V>> => {
+): RenderHookResult<FieldContext<V>, undefined> => {
 	const {
 		result: { current: bag },
 	} = renderHook(() => useForm(config));
@@ -43,12 +43,12 @@ describe('useField', () => {
 
 	it('should return correct error', () => {
 		const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
-		expect(result.current.meta.error.$error).toBe('error');
+		expect(result.current.meta.error?.$error).toBe('error');
 	});
 
 	it('should return correct touched', () => {
 		const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
-		expect(result.current.meta.touched.$touched).toBe(true);
+		expect(result.current.meta.touched?.$touched).toBe(true);
 	});
 
 	it('should setValue', async () => {
@@ -68,7 +68,7 @@ describe('useField', () => {
 			await result.current.control.setTouched({ $touched: false });
 		});
 
-		expect(result.current.meta.touched.$touched).toBe(false);
+		expect(result.current.meta.touched?.$touched).toBe(false);
 	});
 
 	it('should setError', async () => {
@@ -78,6 +78,6 @@ describe('useField', () => {
 			await result.current.control.setError({ $error: 'modified error' });
 		});
 
-		expect(result.current.meta.error.$error).toBe('modified error');
+		expect(result.current.meta.error?.$error).toBe('modified error');
 	});
 });

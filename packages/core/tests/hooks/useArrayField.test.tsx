@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth, Pxth } from 'pxth';
 
 import { ArrayFieldProps, FormConfig, FormShared, ReactiveFormProvider, useArrayField, useForm } from '../../src';
@@ -7,7 +7,7 @@ import { ArrayFieldProps, FormConfig, FormShared, ReactiveFormProvider, useArray
 const renderArrayField = <T extends object>(
 	name: Pxth<T[]>,
 	config: FormConfig<T>,
-): RenderHookResult<undefined, ArrayFieldProps<T>> => {
+): RenderHookResult<ArrayFieldProps<T>, undefined> => {
 	const {
 		result: { current: bag },
 	} = renderHook(() => useForm(config));

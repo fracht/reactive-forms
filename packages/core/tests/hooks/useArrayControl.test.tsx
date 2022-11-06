@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { act, renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth, Pxth } from 'pxth';
 
 import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
@@ -7,7 +7,7 @@ import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayCon
 const renderArrayControl = <T extends object, V>(
 	name: Pxth<V[]>,
 	config: FormConfig<T>,
-): [RenderHookResult<undefined, ArrayControl<V>>, FormShared<T>] => {
+): [RenderHookResult<ArrayControl<V>, undefined>, FormShared<T>] => {
 	const { result: bag } = renderHook(() => useForm(config));
 
 	const wrapper = ({ children }: PropsWithChildren) => (

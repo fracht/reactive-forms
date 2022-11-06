@@ -11,14 +11,6 @@ const config = {
 		url: 'http://localhost',
 	},
 	testEnvironment: 'jsdom',
-	transform: {
-		'^.+\\.tsx?$': [
-			'ts-jest',
-			{
-				tsconfig: './tsconfig.test.json',
-			},
-		],
-	},
 };
 
 module.exports = config;

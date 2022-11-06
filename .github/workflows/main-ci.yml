@@ -7,35 +7,55 @@ on:
         branches: [main]
     workflow_dispatch:
 jobs:
+    generate_matrix:
+        name: Get changed packages
+        runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
+        outputs:
+            packages: ${{ steps.changed_packages.outputs.packages }}
+            empty: ${{ steps.changed_packages.outputs.empty }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Find changed packages
+              id: changed_packages
+              uses: alexshukel/get-changed-workspaces-action@v2.0.0
+              with:
+                  filter: '@reactive-forms/*'
     coverage:
         name: Coverage report
+        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
+        needs: [generate_matrix]
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
               with:
                   fetch-depth: 0
 
-            - name: Use Node 14.x
-              uses: actions/setup-node@v1
+            - name: Use Node 18.x
+              uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 18.x
 
-            - name: Install pnpm 7.14.0
+            - name: Install pnpm 7.x.x
               uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.14.0
+                  version: 7.x.x
 
-            - name: Installing dependencies
-              run: pnpm install
-
-            - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
+            - uses: artiomtr/jest-coverage-report-action@v2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  skip-step: install
-                  test-script: pnpm turbo run test:coverage --filter=...[origin/${{ github.base_ref }}]
+                  test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
+                  package-manager: pnpm
+                  working-directory: ${{ matrix.package.path }}
     build:
         name: Build, lint, and test changed packages on Node 16
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
         runs-on: ubuntu-latest
 
         steps:
@@ -44,15 +64,15 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Use Node 16
-              uses: actions/setup-node@v1
+            - name: Use Node 18
+              uses: actions/setup-node@v3
               with:
-                  node-version: 16
+                  node-version: 18
 
-            - name: Install pnpm 7.14.0
+            - name: Install pnpm 7.x.x
               uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.14.0
+                  version: 7.x.x
 
             - name: Install global dependencies
               run: pnpm install

@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/autosave",
 	"description": "> TODO: description",
-	"version": "0.8.11",
+	"version": "0.8.12",
 	"main": "dist/index.js",
 	"module": "dist/autosave.esm.js",
 	"types": "dist/autosave.d.ts",
@@ -21,10 +21,9 @@
 		"lint:fix": "npm run lint --fix",
 		"postpublish": "rimraf ./prepared-package",
 		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
-		"test": "aqu test --passWithNoTests",
-		"test:coverage": "aqu test --coverage --json --silent --ci --outputFile=\"report.json\"",
-		"test:log-coverage": "aqu test --coverage --silent --ci --coverageReporters=text",
-		"test:watch": "aqu test --watch"
+		"test": "jest --passWithNoTests",
+		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
+		"test:watch": "jest --passWithNoTests --watch"
 	},
 	"dependencies": {
 		"lodash": "^4.17.21",
@@ -36,13 +35,14 @@
 		"@reactive-tools/eslint-config": "workspace:*",
 		"@types/react": "18.0.23",
 		"aqu": "^0.4.3",
+		"jest": "^29.2.2",
 		"react": "^18.2.0",
 		"rimraf": "^3.0.2",
 		"tslib": "^2.3.1",
 		"typescript": "^4.8.4"
 	},
 	"peerDependencies": {
-		"@reactive-forms/core": "^0.8.0",
+		"@reactive-forms/core": "^0.8.12",
 		"react": ">=16"
 	},
 	"files": [

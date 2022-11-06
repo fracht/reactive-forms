@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
+import { act, renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import {
@@ -14,7 +14,7 @@ import {
 const renderFieldValueArray = <V extends object, T extends object>(
 	paths: FieldValueArrayConfig<V>,
 	config: FormConfig<T>,
-): [RenderHookResult<undefined, V>, FormShared<T>] => {
+): [RenderHookResult<V, undefined>, FormShared<T>] => {
 	const {
 		result: { current: bag },
 	} = renderHook(() => useForm(config));

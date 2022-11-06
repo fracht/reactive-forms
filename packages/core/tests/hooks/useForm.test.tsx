@@ -1,8 +1,19 @@
-import React from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
-import { createPxth } from 'pxth';
+import { act, renderHook } from '@testing-library/react';
+import { createPxth, Pxth } from 'pxth';
+import { Stock } from 'stocked';
 
-import { FieldError, ReactiveFormProvider, useFieldError, useForm } from '../../src';
+import { FieldError, useForm } from '../../src';
+
+const waitForStockValueUpdate = (stock: Stock<object>, path: Pxth<unknown>) => {
+	return new Promise<void>((resolve, reject) => {
+		const timeout = setTimeout(() => reject(new Error('Time-out - field update took longer than 1 second')), 1000);
+		const watchCleanup = stock.watch(path, () => {
+			clearTimeout(timeout);
+			resolve();
+			watchCleanup();
+		});
+	});
+};
 
 describe('validateUpdatedFields', () => {
 	it('should run field-level validations when field value changes', async () => {
@@ -14,23 +25,15 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
-			wrapper: ({ children }) => <ReactiveFormProvider formBag={result.current}>{children}</ReactiveFormProvider>,
-		});
-
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
-		let cleanup;
+		const cleanup = result.current.registerValidator(somePxth, validator);
+		result.current.setFieldValue(somePxth, 'asdf');
 
-		act(() => {
-			cleanup = result.current.registerValidator(somePxth, validator);
-			result.current.setFieldValue(somePxth, 'asdf');
-		});
+		await waitForStockValueUpdate(result.current.errors, somePxth);
 
-		await waitForNextUpdate({ timeout: 100 });
-
-		expect(errorResult.current[0]).toStrictEqual({
+		expect(result.current.getFieldError(somePxth)).toStrictEqual({
 			$error: 'error',
 		});
 
@@ -47,23 +50,15 @@ describe('validateUpdatedFields', () => {
 
 		const somePxth = createPxth(['some', 'deep', 'path']);
 
-		const { result: errorResult, waitForNextUpdate } = renderHook(() => useFieldError(somePxth), {
-			wrapper: ({ children }) => <ReactiveFormProvider formBag={result.current}>{children}</ReactiveFormProvider>,
-		});
-
 		const validator = jest.fn();
 		validator.mockReturnValue('error');
 
-		let cleanup;
+		const cleanup = result.current.registerValidator(somePxth, validator);
+		result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
 
-		act(() => {
-			cleanup = result.current.registerValidator(somePxth, validator);
-			result.current.setFieldValue(createPxth(['some']), { deep: { path: 'asdf' } });
-		});
+		await waitForStockValueUpdate(result.current.errors, somePxth);
 
-		await waitForNextUpdate({ timeout: 100 });
-
-		expect(errorResult.current[0]).toStrictEqual({
+		expect(result.current.getFieldError(somePxth)).toStrictEqual({
 			$error: 'error',
 		});
 
@@ -84,7 +79,7 @@ describe('validateField', () => {
 		const validator = jest.fn();
 		validator.mockReturnValueOnce('error');
 
-		let cleanup;
+		let cleanup: () => void;
 
 		act(() => {
 			cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
@@ -160,7 +155,7 @@ describe('validateField', () => {
 			}),
 		);
 
-		let cleanup;
+		let cleanup: () => void;
 
 		const validator = jest.fn();
 
@@ -209,7 +204,7 @@ describe('validateField', () => {
 			}),
 		);
 
-		let cleanup;
+		let cleanup: () => void;
 
 		const validator = jest.fn();
 
@@ -243,7 +238,7 @@ describe('validateForm', () => {
 					deep: {
 						value: 'asdf',
 					},
-					array: ['asdf'],
+					array: ['asdf'] as Array<undefined | string>,
 				},
 			}),
 		);
@@ -342,7 +337,7 @@ describe('should merge errors correctly', () => {
 		const onSubmit = jest.fn();
 
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<{ arr: unknown[][] }>({
 				initialValues: {
 					arr: [[]],
 				},
@@ -380,7 +375,7 @@ describe('should merge errors correctly', () => {
 		const onSubmit = jest.fn();
 
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<{ load_models: unknown[] }>({
 				initialValues: {
 					load_models: [],
 				},

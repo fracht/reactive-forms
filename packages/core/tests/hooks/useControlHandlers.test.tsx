@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
 import { FormShared, ReactiveFormProvider, useForm } from '../../src';
