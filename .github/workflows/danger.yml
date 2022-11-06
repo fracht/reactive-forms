@@ -1,14 +1,16 @@
 name: Danger
 on:
-    workflow_run:
-        workflows: ['Syncpack']
-        types:
-            - completed
+    pull_request:
+        paths-ignore:
+            - 'packages/docs/**'
+            - 'examples/**'
+        branches: [main]
     workflow_dispatch:
 jobs:
     danger:
         name: Danger
         runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
         steps:
             - name: Checkout
               uses: actions/checkout@v2

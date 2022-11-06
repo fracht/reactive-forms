@@ -1,9 +1,10 @@
 name: CI
 on:
-    workflow_run:
-        workflows: ['Syncpack']
-        types:
-            - completed
+    pull_request:
+        paths-ignore:
+            - 'packages/docs/**'
+            - 'examples/**'
+        branches: [main]
     workflow_dispatch:
 jobs:
     generate_matrix:
