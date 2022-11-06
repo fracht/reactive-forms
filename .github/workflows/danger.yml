@@ -1,10 +1,9 @@
 name: Danger
 on:
-    pull_request:
-        paths-ignore:
-            - 'docs/**'
-            - 'example/**'
-        branches: [main]
+    workflow_run:
+        workflows: ['Syncpack']
+        types:
+            - completed
     workflow_dispatch:
 jobs:
     danger:
