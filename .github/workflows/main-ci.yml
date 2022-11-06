@@ -32,6 +32,7 @@ jobs:
         strategy:
             matrix:
                 path: ${{ fromJson(needs.generate_matrix.outputs.paths) }}
+                name: ${{ fromJson(needs.generate_matrix.outputs.names) }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -47,6 +48,9 @@ jobs:
               uses: pnpm/action-setup@v2.2.4
               with:
                   version: 7.x.x
+
+            - name: Build local dependencies
+              run: pnpm turbo run build --filter=${{ matrix.name }}^...
 
             - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
