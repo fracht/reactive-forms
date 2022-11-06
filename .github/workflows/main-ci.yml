@@ -12,8 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         if: "!contains(github.event.head_commit.message, '[skip ci]')"
         outputs:
-            names: ${{ steps.changed_packages.outputs.names }}
-            paths: ${{ steps.changed_packages.outputs.paths }}
+            packages: ${{ steps.changed_packages.outputs.packages }}
             empty: ${{ steps.changed_packages.outputs.empty }}
         steps:
             - name: Checkout
@@ -21,7 +20,7 @@ jobs:
 
             - name: Find changed packages
               id: changed_packages
-              uses: alexshukel/get-changed-workspaces-action@v1.1.0
+              uses: alexshukel/get-changed-workspaces-action@set-single-array-of-packages-in-output
               with:
                   filter: '@reactive-forms/*'
     coverage:
@@ -31,8 +30,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                path: ${{ fromJson(needs.generate_matrix.outputs.paths) }}
-                name: ${{ fromJson(needs.generate_matrix.outputs.names) }}
+                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -53,14 +51,14 @@ jobs:
               run: pnpm install
 
             - name: Build local dependencies
-              run: pnpm turbo run build --filter=${{ matrix.name }}^...
+              run: pnpm turbo run build --filter=${{ matrix.package.name }}^...
 
             - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   test-script: pnpm run test:coverage
                   package-manager: pnpm
-                  working-directory: ${{ matrix.path }}
+                  working-directory: ${{ matrix.package.path }}
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
