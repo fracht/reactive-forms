@@ -20,7 +20,7 @@ jobs:
 
             - name: Find changed packages
               id: changed_packages
-              uses: alexshukel/get-changed-workspaces-action@set-single-array-of-packages-in-output
+              uses: alexshukel/get-changed-workspaces-action@v2.0.0
               with:
                   filter: '@reactive-forms/*'
     coverage:
