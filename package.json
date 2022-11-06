@@ -41,9 +41,5 @@
 			"path": "packages/core/dist/core.esm.js",
 			"limit": "30 KB"
 		}
-	],
-	"workspaces": [
-		"packages/*",
-		"tools/*"
 	]
 }
