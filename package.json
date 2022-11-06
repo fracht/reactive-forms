@@ -8,15 +8,15 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "turbo run build --filter=@reactive-forms/*",
+		"bump": "changeset version && pnpm i --lockfile-only",
 		"format": "syncpack format && prettier --write \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,yml,yaml,clean-publish}\"",
 		"lint": "eslint .",
 		"publish:check": "turbo run build lint test --filter=...@reactive-forms/*...",
+		"release": "pnpm build && pnpm publish -r",
 		"size": "npm run build && size-limit",
 		"size:analyze": "size-limit --why",
-		"test": "turbo run test --filter=@reactive-forms/*",
-		"release": "pnpm build && pnpm publish -r",
-		"bump": "changeset version && pnpm i --lockfile-only"
+		"test": "turbo run test --filter=@reactive-forms/*"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.25.0",
