@@ -22,11 +22,11 @@
 		"@changesets/cli": "^2.25.0",
 		"@octokit/core": "^4.1.0",
 		"@reactive-tools/eslint-config": "workspace:*",
-		"@size-limit/preset-small-lib": "^4.10.2",
+		"@size-limit/preset-small-lib": "^8.1.0",
 		"clean-publish": "^4.0.1",
 		"danger": "^10.6.4",
 		"prettier": "^2.5.1",
-		"size-limit": "^4.10.2",
+		"size-limit": "^8.1.0",
 		"syncpack": "^8.2.5",
 		"turbo": "^1.6.1"
 	},
@@ -40,9 +40,5 @@
 			"path": "packages/core/dist/core.esm.js",
 			"limit": "30 KB"
 		}
-	],
-	"workspaces": [
-		"packages/*",
-		"tools/*"
 	]
 }
