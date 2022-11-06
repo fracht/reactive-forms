@@ -90,6 +90,12 @@ jobs:
                       git add .
                       git config user.name "github-actions[bot]"
                       git config user.email "github-actions@github.com"
+
+                      git config pull.rebase true
+                      git fetch
+                      git checkout $GITHUB_HEAD_REF
+                      git pull origin $GITHUB_HEAD_REF
+
                       git commit -m "Syncpack and prettier format [skip ci]"
                       git push origin HEAD:"$GITHUB_HEAD_REF"
                       git push
