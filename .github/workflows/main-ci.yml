@@ -50,7 +50,7 @@ jobs:
             - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  test-script: pnpm run --prefix ../.. turbo run test:coverage --filter ${{ matrix.package.name }}
+                  test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
                   package-manager: pnpm
                   working-directory: ${{ matrix.package.path }}
     build:
