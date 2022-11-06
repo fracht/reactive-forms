@@ -7,9 +7,31 @@ on:
         branches: [main]
     workflow_dispatch:
 jobs:
+    generate_matrix:
+        name: Get changed packages
+        runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
+        outputs:
+            names: ${{ steps.changed_packages.outputs.names }}
+            paths: ${{ steps.changed_packages.outputs.paths }}
+            empty: ${{ steps.changed_packages.outputs.empty }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Find changed packages
+              id: changed_packages
+              uses: alexshukel/get-changed-workspaces-action@v1.1.0
+              with:
+                  filter: '@reactive-forms/*'
     coverage:
         name: Coverage report
+        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
+        needs: [generate_matrix]
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                path: ${{ fromJson(needs.generate_matrix.outputs.paths) }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -26,14 +48,12 @@ jobs:
               with:
                   version: 7.x.x
 
-            - name: Installing dependencies
-              run: pnpm install
-
-            - uses: artiomtr/jest-coverage-report-action@v2.0-rc.2
+            - uses: artiomtr/jest-coverage-report-action@v2.1.2
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  skip-step: install
-                  test-script: pnpm turbo run test:coverage --filter=...[origin/${{ github.base_ref }}]
+                  test-script: pnpm run test:coverage
+                  package-manager: pnpm
+                  working-directory: ${{ matrix.path }}
     build:
         name: Build, lint, and test changed packages on Node 16
         runs-on: ubuntu-latest
@@ -62,6 +82,3 @@ jobs:
 
             - name: Check files format
               run: pnpm run format:check
-
-            - name: Check for changeset existence
-              run: pnpm changeset status --since=origin/main

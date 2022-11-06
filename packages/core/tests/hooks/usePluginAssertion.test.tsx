@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import { createPluginArray, FormPlugins, Plugin, PluginArray, usePluginAssertion } from '../../src';
 
@@ -11,43 +11,67 @@ const renderUsePluginAssertion = (check: Plugin, specified: PluginArray) => {
 
 describe('usePluginAssertion', () => {
 	it('should throw error when plugin not found', () => {
-		const dummyDecorator = (value) => value;
+		const dummyDecorator = jest.fn((bag) => {
+			return bag;
+		});
 
-		const { result } = renderUsePluginAssertion(
-			{ token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
-			createPluginArray({
-				token: Symbol.for('b'),
-				useBagDecorator: dummyDecorator,
-				useConfigDecorator: dummyDecorator,
-			}),
-		);
+		const assertPlugins = () => {
+			renderUsePluginAssertion(
+				{
+					token: Symbol.for('a'),
+					useBagDecorator: dummyDecorator,
+					useConfigDecorator: dummyDecorator,
+				},
+				createPluginArray({
+					token: Symbol.for('b'),
+					useBagDecorator: dummyDecorator,
+					useConfigDecorator: dummyDecorator,
+				}),
+			);
+		};
 
-		expect(result.error).not.toBe(undefined);
+		expect(assertPlugins).toThrow();
 	});
 
 	it('should throw error when plugin array is empty', () => {
-		const dummyDecorator = (value) => value;
+		const dummyDecorator = jest.fn((bag) => {
+			return bag;
+		});
 
-		const { result } = renderUsePluginAssertion(
-			{ token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
-			createPluginArray(),
-		);
+		const assertPlugins = () => {
+			renderUsePluginAssertion(
+				{
+					token: Symbol.for('a'),
+					useBagDecorator: dummyDecorator,
+					useConfigDecorator: dummyDecorator,
+				},
+				createPluginArray(),
+			);
+		};
 
-		expect(result.error).not.toBe(undefined);
+		expect(assertPlugins).toThrow();
 	});
 
 	it('should not throw error when plugin is specified', () => {
-		const dummyDecorator = (value) => value;
+		const dummyDecorator = jest.fn((bag) => {
+			return bag;
+		});
 
-		const { result } = renderUsePluginAssertion(
-			{ token: Symbol.for('a'), useBagDecorator: dummyDecorator, useConfigDecorator: dummyDecorator },
-			createPluginArray({
-				token: Symbol.for('a'),
-				useBagDecorator: dummyDecorator,
-				useConfigDecorator: dummyDecorator,
-			}),
-		);
+		const assertPlugins = () => {
+			renderUsePluginAssertion(
+				{
+					token: Symbol.for('a'),
+					useBagDecorator: dummyDecorator,
+					useConfigDecorator: dummyDecorator,
+				},
+				createPluginArray({
+					token: Symbol.for('a'),
+					useBagDecorator: dummyDecorator,
+					useConfigDecorator: dummyDecorator,
+				}),
+			);
+		};
 
-		expect(result.error).toBe(undefined);
+		expect(assertPlugins).not.toThrow();
 	});
 });

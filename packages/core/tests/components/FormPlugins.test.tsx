@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 
 import {
 	createPluginArray,
@@ -14,12 +14,7 @@ import {
 
 const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
 	return renderHook(() => useForm(config), {
-		wrapper: ({ children, plugins }: PropsWithChildren<{ plugins: PluginArray }>) => (
-			<FormPlugins plugins={plugins}>{children}</FormPlugins>
-		),
-		initialProps: {
-			plugins,
-		},
+		wrapper: ({ children }) => <FormPlugins plugins={plugins}>{children}</FormPlugins>,
 	});
 };
 
@@ -28,7 +23,9 @@ const renderForm = <T extends object>(config: FormConfig<T>, plugins: PluginArra
 		result: { current: bag },
 	} = renderPlugins(config, plugins);
 
-	const wrapper = ({ children }) => <ReactiveFormProvider formBag={bag}>{() => children}</ReactiveFormProvider>;
+	const wrapper = ({ children }: PropsWithChildren) => (
+		<ReactiveFormProvider formBag={bag}>{() => children}</ReactiveFormProvider>
+	);
 
 	return renderHook(() => useFormContext(), { wrapper });
 };
@@ -83,21 +80,12 @@ describe('FormPlugins', () => {
 		expect((result.current as any).hello).toBe('Hello world!');
 	});
 
-	it('should fail when plugin array updates', () => {
+	it('should fail when plugin array updates', async () => {
 		const plugins = createPluginArray();
 
-		const { result, rerender } = renderPlugins({ initialValues: {} }, plugins);
+		const { rerender } = render(<FormPlugins plugins={plugins} />);
 
-		act(() => {
-			rerender({ plugins });
-		});
-
-		expect(result.error).toBe(undefined);
-
-		act(() => {
-			rerender({ plugins: createPluginArray() });
-		});
-
-		expect(result.error).not.toBe(undefined);
+		expect(() => rerender(<FormPlugins plugins={plugins} />)).not.toThrow();
+		expect(() => rerender(<FormPlugins plugins={createPluginArray()} />)).toThrow();
 	});
 });
