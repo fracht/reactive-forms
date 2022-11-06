@@ -54,7 +54,7 @@ jobs:
                   package-manager: pnpm
                   working-directory: ${{ matrix.package.path }}
     build:
-        name: Build, lint, and test changed packages on Node 16
+        name: Build, lint, and test changed packages on Node 18
         if: "!contains(github.event.head_commit.message, '[skip ci]')"
         runs-on: ubuntu-latest
 
@@ -77,8 +77,20 @@ jobs:
             - name: Install global dependencies
               run: pnpm install
 
+            - name: Format files
+              run: pnpm run format
+
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=...[origin/${{ github.base_ref }}]
 
-            - name: Check files format
-              run: pnpm run format:check
+            - name: Commit changed files
+              shell: bash
+              run: |
+                  if [[ `git status --porcelain` ]]; then
+                      git add .
+                      git config user.name "github-actions[bot]"
+                      git config user.email "github-actions@github.com"
+                      git commit -m "Syncpack and prettier format [skip ci]"
+                      git push origin HEAD:"$GITHUB_HEAD_REF"
+                      git push
+                  fi
