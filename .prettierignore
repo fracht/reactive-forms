@@ -8,3 +8,4 @@ build
 .png
 .jpg
 coverage
+pnpm-lock.yaml
