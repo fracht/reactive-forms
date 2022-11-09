@@ -151,7 +151,7 @@ importers:
   packages/x:
     specifiers:
       '@babel/core': ^7.19.6
-      '@reactive-forms/core': ^0.8.13
+      '@reactive-forms/core': ^0.8.14
       '@reactive-tools/eslint-config': workspace:*
       '@types/jest': ^26.0.24
       '@types/react': 18.0.23
