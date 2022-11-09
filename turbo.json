@@ -15,9 +15,12 @@
 		"dev": {
 			"cache": false
 		},
-		"prepublish": {
-			"cache": true,
+		"prepublishOnly": {
+			"cache": false,
 			"dependsOn": ["lint", "build"]
+		},
+		"postpublish": {
+			"cache": false
 		}
 	}
 }
