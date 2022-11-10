@@ -4,61 +4,9 @@ on:
         branches: [main]
     workflow_dispatch:
 jobs:
-    format_files:
-        name: Format and commit files
-        runs-on: ubuntu-latest
-        outputs:
-            skip: ${{ steps.commit.outputs.skip }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-
-            - name: Checkout branch
-              run: |
-                  git config pull.rebase true
-                  git fetch
-                  git checkout $GITHUB_HEAD_REF
-                  git pull origin $GITHUB_HEAD_REF
-
-            - name: Use Node 18
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-
-            - name: Install pnpm 7.x.x
-              uses: pnpm/action-setup@v2.2.4
-              with:
-                  version: 7.x.x
-
-            - name: Install global dependencies
-              run: pnpm install
-
-            - name: Format files
-              run: pnpm run format
-
-            - name: Commit changed files
-              id: commit
-              shell: bash
-              run: |
-                  if [[ `git status --porcelain` ]]; then
-                      git add .
-                      git config user.name "github-actions[bot]"
-                      git config user.email "github-actions@github.com"
-                      git commit -m "Syncpack and prettier format"
-                      git push origin HEAD:"$GITHUB_HEAD_REF"
-                      git push
-                      echo "skip=true" >> $GITHUB_OUTPUT
-                  else
-                      echo "skip=false" >> $GITHUB_OUTPUT
-                  fi
-
     generate_matrix:
         name: Get changed packages
         runs-on: ubuntu-latest
-        needs: [format_files]
-        if: ${{ needs.format_files.outputs.skip == 'false' }}
         outputs:
             packages: ${{ steps.changed_packages.outputs.packages }}
             empty: ${{ steps.changed_packages.outputs.empty }}
@@ -107,8 +55,6 @@ jobs:
         # TODO: configure Size limit for all packages
         name: Size limit
         runs-on: ubuntu-latest
-        needs: [format_files]
-        if: ${{ needs.format_files.outputs.skip == 'false' }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -126,8 +72,6 @@ jobs:
 
     build:
         name: Build, lint, and test changed packages on Node 18
-        needs: [format_files]
-        if: ${{ needs.format_files.outputs.skip == 'false' }}
         runs-on: ubuntu-latest
 
         steps:
