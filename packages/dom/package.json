@@ -14,7 +14,7 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "tsc --project tsconfig.build.json",
+		"build": "tsc --project tsconfig.build.json && cp -R ./src ./dist/src",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
