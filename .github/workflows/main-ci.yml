@@ -4,10 +4,53 @@ on:
         branches: [main]
     workflow_dispatch:
 jobs:
+    format_files:
+        name: Format and commit files
+        runs-on: ubuntu-latest
+        outputs:
+            skip: ${{ steps.commit.outputs.skip }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  ref: $GITHUB_HEAD_REF
+
+            - name: Use Node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install pnpm 7.x.x
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.x.x
+
+            - name: Install global dependencies
+              run: pnpm install
+
+            - name: Format files
+              run: pnpm run format
+
+            - name: Commit changed files
+              id: commit
+              run: |
+                  if [[ `git status --porcelain` ]]; then
+                      git add .
+                      git config user.name "github-actions[bot]"
+                      git config user.email "github-actions@github.com"
+                      git commit -m "Syncpack and prettier format"
+                      git push origin HEAD:"$GITHUB_HEAD_REF"
+                      git push
+                      echo "skip=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "skip=false" >> $GITHUB_OUTPUT
+                  fi
+
     generate_matrix:
         name: Get changed packages
         runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, '[skip ci]')"
+        needs: [format_files]
+        if: '!needs.format_files.outputs.skip'
         outputs:
             packages: ${{ steps.changed_packages.outputs.packages }}
             empty: ${{ steps.changed_packages.outputs.empty }}
@@ -20,10 +63,11 @@ jobs:
               uses: alexshukel/get-changed-workspaces-action@v2.0.0
               with:
                   filter: '@reactive-forms/*'
+
     coverage:
         name: Coverage report
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
         needs: [generate_matrix]
+        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -50,23 +94,36 @@ jobs:
                   test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
                   package-manager: pnpm
                   working-directory: ${{ matrix.package.path }}
+
+    size:
+        name: Size limit
+        runs-on: ubuntu-latest
+        needs: [format_files]
+        if: '!needs.format_files.outputs.skip'
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install pnpm 7.x.x
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.x.x
+
+            - name: Size limit
+              uses: andresz1/size-limit-action@dd31dce7dcc72a041fd3e49abf0502b13fc4ce05
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  package_manager: pnpm
+
     build:
         name: Build, lint, and test changed packages on Node 18
-        if: "!contains(github.event.head_commit.message, '[skip ci]')"
+        needs: [format_files]
+        if: '!needs.format_files.outputs.skip'
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-
-            - name: Checkout branch
-              run: |
-                  git config pull.rebase true
-                  git fetch
-                  git checkout $GITHUB_HEAD_REF
-                  git pull origin $GITHUB_HEAD_REF
 
             - name: Use Node 18
               uses: actions/setup-node@v3
@@ -81,20 +138,5 @@ jobs:
             - name: Install global dependencies
               run: pnpm install
 
-            - name: Format files
-              run: pnpm run format
-
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=...[origin/${{ github.base_ref }}]
-
-            - name: Commit changed files
-              shell: bash
-              run: |
-                  if [[ `git status --porcelain` ]]; then
-                      git add .
-                      git config user.name "github-actions[bot]"
-                      git config user.email "github-actions@github.com"
-                      git commit -m "Syncpack and prettier format [skip ci]"
-                      git push origin HEAD:"$GITHUB_HEAD_REF"
-                      git push
-                  fi
