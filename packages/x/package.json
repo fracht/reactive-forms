@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/x",
 	"description": "Advanced Reactive Forms components for rich eXperience",
-	"version": "0.8.12",
+	"version": "0.8.14",
 	"main": "dist/index.js",
 	"module": "dist/core.esm.js",
 	"types": "dist/core.d.ts",
@@ -38,7 +38,7 @@
 		"typescript": "4.8.4"
 	},
 	"peerDependencies": {
-		"@reactive-forms/core": "^0.8.12",
+		"@reactive-forms/core": "^0.8.14",
 		"react": ">=16"
 	},
 	"files": [
