@@ -1,5 +1,12 @@
 # @reactive-forms/dom
 
+## 0.8.16
+
+### Patch Changes
+
+-   7552dbf: Fix sourceRoot option in tsconfig for @reactive-forms/dom build
+    -   @reactive-forms/core@0.8.16
+
 ## 0.8.15
 
 ### Patch Changes
