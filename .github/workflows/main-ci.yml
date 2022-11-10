@@ -58,14 +58,11 @@ jobs:
         name: Get changed packages
         runs-on: ubuntu-latest
         needs: [format_files]
-        # if: '!needs.format_files.outputs.skip'
+        if: ${{ !needs.format_files.outputs.skip }}
         outputs:
             packages: ${{ steps.changed_packages.outputs.packages }}
             empty: ${{ steps.changed_packages.outputs.empty }}
         steps:
-            - name: Debug
-              run: echo ${{ needs.format_files.outputs.skip }}
-
             - name: Checkout
               uses: actions/checkout@v2
 
