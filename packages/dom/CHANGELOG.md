@@ -1,5 +1,12 @@
 # @reactive-forms/dom
 
+## 0.8.15
+
+### Patch Changes
+
+-   aa775a9: Publish source files to work properly with source maps
+    -   @reactive-forms/core@0.8.15
+
 ## 0.8.14
 
 ### Patch Changes
