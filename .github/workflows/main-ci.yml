@@ -10,13 +10,17 @@ jobs:
         outputs:
             skip: ${{ steps.commit.outputs.skip }}
         steps:
-            - name: Log current branch
-              run: echo ${GITHUB_REF#refs/heads/}
-
             - name: Checkout
               uses: actions/checkout@v3
               with:
-                  ref: $GITHUB_HEAD_REF
+                  fetch-depth: 0
+
+            - name: Checkout branch
+              run: |
+                  git config pull.rebase true
+                  git fetch
+                  git checkout $GITHUB_HEAD_REF
+                  git pull origin $GITHUB_HEAD_REF
 
             - name: Use Node 18
               uses: actions/setup-node@v3
