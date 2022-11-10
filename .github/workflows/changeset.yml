@@ -1,9 +1,6 @@
 name: Changeset existence
 on:
     pull_request:
-        paths-ignore:
-            - 'packages/docs/**'
-            - 'examples/**'
         branches: [main]
         types: [labeled, opened, synchronize, reopened]
     workflow_dispatch:
