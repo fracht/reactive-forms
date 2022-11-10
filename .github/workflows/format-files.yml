@@ -11,15 +11,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-
-            - name: Checkout branch
-              run: |
-                  git config pull.rebase true
-                  git fetch
-                  git checkout $GITHUB_HEAD_REF
-                  git pull origin $GITHUB_HEAD_REF
 
             - name: Use Node 18
               uses: actions/setup-node@v3
@@ -45,6 +36,5 @@ jobs:
                       git config user.name "github-actions[bot]"
                       git config user.email "github-actions@github.com"
                       git commit -m "Syncpack and prettier format"
-                      git push origin HEAD:"$GITHUB_HEAD_REF"
                       git push
                   fi
