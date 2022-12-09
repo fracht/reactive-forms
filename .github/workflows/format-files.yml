@@ -1,0 +1,40 @@
+name: Format files with prettier and syncpack
+
+on:
+    push:
+        branches:
+            - main
+jobs:
+    format:
+        name: Format and commit files
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Use Node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install pnpm 7.x.x
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.x.x
+
+            - name: Install global dependencies
+              run: pnpm install
+
+            - name: Format files
+              run: pnpm run format
+
+            - name: Commit changed files
+              shell: bash
+              run: |
+                  if [[ `git status --porcelain` ]]; then
+                      git add .
+                      git config user.name "github-actions[bot]"
+                      git config user.email "github-actions@github.com"
+                      git commit -m "Syncpack and prettier format"
+                      git push
+                  fi

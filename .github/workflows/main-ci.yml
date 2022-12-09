@@ -1,16 +1,12 @@
 name: CI
 on:
     pull_request:
-        paths-ignore:
-            - 'packages/docs/**'
-            - 'examples/**'
         branches: [main]
     workflow_dispatch:
 jobs:
     generate_matrix:
         name: Get changed packages
         runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, '[skip ci]')"
         outputs:
             packages: ${{ steps.changed_packages.outputs.packages }}
             empty: ${{ steps.changed_packages.outputs.empty }}
@@ -23,10 +19,11 @@ jobs:
               uses: alexshukel/get-changed-workspaces-action@v2.0.0
               with:
                   filter: '@reactive-forms/*'
+
     coverage:
         name: Coverage report
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
         needs: [generate_matrix]
+        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -53,9 +50,28 @@ jobs:
                   test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
                   package-manager: pnpm
                   working-directory: ${{ matrix.package.path }}
+
+    size:
+        # TODO: configure Size limit for all packages
+        name: Size limit
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install pnpm 7.x.x
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.x.x
+
+            - name: Size limit
+              uses: andresz1/size-limit-action@dd31dce7dcc72a041fd3e49abf0502b13fc4ce05
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  package_manager: pnpm
+
     build:
-        name: Build, lint, and test changed packages on Node 16
-        if: "!contains(github.event.head_commit.message, '[skip ci]')"
+        name: Build, lint, and test changed packages on Node 18
         runs-on: ubuntu-latest
 
         steps:
@@ -79,6 +95,3 @@ jobs:
 
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=...[origin/${{ github.base_ref }}]
-
-            - name: Check files format
-              run: pnpm run format:check
