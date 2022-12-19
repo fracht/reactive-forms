@@ -1,12 +1,12 @@
 {
-    "buildOptions": {
-        "target": ["es2019", "chrome58", "firefox57", "safari11", "edge18", "node12"],
-        "preserveSymlinks": true
-    },
-    "dtsBundleGeneratorOptions": {
-        "libraries": {
-            "importedLibraries": ["stocked", "react", "@reactive-forms/core", "pxth"],
-            "allowedTypesLibraries": []
-        }
-    }
+	"buildOptions": {
+		"target": ["es2019", "chrome58", "firefox57", "safari11", "edge18", "node12"],
+		"preserveSymlinks": false
+	},
+	"dtsBundleGeneratorOptions": {
+		"libraries": {
+			"importedLibraries": ["stocked", "react", "@reactive-forms/core", "pxth"],
+			"allowedTypesLibraries": []
+		}
+	}
 }

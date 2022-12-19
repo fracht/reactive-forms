@@ -5,32 +5,32 @@ import { createPxth } from 'pxth';
 import { renderComponent, RenderHelpers } from './renderComponent';
 
 export type SubmitButtonBag = {
-    onClick: (e: React.MouseEvent) => void;
-    disabled: boolean;
+	onClick: (e: React.MouseEvent) => void;
+	disabled: boolean;
 };
 
 export type SubmitButtonProps<Values extends object, C extends ComponentType | ElementType = 'button'> = {
-    submitAction?: SubmitAction<Values>;
+	submitAction?: SubmitAction<Values>;
 } & RenderHelpers<SubmitButtonBag, C>;
 
 export const SubmitButton = <Values extends object, C extends ComponentType | ElementType = 'button'>({
-    submitAction,
-    as,
-    ...other
+	submitAction,
+	as,
+	...other
 }: SubmitButtonProps<Values, C>) => {
-    const { submit } = useFormContext<Values>();
-    const isSubmitting = useFormMeta(createPxth<boolean>(['isSubmitting']));
+	const { submit } = useFormContext<Values>();
+	const isSubmitting = useFormMeta(createPxth<boolean>(['isSubmitting']));
 
-    const onClick = useCallback(() => {
-        submit(submitAction);
-    }, [submit, submitAction]);
+	const onClick = useCallback(() => {
+		submit(submitAction);
+	}, [submit, submitAction]);
 
-    return renderComponent({
-        as: as ?? 'button',
-        bag: {
-            onClick,
-            disabled: isSubmitting
-        },
-        ...(other as RenderHelpers<SubmitButtonBag, C>)
-    });
+	return renderComponent({
+		as: as ?? 'button',
+		bag: {
+			onClick,
+			disabled: isSubmitting,
+		},
+		...(other as RenderHelpers<SubmitButtonBag, C>),
+	});
 };

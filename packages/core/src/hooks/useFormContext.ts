@@ -4,9 +4,9 @@ import invariant from 'tiny-invariant';
 import { FormContext, FormContextType } from '../components/FormContext';
 
 export const useFormContext = <Values extends object>(): FormContextType<Values> => {
-    const context = useContext(FormContext);
+	const context = useContext(FormContext);
 
-    invariant(context, "You're trying to access FormContext outside <ReactiveForm> tag");
+	invariant(context, "You're trying to access FormContext outside <ReactiveForm> tag");
 
-    return context as unknown as FormContextType<Values>;
+	return context as unknown as FormContextType<Values>;
 };

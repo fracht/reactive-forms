@@ -7,3 +7,5 @@ build
 .svg
 .png
 .jpg
+coverage
+pnpm-lock.yaml

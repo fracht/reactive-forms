@@ -1,31 +1,31 @@
 name: Danger
 on:
     pull_request:
-        paths-ignore:
-            - 'docs/**'
-            - 'example/**'
-        branches: [master]
+        branches: [main]
     workflow_dispatch:
 jobs:
     danger:
         name: Danger
         runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, '[skip ci]')"
         steps:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Use Node 14.x
-              uses: actions/setup-node@v1
+            - name: Use Node 18.x
+              uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 18.x
 
-            - name: Install npm 17.x
-              run: npm i -g npm@latest
+            - name: Install pnpm 7.x.x
+              uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.x.x
 
             - name: Install dependencies
-              run: npm install
+              run: pnpm install
 
             - name: Danger
-              run: npx danger ci
+              run: pnpm danger ci
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

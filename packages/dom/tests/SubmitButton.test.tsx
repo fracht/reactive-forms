@@ -1,101 +1,95 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import ReactiveForm, { createPluginArray, FormPlugins } from '@reactive-forms/core';
-import { mount } from 'enzyme';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 
 import { domPlugin, SubmitButton, SubmitButtonBag } from '../src';
 
 describe('SubmitButton', () => {
-    it('should use default submit function and render default button', async () => {
-        const submit = jest.fn();
+	it('should use default submit function and render default button', async () => {
+		const submit = jest.fn();
 
-        const wrapper = mount(
-            <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    {() => <SubmitButton>submit</SubmitButton>}
-                </ReactiveForm>
-            </FormPlugins>
-        );
+		const { getByRole } = render(
+			<FormPlugins plugins={createPluginArray(domPlugin)}>
+				<ReactiveForm initialValues={{}} onSubmit={submit}>
+					{() => <SubmitButton>submit</SubmitButton>}
+				</ReactiveForm>
+			</FormPlugins>,
+		);
 
-        expect(wrapper.find('button').children().text()).toBe('submit');
+		expect(getByRole('button').innerHTML).toBe('submit');
 
-        await act(async () => {
-            await wrapper.find('button').simulate('click');
-        });
+		await act(() => {
+			fireEvent.click(getByRole('button'));
+		});
 
-        expect(submit).toBeCalledTimes(1);
-    });
+		expect(submit).toBeCalledTimes(1);
+	});
 
-    it('should call function renderer', async () => {
-        const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
-            return (
-                <button onClick={onClick} disabled={disabled}>
-                    custom button
-                </button>
-            );
-        };
+	it('should call function renderer', async () => {
+		const CustomButton = ({ onClick, disabled }: SubmitButtonBag) => {
+			return (
+				<button onClick={onClick} disabled={disabled}>
+					custom button
+				</button>
+			);
+		};
 
-        const submit = jest.fn();
+		const submit = jest.fn();
 
-        const wrapper = mount(
-            <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    {() => <SubmitButton as={CustomButton} />}
-                </ReactiveForm>
-            </FormPlugins>
-        );
+		const { getByRole } = render(
+			<FormPlugins plugins={createPluginArray(domPlugin)}>
+				<ReactiveForm initialValues={{}} onSubmit={submit}>
+					{() => <SubmitButton as={CustomButton} />}
+				</ReactiveForm>
+			</FormPlugins>,
+		);
 
-        expect(wrapper.find('button').children().text()).toBe('custom button');
+		expect(getByRole('button').innerHTML).toBe('custom button');
 
-        await act(async () => {
-            await wrapper.find('button').simulate('click');
-        });
+		await act(() => {
+			fireEvent.click(getByRole('button'));
+		});
 
-        expect(submit).toBeCalledTimes(1);
-    });
+		expect(submit).toBeCalledTimes(1);
+	});
 
-    it('should call custom action', async () => {
-        const submit = jest.fn();
-        const action = jest.fn();
+	it('should call custom action', async () => {
+		const submit = jest.fn();
+		const action = jest.fn();
 
-        const wrapper = mount(
-            <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    {() => <SubmitButton submitAction={action} />}
-                </ReactiveForm>
-            </FormPlugins>
-        );
+		const { getByRole } = render(
+			<FormPlugins plugins={createPluginArray(domPlugin)}>
+				<ReactiveForm initialValues={{}} onSubmit={submit}>
+					{() => <SubmitButton submitAction={action} />}
+				</ReactiveForm>
+			</FormPlugins>,
+		);
 
-        await act(async () => {
-            await wrapper.find('button').simulate('click');
-        });
+		await act(() => {
+			fireEvent.click(getByRole('button'));
+		});
 
-        expect(action).toBeCalledTimes(1);
-        expect(submit).toBeCalledTimes(0);
-    });
+		expect(action).toBeCalledTimes(1);
+		expect(submit).toBeCalledTimes(0);
+	});
 
-    it('button should be disabled while submitting', async () => {
-        const submit = jest.fn();
+	it('button should be disabled while submitting', () => {
+		const submit = jest.fn();
 
-        let wrapper = mount(
-            <FormPlugins plugins={createPluginArray(domPlugin)}>
-                <ReactiveForm initialValues={{}} onSubmit={submit}>
-                    {() => <SubmitButton />}
-                </ReactiveForm>
-            </FormPlugins>
-        );
+		const { getByRole } = render(
+			<FormPlugins plugins={createPluginArray(domPlugin)}>
+				<ReactiveForm initialValues={{}} onSubmit={submit}>
+					{() => <SubmitButton />}
+				</ReactiveForm>
+			</FormPlugins>,
+		);
 
-        await act(async () => {
-            await wrapper.find('button').simulate('click');
-            wrapper = wrapper.mount();
-        });
+		waitFor(() => {
+			fireEvent.click(getByRole('button'));
 
-        expect(wrapper.find('button').prop('disabled')).toBe(true);
-
-        await act(async () => {
-            wrapper = wrapper.mount();
-        });
-
-        expect(wrapper.find('button').prop('disabled')).toBe(false);
-    });
+			expect(getByRole('button').getAttribute('disabled')).toBe(true);
+		}).then(() => {
+			expect(getByRole('button').getAttribute('disabled')).toBe(false);
+		});
+	});
 });

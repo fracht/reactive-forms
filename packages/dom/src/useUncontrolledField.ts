@@ -7,36 +7,36 @@ import { LightFieldConfig, LightFieldInputBag, useLightField } from './useLightF
 export type UncontrolledFieldConfig = LightFieldConfig;
 
 export type UncontrolledFieldBag = [
-    LightFieldInputBag & {
-        ref: React.MutableRefObject<HTMLInputElement | undefined>;
-    },
-    FieldMeta<string>
+	LightFieldInputBag & {
+		ref: React.MutableRefObject<HTMLInputElement | undefined>;
+	},
+	FieldMeta<string>,
 ];
 
 export const useUncontrolledField = (config: UncontrolledFieldConfig): UncontrolledFieldBag => {
-    const [inputBag, fieldMeta] = useLightField(config);
-    const { registerPostprocessor } = useFormContext();
+	const [inputBag, fieldMeta] = useLightField(config);
+	const { registerPostprocessor } = useFormContext();
 
-    const inputRef = useRef<HTMLInputElement>();
+	const inputRef = useRef<HTMLInputElement>();
 
-    useEffect(
-        () =>
-            registerPostprocessor<string>({
-                path: config.name,
-                update: () => {
-                    invariant(inputRef.current, 'Failed to get value from field: inputRef was not passed into input.');
+	useEffect(
+		() =>
+			registerPostprocessor<string>({
+				path: config.name,
+				update: () => {
+					invariant(inputRef.current, 'Failed to get value from field: inputRef was not passed into input.');
 
-                    return inputRef.current.value;
-                }
-            }),
-        [config.name, registerPostprocessor]
-    );
+					return inputRef.current.value;
+				},
+			}),
+		[config.name, registerPostprocessor],
+	);
 
-    return [
-        {
-            ...inputBag,
-            ref: inputRef
-        },
-        fieldMeta
-    ];
+	return [
+		{
+			...inputBag,
+			ref: inputRef,
+		},
+		fieldMeta,
+	];
 };
