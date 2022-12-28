@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.9.0
+
+### Minor Changes
+
+-   dcc9ef5: Removed load prop functionality
+
 ## 0.8.16
 
 ## 0.8.15
