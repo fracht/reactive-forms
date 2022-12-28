@@ -8,6 +8,7 @@ jobs:
     format:
         name: Format and commit files
         runs-on: ubuntu-latest
+        if: github.actor != 'frachtbot'
         steps:
             - name: Checkout
               uses: actions/checkout@v3
