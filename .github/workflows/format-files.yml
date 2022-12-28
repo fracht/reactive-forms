@@ -32,9 +32,10 @@ jobs:
               shell: bash
               run: |
                   if [[ `git status --porcelain` ]]; then
-                      git add .
-                      git config user.name "github-actions[bot]"
-                      git config user.email "github-actions@github.com"
-                      git commit -m "Syncpack and prettier format"
+                      git config --global user.name "frachtbot"
+                      git config --global user.email "frachtbot@users.noreply.github.com"
+                      git remote set-url origin https://x-access-token:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+                      git checkout "${GITHUB_REF:11}"
+                      git commit -am "Syncpack and prettier format"
                       git push
                   fi
