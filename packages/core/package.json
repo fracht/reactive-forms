@@ -38,6 +38,7 @@
 		"@testing-library/react": "13.4.0",
 		"@types/jest": "26.0.24",
 		"@types/lodash": "4.14.161",
+		"@types/node": "^18.11.18",
 		"@types/react": "18.0.23",
 		"aqu": "0.4.3",
 		"clean-publish": "4.0.1",
