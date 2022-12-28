@@ -11,6 +11,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
             - name: Use Node 18
               uses: actions/setup-node@v3
@@ -34,8 +36,6 @@ jobs:
                   if [[ `git status --porcelain` ]]; then
                       git config --global user.name "frachtbot"
                       git config --global user.email "frachtbot@users.noreply.github.com"
-                      git remote set-url origin https://x-access-token:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-                      git checkout "${GITHUB_REF:11}"
                       git commit -am "Syncpack and prettier format"
                       git push
                   fi
