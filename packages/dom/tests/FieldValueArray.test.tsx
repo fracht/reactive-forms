@@ -14,15 +14,13 @@ describe('FieldValueArray', () => {
 		render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={initialValues}>
-					{() => (
-						<FieldValueArray<{ helloValue: string; asdf_value: string; numberValue: number }>
-							helloValue={createPxth<string>(['test'])}
-							asdf_value={createPxth<string>(['arr', '0', 'value'])}
-							numberValue={createPxth<number>(['obj', 'test'])}
-						>
-							{children}
-						</FieldValueArray>
-					)}
+					<FieldValueArray<{ helloValue: string; asdf_value: string; numberValue: number }>
+						helloValue={createPxth<string>(['test'])}
+						asdf_value={createPxth<string>(['arr', '0', 'value'])}
+						numberValue={createPxth<number>(['obj', 'test'])}
+					>
+						{children}
+					</FieldValueArray>
 				</ReactiveForm>
 			</FormPlugins>,
 		);

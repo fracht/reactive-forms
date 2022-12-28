@@ -29,9 +29,7 @@ describe('FieldArray', () => {
 			{
 				wrapper: ({ children }) => (
 					<FormPlugins plugins={createPluginArray(domPlugin)}>
-						<ReactiveForm<{ test: number[] }> initialValues={{ test: [1, 2] }}>
-							{() => children}
-						</ReactiveForm>
+						<ReactiveForm<{ test: number[] }> initialValues={{ test: [1, 2] }}>{children}</ReactiveForm>
 					</FormPlugins>
 				),
 			},
@@ -55,7 +53,7 @@ describe('FieldArray', () => {
 		const { getByTestId } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => <FieldArray name={createPxth<unknown[]>(['hello'])} as={RenderComponent} />}
+					<FieldArray name={createPxth<unknown[]>(['hello'])} as={RenderComponent} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -67,11 +65,7 @@ describe('FieldArray', () => {
 		const { getByTestId } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => (
-						<FieldArray name={createPxth<unknown[]>(['hello'])}>
-							{() => <div data-testid="test" />}
-						</FieldArray>
-					)}
+					<FieldArray name={createPxth<unknown[]>(['hello'])}>{() => <div data-testid="test" />}</FieldArray>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
