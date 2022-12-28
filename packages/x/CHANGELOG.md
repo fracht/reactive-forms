@@ -1,5 +1,7 @@
 # @reactive-forms/x
 
+## 0.9.0
+
 ## 0.8.16
 
 ### Patch Changes
