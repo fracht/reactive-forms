@@ -37,6 +37,6 @@ jobs:
                   if [[ `git status --porcelain` ]]; then
                       git config --global user.name "frachtbot"
                       git config --global user.email "frachtbot@users.noreply.github.com"
-                      git commit -am "Syncpack and prettier format"
+                      git commit -am "[skip ci] Syncpack and prettier format"
                       git push
                   fi
