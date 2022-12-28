@@ -10,11 +10,9 @@ describe('Form', () => {
 		const { getByTestId } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => (
-						<Form>
-							<div data-testid="children"></div>
-						</Form>
-					)}
+					<Form>
+						<div data-testid="children"></div>
+					</Form>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -28,11 +26,9 @@ describe('Form', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}} onSubmit={submit}>
-					{() => (
-						<Form>
-							<div>children</div>
-						</Form>
-					)}
+					<Form>
+						<div>children</div>
+					</Form>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -50,11 +46,9 @@ describe('Form', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => (
-						<Form submitAction={submit}>
-							<div>children</div>
-						</Form>
-					)}
+					<Form submitAction={submit}>
+						<div>children</div>
+					</Form>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -73,11 +67,9 @@ describe('Form', () => {
 
 		const { getByRole } = render(
 			<ReactiveFormProvider formBag={bag.current}>
-				{() => (
-					<Form role="form">
-						<div>children</div>
-					</Form>
-				)}
+				<Form role="form">
+					<div>children</div>
+				</Form>
 			</ReactiveFormProvider>,
 		);
 

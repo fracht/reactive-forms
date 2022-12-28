@@ -11,7 +11,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}} onSubmit={submit}>
-					{() => <SubmitButton>submit</SubmitButton>}
+					<SubmitButton>submit</SubmitButton>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -39,7 +39,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}} onSubmit={submit}>
-					{() => <SubmitButton as={CustomButton} />}
+					<SubmitButton as={CustomButton} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -60,7 +60,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}} onSubmit={submit}>
-					{() => <SubmitButton submitAction={action} />}
+					<SubmitButton submitAction={action} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -79,7 +79,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}} onSubmit={submit}>
-					{() => <SubmitButton />}
+					<SubmitButton />
 				</ReactiveForm>
 			</FormPlugins>,
 		);

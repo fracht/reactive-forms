@@ -24,7 +24,7 @@ const renderForm = <T extends object>(config: FormConfig<T>, plugins: PluginArra
 	} = renderPlugins(config, plugins);
 
 	const wrapper = ({ children }: PropsWithChildren) => (
-		<ReactiveFormProvider formBag={bag}>{() => children}</ReactiveFormProvider>
+		<ReactiveFormProvider formBag={bag}>{children}</ReactiveFormProvider>
 	);
 
 	return renderHook(() => useFormContext(), { wrapper });

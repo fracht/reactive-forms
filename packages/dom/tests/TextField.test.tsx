@@ -9,7 +9,9 @@ describe('TextField', () => {
 	it('should render input by default', () => {
 		const { container } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
-				<ReactiveForm initialValues={{}}>{() => <TextField name={createPxth(['hello'])} />}</ReactiveForm>
+				<ReactiveForm initialValues={{}}>
+					<TextField name={createPxth(['hello'])} />
+				</ReactiveForm>
 			</FormPlugins>,
 		);
 
@@ -21,7 +23,7 @@ describe('TextField', () => {
 		const { getByTestId } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => <TextField name={createPxth(['hello'])} as="div" data-testid="test" />}
+					<TextField name={createPxth(['hello'])} as="div" data-testid="test" />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -34,13 +36,11 @@ describe('TextField', () => {
 		const { container, getAllByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{}}>
-					{() => (
-						<TextField name={createPxth(['hello'])} as="select">
-							<option value="1">asdf</option>
-							<option value="2">asdf</option>
-							<option value="3">asdf</option>
-						</TextField>
-					)}
+					<TextField name={createPxth(['hello'])} as="select">
+						<option value="1">asdf</option>
+						<option value="2">asdf</option>
+						<option value="3">asdf</option>
+					</TextField>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -58,11 +58,9 @@ describe('TextField', () => {
 						hello: 'asdf',
 					}}
 				>
-					{() => (
-						<TextField name={createPxth(['hello'])}>
-							{(bag) => <div data-testid="testID">{bag.value}</div>}
-						</TextField>
-					)}
+					<TextField name={createPxth(['hello'])}>
+						{(bag) => <div data-testid="testID">{bag.value}</div>}
+					</TextField>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -83,7 +81,7 @@ describe('TextField', () => {
 						hello: 'asdf',
 					}}
 				>
-					{() => <TextField name={createPxth(['hello'])} firstName="world" as={DummyComponent} />}
+					<TextField name={createPxth(['hello'])} firstName="world" as={DummyComponent} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);

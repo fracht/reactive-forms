@@ -10,7 +10,7 @@ describe('ErrorMessage', () => {
 		const { getByRole } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{ test: '' }}>
-					{() => <ErrorMessage name={createPxth(['test'])} />}
+					<ErrorMessage name={createPxth(['test'])} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -34,7 +34,7 @@ describe('ErrorMessage', () => {
 						},
 					}}
 				>
-					{() => <ErrorMessage name={createPxth(['test'])} as="div" />}
+					<ErrorMessage name={createPxth(['test'])} as="div" />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -62,7 +62,7 @@ describe('ErrorMessage', () => {
 						},
 					}}
 				>
-					{() => <ErrorMessage name={createPxth(['test'])} as={ErrorComponent} />}
+					<ErrorMessage name={createPxth(['test'])} as={ErrorComponent} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -86,7 +86,7 @@ describe('ErrorMessage', () => {
 						},
 					}}
 				>
-					{() => <ErrorMessage name={createPxth(['test'])} />}
+					<ErrorMessage name={createPxth(['test'])} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -110,11 +110,7 @@ describe('ErrorMessage', () => {
 						},
 					}}
 				>
-					{() => (
-						<ErrorMessage name={createPxth(['test'])}>
-							{({ children }) => <div>{children}</div>}
-						</ErrorMessage>
-					)}
+					<ErrorMessage name={createPxth(['test'])}>{({ children }) => <div>{children}</div>}</ErrorMessage>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -133,7 +129,7 @@ describe('ErrorMessage', () => {
 						},
 					}}
 				>
-					{() => <ErrorMessage name={createPxth(['test'])} />}
+					<ErrorMessage name={createPxth(['test'])} />
 				</ReactiveForm>
 			</FormPlugins>,
 		);

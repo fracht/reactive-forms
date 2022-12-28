@@ -10,11 +10,9 @@ describe('FieldValue', () => {
 		const { getByText } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{ test: 'hello' }}>
-					{() => (
-						<div>
-							<FieldValue name={createPxth(['test'])} />
-						</div>
-					)}
+					<div>
+						<FieldValue name={createPxth(['test'])} />
+					</div>
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -26,7 +24,7 @@ describe('FieldValue', () => {
 		const { getByText } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{ test: 'hello' }}>
-					{() => <FieldValue name={createPxth(['test'])} as="div" />}
+					<FieldValue name={createPxth(['test'])} as="div" />
 				</ReactiveForm>
 			</FormPlugins>,
 		);
@@ -37,9 +35,7 @@ describe('FieldValue', () => {
 		const { getByText } = render(
 			<FormPlugins plugins={createPluginArray(domPlugin)}>
 				<ReactiveForm initialValues={{ test: 'hello' }}>
-					{() => (
-						<FieldValue name={createPxth<string>(['test'])}>{(value) => <span>{value}</span>}</FieldValue>
-					)}
+					<FieldValue name={createPxth<string>(['test'])}>{(value) => <span>{value}</span>}</FieldValue>
 				</ReactiveForm>
 			</FormPlugins>,
 		);

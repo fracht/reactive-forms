@@ -16,7 +16,7 @@ const renderFormContextWithProxy = <T extends object>(
 
 	const wrapper = ({ children }: PropsWithChildren) => (
 		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
-			{() => <FormProxyProvider proxy={proxy}>{children}</FormProxyProvider>}
+			<FormProxyProvider proxy={proxy}>{children}</FormProxyProvider>
 		</ReactiveFormProvider>
 	);
 

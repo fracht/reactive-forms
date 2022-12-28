@@ -14,7 +14,7 @@ const renderFieldValue = <V, T extends object>(
 	} = renderHook(() => useForm(config));
 
 	const wrapper = ({ children }: PropsWithChildren) => (
-		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{() => children}</ReactiveFormProvider>
+		<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>{children}</ReactiveFormProvider>
 	);
 
 	return renderHook(() => useFieldValue<V>(name), { wrapper });

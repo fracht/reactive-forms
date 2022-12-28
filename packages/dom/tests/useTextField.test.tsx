@@ -27,7 +27,7 @@ const renderUseTextField = <T extends object>(
 			wrapper: ({ children }: PropsWithChildren<{}>) => (
 				<FormPlugins plugins={createPluginArray(domPlugin)}>
 					<ReactiveFormProvider formBag={bag as unknown as FormShared<object>}>
-						{() => children}
+						{children}
 					</ReactiveFormProvider>
 				</FormPlugins>
 			),

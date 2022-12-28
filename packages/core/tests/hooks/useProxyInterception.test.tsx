@@ -67,7 +67,7 @@ const renderUseProxyInterception = () => {
 						) => Promise<NestedObject<FieldInnerError, V>>,
 					}}
 				>
-					{() => children}
+					{children}
 				</ReactiveFormProvider>
 			);
 		},
