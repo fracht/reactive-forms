@@ -5,7 +5,9 @@ import ReactiveForm, { useFormContext } from '../../src';
 
 describe('ReactiveForm', () => {
 	it('should render children as function', () => {
-		const wrapper = ({ children }: PropsWithChildren) => <ReactiveForm initialValues={{}}>{children}</ReactiveForm>;
+		const wrapper = ({ children }: PropsWithChildren) => (
+			<ReactiveForm initialValues={{}}>{() => children}</ReactiveForm>
+		);
 
 		const { result } = renderHook(() => useFormContext(), { wrapper });
 
