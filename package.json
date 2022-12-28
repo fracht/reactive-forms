@@ -20,7 +20,7 @@
 		"turbo": "turbo"
 	},
 	"devDependencies": {
-		"@changesets/cli": "2.25.0",
+		"@changesets/cli": "2.26.0",
 		"@octokit/core": "4.1.0",
 		"@reactive-tools/eslint-config": "workspace:*",
 		"@size-limit/preset-small-lib": "8.1.0",
