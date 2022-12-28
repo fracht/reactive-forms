@@ -14,9 +14,9 @@
 		"lint": "eslint .",
 		"publish:check": "turbo run build lint test --filter=...@reactive-forms/*...",
 		"release": "pnpm build && changeset tag && pnpm publish -r",
+		"test": "turbo run test --filter=@reactive-forms/*",
 		"size": "npm run build && size-limit",
 		"size:analyze": "size-limit --why",
-		"test": "turbo run test --filter=@reactive-forms/*",
 		"turbo": "turbo"
 	},
 	"devDependencies": {
