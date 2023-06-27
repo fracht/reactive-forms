@@ -2,4 +2,4 @@
 '@reactive-forms/core': patch
 ---
 
-Changed validators call order
+Fixed bug with discarding an error in validateBranch function
