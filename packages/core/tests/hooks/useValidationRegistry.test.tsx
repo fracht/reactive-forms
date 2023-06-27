@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
-import { FieldError, FieldInnerError } from '../../src';
+import { FieldError } from '../../src';
 import { useValidationRegistry } from '../../src/hooks/useValidationRegistry';
 
 const renderUseValidationRegistry = () => {
@@ -30,22 +30,21 @@ describe('useValidationRegistry', () => {
 	it('should set an error returned from upper field', async () => {
 		const { result } = renderUseValidationRegistry();
 
-		const path1 = createPxth<string>(['some', 'nested', 'path']);
-		const validator1 = jest.fn(() => undefined);
-		// const validator1 = jest.fn(() => 'error');
-		const unregister1 = result.current.registerValidator(path1, validator1);
+		const nestedPath = createPxth<string>(['some', 'nested', 'path']);
+		const nestedPathValidator = jest.fn(() => undefined); // Called second
+		const unregisterNestedPath = result.current.registerValidator(nestedPath, nestedPathValidator);
 
-		const path2 = createPxth<{ path: string }>(['some', 'nested']);
-		const validator2 = jest.fn(() => ({ path: { $error: 'error' } }));
-		// const validator2 = jest.fn(() => undefined);
-		const unregister2 = result.current.registerValidator(path2, validator2);
+		const path = createPxth<{ path: string }>(['some', 'nested']);
+		const validator = jest.fn(() => ({ path: { $error: 'error' } })); // Called first
+		const unregister = result.current.registerValidator(path, validator);
 
-		const output = await result.current.validateBranch(path2, { path: 'test' });
+		const output = await result.current.validateBranch(path, { path: 'test' });
+
 		expect((output.errors as FieldError<{ some: { nested: { path: string } } }>).some?.nested?.path?.$error).toBe(
 			'error',
 		);
 
-		unregister1();
-		unregister2();
+		unregisterNestedPath();
+		unregister();
 	});
 });
