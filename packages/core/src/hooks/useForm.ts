@@ -57,10 +57,7 @@ export type InitialFormState<V> = {
 	initialErrors?: FieldError<V>;
 };
 
-export type DefaultFormShared<Values extends object> = Omit<
-	ValidationRegistryControl,
-	'validateAllFields' | 'validateBranch'
-> &
+export type DefaultFormShared<Values extends object> = Omit<ValidationRegistryControl, 'validateAllFields'> &
 	FormHelpers<Values>;
 
 export interface FormShared<Values extends object> extends DefaultFormShared<Values> {
@@ -201,12 +198,13 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		() => ({
 			...control,
 			validateField,
+			validateBranch,
 			validateForm,
 			resetForm,
 			paths,
 			registerPostprocessor,
 		}),
-		[control, validateField, validateForm, resetForm, paths, registerPostprocessor],
+		[control, validateField, validateBranch, validateForm, resetForm, paths, registerPostprocessor],
 	);
 
 	const submit = useCallback(

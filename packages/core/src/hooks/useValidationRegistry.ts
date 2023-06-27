@@ -62,7 +62,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 						isInnerPxth(i, origin as Pxth<unknown>) ||
 						samePxth(origin as Pxth<unknown>, i),
 				)
-				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
+				.sort((a, b) => getPxthSegments(b).length - getPxthSegments(a).length);
 
 			let errors: FieldError<V> = {} as FieldError<V>;
 
