@@ -27,7 +27,7 @@ describe('useValidationRegistry', () => {
 		unregister();
 	});
 
-	it('should set an error returned from upper field', async () => {
+	it('should set an error returned from upper-level field validator', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		const nestedPath = createPxth<string>(['some', 'nested', 'path']);
