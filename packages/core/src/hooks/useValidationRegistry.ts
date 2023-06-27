@@ -11,7 +11,7 @@ import { validatorResultToError } from '../utils/validatorResultToError';
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
-	validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }>;
+	validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }>;
 	registerValidator: <V>(name: Pxth<V>, validator: FieldValidator<V>) => () => void;
 	validateField: <V>(name: Pxth<V>, value: V) => Promise<FieldError<V> | undefined>;
 	validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
@@ -53,7 +53,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
 	const validateBranch = useCallback(
-		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }> => {
+		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }> => {
 			const pathsToValidate = registry.current
 				.keys()
 				.filter(
@@ -62,7 +62,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 						isInnerPxth(i, origin as Pxth<unknown>) ||
 						samePxth(origin as Pxth<unknown>, i),
 				)
-				.sort((a, b) => getPxthSegments(b).length - getPxthSegments(a).length);
+				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
 			let errors: FieldError<V> = {} as FieldError<V>;
 

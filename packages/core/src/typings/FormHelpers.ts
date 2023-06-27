@@ -11,4 +11,4 @@ export type FormHelpers<Values extends object> = FormControl<Values> & {
 	resetForm: (state?: InitialFormState<Values>) => void;
 	paths: Pxth<Values>;
 	registerPostprocessor: <V>(postprocessor: FieldPostProcessor<V>) => () => void;
-} & Pick<ValidationRegistryControl, 'validateField' | 'validateBranch'>;
+} & Pick<ValidationRegistryControl, 'validateField'>;
