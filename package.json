@@ -24,6 +24,7 @@
 		"@octokit/core": "4.1.0",
 		"@reactive-tools/eslint-config": "workspace:*",
 		"@size-limit/preset-small-lib": "8.1.0",
+		"aqu": "0.4.3",
 		"clean-publish": "4.0.1",
 		"danger": "10.6.4",
 		"prettier": "2.5.1",
