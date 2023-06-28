@@ -53,6 +53,22 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
+	const validatePaths = useCallback(
+		async <V>(paths: Pxth<unknown>[], values: V) => {
+			let reducedErrors: FieldError<V> = {} as FieldError<V>;
+
+			for (const path of paths) {
+				const error = await validateField(path, deepGet(values, path));
+
+				const newErrors = deepSet({}, path, error);
+				reducedErrors = merge(reducedErrors, newErrors);
+			}
+
+			return reducedErrors;
+		},
+		[validateField],
+	);
+
 	const validateBranch = useCallback(
 		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }> => {
 			const pathsToValidate = registry.current
@@ -65,36 +81,23 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 				)
 				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
-			let errors: FieldError<V> = {} as FieldError<V>;
-
-			for (const path of pathsToValidate) {
-				const error = await validateField(path, deepGet(values, path));
-
-				const newErrors = deepSet({}, path, error);
-				errors = merge(errors, newErrors);
-			}
+			const errors = await validatePaths(pathsToValidate, values);
 
 			return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };
 		},
-		[validateField],
+		[validatePaths],
 	);
 
-	const validateAllFields = useCallback(async <V extends object>(values: V): Promise<FieldError<V>> => {
-		const reducedErrors: FieldError<V> = {} as FieldError<V>;
+	const validateAllFields = useCallback(
+		<V extends object>(values: V): Promise<FieldError<V>> => {
+			const pathsToValidate = registry.current
+				.keys()
+				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
-		const allValidatorKeys = registry.current
-			.keys()
-			.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
-
-		for (const key of allValidatorKeys) {
-			const error = await registry.current.get(key).lazyAsyncCall(deepGet(values, key));
-			if (error) {
-				deepSet(reducedErrors, key, validatorResultToError(error));
-			}
-		}
-
-		return reducedErrors;
-	}, []);
+			return validatePaths(pathsToValidate, values);
+		},
+		[validatePaths],
+	);
 
 	return {
 		registerValidator,
