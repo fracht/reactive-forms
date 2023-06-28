@@ -70,13 +70,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
 
-				let newErrors = {};
-
-				if (samePxth(createPxth([]), path)) {
-					newErrors = error as object;
-				}
-
-				deepSet(newErrors, path, error);
+				const newErrors = deepSet({}, path, error);
 				errors = merge(errors, newErrors);
 			}
 
