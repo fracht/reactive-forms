@@ -71,9 +71,9 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 				const error = await validateField(path, deepGet(values, path));
 				const previousError = deepGet(errors, path);
 
-				merge(error, previousError);
+				const mergedError = merge(previousError, error);
 
-				errors = deepSet(errors, path, error) as FieldError<V>;
+				errors = deepSet(errors, path, mergedError) as FieldError<V>;
 			}
 
 			return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };

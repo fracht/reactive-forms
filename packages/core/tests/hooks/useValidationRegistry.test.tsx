@@ -9,7 +9,7 @@ const renderUseValidationRegistry = () => {
 };
 
 describe('useValidationRegistry', () => {
-	it('should call registered validator', async () => {
+	it('Should call registered validator', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		const validator = jest.fn(() => {
@@ -27,7 +27,7 @@ describe('useValidationRegistry', () => {
 		unregister();
 	});
 
-	it('should set an error returned from upper-level field validator', async () => {
+	it('Should set an error returned from upper-level field validator', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		type TestValues = {
@@ -39,6 +39,62 @@ describe('useValidationRegistry', () => {
 
 		const rootValidator = jest.fn(() => ({ child: { $error: 'error' } }));
 		const childValidator = jest.fn(() => undefined);
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(rootPath, { child: 'test' });
+
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			child: {
+				$error: 'error',
+			},
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
+	});
+
+	it('Should set an error returned from lower-level field validator', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			child: string;
+		};
+
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.child;
+
+		const rootValidator = jest.fn(() => ({ child: { $error: undefined } }));
+		const childValidator = jest.fn(() => 'error');
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(rootPath, { child: 'test' });
+
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			child: {
+				$error: 'error',
+			},
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
+	});
+
+	it('Should override an error returned from upper-level field validator', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			child: string;
+		};
+
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.child;
+
+		const rootValidator = jest.fn(() => ({ child: { $error: 'hello' } }));
+		const childValidator = jest.fn(() => ({ $error: 'error' }));
 
 		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
 		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
