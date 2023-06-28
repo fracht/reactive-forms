@@ -74,6 +74,7 @@ describe('useValidationRegistry', () => {
 		const output = await result.current.validateBranch(rootPath, { child: 'test' });
 
 		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			$error: undefined,
 			child: {
 				$error: 'error',
 			},
@@ -200,5 +201,63 @@ describe('useValidationRegistry', () => {
 
 		unregisterRootValidator();
 		unregisterChildValidator();
+	});
+
+	it('#1: Should return correct error if multiple validators are registered for the same field', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			value: string;
+		};
+
+		const valuePath = createPxth<string>(['value']);
+
+		const firstValidator = jest.fn(() => ({ $error: undefined, value: { $error: null } }));
+		const secondValidator = jest.fn(() => ({ $error: 'error' }));
+
+		const unregisterFirst = result.current.registerValidator(valuePath, firstValidator);
+		const unregisterSecond = result.current.registerValidator(valuePath, secondValidator);
+
+		const output = await result.current.validateBranch(valuePath, 'test');
+
+		expect(firstValidator).toBeCalledTimes(1);
+		expect(secondValidator).toBeCalledTimes(1);
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			value: {
+				$error: 'error',
+			},
+		});
+
+		unregisterFirst();
+		unregisterSecond();
+	});
+
+	it('#2: Should return correct error if multiple validators are registered for the same field', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			value: string;
+		};
+
+		const valuePath = createPxth<string>(['value']);
+
+		const firstValidator = jest.fn(() => ({ $error: 'error' }));
+		const secondValidator = jest.fn(() => ({ $error: 'another' }));
+
+		const unregisterFirst = result.current.registerValidator(valuePath, firstValidator);
+		const unregisterSecond = result.current.registerValidator(valuePath, secondValidator);
+
+		const output = await result.current.validateBranch(valuePath, 'test');
+
+		expect(firstValidator).toBeCalledTimes(1);
+		expect(secondValidator).toBeCalledTimes(0);
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			value: {
+				$error: 'error',
+			},
+		});
+
+		unregisterFirst();
+		unregisterSecond();
 	});
 });

@@ -7,6 +7,7 @@ import invariant from 'tiny-invariant';
 import { FieldError } from '../typings/FieldError';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
+import { isEmptyValidatorOutput } from '../utils/isEmptyValidatorOutput';
 import { validatorResultToError } from '../utils/validatorResultToError';
 
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
@@ -24,7 +25,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 	const registerValidator = useCallback(<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
 		if (!registry.current.has(name)) {
-			registry.current.set(name, new FunctionArray());
+			registry.current.set(name, new FunctionArray(isEmptyValidatorOutput));
 		}
 
 		registry.current.get(name).push(validator as FieldValidator<unknown>);
