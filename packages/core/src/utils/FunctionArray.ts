@@ -5,8 +5,7 @@ import invariant from 'tiny-invariant';
 export class FunctionArray<T extends (...args: any[]) => any> {
 	private items: Array<T> = [];
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	constructor(private isOutputEmpty: (output: any) => boolean = isNil) {}
+	constructor(private isOutputEmpty: (output: Awaited<ReturnType<T>>) => boolean = isNil) {}
 
 	public call = (...args: Parameters<T>): ReturnType<T>[] => {
 		return this.items.map((func) => func(...args));
