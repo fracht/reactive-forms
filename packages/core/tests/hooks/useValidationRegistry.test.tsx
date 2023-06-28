@@ -55,7 +55,7 @@ describe('useValidationRegistry', () => {
 		unregisterChildValidator();
 	});
 
-	it('should set an error returned from upper-level field validator', async () => {
+	it('Should merge errors from different validators', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		type TestValues = {
@@ -68,7 +68,7 @@ describe('useValidationRegistry', () => {
 		const childPath = rootPath.child;
 
 		const rootValidator = jest.fn(() => ({ child: { someValue: { $error: 'error' } } }));
-		const childValidator = jest.fn(() => ({ $error: 'something' /* , someValue: { $error: undefined } */ }));
+		const childValidator = jest.fn(() => ({ $error: 'something' }));
 
 		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
 		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
