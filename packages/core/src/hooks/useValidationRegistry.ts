@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import merge from 'lodash/merge';
 import { deepGet, deepSet, getPxthSegments, isInnerPxth, longestCommonPxth, Pxth, samePxth } from 'pxth';
 import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';
@@ -11,7 +12,7 @@ import { validatorResultToError } from '../utils/validatorResultToError';
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
-	validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }>;
+	validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }>;
 	registerValidator: <V>(name: Pxth<V>, validator: FieldValidator<V>) => () => void;
 	validateField: <V>(name: Pxth<V>, value: V) => Promise<FieldError<V> | undefined>;
 	validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
@@ -53,7 +54,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
 	const validateBranch = useCallback(
-		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<V> }> => {
+		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }> => {
 			const pathsToValidate = registry.current
 				.keys()
 				.filter(
@@ -68,7 +69,9 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
-				errors = deepSet(errors, path, error) as FieldError<V>;
+
+				const newErrors = deepSet({}, path, error);
+				errors = merge(errors, newErrors);
 			}
 
 			return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };
