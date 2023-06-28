@@ -22,7 +22,7 @@ export class FunctionArray<T extends (...args: any[]) => any> {
 		return undefined;
 	};
 
-	public asyncCall = async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>[]> => {
+	public asyncCall = async (...args: Parameters<T>): Promise<ReturnType<T>[]> => {
 		return Promise.all(this.items.map((func) => func(...args)));
 	};
 
