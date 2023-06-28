@@ -30,21 +30,61 @@ describe('useValidationRegistry', () => {
 	it('should set an error returned from upper-level field validator', async () => {
 		const { result } = renderUseValidationRegistry();
 
-		const nestedPath = createPxth<string>(['some', 'nested', 'path']);
-		const nestedPathValidator = jest.fn(() => undefined); // Called second
-		const unregisterNestedPath = result.current.registerValidator(nestedPath, nestedPathValidator);
+		type TestValues = {
+			child: string;
+		};
 
-		const path = createPxth<{ path: string }>(['some', 'nested']);
-		const validator = jest.fn(() => ({ path: { $error: 'error' } })); // Called first
-		const unregister = result.current.registerValidator(path, validator);
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.child;
 
-		const output = await result.current.validateBranch(path, { path: 'test' });
+		const rootValidator = jest.fn(() => ({ child: { $error: 'error' } }));
+		const childValidator = jest.fn(() => undefined);
 
-		expect((output.errors as FieldError<{ some: { nested: { path: string } } }>).some?.nested?.path?.$error).toBe(
-			'error',
-		);
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
 
-		unregisterNestedPath();
-		unregister();
+		const output = await result.current.validateBranch(rootPath, { child: 'test' });
+
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			child: {
+				$error: 'error',
+			},
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
+	});
+
+	it('should set an error returned from upper-level field validator', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			child: {
+				someValue: string;
+			};
+		};
+
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.child;
+
+		const rootValidator = jest.fn(() => ({ child: { someValue: { $error: 'error' } } }));
+		const childValidator = jest.fn(() => ({ $error: 'something' /* , someValue: { $error: undefined } */ }));
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(rootPath, { child: { someValue: '' } });
+
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			child: {
+				$error: 'something',
+				someValue: {
+					$error: 'error',
+				},
+			},
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
 	});
 });

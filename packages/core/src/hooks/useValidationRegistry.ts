@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import has from 'lodash/has';
+import merge from 'lodash/merge';
 import { deepGet, deepSet, getPxthSegments, isInnerPxth, longestCommonPxth, Pxth, samePxth } from 'pxth';
 import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';
@@ -69,9 +69,11 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
-				if (!has(errors, getPxthSegments(path))) {
-					errors = deepSet(errors, path, error) as FieldError<V>;
-				}
+				const previousError = deepGet(errors, path);
+
+				merge(error, previousError);
+
+				errors = deepSet(errors, path, error) as FieldError<V>;
 			}
 
 			return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };
