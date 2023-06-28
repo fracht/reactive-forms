@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
-import { FieldError } from '../../src';
+import { FieldError, FieldInnerError } from '../../src';
 import { useValidationRegistry } from '../../src/hooks/useValidationRegistry';
 
 const renderUseValidationRegistry = () => {
@@ -138,6 +138,64 @@ describe('useValidationRegistry', () => {
 					$error: 'error',
 				},
 			},
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
+	});
+
+	it('Should return correct error for an array', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			array: string[];
+		};
+
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.array;
+
+		const rootValidator = jest.fn(() => {
+			const error: FieldInnerError[] & FieldInnerError = [];
+			error.$error = 'error';
+			return { array: error };
+		});
+		const childValidator = jest.fn(() => undefined);
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(rootPath, { array: [] });
+
+		const expectedError: FieldInnerError[] & FieldInnerError = [];
+		expectedError.$error = 'error';
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			array: expectedError,
+		});
+
+		unregisterRootValidator();
+		unregisterChildValidator();
+	});
+
+	it('Should return correct error for an array element', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			array: string[];
+		};
+
+		const rootPath = createPxth<TestValues>([]);
+		const childPath = rootPath.array[0];
+
+		const rootValidator = jest.fn(() => ({ array: [{ $error: 'error' }] }));
+		const childValidator = jest.fn(() => undefined);
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(rootPath, { array: [] });
+
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			array: [{ $error: 'error' }],
 		});
 
 		unregisterRootValidator();
