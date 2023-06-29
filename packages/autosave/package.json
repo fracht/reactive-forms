@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/autosave",
 	"description": "> TODO: description",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"main": "dist/index.js",
 	"module": "dist/autosave.esm.js",
 	"types": "dist/autosave.d.ts",
