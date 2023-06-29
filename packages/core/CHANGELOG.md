@@ -1,5 +1,12 @@
 # @reactive-forms/core
 
+## 0.9.1
+
+### Patch Changes
+
+-   4788033: Fixed bug with discarding an error in validateBranch function
+-   2323e4f: Merge errors from multiple validators on the same field
+
 ## 0.9.0
 
 ### Minor Changes
