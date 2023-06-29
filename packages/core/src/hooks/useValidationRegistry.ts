@@ -7,7 +7,7 @@ import invariant from 'tiny-invariant';
 import { FieldError } from '../typings/FieldError';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
-import { validatorResultToError } from '../utils/validatorResultToError';
+import { UnwrapPromise, validatorResultToError } from '../utils/validatorResultToError';
 
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
 
@@ -44,8 +44,15 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 	const validateField = useCallback(async <V>(name: Pxth<V>, value: V): Promise<FieldError<V> | undefined> => {
 		if (registry.current.has(name)) {
-			const output = await (registry.current.get(name) as FunctionArray<FieldValidator<V>>).lazyAsyncCall(value);
-			return validatorResultToError(output);
+			const outputs = await (registry.current.get(name) as FunctionArray<FieldValidator<V>>).asyncCall(value);
+
+			let error: FieldError<V> | undefined = undefined;
+
+			for (const output of outputs) {
+				error = merge(validatorResultToError(output as UnwrapPromise<ReturnType<FieldValidator<V>>>), error);
+			}
+
+			return error;
 		}
 
 		return undefined;
