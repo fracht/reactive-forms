@@ -18,8 +18,8 @@ export class FunctionArray<T extends (...args: any[]) => any> {
 		return undefined;
 	};
 
-	public asyncCall = async (...args: Parameters<T>): Promise<ReturnType<T>[]> => {
-		return Promise.all(this.items.map(async (func) => await func(...args)));
+	public asyncCall = async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>[]> => {
+		return Promise.all(this.items.map((func) => func(...args)));
 	};
 
 	public lazyAsyncCall = async (...args: Parameters<T>): Promise<ReturnType<T> | undefined> => {

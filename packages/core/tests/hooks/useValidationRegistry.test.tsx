@@ -201,4 +201,69 @@ describe('useValidationRegistry', () => {
 		unregisterRootValidator();
 		unregisterChildValidator();
 	});
+
+	it('Should merge (not overriding) errors from multiple validators on the same field (with objects)', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			a: string;
+			b: string;
+		};
+
+		const path = createPxth<TestValues>([]);
+
+		const firstValidator = jest.fn(() => ({ a: { $error: undefined }, b: { $error: 'error' } }));
+		const secondValidator = jest.fn(() => ({ a: { $error: 'error' }, b: { $error: 'override' } }));
+		const thirdValidator = jest.fn(() => ({ $error: 'test', a: { $error: 'override' } }));
+
+		const unregisterFirst = result.current.registerValidator(path, firstValidator);
+		const unregisterSecond = result.current.registerValidator(path, secondValidator);
+		const unregisterThird = result.current.registerValidator(path, thirdValidator);
+
+		const output = await result.current.validateBranch(path, { a: 'test', b: 'test' });
+
+		expect(firstValidator).toBeCalledTimes(1);
+		expect(secondValidator).toBeCalledTimes(1);
+		expect(thirdValidator).toBeCalledTimes(1);
+		expect(output.errors as FieldError<TestValues>).toStrictEqual({
+			$error: 'test',
+			a: {
+				$error: 'error',
+			},
+			b: {
+				$error: 'error',
+			},
+		});
+
+		unregisterFirst();
+		unregisterSecond();
+		unregisterThird();
+	});
+
+	it('Should merge (not overriding) errors from multiple validators on the same field (with primitives)', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		const path = createPxth<{}>([]);
+
+		const firstValidator = jest.fn(() => null);
+		const secondValidator = jest.fn(() => 'error');
+		const thirdValidator = jest.fn(() => 'override');
+
+		const unregisterFirst = result.current.registerValidator(path, firstValidator);
+		const unregisterSecond = result.current.registerValidator(path, secondValidator);
+		const unregisterThird = result.current.registerValidator(path, thirdValidator);
+
+		const output = await result.current.validateBranch(path, {});
+
+		expect(firstValidator).toBeCalledTimes(1);
+		expect(secondValidator).toBeCalledTimes(1);
+		expect(thirdValidator).toBeCalledTimes(1);
+		expect(output.errors as FieldError<{}>).toStrictEqual({
+			$error: 'error',
+		});
+
+		unregisterFirst();
+		unregisterSecond();
+		unregisterThird();
+	});
 });
