@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.0
+
+### Minor Changes
+
+-   7bee1a9: Changed validateField function signature and functionality. This function now optionally accepts value parameter and calls validateBranch in order to get all errors associated with a field.
+
 ## 0.9.1
 
 ### Patch Changes
