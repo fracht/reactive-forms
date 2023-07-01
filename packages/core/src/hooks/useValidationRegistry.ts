@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import merge from 'lodash/merge';
-import { deepGet, deepSet, getPxthSegments, isInnerPxth, longestCommonPxth, Pxth, samePxth } from 'pxth';
+import { createPxth, deepGet, deepSet, getPxthSegments, isInnerPxth, Pxth, samePxth } from 'pxth';
 import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';
 
@@ -12,9 +12,11 @@ import { UnwrapPromise, validatorResultToError } from '../utils/validatorResultT
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
 
 export type ValidationRegistryControl = {
-	validateBranch: <V>(origin: Pxth<V>, values: V) => Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }>;
+	validateBranch: <V, T extends object>(
+		origin: Pxth<V>,
+		values: T,
+	) => Promise<{ attachPath: Pxth<V>; errors: FieldError<T> }>;
 	registerValidator: <V>(name: Pxth<V>, validator: FieldValidator<V>) => () => void;
-	validateField: <V>(name: Pxth<V>, value: V) => Promise<FieldError<V> | undefined>;
 	validateAllFields: <V extends object>(values: V) => Promise<FieldError<V>>;
 	hasValidator: <V>(name: Pxth<V>) => boolean;
 };
@@ -61,7 +63,10 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
 	const validateBranch = useCallback(
-		async <V>(origin: Pxth<V>, values: V): Promise<{ attachPath: Pxth<V>; errors: FieldError<unknown> }> => {
+		async <V, T extends object>(
+			origin: Pxth<V>,
+			values: T,
+		): Promise<{ attachPath: Pxth<V>; errors: FieldError<T> }> => {
 			const pathsToValidate = registry.current
 				.keys()
 				.filter(
@@ -72,7 +77,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 				)
 				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
 
-			let errors: FieldError<V> = {} as FieldError<V>;
+			let errors: FieldError<T> = {} as FieldError<T>;
 
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
@@ -81,7 +86,7 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 				errors = merge(errors, newErrors);
 			}
 
-			return { attachPath: longestCommonPxth(pathsToValidate) as Pxth<V>, errors };
+			return { attachPath: (pathsToValidate[0] ?? createPxth([])) as Pxth<V>, errors };
 		},
 		[validateField],
 	);
@@ -105,7 +110,6 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 	return {
 		registerValidator,
-		validateField,
 		validateAllFields,
 		hasValidator,
 		validateBranch,

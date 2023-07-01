@@ -70,162 +70,245 @@ describe('validateUpdatedFields', () => {
 
 describe('validateField', () => {
 	it('should run field-level validation', async () => {
+		type TestValues = {
+			value: string;
+		};
+
 		const { result } = renderHook(() =>
-			useForm({
-				initialValues: {},
+			useForm<TestValues>({
+				initialValues: {
+					value: 'test',
+				},
 			}),
 		);
+
+		const valuePath = result.current.paths.value;
 
 		const validator = jest.fn();
 		validator.mockReturnValueOnce('error');
 
-		let cleanup: () => void;
+		const unregisterValidator = result.current.registerValidator(valuePath, validator);
 
-		act(() => {
-			cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
-		});
-
-		await expect(
-			result.current.validateField(createPxth(['custom', 'name']), { value: 'asdf' }),
-		).resolves.toStrictEqual({
+		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toStrictEqual({
 			$error: 'error',
 		});
 
-		expect(validator).toBeCalledWith({
-			value: 'asdf',
-		});
+		expect(validator).toBeCalledWith('asdf');
 
 		validator.mockClear();
 		validator.mockReturnValueOnce({ $error: 'newError' });
 
-		await expect(result.current.validateField(createPxth<{}>(['custom', 'name']), {})).resolves.toStrictEqual({
+		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toStrictEqual({
 			$error: 'newError',
 		});
 
 		validator.mockClear();
 		validator.mockReturnValueOnce(null);
 
-		await expect(result.current.validateField(createPxth<{}>(['custom', 'name']), {})).resolves.toStrictEqual({
+		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toStrictEqual({
 			$error: undefined,
 		});
 
-		act(() => {
-			cleanup();
-		});
+		unregisterValidator();
 	});
 
-	it('should return undefined, but not modify errors, if validator is not defined', async () => {
+	it('should return undefined when there are no validators attached', async () => {
+		type TestValues = {
+			name: string;
+		};
+
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<TestValues>({
 				initialValues: {
-					custom: {
-						name: 'User',
-					},
-				},
-				initialErrors: {
-					custom: {
-						name: {
-							$error: 'Error',
-						},
-					},
+					name: 'User',
 				},
 			}),
 		);
 
-		await expect(result.current.validateField(createPxth(['custom', 'name']), 0)).resolves.toBe(undefined);
+		const valuePath = result.current.paths.name;
 
-		expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: 'Error' });
+		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toBe(undefined);
 	});
 
-	it('should return undefined and clear error if validator returned nothing', async () => {
+	it('should return undefined if validator returned nothing', async () => {
+		type TestValues = {
+			name: string;
+		};
+
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<TestValues>({
 				initialValues: {
-					custom: {
-						name: 'User',
-					},
-				},
-				initialErrors: {
-					custom: {
-						name: {
-							$error: 'Error',
-						},
-					},
+					name: 'User',
 				},
 			}),
 		);
 
-		let cleanup: () => void;
+		const valuePath = result.current.paths.name;
 
 		const validator = jest.fn();
 
-		act(() => {
-			cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
-		});
+		const unregisterValidator = result.current.registerValidator(valuePath, validator);
 
-		await expect(result.current.validateField(createPxth(['custom', 'name']), 0)).resolves.toStrictEqual({
+		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toStrictEqual({
 			$error: undefined,
 		});
 
 		expect(validator).toBeCalled();
-		expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: undefined });
 
-		act(() => {
-			cleanup();
-		});
+		unregisterValidator();
 	});
 
-	it('should clear error if disablePureFieldsValidation enabled & value is equal to initial value', async () => {
+	it('should discard an error from validator for pure field', async () => {
+		type TestValues = {
+			value: string;
+		};
+
 		const { result } = renderHook(() =>
-			useForm({
+			useForm<TestValues>({
 				initialValues: {
-					custom: {
-						name: {
-							inner: {
-								value: 'a',
-							},
-						},
-					},
-				},
-				initialErrors: {
-					custom: {
-						name: {
-							$error: 'Error',
-							inner: {
-								$error: 'Error',
-								value: {
-									$error: 'Error',
-								},
-							},
-						},
-					},
+					value: 'a',
 				},
 				disablePureFieldsValidation: true,
 			}),
 		);
 
-		let cleanup: () => void;
+		const valuePath = result.current.paths.value;
+		const validator = jest.fn(() => ({ $error: 'some error' }));
 
-		const validator = jest.fn();
+		const unregisterValidator = result.current.registerValidator(valuePath, validator);
 
-		act(() => {
-			cleanup = result.current.registerValidator(createPxth(['custom', 'name']), validator);
-		});
+		await expect(result.current.validateField(valuePath, 'a')).resolves.toStrictEqual({ $error: undefined });
 
-		await expect(
-			result.current.validateField(createPxth(['custom', 'name']), {
-				inner: {
-					value: 'a',
+		expect(validator).toBeCalled();
+
+		unregisterValidator();
+	});
+
+	it('should call validators for the whole branch and discard other errors', async () => {
+		type TestValues = {
+			name: {
+				first: string;
+				second: string;
+			};
+			surname: string;
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					name: {
+						first: 'a',
+						second: 'b',
+					},
+					surname: 'b',
 				},
 			}),
-		).resolves.toStrictEqual(undefined);
+		);
 
-		expect(validator).not.toBeCalled();
-		expect(result.current.getFieldError(createPxth(['custom', 'name']))).toStrictEqual({ $error: undefined });
+		const valuePath = result.current.paths.name;
+		const objectPath = result.current.paths;
 
-		act(() => {
-			cleanup();
+		const valueValidator = jest.fn(() => ({ $error: 'value error', first: { $error: 'nested error 1' } }));
+		const objectValidator = jest.fn(() => ({
+			$error: 'object error',
+			surname: { $error: 'discarded error' },
+			name: { second: { $error: 'nested error 2' }, first: { $error: 'hello' } },
+		}));
+
+		const unregisterValueValidator = result.current.registerValidator(valuePath, valueValidator);
+		const unregisterObjectValidator = result.current.registerValidator(objectPath, objectValidator);
+
+		await expect(result.current.validateField(valuePath)).resolves.toStrictEqual({
+			$error: 'value error',
+			first: {
+				$error: 'nested error 1',
+			},
+			second: {
+				$error: 'nested error 2',
+			},
 		});
+		expect(valueValidator).toBeCalled();
+		expect(objectValidator).toBeCalled();
+
+		unregisterValueValidator();
+		unregisterObjectValidator();
+	});
+
+	it('should exclude errors on pure fields with disablePureFieldsValidation option', async () => {
+		type TestValues = {
+			pure: string;
+			dirty: string;
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					pure: 'a',
+					dirty: 'b',
+				},
+				disablePureFieldsValidation: true,
+			}),
+		);
+
+		const valuePath = result.current.paths;
+
+		const validator = jest.fn(() => ({ pure: { $error: 'discarded' }, dirty: { $error: 'error' } }));
+
+		const unregisterValidator = result.current.registerValidator(valuePath, validator);
+
+		await expect(
+			result.current.validateField(valuePath, {
+				pure: 'a',
+				dirty: 'c',
+			}),
+		).resolves.toStrictEqual({
+			dirty: {
+				$error: 'error',
+			},
+			pure: {
+				$error: undefined,
+			},
+		});
+
+		expect(validator).toBeCalled();
+
+		unregisterValidator();
+	});
+
+	it('should call validators for whole branch from origin field (with arrays)', async () => {
+		type TestValues = {
+			array: { value: string }[];
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					array: [{ value: 'hello' }],
+				},
+			}),
+		);
+
+		const arrayPath = result.current.paths.array;
+		const valuePath = arrayPath[0];
+
+		const validator = jest.fn(() => ({ value: { $error: 'nested error' } }));
+		const arrayValidator = jest.fn(() => [{ $error: 'other error' }]);
+
+		const unregisterValidator = result.current.registerValidator(valuePath, validator);
+		const unregisterArrayValidator = result.current.registerValidator(arrayPath, arrayValidator);
+
+		await expect(result.current.validateField(valuePath)).resolves.toStrictEqual({
+			$error: 'other error',
+			value: {
+				$error: 'nested error',
+			},
+		});
+
+		expect(validator).toBeCalled();
+		expect(arrayValidator).toBeCalled();
+
+		unregisterValidator();
+		unregisterArrayValidator();
 	});
 });
 

@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { createPxth } from 'pxth';
+import { createPxth, getPxthSegments } from 'pxth';
 
 import { FieldError, FieldInnerError } from '../../src';
 import { useValidationRegistry } from '../../src/hooks/useValidationRegistry';
@@ -9,24 +9,6 @@ const renderUseValidationRegistry = () => {
 };
 
 describe('useValidationRegistry', () => {
-	it('Should call registered validator', async () => {
-		const { result } = renderUseValidationRegistry();
-
-		const validator = jest.fn(() => {
-			return 'some error';
-		});
-		const path = createPxth<string>(['path']);
-		const unregister = result.current.registerValidator(path, validator);
-
-		const error = await result.current.validateField(path, 'asdf');
-
-		expect(validator).toBeCalledTimes(1);
-		expect(validator).toBeCalledWith('asdf');
-		expect(error?.$error).toBe('some error');
-
-		unregister();
-	});
-
 	it('Should set an error returned from upper-level field validator', async () => {
 		const { result } = renderUseValidationRegistry();
 
@@ -172,6 +154,8 @@ describe('useValidationRegistry', () => {
 			array: expectedError,
 		});
 
+		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
+
 		unregisterRootValidator();
 		unregisterChildValidator();
 	});
@@ -197,6 +181,8 @@ describe('useValidationRegistry', () => {
 		expect(output.errors as FieldError<TestValues>).toStrictEqual({
 			array: [{ $error: 'error' }],
 		});
+
+		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
 
 		unregisterRootValidator();
 		unregisterChildValidator();
@@ -235,6 +221,8 @@ describe('useValidationRegistry', () => {
 			},
 		});
 
+		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
+
 		unregisterFirst();
 		unregisterSecond();
 		unregisterThird();
@@ -262,8 +250,36 @@ describe('useValidationRegistry', () => {
 			$error: 'error',
 		});
 
+		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
+
 		unregisterFirst();
 		unregisterSecond();
 		unregisterThird();
+	});
+
+	it('Should return correct attachPath', async () => {
+		const { result } = renderUseValidationRegistry();
+
+		type TestValues = {
+			a: {
+				b: string;
+			};
+		};
+
+		const rootPath = createPxth<TestValues['a']>(['a']);
+		const childPath = rootPath.b;
+
+		const rootValidator = jest.fn(() => ({ $error: 'error' }));
+		const childValidator = jest.fn(() => undefined);
+
+		const unregisterRootValidator = result.current.registerValidator(rootPath, rootValidator);
+		const unregisterChildValidator = result.current.registerValidator(childPath, childValidator);
+
+		const output = await result.current.validateBranch(childPath, { value: 'hello' });
+
+		expect(getPxthSegments(output.attachPath)).toStrictEqual(['a']);
+
+		unregisterRootValidator();
+		unregisterChildValidator();
 	});
 });

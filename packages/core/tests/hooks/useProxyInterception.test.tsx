@@ -3,9 +3,8 @@ import { renderHook } from '@testing-library/react';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
 import { MappingProxy } from 'stocked';
 
-import { FieldInnerError, FieldValidator, ReactiveFormProvider, useForm } from '../../src';
+import { FieldError, FieldValidator, ReactiveFormProvider, useForm } from '../../src';
 import { useProxyInterception } from '../../src/hooks/useProxyInterception';
-import { NestedObject } from '../../src/typings/NestedObject';
 
 type ProxyValue = {
 	id: number;
@@ -63,8 +62,8 @@ const renderUseProxyInterception = () => {
 						) => () => void,
 						validateField: validateField as <V>(
 							name: Pxth<V>,
-							value: V,
-						) => Promise<NestedObject<FieldInnerError, V>>,
+							value?: V,
+						) => Promise<FieldError<V> | undefined>,
 					}}
 				>
 					{children}
