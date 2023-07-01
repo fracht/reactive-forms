@@ -125,6 +125,17 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		return processedValues;
 	}, []);
 
+	const normalizeErrors = useCallback(
+		<V>(errors: FieldError<V>, source: object, compare: object): FieldError<V> => {
+			if (!disablePureFieldsValidation) {
+				return errors;
+			}
+
+			return merge(setNestedValues(errors as object, undefined), excludeOverlaps(source, compare, errors));
+		},
+		[disablePureFieldsValidation],
+	);
+
 	const validateField = useCallback(
 		async <V>(name: Pxth<V>, value: V = getFieldValue(name)): Promise<FieldError<V> | undefined> => {
 			if (hasValidator(name)) {
@@ -135,23 +146,16 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 				const valueErrors = deepGet(errors, name) as FieldError<V>;
 
-				const normalizedErrors = disablePureFieldsValidation
-					? merge(
-							setNestedValues(valueErrors as object, undefined),
-							excludeOverlaps(
-								deepGet(allValues, name) as object,
-								deepGet(initialValuesRef.current, name) as object,
-								valueErrors,
-							),
-					  )
-					: valueErrors;
-
-				return normalizedErrors;
+				return normalizeErrors(
+					valueErrors,
+					deepGet(allValues, name) as object,
+					deepGet(initialValuesRef.current, name) as object,
+				);
 			}
 
 			return undefined;
 		},
-		[disablePureFieldsValidation, getFieldValue, hasValidator, validateBranch, values],
+		[getFieldValue, hasValidator, normalizeErrors, validateBranch, values],
 	);
 
 	const runFormValidationSchema = useCallback(
@@ -286,21 +290,16 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		async ({ values, origin }: BatchUpdate<object>) => {
 			const { attachPath, errors } = await validateBranch(origin, values);
 
-			const onlyNecessaryErrors = deepGet(errors, attachPath);
-			const normalizedErrors = disablePureFieldsValidation
-				? merge(
-						setNestedValues(onlyNecessaryErrors as object, undefined),
-						excludeOverlaps(
-							values,
-							deepGet(initialValuesRef.current, attachPath) as object,
-							onlyNecessaryErrors,
-						),
-				  )
-				: onlyNecessaryErrors;
+			const onlyNecessaryErrors = deepGet(errors, attachPath) as FieldError<unknown>;
+			const normalizedErrors = normalizeErrors(
+				onlyNecessaryErrors,
+				values,
+				deepGet(initialValuesRef.current, attachPath) as object,
+			);
 
 			setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as object));
 		},
-		[disablePureFieldsValidation, setFieldError, validateBranch],
+		[normalizeErrors, setFieldError, validateBranch],
 	);
 
 	useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
