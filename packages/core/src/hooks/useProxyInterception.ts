@@ -5,9 +5,8 @@ import { intercept, StockProxy, useStockContext } from 'stocked';
 import { useControlHandlers } from './useControlHandlers';
 import { FormShared } from './useForm';
 import { useFormContext } from './useFormContext';
-import { FieldInnerError } from '../typings/FieldError';
+import { FieldError } from '../typings/FieldError';
 import { FieldValidator } from '../typings/FieldValidator';
-import { NestedObject } from '../typings/NestedObject';
 
 export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object> => {
 	const { values, errors, touched, formMeta, registerValidator, validateField, ...other } = useFormContext();
@@ -87,9 +86,6 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
 		errors: newErrors,
 		touched: newTouched,
 		registerValidator: interceptedRegisterValidator,
-		validateField: interceptedValidateField as <V>(
-			name: Pxth<V>,
-			value: V,
-		) => Promise<NestedObject<FieldInnerError, V> | undefined>,
+		validateField: interceptedValidateField as <V>(name: Pxth<V>, value?: V) => Promise<FieldError<V> | undefined>,
 	};
 };

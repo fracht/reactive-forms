@@ -9,24 +9,6 @@ const renderUseValidationRegistry = () => {
 };
 
 describe('useValidationRegistry', () => {
-	it('Should call registered validator', async () => {
-		const { result } = renderUseValidationRegistry();
-
-		const validator = jest.fn(() => {
-			return 'some error';
-		});
-		const path = createPxth<string>(['path']);
-		const unregister = result.current.registerValidator(path, validator);
-
-		const error = await result.current.validateField(path, 'asdf');
-
-		expect(validator).toBeCalledTimes(1);
-		expect(validator).toBeCalledWith('asdf');
-		expect(error?.$error).toBe('some error');
-
-		unregister();
-	});
-
 	it('Should set an error returned from upper-level field validator', async () => {
 		const { result } = renderUseValidationRegistry();
 

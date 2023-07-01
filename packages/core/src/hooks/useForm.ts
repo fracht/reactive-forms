@@ -98,19 +98,13 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	} = config;
 
 	const control = useFormControl({ initialValues, initialErrors, initialTouched });
-	const {
-		validateField: runFieldLevelValidation,
-		validateAllFields,
-		hasValidator,
-		validateBranch,
-		registerValidator,
-	} = useValidationRegistry();
+	const { validateAllFields, hasValidator, validateBranch, registerValidator } = useValidationRegistry();
 
 	const initialValuesRef = useRef(initialValues);
 	const initialErrorsRef = useRef(initialErrors);
 	const initialTouchedRef = useRef(initialTouched);
 
-	const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors } = control;
+	const { setFieldError, setErrors, setTouched, setValues, setFormMeta, values, errors, getFieldValue } = control;
 
 	const registerPostprocessor = useCallback(<V>(postprocessor: FieldPostProcessor<V>) => {
 		postprocessors.current.push(postprocessor as FieldPostProcessor<unknown>);
@@ -132,20 +126,32 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	}, []);
 
 	const validateField = useCallback(
-		async <V>(name: Pxth<V>, value: V) => {
+		async <V>(name: Pxth<V>, value: V = getFieldValue(name)): Promise<FieldError<V> | undefined> => {
 			if (hasValidator(name)) {
-				if (!disablePureFieldsValidation || !isEqual(value, deepGet(initialValuesRef.current, name))) {
-					const error = await runFieldLevelValidation(name, value);
-					setFieldError(name, (old) => ({ ...old, ...error }));
-					return error;
-				} else {
-					setFieldError(name, { $error: undefined } as FieldError<V>);
-				}
+				let allValues = values.getValues();
+				allValues = deepSet(allValues, name, value) as Values;
+
+				const { errors } = await validateBranch(name, allValues);
+
+				const valueErrors = deepGet(errors, name) as FieldError<V>;
+
+				const normalizedErrors = disablePureFieldsValidation
+					? merge(
+							setNestedValues(valueErrors as object, undefined),
+							excludeOverlaps(
+								deepGet(allValues, name) as object,
+								deepGet(initialValuesRef.current, name) as object,
+								valueErrors,
+							),
+					  )
+					: valueErrors;
+
+				return normalizedErrors;
 			}
 
 			return undefined;
 		},
-		[runFieldLevelValidation, setFieldError, hasValidator, disablePureFieldsValidation],
+		[disablePureFieldsValidation, getFieldValue, hasValidator, validateBranch, values],
 	);
 
 	const runFormValidationSchema = useCallback(
