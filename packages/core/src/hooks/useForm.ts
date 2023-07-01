@@ -139,8 +139,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	const validateField = useCallback(
 		async <V>(name: Pxth<V>, value: V = getFieldValue(name)): Promise<FieldError<V> | undefined> => {
 			if (hasValidator(name)) {
-				let allValues = values.getValues();
-				allValues = deepSet(allValues, name, value) as Values;
+				const allValues = deepSet(cloneDeep(values.getValues()), name, value) as Values;
 
 				const { errors } = await validateBranch(name, allValues);
 
