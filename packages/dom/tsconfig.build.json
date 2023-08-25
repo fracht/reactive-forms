@@ -5,7 +5,8 @@
 		"outDir": "dist",
 		"sourceRoot": "source-root",
 		"sourceMap": true,
-		"declaration": true
+		"declaration": true,
+		"declarationMap": true
 	},
 	"exclude": ["tests"]
 }

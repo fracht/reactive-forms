@@ -25,12 +25,12 @@
 		"@reactive-tools/eslint-config": "workspace:*",
 		"@size-limit/preset-small-lib": "8.1.0",
 		"aqu": "0.4.3",
-		"clean-publish": "4.0.1",
+		"clean-publish": "4.2.0",
 		"danger": "10.6.4",
 		"prettier": "2.5.1",
 		"size-limit": "8.1.0",
 		"syncpack": "8.2.5",
-		"turbo": "1.6.1"
+		"turbo": "1.10.13"
 	},
 	"packageManager": "pnpm@8.6.12",
 	"size-limit": [
