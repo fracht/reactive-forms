@@ -1,11 +1,5 @@
 # @reactive-forms/autosave
 
-## 0.10.2
-
-### Patch Changes
-
--   cbb1ab2: Configured provenance
-
 ## 0.10.1
 
 ## 0.10.0
