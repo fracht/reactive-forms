@@ -21,6 +21,8 @@ export type ValidationRegistryControl = {
 	hasValidator: <V>(name: Pxth<V>) => boolean;
 };
 
+type ValidateBranchOutput<V, T> = { attachPath: Pxth<V>; errors: FieldError<T> };
+
 export const useValidationRegistry = (): ValidationRegistryControl => {
 	const registry = useRef<ValidationRegistry>(new PxthMap());
 
@@ -62,11 +64,25 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
 
+	const validatePaths = useCallback(
+		async <T>(pathsToValidate: Array<Pxth<unknown>>, values: T): Promise<FieldError<T>> => {
+			pathsToValidate.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
+
+			let errors = {} as FieldError<T>;
+
+			for (const path of pathsToValidate) {
+				const error = await validateField(path, deepGet(values, path));
+				const newErrors = deepSet({}, path, error);
+				errors = merge(errors, newErrors);
+			}
+
+			return errors;
+		},
+		[validateField],
+	);
+
 	const validateBranch = useCallback(
-		async <V, T extends object>(
-			origin: Pxth<V>,
-			values: T,
-		): Promise<{ attachPath: Pxth<V>; errors: FieldError<T> }> => {
+		async <V, T extends object>(origin: Pxth<V>, values: T): Promise<ValidateBranchOutput<V, T>> => {
 			const pathsToValidate = registry.current
 				.keys()
 				.filter(
@@ -74,39 +90,23 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 						isInnerPxth(origin as Pxth<unknown>, i) ||
 						isInnerPxth(i, origin as Pxth<unknown>) ||
 						samePxth(origin as Pxth<unknown>, i),
-				)
-				.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
+				);
 
-			let errors: FieldError<T> = {} as FieldError<T>;
-
-			for (const path of pathsToValidate) {
-				const error = await validateField(path, deepGet(values, path));
-
-				const newErrors = deepSet({}, path, error);
-				errors = merge(errors, newErrors);
-			}
+			const errors = await validatePaths(pathsToValidate, values);
 
 			return { attachPath: (pathsToValidate[0] ?? createPxth([])) as Pxth<V>, errors };
 		},
-		[validateField],
+		[validatePaths],
 	);
 
-	const validateAllFields = useCallback(async <V extends object>(values: V): Promise<FieldError<V>> => {
-		const reducedErrors: FieldError<V> = {} as FieldError<V>;
+	const validateAllFields = useCallback(
+		async <V extends object>(values: V): Promise<FieldError<V>> => {
+			const allValidatorKeys = registry.current.keys();
 
-		const allValidatorKeys = registry.current
-			.keys()
-			.sort((a, b) => getPxthSegments(a).length - getPxthSegments(b).length);
-
-		for (const key of allValidatorKeys) {
-			const error = await registry.current.get(key).lazyAsyncCall(deepGet(values, key));
-			if (error) {
-				deepSet(reducedErrors, key, validatorResultToError(error));
-			}
-		}
-
-		return reducedErrors;
-	}, []);
+			return await validatePaths(allValidatorKeys, values);
+		},
+		[validatePaths],
+	);
 
 	return {
 		registerValidator,

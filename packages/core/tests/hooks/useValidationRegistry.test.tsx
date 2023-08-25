@@ -188,7 +188,7 @@ describe('useValidationRegistry', () => {
 		unregisterChildValidator();
 	});
 
-	it('Should merge (not overriding) errors from multiple validators on the same field (with objects)', async () => {
+	it('Should merge (not override) errors from multiple validators on the same field (with objects)', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		type TestValues = {
@@ -223,12 +223,22 @@ describe('useValidationRegistry', () => {
 
 		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
 
+		expect(await result.current.validateAllFields({ a: 'test', b: 'test' })).toStrictEqual({
+			$error: 'test',
+			a: {
+				$error: 'error',
+			},
+			b: {
+				$error: 'error',
+			},
+		});
+
 		unregisterFirst();
 		unregisterSecond();
 		unregisterThird();
 	});
 
-	it('Should merge (not overriding) errors from multiple validators on the same field (with primitives)', async () => {
+	it('Should merge (not override) errors from multiple validators on the same field (with primitives)', async () => {
 		const { result } = renderUseValidationRegistry();
 
 		const path = createPxth<{}>([]);
@@ -251,6 +261,10 @@ describe('useValidationRegistry', () => {
 		});
 
 		expect(getPxthSegments(output.attachPath)).toStrictEqual([]);
+
+		expect(await result.current.validateAllFields({})).toStrictEqual({
+			$error: 'error',
+		});
 
 		unregisterFirst();
 		unregisterSecond();
