@@ -15,12 +15,10 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "aqu build",
+		"build": "aqu build && rimraf ./prepared-package && clean-publish",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
-		"postpublish": "rimraf ./prepared-package",
-		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
 		"test:watch": "jest --passWithNoTests --watch"

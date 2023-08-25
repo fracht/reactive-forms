@@ -15,12 +15,10 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "aqu build",
+		"build": "aqu build && rimraf ./prepared-package && clean-publish",
 		"dev": "aqu watch --no-cleanup",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
-		"postpublish": "rimraf ./prepared-package",
-		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
 		"test:watch": "jest --passWithNoTests --watch"
@@ -41,7 +39,6 @@
 		"@types/node": "^18.11.18",
 		"@types/react": "18.0.23",
 		"aqu": "0.4.3",
-		"clean-publish": "4.0.1",
 		"jest": "29.2.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
