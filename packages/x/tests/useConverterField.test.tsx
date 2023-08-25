@@ -4,7 +4,17 @@ import { act, renderHook } from '@testing-library/react';
 
 import { ConversionError, useConverterField } from '../src/useConverterField';
 
-const renderUseConverterField = () => {
+const defaultParse = (text: string) => {
+	const parsingResult = Number.parseInt(text);
+
+	if (Number.isNaN(parsingResult)) {
+		throw new ConversionError('hello');
+	}
+
+	return parsingResult;
+};
+
+const renderUseConverterField = (parse: (value: string) => number = defaultParse) => {
 	const { result: formBag } = renderHook(() =>
 		useForm({
 			initialValues: {
@@ -16,15 +26,7 @@ const renderUseConverterField = () => {
 	const { result: converterFieldBag } = renderHook(
 		() =>
 			useConverterField<number>({
-				parse: (text) => {
-					const parsingResult = Number.parseInt(text);
-
-					if (Number.isNaN(parsingResult)) {
-						throw new ConversionError('hello');
-					}
-
-					return parsingResult;
-				},
+				parse,
 				format: (value) => String(value),
 				name: formBag.current.paths.test,
 			}),
@@ -83,7 +85,7 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.text).toBe('1');
 	});
 
-	it('should clear conversion error', async () => {
+	it('Should clear conversion error', async () => {
 		const { converterFieldBag } = renderUseConverterField();
 
 		const { onTextChange } = converterFieldBag.current;
@@ -101,5 +103,32 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.meta.error?.$error).toBeUndefined();
 		expect(converterFieldBag.current.value).toBe(1);
 		expect(converterFieldBag.current.text).toBe('1');
+	});
+
+	it('Should rethrow an error in case it is not ConversionError', () => {
+		const { converterFieldBag } = renderUseConverterField(() => {
+			throw new Error('custom');
+		});
+
+		act(() => {
+			expect(() => converterFieldBag.current.onTextChange('')).toThrow();
+		});
+	});
+
+	it('Should not update text if there are some conversion errors', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
+		const { onTextChange } = converterFieldBag.current;
+		const { setFieldValue, paths } = formBag.current;
+
+		await act(async () => {
+			await onTextChange('a');
+		});
+
+		await act(async () => {
+			await setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.value).toBe(1);
+		expect(converterFieldBag.current.text).toBe('a');
 	});
 });
