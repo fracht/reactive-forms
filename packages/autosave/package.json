@@ -1,12 +1,12 @@
 {
 	"name": "@reactive-forms/autosave",
 	"description": "> TODO: description",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"main": "dist/index.js",
 	"module": "dist/autosave.esm.js",
 	"types": "dist/autosave.d.ts",
-	"homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-	"repository": "ArtiomTr/reactive-forms.git",
+	"homepage": "https://github.com/fracht/reactive-forms#readme",
+	"repository": "fracht/reactive-forms.git",
 	"author": "ReactiveForms team",
 	"license": "MIT",
 	"keywords": [],
@@ -15,12 +15,10 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "aqu build",
+		"build": "aqu build && rimraf ./prepared-package && clean-publish",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
-		"postpublish": "rimraf ./prepared-package",
-		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
 		"test:watch": "jest --passWithNoTests --watch"

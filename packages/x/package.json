@@ -1,13 +1,13 @@
 {
 	"name": "@reactive-forms/x",
 	"description": "Advanced Reactive Forms components for rich eXperience",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"main": "dist/index.js",
 	"module": "dist/core.esm.js",
 	"types": "dist/core.d.ts",
-	"bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
-	"homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-	"repository": "ArtiomTr/reactive-forms.git",
+	"bugs": "https://github.com/fracht/reactive-forms/issues",
+	"homepage": "https://github.com/fracht/reactive-forms#readme",
+	"repository": "fracht/reactive-forms.git",
 	"author": "ReactiveForms team",
 	"license": "MIT",
 	"publishConfig": {
@@ -15,11 +15,9 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "aqu build",
+		"build": "aqu build && rimraf ./prepared-package && clean-publish",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
-		"postpublish": "rimraf ./prepared-package",
-		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
 		"start": "aqu watch",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
