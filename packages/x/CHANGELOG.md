@@ -1,5 +1,11 @@
 # @reactive-forms/x
 
+## 0.10.2
+
+### Patch Changes
+
+-   de9d96e: Configured provenance
+
 ## 0.10.1
 
 ## 0.10.0
