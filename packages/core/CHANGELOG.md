@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.1
+
+### Patch Changes
+
+-   a9f3263: Fixed inconsistency between validateBranch and validateAllFields results
+
 ## 0.10.0
 
 ### Minor Changes

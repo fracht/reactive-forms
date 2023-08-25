@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/core",
 	"description": "Core package of Reactive Forms framework",
-	"version": "0.10.0",
+	"version": "0.10.1",
 	"main": "dist/index.js",
 	"module": "dist/core.esm.js",
 	"types": "dist/core.d.ts",
