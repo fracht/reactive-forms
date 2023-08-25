@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FieldConfig, FieldContext, FieldError, useField } from '@reactive-forms/core';
 import isObject from 'lodash/isObject';
 
@@ -9,8 +9,8 @@ export class ConversionError extends Error {
 }
 
 export type ConverterFieldConfig<T> = {
-	parse: (value: string) => T; // can throw
-	format: (value: T) => string; // cannot throw
+	parse: (value: string) => T;
+	format: (value: T) => string;
 
 	onChangeText?: (text: string) => void;
 } & FieldConfig<T>;
@@ -34,14 +34,18 @@ export const useConverterField = <T>({
 	} = fieldBag;
 
 	const [text, setText] = useState(() => format(value));
+	const textRef = useRef(text);
+	textRef.current = text;
+
+	const [hasConversionError, setHasConversionError] = useState(false);
 
 	const tryConvert = (text: string) => {
 		try {
 			setValue(parse(text));
-			// setHasConversionError(false);
+			setHasConversionError(false);
 		} catch (error) {
 			if (isObject(error) && error instanceof ConversionError) {
-				// setHasConversionError(true);
+				setHasConversionError(true);
 				setError({
 					$error: error.message,
 				} as FieldError<T>);
@@ -52,10 +56,21 @@ export const useConverterField = <T>({
 	};
 
 	const onTextChange = (newText: string) => {
+		textRef.current = newText;
 		setText(newText);
 		tryConvert(newText);
 		onChangeText?.(newText);
 	};
+
+	useEffect(() => {
+		if (hasConversionError) {
+			return;
+		}
+
+		const formattedValue = format(value);
+		textRef.current = formattedValue;
+		setText(formattedValue);
+	}, [value, format, hasConversionError]);
 
 	return {
 		text,

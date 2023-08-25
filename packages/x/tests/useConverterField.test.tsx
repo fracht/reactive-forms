@@ -70,5 +70,36 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.text).toBe('a');
 	});
 
-	it('Should update text when form value changes', async () => {});
+	it('Should update text when form value changes', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
+
+		const { paths } = formBag.current;
+
+		await act(async () => {
+			await formBag.current.setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.value).toBe(1);
+		expect(converterFieldBag.current.text).toBe('1');
+	});
+
+	it('should clear conversion error', async () => {
+		const { converterFieldBag } = renderUseConverterField();
+
+		const { onTextChange } = converterFieldBag.current;
+
+		await act(async () => {
+			await onTextChange('a');
+		});
+
+		expect(converterFieldBag.current.meta.error?.$error).toBe('hello');
+
+		await act(async () => {
+			await onTextChange('1');
+		});
+
+		expect(converterFieldBag.current.meta.error?.$error).toBeUndefined();
+		expect(converterFieldBag.current.value).toBe(1);
+		expect(converterFieldBag.current.text).toBe('1');
+	});
 });
