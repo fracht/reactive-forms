@@ -15,7 +15,7 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "aqu build && rimraf ./prepared-packages && clean-publish",
+		"build": "aqu build && rimraf ./prepared-package && clean-publish",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
