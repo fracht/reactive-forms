@@ -5,9 +5,9 @@
 	"main": "dist/index.js",
 	"module": "dist/core.esm.js",
 	"types": "dist/core.d.ts",
-	"bugs": "https://github.com/ArtiomTr/reactive-forms/issues",
-	"homepage": "https://github.com/ArtiomTr/reactive-forms#readme",
-	"repository": "ArtiomTr/reactive-forms.git",
+	"bugs": "https://github.com/fracht/reactive-forms/issues",
+	"homepage": "https://github.com/fracht/reactive-forms#readme",
+	"repository": "fracht/reactive-forms.git",
 	"author": "ReactiveForms team",
 	"license": "MIT",
 	"publishConfig": {

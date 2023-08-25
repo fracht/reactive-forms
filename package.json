@@ -3,7 +3,7 @@
 	"description": "Complex forms with React? Easy!",
 	"version": "0.5.7",
 	"private": true,
-	"repository": "ArtiomTr/reactive-forms",
+	"repository": "fracht/reactive-forms.git",
 	"author": "Artiom Tretjakovas",
 	"license": "MIT",
 	"scripts": {
