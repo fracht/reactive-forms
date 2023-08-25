@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.2
+
+### Patch Changes
+
+-   cff9a7c: Configured provenance
+
 ## 0.10.1
 
 ### Patch Changes
