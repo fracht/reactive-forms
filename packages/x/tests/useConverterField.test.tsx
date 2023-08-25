@@ -131,4 +131,19 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.value).toBe(1);
 		expect(converterFieldBag.current.text).toBe('a');
 	});
+
+	it('Should return error from validator', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
+
+		const { onTextChange } = converterFieldBag.current;
+		const { validateForm, values } = formBag.current;
+
+		await act(async () => {
+			await onTextChange('a');
+		});
+
+		const errors = await validateForm(values.getValues());
+
+		expect(errors.test?.$error).toBe('hello');
+	});
 });

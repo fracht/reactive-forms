@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FieldConfig, FieldContext, FieldError, useField } from '@reactive-forms/core';
+import { FieldConfig, FieldContext, FieldError, useField, useFieldValidator } from '@reactive-forms/core';
 import isObject from 'lodash/isObject';
 
 export class ConversionError extends Error {
@@ -41,7 +41,8 @@ export const useConverterField = <T>({
 
 	const tryConvert = (text: string) => {
 		try {
-			setValue(parse(text));
+			const value = parse(text); // this could throw in case of conversion error
+			setValue(value);
 			setHasConversionError(false);
 		} catch (error) {
 			if (isObject(error) && error instanceof ConversionError) {
@@ -61,6 +62,23 @@ export const useConverterField = <T>({
 		tryConvert(newText);
 		onChangeText?.(newText);
 	};
+
+	useFieldValidator({
+		name: fieldConfig.name,
+		validator: () => {
+			try {
+				parse(textRef.current);
+			} catch (error) {
+				if (isObject(error) && error instanceof ConversionError) {
+					return error.message;
+				}
+
+				throw error;
+			}
+
+			return undefined;
+		},
+	});
 
 	useEffect(() => {
 		if (hasConversionError) {
