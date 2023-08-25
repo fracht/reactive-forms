@@ -11,19 +11,18 @@ export class ConversionError extends Error {
 export type ConverterFieldConfig<T> = {
 	parse: (value: string) => T;
 	format: (value: T) => string;
-
-	onChangeText?: (text: string) => void;
 } & FieldConfig<T>;
 
 export type ConverterFieldBag<T> = {
 	text: string;
 	onTextChange: (text: string) => void;
+	onFocus: () => void;
+	onBlur: () => void;
 } & FieldContext<T>;
 
 export const useConverterField = <T>({
 	parse,
 	format,
-	onChangeText,
 	...fieldConfig
 }: ConverterFieldConfig<T>): ConverterFieldBag<T> => {
 	const fieldBag = useField(fieldConfig);
@@ -33,6 +32,7 @@ export const useConverterField = <T>({
 		control: { setValue, setError },
 	} = fieldBag;
 
+	const [isFocused, setIsFocused] = useState(false);
 	const [text, setText] = useState(() => format(value));
 	const textRef = useRef(text);
 	textRef.current = text;
@@ -60,7 +60,15 @@ export const useConverterField = <T>({
 		textRef.current = newText;
 		setText(newText);
 		tryConvert(newText);
-		onChangeText?.(newText);
+	};
+
+	const onFocus = () => {
+		setIsFocused(true);
+	};
+
+	const onBlur = () => {
+		setIsFocused(false);
+		tryConvert(text);
 	};
 
 	useFieldValidator({
@@ -81,18 +89,20 @@ export const useConverterField = <T>({
 	});
 
 	useEffect(() => {
-		if (hasConversionError) {
+		if (isFocused || hasConversionError) {
 			return;
 		}
 
 		const formattedValue = format(value);
 		textRef.current = formattedValue;
 		setText(formattedValue);
-	}, [value, format, hasConversionError]);
+	}, [value, format, hasConversionError, isFocused]);
 
 	return {
 		text,
 		onTextChange,
+		onFocus,
+		onBlur,
 		...fieldBag,
 	};
 };

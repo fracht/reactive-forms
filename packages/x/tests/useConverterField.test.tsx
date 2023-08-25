@@ -146,4 +146,30 @@ describe('Converter field', () => {
 
 		expect(errors.test?.$error).toBe('hello');
 	});
+
+	// TODO: tricky test case, maybe behavior can change
+	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
+
+		const { onFocus, onBlur } = converterFieldBag.current;
+		const { setFieldValue, paths } = formBag.current;
+
+		await act(async () => {
+			await onFocus();
+		});
+
+		await act(async () => {
+			await setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.text).toBe('0');
+		expect(converterFieldBag.current.value).toBe(1);
+
+		await act(async () => {
+			await onBlur();
+		});
+
+		expect(converterFieldBag.current.text).toBe('0');
+		expect(converterFieldBag.current.value).toBe(0);
+	});
 });
