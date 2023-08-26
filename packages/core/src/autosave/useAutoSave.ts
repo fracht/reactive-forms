@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { FormShared } from '@reactive-forms/core';
 import invariant from 'tiny-invariant';
 
 import { AutoSaveContext } from './internal/AutoSaveContext';
 import { AutoSaveService } from './AutoSaveService';
+import { FormShared } from '../hooks/useForm';
 
 export type AutoSaveConfig<T extends object> = {
 	onLoaded?: (values: T) => void;
