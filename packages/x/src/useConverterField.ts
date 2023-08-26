@@ -11,6 +11,9 @@ export class ConversionError extends Error {
 export type ConverterFieldConfig<T> = {
 	parse: (value: string) => T;
 	format: (value: T) => string;
+
+	// An option that allow to ignore updates incoming from form level state while field is focused
+	ignoreFormStateUpdatesWhileFocus?: boolean;
 } & FieldConfig<T>;
 
 export type ConverterFieldBag<T> = {
@@ -23,6 +26,7 @@ export type ConverterFieldBag<T> = {
 export const useConverterField = <T>({
 	parse,
 	format,
+	ignoreFormStateUpdatesWhileFocus,
 	...fieldConfig
 }: ConverterFieldConfig<T>): ConverterFieldBag<T> => {
 	const fieldBag = useField(fieldConfig);
@@ -90,14 +94,14 @@ export const useConverterField = <T>({
 	});
 
 	useEffect(() => {
-		if (isFocused || hasConversionError) {
+		if ((isFocused && ignoreFormStateUpdatesWhileFocus) || hasConversionError) {
 			return;
 		}
 
 		const formattedValue = format(value);
 		textRef.current = formattedValue;
 		setText(formattedValue);
-	}, [value, format, hasConversionError, isFocused]);
+	}, [value, format, hasConversionError, isFocused, ignoreFormStateUpdatesWhileFocus]);
 
 	return {
 		text,

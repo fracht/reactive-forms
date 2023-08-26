@@ -14,7 +14,14 @@ const defaultParse = (text: string) => {
 	return parsingResult;
 };
 
-const renderUseConverterField = (parse: (value: string) => number = defaultParse) => {
+type Config = {
+	parse?: (value: string) => number;
+	ignoreFormStateUpdatesWhileFocus?: boolean;
+};
+
+const renderUseConverterField = (config: Config = {}) => {
+	const { parse = defaultParse, ignoreFormStateUpdatesWhileFocus = false } = config;
+
 	const { result: formBag } = renderHook(() =>
 		useForm({
 			initialValues: {
@@ -29,6 +36,7 @@ const renderUseConverterField = (parse: (value: string) => number = defaultParse
 				parse,
 				format: (value) => String(value),
 				name: formBag.current.paths.test,
+				ignoreFormStateUpdatesWhileFocus,
 			}),
 		{
 			wrapper: ({ children }) => (
@@ -106,8 +114,10 @@ describe('Converter field', () => {
 	});
 
 	it('Should rethrow an error in case it is not ConversionError', () => {
-		const { converterFieldBag } = renderUseConverterField(() => {
-			throw new Error('custom');
+		const { converterFieldBag } = renderUseConverterField({
+			parse: () => {
+				throw new Error('custom');
+			},
 		});
 
 		act(() => {
@@ -147,9 +157,10 @@ describe('Converter field', () => {
 		expect(errors.test?.$error).toBe('hello');
 	});
 
-	// TODO: tricky test case, maybe behavior can change
-	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
-		const { converterFieldBag, formBag } = renderUseConverterField();
+	it('Should ignore new value when field is focused and set old value when field is blurred (with option "ignoreFormStateUpdatesWhileFocus=true")', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField({
+			ignoreFormStateUpdatesWhileFocus: true,
+		});
 
 		const { onFocus, onBlur } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
@@ -171,6 +182,24 @@ describe('Converter field', () => {
 
 		expect(converterFieldBag.current.text).toBe('0');
 		expect(converterFieldBag.current.value).toBe(0);
+	});
+
+	it('Should set new value immediately when field is focused (with option "ignoreFormStateUpdatesWhileFocus=false")', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
+
+		const { onFocus } = converterFieldBag.current;
+		const { setFieldValue, paths } = formBag.current;
+
+		await act(async () => {
+			await onFocus();
+		});
+
+		await act(async () => {
+			await setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.text).toBe('1');
+		expect(converterFieldBag.current.value).toBe(1);
 	});
 
 	it('Should set field touched=true on blur', async () => {
