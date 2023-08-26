@@ -172,4 +172,16 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.text).toBe('0');
 		expect(converterFieldBag.current.value).toBe(0);
 	});
+
+	it('Should set field touched=true on blur', async () => {
+		const { converterFieldBag } = renderUseConverterField();
+
+		const { onBlur } = converterFieldBag.current;
+
+		await act(async () => {
+			await onBlur();
+		});
+
+		expect(converterFieldBag.current.meta.touched?.$touched).toBe(true);
+	});
 });

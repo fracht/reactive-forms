@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FieldConfig, FieldContext, FieldError, useField, useFieldValidator } from '@reactive-forms/core';
+import { FieldConfig, FieldContext, FieldError, FieldTouched, useField, useFieldValidator } from '@reactive-forms/core';
 import isObject from 'lodash/isObject';
 
 export class ConversionError extends Error {
@@ -29,7 +29,7 @@ export const useConverterField = <T>({
 
 	const {
 		value,
-		control: { setValue, setError },
+		control: { setValue, setError, setTouched },
 	} = fieldBag;
 
 	const [isFocused, setIsFocused] = useState(false);
@@ -68,6 +68,7 @@ export const useConverterField = <T>({
 
 	const onBlur = () => {
 		setIsFocused(false);
+		setTouched({ $touched: true } as FieldTouched<T>);
 		tryConvert(text);
 	};
 
