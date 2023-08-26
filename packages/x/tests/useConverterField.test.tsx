@@ -16,11 +16,10 @@ const defaultParse = (text: string) => {
 
 type Config = {
 	parse?: (value: string) => number;
-	ignoreFormStateUpdatesWhileFocus?: boolean;
 };
 
 const renderUseConverterField = (config: Config = {}) => {
-	const { parse = defaultParse, ignoreFormStateUpdatesWhileFocus = false } = config;
+	const { parse = defaultParse } = config;
 
 	const { result: formBag } = renderHook(() =>
 		useForm({
@@ -36,7 +35,6 @@ const renderUseConverterField = (config: Config = {}) => {
 				parse,
 				format: (value) => String(value),
 				name: formBag.current.paths.test,
-				ignoreFormStateUpdatesWhileFocus,
 			}),
 		{
 			wrapper: ({ children }) => (
@@ -157,10 +155,8 @@ describe('Converter field', () => {
 		expect(errors.test?.$error).toBe('hello');
 	});
 
-	it('Should ignore new value when field is focused and set old value when field is blurred (with option "ignoreFormStateUpdatesWhileFocus=true")', async () => {
-		const { converterFieldBag, formBag } = renderUseConverterField({
-			ignoreFormStateUpdatesWhileFocus: true,
-		});
+	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
+		const { converterFieldBag, formBag } = renderUseConverterField();
 
 		const { onFocus, onBlur } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
@@ -184,24 +180,6 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.value).toBe(0);
 	});
 
-	it('Should set new value immediately when field is focused (with option "ignoreFormStateUpdatesWhileFocus=false")', async () => {
-		const { converterFieldBag, formBag } = renderUseConverterField();
-
-		const { onFocus } = converterFieldBag.current;
-		const { setFieldValue, paths } = formBag.current;
-
-		await act(async () => {
-			await onFocus();
-		});
-
-		await act(async () => {
-			await setFieldValue(paths.test, 1);
-		});
-
-		expect(converterFieldBag.current.text).toBe('1');
-		expect(converterFieldBag.current.value).toBe(1);
-	});
-
 	it('Should set field touched=true on blur', async () => {
 		const { converterFieldBag } = renderUseConverterField();
 
@@ -212,5 +190,25 @@ describe('Converter field', () => {
 		});
 
 		expect(converterFieldBag.current.meta.touched?.$touched).toBe(true);
+	});
+
+	it('Should set value both in form state and local text state', async () => {
+		const { converterFieldBag } = renderUseConverterField();
+
+		const {
+			control: { setValue },
+			onFocus,
+		} = converterFieldBag.current;
+
+		await act(async () => {
+			await onFocus();
+		});
+
+		await act(async () => {
+			await setValue(1);
+		});
+
+		expect(converterFieldBag.current.value).toBe(1);
+		expect(converterFieldBag.current.text).toBe('1');
 	});
 });
