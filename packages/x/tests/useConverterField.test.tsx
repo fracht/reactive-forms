@@ -250,8 +250,22 @@ describe('Converter field', () => {
 
 		const format = jest.fn(() => 'test');
 
-		converterFieldBag.rerender({ format, parse: defaultParse });
+		act(() => {
+			converterFieldBag.rerender({ format, parse: defaultParse });
+		});
 
 		expect(converterFieldBag.result.current.text).toBe('test');
+	});
+
+	it('Should parse text again when parse function changes', () => {
+		const { converterFieldBag } = renderUseConverterField();
+
+		const parse = jest.fn(() => 1);
+
+		act(() => {
+			converterFieldBag.rerender({ format: defaultFormat, parse });
+		});
+
+		expect(converterFieldBag.result.current.value).toBe(1);
 	});
 });

@@ -113,6 +113,16 @@ export const useConverterField = <T>({
 		setText(formattedValue);
 	}, [value, format, hasConversionError, isFocused]);
 
+	const tryConvertRef = useRef(tryConvert);
+
+	useEffect(() => {
+		if (tryConvertRef.current !== tryConvert) {
+			tryConvert(textRef.current); // Parse text again when parse function changes
+		}
+
+		tryConvertRef.current = tryConvert;
+	}, [tryConvert]);
+
 	return {
 		text,
 		onTextChange,
