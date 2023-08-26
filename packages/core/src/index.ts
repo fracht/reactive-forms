@@ -24,6 +24,7 @@ export * from './hooks/useSubmitAction';
 export * from './hooks/useValidationRegistry';
 export * from './hooks/usePluginAssertion';
 export * from './hooks/useFieldValueArray';
+export * from './hooks/useConverterField';
 
 // typings
 export * from './typings/FieldContext';

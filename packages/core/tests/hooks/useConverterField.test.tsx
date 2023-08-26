@@ -1,8 +1,7 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook } from '@testing-library/react';
 
-import { ConversionError, useConverterField } from '../src/useConverterField';
+import { ConversionError, ReactiveFormProvider, useConverterField, useForm } from '../../src';
 
 const defaultParse = (text: string) => {
 	const parsingResult = Number.parseInt(text);

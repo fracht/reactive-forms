@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { FieldConfig, FieldContext, FieldError, FieldTouched, useField, useFieldValidator } from '@reactive-forms/core';
 import isObject from 'lodash/isObject';
+
+import { FieldConfig, useField } from './useField';
+import { useFieldValidator } from './useFieldValidator';
+import { FieldContext } from '../typings/FieldContext';
+import { FieldError } from '../typings/FieldError';
+import { FieldTouched } from '../typings/FieldTouched';
 
 export class ConversionError extends Error {
 	public constructor(errorMessage: string) {
