@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldConfig, FieldContext, FieldError, FieldTouched, useField, useFieldValidator } from '@reactive-forms/core';
 import isObject from 'lodash/isObject';
 
@@ -39,43 +39,52 @@ export const useConverterField = <T>({
 
 	const [hasConversionError, setHasConversionError] = useState(false);
 
-	const tryConvert = (text: string) => {
-		try {
-			const value = parse(text); // this could throw in case of conversion error
-			setValue(value);
-			setHasConversionError(false);
-		} catch (error) {
-			if (isObject(error) && error instanceof ConversionError) {
-				setHasConversionError(true);
-				setError({
-					$error: error.message,
-				} as FieldError<T>);
-			} else {
-				throw error;
+	const tryConvert = useCallback(
+		(text: string) => {
+			try {
+				const value = parse(text); // this could throw in case of conversion error
+				setValue(value);
+				setHasConversionError(false);
+			} catch (error) {
+				if (isObject(error) && error instanceof ConversionError) {
+					setHasConversionError(true);
+					setError({
+						$error: error.message,
+					} as FieldError<T>);
+				} else {
+					throw error;
+				}
 			}
-		}
-	};
+		},
+		[parse, setError, setValue],
+	);
 
-	const onTextChange = (newText: string) => {
-		textRef.current = newText;
-		setText(newText);
-		tryConvert(newText);
-	};
+	const onTextChange = useCallback(
+		(newText: string) => {
+			textRef.current = newText;
+			setText(newText);
+			tryConvert(newText);
+		},
+		[tryConvert],
+	);
 
-	const onFocus = () => {
+	const onFocus = useCallback(() => {
 		setIsFocused(true);
-	};
+	}, []);
 
-	const onBlur = () => {
+	const onBlur = useCallback(() => {
 		setIsFocused(false);
 		setTouched({ $touched: true } as FieldTouched<T>);
 		tryConvert(text);
-	};
+	}, [setTouched, text, tryConvert]);
 
-	const forceSetValue = (value: T) => {
-		onTextChange(format(value));
-		setValue(value);
-	};
+	const forceSetValue = useCallback(
+		(value: T) => {
+			onTextChange(format(value));
+			setValue(value);
+		},
+		[format, onTextChange, setValue],
+	);
 
 	useFieldValidator({
 		name: fieldConfig.name,
