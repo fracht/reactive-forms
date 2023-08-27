@@ -1,5 +1,6 @@
+import { Dispatch, SetStateAction } from 'react';
 import { Pxth } from 'pxth';
-import { Dispatch, SetStateAction, useStockState } from 'stocked';
+import { useStockState } from 'stocked';
 
 import { useFormContext } from './useFormContext';
 import { FieldError, FieldInnerError } from '../typings/FieldError';
