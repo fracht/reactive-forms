@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { ConversionError, useConverterField } from '../src/useConverterField';
 
@@ -63,25 +63,29 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.value).toBe(0);
 		expect(converterFieldBag.current.text).toBe('0');
 
-		await act(async () => {
-			await onTextChange('1');
+		await act(() => {
+			onTextChange('1');
 		});
 
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('1');
+		await waitFor(() => {
+			expect(converterFieldBag.current.value).toBe(1);
+			expect(converterFieldBag.current.text).toBe('1');
+		});
 	});
 
 	it('Should set an error if conversion fails', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 
-		await act(async () => {
-			await onTextChange('a');
+		await act(() => {
+			onTextChange('a');
 		});
 
-		expect(converterFieldBag.current.meta.error?.$error).toBe('hello');
-		expect(converterFieldBag.current.value).toBe(0);
-		expect(converterFieldBag.current.text).toBe('a');
+		await waitFor(() => {
+			expect(converterFieldBag.current.meta.error?.$error).toBe('hello');
+			expect(converterFieldBag.current.value).toBe(0);
+			expect(converterFieldBag.current.text).toBe('a');
+		});
 	});
 
 	it('Should update text when form value changes', async () => {
@@ -89,12 +93,14 @@ describe('Converter field', () => {
 
 		const { paths } = formBag.current;
 
-		await act(async () => {
-			await formBag.current.setFieldValue(paths.test, 1);
+		await act(() => {
+			formBag.current.setFieldValue(paths.test, 1);
 		});
 
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('1');
+		await waitFor(() => {
+			expect(converterFieldBag.current.value).toBe(1);
+			expect(converterFieldBag.current.text).toBe('1');
+		});
 	});
 
 	it('Should clear conversion error', async () => {
@@ -102,19 +108,23 @@ describe('Converter field', () => {
 
 		const { onTextChange } = converterFieldBag.current;
 
-		await act(async () => {
-			await onTextChange('a');
+		await act(() => {
+			onTextChange('a');
 		});
 
-		expect(converterFieldBag.current.meta.error?.$error).toBe('hello');
-
-		await act(async () => {
-			await onTextChange('1');
+		await waitFor(() => {
+			expect(converterFieldBag.current.meta.error?.$error).toBe('hello');
 		});
 
-		expect(converterFieldBag.current.meta.error?.$error).toBeUndefined();
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('1');
+		await act(() => {
+			onTextChange('1');
+		});
+
+		await waitFor(() => {
+			expect(converterFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(converterFieldBag.current.value).toBe(1);
+			expect(converterFieldBag.current.text).toBe('1');
+		});
 	});
 
 	it('Should rethrow an error in case it is not ConversionError', () => {
@@ -134,16 +144,15 @@ describe('Converter field', () => {
 		const { onTextChange } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
 
-		await act(async () => {
-			await onTextChange('a');
+		await act(() => {
+			onTextChange('a');
+			setFieldValue(paths.test, 1);
 		});
 
-		await act(async () => {
-			await setFieldValue(paths.test, 1);
+		await waitFor(() => {
+			expect(converterFieldBag.current.value).toBe(1);
+			expect(converterFieldBag.current.text).toBe('a');
 		});
-
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('a');
 	});
 
 	it('Should return error from validator', async () => {
@@ -152,12 +161,11 @@ describe('Converter field', () => {
 		const { onTextChange } = converterFieldBag.current;
 		const { validateForm, values } = formBag.current;
 
-		await act(async () => {
-			await onTextChange('a');
+		await act(() => {
+			onTextChange('a');
 		});
 
 		const errors = await validateForm(values.getValues());
-
 		expect(errors.test?.$error).toBe('hello');
 	});
 
@@ -167,23 +175,24 @@ describe('Converter field', () => {
 		const { onFocus, onBlur } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
 
-		await act(async () => {
-			await onFocus();
+		await act(() => {
+			onFocus();
+			setFieldValue(paths.test, 1);
 		});
 
-		await act(async () => {
-			await setFieldValue(paths.test, 1);
+		await waitFor(() => {
+			expect(converterFieldBag.current.text).toBe('0');
+			expect(converterFieldBag.current.value).toBe(1);
 		});
 
-		expect(converterFieldBag.current.text).toBe('0');
-		expect(converterFieldBag.current.value).toBe(1);
-
-		await act(async () => {
-			await onBlur();
+		await act(() => {
+			onBlur();
 		});
 
-		expect(converterFieldBag.current.text).toBe('0');
-		expect(converterFieldBag.current.value).toBe(0);
+		await waitFor(() => {
+			expect(converterFieldBag.current.text).toBe('0');
+			expect(converterFieldBag.current.value).toBe(0);
+		});
 	});
 
 	it('Should set field touched=true on blur', async () => {
@@ -191,11 +200,13 @@ describe('Converter field', () => {
 
 		const { onBlur } = converterFieldBag.current;
 
-		await act(async () => {
-			await onBlur();
+		await act(() => {
+			onBlur();
 		});
 
-		expect(converterFieldBag.current.meta.touched?.$touched).toBe(true);
+		await waitFor(() => {
+			expect(converterFieldBag.current.meta.touched?.$touched).toBe(true);
+		});
 	});
 
 	it('Should set value both in form state and local text state', async () => {
@@ -206,16 +217,15 @@ describe('Converter field', () => {
 			onFocus,
 		} = converterFieldBag.current;
 
-		await act(async () => {
-			await onFocus();
+		await act(() => {
+			onFocus();
+			setValue(1);
 		});
 
-		await act(async () => {
-			await setValue(1);
+		await waitFor(() => {
+			expect(converterFieldBag.current.value).toBe(1);
+			expect(converterFieldBag.current.text).toBe('1');
 		});
-
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('1');
 	});
 
 	it('Should reformat value when format function changes', () => {
@@ -223,19 +233,17 @@ describe('Converter field', () => {
 
 		const format = jest.fn(() => 'test');
 
-		act(() => {
-			converterFieldBag.rerender({ format, parse: defaultParse });
-		});
+		converterFieldBag.rerender({ format, parse: defaultParse });
 
 		expect(converterFieldBag.result.current.text).toBe('test');
 	});
 
-	it('Should parse text again when parse function changes', () => {
+	it('Should parse text again when parse function changes', async () => {
 		const [converterFieldBag] = renderUseConverterField();
 
 		const parse = jest.fn(() => 1);
 
-		act(() => {
+		await act(() => {
 			converterFieldBag.rerender({ format: defaultFormat, parse });
 		});
 
