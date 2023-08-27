@@ -52,17 +52,12 @@ const renderUseConverterField = (config: Config = {}) => {
 		},
 	);
 
-	return {
-		formBag,
-		converterFieldBag,
-	};
+	return [converterFieldBag, formBag] as const;
 };
 
 describe('Converter field', () => {
 	it('Should update field with valid value', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 
 		expect(converterFieldBag.current.value).toBe(0);
@@ -77,9 +72,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should set an error if conversion fails', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 
 		await act(async () => {
@@ -92,10 +85,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should update text when form value changes', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { paths } = formBag.current;
 
@@ -108,9 +98,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should clear conversion error', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const { onTextChange } = converterFieldBag.current;
 
@@ -130,9 +118,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should rethrow an error in case it is not ConversionError', () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField({
+		const [{ result: converterFieldBag }] = renderUseConverterField({
 			parse: () => {
 				throw new Error('custom');
 			},
@@ -144,10 +130,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should not update text if there are some conversion errors', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
 
@@ -164,10 +147,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should return error from validator', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { onTextChange } = converterFieldBag.current;
 		const { validateForm, values } = formBag.current;
@@ -182,10 +162,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { onFocus, onBlur } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
@@ -210,9 +187,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should set field touched=true on blur', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const { onBlur } = converterFieldBag.current;
 
@@ -224,9 +199,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should set value both in form state and local text state', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-		} = renderUseConverterField();
+		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const {
 			control: { setValue },
@@ -246,7 +219,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should reformat value when format function changes', () => {
-		const { converterFieldBag } = renderUseConverterField();
+		const [converterFieldBag] = renderUseConverterField();
 
 		const format = jest.fn(() => 'test');
 
@@ -258,7 +231,7 @@ describe('Converter field', () => {
 	});
 
 	it('Should parse text again when parse function changes', () => {
-		const { converterFieldBag } = renderUseConverterField();
+		const [converterFieldBag] = renderUseConverterField();
 
 		const parse = jest.fn(() => 1);
 
