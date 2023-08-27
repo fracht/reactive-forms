@@ -91,22 +91,6 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.text).toBe('a');
 	});
 
-	it('Should update text when form value changes', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
-
-		const { paths } = formBag.current;
-
-		await act(async () => {
-			await formBag.current.setFieldValue(paths.test, 1);
-		});
-
-		expect(converterFieldBag.current.value).toBe(1);
-		expect(converterFieldBag.current.text).toBe('1');
-	});
-
 	it('Should clear conversion error', async () => {
 		const {
 			converterFieldBag: { result: converterFieldBag },
@@ -127,6 +111,50 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.meta.error?.$error).toBeUndefined();
 		expect(converterFieldBag.current.value).toBe(1);
 		expect(converterFieldBag.current.text).toBe('1');
+	});
+
+	it('Should update text when form value changes (field is not focused)', async () => {
+		const {
+			converterFieldBag: { result: converterFieldBag },
+			formBag: { result: formBag },
+		} = renderUseConverterField();
+
+		const { paths } = formBag.current;
+
+		await act(async () => {
+			await formBag.current.setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.value).toBe(1);
+		expect(converterFieldBag.current.text).toBe('1');
+	});
+
+	it('Should not update text when field is focused and set old value when field is blurred', async () => {
+		const {
+			converterFieldBag: { result: converterFieldBag },
+			formBag: { result: formBag },
+		} = renderUseConverterField();
+
+		const { onFocus, onBlur } = converterFieldBag.current;
+		const { setFieldValue, paths } = formBag.current;
+
+		await act(async () => {
+			await onFocus();
+		});
+
+		await act(async () => {
+			await setFieldValue(paths.test, 1);
+		});
+
+		expect(converterFieldBag.current.text).toBe('0');
+		expect(converterFieldBag.current.value).toBe(1);
+
+		await act(async () => {
+			await onBlur();
+		});
+
+		expect(converterFieldBag.current.text).toBe('0');
+		expect(converterFieldBag.current.value).toBe(0);
 	});
 
 	it('Should rethrow an error in case it is not ConversionError', () => {
@@ -181,34 +209,6 @@ describe('Converter field', () => {
 		expect(errors.test?.$error).toBe('hello');
 	});
 
-	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
-		const {
-			converterFieldBag: { result: converterFieldBag },
-			formBag: { result: formBag },
-		} = renderUseConverterField();
-
-		const { onFocus, onBlur } = converterFieldBag.current;
-		const { setFieldValue, paths } = formBag.current;
-
-		await act(async () => {
-			await onFocus();
-		});
-
-		await act(async () => {
-			await setFieldValue(paths.test, 1);
-		});
-
-		expect(converterFieldBag.current.text).toBe('0');
-		expect(converterFieldBag.current.value).toBe(1);
-
-		await act(async () => {
-			await onBlur();
-		});
-
-		expect(converterFieldBag.current.text).toBe('0');
-		expect(converterFieldBag.current.value).toBe(0);
-	});
-
 	it('Should set field touched=true on blur', async () => {
 		const {
 			converterFieldBag: { result: converterFieldBag },
@@ -223,7 +223,7 @@ describe('Converter field', () => {
 		expect(converterFieldBag.current.meta.touched?.$touched).toBe(true);
 	});
 
-	it('Should set value both in form state and local text state', async () => {
+	it('Should set value both in form state and local text state when focused if using `setValue` callback from hook bag', async () => {
 		const {
 			converterFieldBag: { result: converterFieldBag },
 		} = renderUseConverterField();
@@ -250,10 +250,13 @@ describe('Converter field', () => {
 
 		const format = jest.fn(() => 'test');
 
+		expect(converterFieldBag.result.current.text).toBe('0');
+
 		act(() => {
 			converterFieldBag.rerender({ format, parse: defaultParse });
 		});
 
+		expect(format).toBeCalled();
 		expect(converterFieldBag.result.current.text).toBe('test');
 	});
 
@@ -262,10 +265,13 @@ describe('Converter field', () => {
 
 		const parse = jest.fn(() => 1);
 
+		expect(converterFieldBag.result.current.value).toBe(0);
+
 		act(() => {
 			converterFieldBag.rerender({ format: defaultFormat, parse });
 		});
 
+		expect(parse).toBeCalled();
 		expect(converterFieldBag.result.current.value).toBe(1);
 	});
 });
