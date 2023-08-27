@@ -23,7 +23,7 @@
 		"test:watch": "jest --passWithNoTests --watch"
 	},
 	"dependencies": {
-		"pxth": "0.6.0",
+		"pxth": "0.7.0",
 		"stocked": "1.0.0-beta.28",
 		"tiny-invariant": "1.2.0"
 	},
