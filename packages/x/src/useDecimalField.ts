@@ -52,7 +52,7 @@ export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
 	formatOptions?: Intl.NumberFormatOptions;
 };
 
-export type DecimalFieldBag = ConverterFieldBag<number | null | undefined> & {};
+export type DecimalFieldBag = ConverterFieldBag<number | null | undefined>;
 
 export const useDecimalField = ({
 	name,

@@ -131,6 +131,15 @@ describe('Decimal field', () => {
 			expect(result.current.value).toBe(0);
 			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
+
+		await act(() => {
+			result.current.onTextChange('0.0');
+		});
+
+		await waitFor(() => {
+			expect(result.current.value).toBe(0);
+			expect(result.current.meta.error?.$error).toBeUndefined();
+		});
 	});
 
 	it('Should set default error if field is required and empty', async () => {
@@ -198,61 +207,6 @@ describe('Decimal field', () => {
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBe('custom');
-		});
-
-		await act(() => {
-			result.current.onTextChange('0');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		await act(() => {
-			result.current.onTextChange('');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(null);
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		await act(() => {
-			result.current.onTextChange('     ');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(null);
-			expect(result.current.text).toBe('     ');
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		await act(() => {
-			result.current.onTextChange('.');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		await act(() => {
-			result.current.onTextChange('.0');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		await act(() => {
-			result.current.onTextChange('0.');
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
