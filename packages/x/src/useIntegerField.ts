@@ -45,7 +45,7 @@ export const useIntegerField = ({
 	required,
 	min,
 	max,
-	formatValue,
+	formatValue = formatInteger,
 	errorMessages = defaultErrorMessages,
 }: IntegerFieldConfig): IntegerFieldBag => {
 	const parseInteger = useCallback(
@@ -75,7 +75,7 @@ export const useIntegerField = ({
 
 	const integerBag = useConverterField({
 		parse: parseInteger,
-		format: formatValue ?? formatInteger,
+		format: formatValue,
 		name,
 		validator,
 		schema,

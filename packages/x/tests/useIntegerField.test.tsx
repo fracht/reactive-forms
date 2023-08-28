@@ -201,4 +201,13 @@ describe('Integer field', () => {
 			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
 		});
 	});
+
+	it('Should be able to format integer differently', () => {
+		const formatValue = jest.fn(() => 'custom');
+		const initialValue = 42;
+		const [{ result: integerFieldBag }] = renderUseIntegerField({ formatValue, initialValue });
+
+		expect(integerFieldBag.current.text).toBe('custom');
+		expect(formatValue).toBeCalledWith(initialValue);
+	});
 });
