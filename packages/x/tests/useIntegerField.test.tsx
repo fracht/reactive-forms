@@ -19,7 +19,7 @@ const renderUseIntegerField = (config: Config = {}) => {
 		}),
 	);
 
-	const integerFieldBag = renderHook(
+	const result = renderHook(
 		(props: Omit<IntegerFieldConfig, 'name'>) =>
 			useIntegerField({
 				name: formBag.result.current.paths.test,
@@ -33,181 +33,172 @@ const renderUseIntegerField = (config: Config = {}) => {
 		},
 	);
 
-	return [integerFieldBag, formBag] as const;
+	return [result, formBag] as const;
 };
 
 describe('Integer field', () => {
 	it('Should format initial value correctly', () => {
-		const [{ result: integerFieldBag }] = renderUseIntegerField();
+		const [{ result }] = renderUseIntegerField();
 
-		expect(integerFieldBag.current.text).toBe('0');
-		expect(integerFieldBag.current.value).toBe(0);
+		expect(result.current.text).toBe('0');
+		expect(result.current.value).toBe(0);
 	});
 
-	// FIXME: enable this test after fixing useFieldValidator
-	// it.skip('Should set validate field on initial render', async () => {
-	// 	const [{ result: integerFieldBag }] = renderUseIntegerField({ required: true, initialValue: null });
-
-	// 	expect(integerFieldBag.current.meta.error?.$error).toBe(
-	// 		(defaultErrorMessages.lessThanMinValue as (min: number) => string)(1),
-	// 	);
-	// });
-
 	it('Should set default error in case of conversion error and clear it afterwards', async () => {
-		const [{ result: integerFieldBag }] = renderUseIntegerField();
+		const [{ result }] = renderUseIntegerField();
 
 		act(() => {
-			integerFieldBag.current.onTextChange('0a');
+			result.current.onTextChange('0a');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
 		});
 
 		act(() => {
-			integerFieldBag.current.onTextChange('0');
+			result.current.onTextChange('0');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
 	it('Should set default error if text was not parsed successfully', async () => {
-		const [{ result: integerFieldBag }] = renderUseIntegerField();
+		const [{ result }] = renderUseIntegerField();
 
 		act(() => {
-			integerFieldBag.current.onTextChange('a');
+			result.current.onTextChange('a');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
 		});
 	});
 
 	it('Should set default error if field is required and empty', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({ required: true });
+		const [{ result }] = renderUseIntegerField({ required: true });
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, null);
+			result.current.control.setValue(null);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
 		});
 	});
 
 	it('Should set default error if field value is less than min', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({ min: 0 });
+		const [{ result }] = renderUseIntegerField({ min: 0 });
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, -1);
+			result.current.control.setValue(-1);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe(
+			expect(result.current.meta.error?.$error).toBe(
 				(defaultErrorMessages.lessThanMinValue as (min: number) => string)(0),
 			);
 		});
 	});
 
 	it('Should set default error if field value is more than max', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({ max: 0 });
+		const [{ result }] = renderUseIntegerField({ max: 0 });
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, 1);
+			result.current.control.setValue(1);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe(
+			expect(result.current.meta.error?.$error).toBe(
 				(defaultErrorMessages.moreThanMaxValue as (max: number) => string)(0),
 			);
 		});
 	});
 
 	it('Should set custom error in case of conversion error and clear it afterwards', async () => {
-		const [{ result: integerFieldBag }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
+		const [{ result }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
 
 		act(() => {
-			integerFieldBag.current.onTextChange('0a');
+			result.current.onTextChange('0a');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 
 		act(() => {
-			integerFieldBag.current.onTextChange('0');
+			result.current.onTextChange('0');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
 	it('Should set custom error if text was not parsed successfully', async () => {
-		const [{ result: integerFieldBag }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
+		const [{ result }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
 
 		act(() => {
-			integerFieldBag.current.onTextChange('a');
+			result.current.onTextChange('a');
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({
+		const [{ result }] = renderUseIntegerField({
 			required: true,
 			errorMessages: { required: 'custom' },
 		});
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, null);
+			result.current.control.setValue(null);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should set custom error if field value is less than min', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({
+		const [{ result }] = renderUseIntegerField({
 			min: 0,
 			errorMessages: { lessThanMinValue: () => 'custom' },
 		});
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, -1);
+			result.current.control.setValue(-1);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should set custom error if field value is more than max', async () => {
-		const [{ result: integerFieldBag }, { result: formBag }] = renderUseIntegerField({
+		const [{ result }] = renderUseIntegerField({
 			max: 0,
 			errorMessages: { moreThanMaxValue: () => 'custom' },
 		});
 
 		act(() => {
-			formBag.current.setFieldValue(formBag.current.paths.test, 1);
+			result.current.control.setValue(1);
 		});
 
 		await waitFor(() => {
-			expect(integerFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should be able to format integer differently', () => {
 		const formatValue = jest.fn(() => 'custom');
 		const initialValue = 42;
-		const [{ result: integerFieldBag }] = renderUseIntegerField({ formatValue, initialValue });
+		const [{ result }] = renderUseIntegerField({ formatValue, initialValue });
 
-		expect(integerFieldBag.current.text).toBe('custom');
+		expect(result.current.text).toBe('custom');
 		expect(formatValue).toBeCalledWith(initialValue);
 	});
 });
