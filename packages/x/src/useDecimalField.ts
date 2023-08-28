@@ -46,6 +46,7 @@ export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
 	max?: number;
 
 	formatValue?: (value: number | null | undefined) => string;
+	parseDecimal?: (text: string) => number;
 	errorMessages?: Partial<DecimalFieldErrorMessages>;
 
 	locales?: Intl.LocalesArgument;
@@ -62,6 +63,7 @@ export const useDecimalField = ({
 	min,
 	max,
 	formatValue,
+	parseDecimal: parseDecimalProps,
 	errorMessages = defaultErrorMessages,
 	locales = defaultLocales,
 	formatOptions = defaultFormatOptions,
@@ -108,7 +110,7 @@ export const useDecimalField = ({
 	);
 
 	const decimalBag = useConverterField({
-		parse: parseDecimal,
+		parse: parseDecimalProps ?? parseDecimal,
 		format,
 		name,
 		validator,

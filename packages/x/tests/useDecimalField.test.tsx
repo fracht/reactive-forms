@@ -263,4 +263,18 @@ describe('Decimal field', () => {
 		expect(result.current.text).toBe('custom');
 		expect(formatValue).toBeCalledWith(initialValue);
 	});
+
+	it('Should call custom parseDecimal function', async () => {
+		const parseDecimal = jest.fn();
+
+		const [{ result }] = renderUseDecimalField({ parseDecimal });
+
+		await act(() => {
+			result.current.onTextChange('0.0');
+		});
+
+		await waitFor(() => {
+			expect(parseDecimal).toBeCalledWith('0.0');
+		});
+	});
 });
