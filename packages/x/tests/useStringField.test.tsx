@@ -50,95 +50,91 @@ describe('String field', () => {
 	});
 
 	it('Should set default error if field is required and empty', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({ required: true });
+		const [{ result }] = renderUseStringField({ required: true });
 
 		act(() => {
-			stringFieldBag.current.control.setValue(null);
+			result.current.control.setValue(null);
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue(undefined);
+			result.current.control.setValue(undefined);
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('');
+			result.current.control.setValue('');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('   ');
+			result.current.control.setValue('   ');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('a');
+			result.current.control.setValue('a');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
 	it('Should set default error if value is longer than maxLength', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({ maxLength: 3 });
+		const [{ result }] = renderUseStringField({ maxLength: 3 });
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaa');
+			result.current.control.setValue('aaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaaa');
+			result.current.control.setValue('aaaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(
-				(defaultErrorMessages.longerThanMaxLength as (maxLength: number) => string)(3),
-			);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.longerThanMaxLength(3));
 		});
 	});
 
 	it('Should set default error if value is shorter than minLength', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({ minLength: 3 });
+		const [{ result }] = renderUseStringField({ minLength: 3 });
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaa');
+			result.current.control.setValue('aaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aa');
+			result.current.control.setValue('aa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe(
-				(defaultErrorMessages.shorterThanMinLength as (minLength: number) => string)(3),
-			);
+			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.shorterThanMinLength(3));
 		});
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({
+		const [{ result }] = renderUseStringField({
 			required: true,
 			errorMessages: {
 				required: 'custom',
@@ -146,71 +142,71 @@ describe('String field', () => {
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue(null);
+			result.current.control.setValue(null);
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue(undefined);
+			result.current.control.setValue(undefined);
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('');
+			result.current.control.setValue('');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('   ');
+			result.current.control.setValue('   ');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('a');
+			result.current.control.setValue('a');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
 	it('Should set custom error if value is longer than maxLength', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({
+		const [{ result }] = renderUseStringField({
 			maxLength: 3,
 			errorMessages: { longerThanMaxLength: () => 'custom' },
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaa');
+			result.current.control.setValue('aaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaaa');
+			result.current.control.setValue('aaaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should set custom error if value is shorter than minLength', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({
+		const [{ result }] = renderUseStringField({
 			minLength: 3,
 			errorMessages: {
 				shorterThanMinLength: () => 'custom',
@@ -218,34 +214,34 @@ describe('String field', () => {
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aaa');
+			result.current.control.setValue('aaa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 
 		act(() => {
-			stringFieldBag.current.control.setValue('aa');
+			result.current.control.setValue('aa');
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
 	it('Should set formatted value in form state on blur', async () => {
-		const [{ result: stringFieldBag }] = renderUseStringField({
+		const [{ result }] = renderUseStringField({
 			formatter: (value) => `+${value}`,
 			initialValue: 'hello',
 		});
 
 		await act(() => {
-			stringFieldBag.current.onBlur();
+			result.current.onBlur();
 		});
 
 		await waitFor(() => {
-			expect(stringFieldBag.current.value).toBe('+hello');
+			expect(result.current.value).toBe('+hello');
 		});
 	});
 });
