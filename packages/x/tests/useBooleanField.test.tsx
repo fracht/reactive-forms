@@ -8,7 +8,7 @@ type Config = Omit<BooleanFieldConfig, 'name'> & {
 	initialValue?: boolean;
 };
 
-const renderUseStringField = (config: Config = {}) => {
+const renderUseBooleanField = (config: Config = {}) => {
 	const { initialValue = false, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
@@ -38,7 +38,7 @@ const renderUseStringField = (config: Config = {}) => {
 
 describe('Boolean field', () => {
 	it('Should set touched=true on blur', async () => {
-		const [{ result }] = renderUseStringField();
+		const [{ result }] = renderUseBooleanField();
 
 		expect(result.current.meta.touched?.$touched).toBeFalsy();
 
@@ -52,7 +52,7 @@ describe('Boolean field', () => {
 	});
 
 	it('Should set default error if field is required and empty', async () => {
-		const [{ result }] = renderUseStringField({ required: true });
+		const [{ result }] = renderUseBooleanField({ required: true });
 
 		act(() => {
 			result.current.control.setValue(null);
@@ -88,7 +88,7 @@ describe('Boolean field', () => {
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
-		const [{ result }] = renderUseStringField({ required: true, requiredError: 'custom' });
+		const [{ result }] = renderUseBooleanField({ required: true, requiredError: 'custom' });
 
 		act(() => {
 			result.current.control.setValue(null);
