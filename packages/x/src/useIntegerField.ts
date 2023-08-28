@@ -16,8 +16,8 @@ const formatInteger = (value: number | null | undefined) => {
 export type IntegerFieldErrorMessages = {
 	invalidInput: string;
 	required: string;
-	lessThanMinValue: ((min: number) => string) | string;
-	moreThanMaxValue: ((max: number) => string) | string;
+	lessThanMinValue: (min: number) => string;
+	moreThanMaxValue: (max: number) => string;
 };
 
 export const defaultErrorMessages: IntegerFieldErrorMessages = {
@@ -33,7 +33,7 @@ export type IntegerFieldConfig = FieldConfig<number | null | undefined> & {
 	max?: number;
 
 	formatValue?: (value: number | null | undefined) => string;
-	errorMessages?: IntegerFieldErrorMessages;
+	errorMessages?: Partial<IntegerFieldErrorMessages>;
 };
 
 export type IntegerFieldBag = ConverterFieldBag<number | null | undefined> & {};
@@ -48,8 +48,6 @@ export const useIntegerField = ({
 	formatValue,
 	errorMessages = defaultErrorMessages,
 }: IntegerFieldConfig): IntegerFieldBag => {
-	const { invalidInput, required: requiredError, lessThanMinValue, moreThanMaxValue } = errorMessages;
-
 	const parseInteger = useCallback(
 		(text: string) => {
 			text = text.trim();
@@ -58,19 +56,21 @@ export const useIntegerField = ({
 				return null;
 			}
 
+			const errorMessage = errorMessages.invalidInput ?? defaultErrorMessages.invalidInput;
+
 			if (!INTEGER_REGEX.test(text)) {
-				throw new ConversionError(invalidInput);
+				throw new ConversionError(errorMessage);
 			}
 
 			const value = Number.parseInt(text);
 
 			if (Number.isNaN(value)) {
-				throw new ConversionError(invalidInput);
+				throw new ConversionError(errorMessage);
 			}
 
 			return value;
 		},
-		[invalidInput],
+		[errorMessages.invalidInput],
 	);
 
 	const integerBag = useConverterField({
@@ -85,7 +85,7 @@ export const useIntegerField = ({
 		name,
 		validator: (value) => {
 			if (required && typeof value !== 'number') {
-				return requiredError;
+				return errorMessages.required ?? defaultErrorMessages.required;
 			}
 
 			if (typeof value !== 'number') {
@@ -93,11 +93,11 @@ export const useIntegerField = ({
 			}
 
 			if (typeof min === 'number' && value < Math.round(min)) {
-				return typeof lessThanMinValue === 'function' ? lessThanMinValue(min) : lessThanMinValue;
+				return (errorMessages.lessThanMinValue ?? defaultErrorMessages.lessThanMinValue)(min);
 			}
 
 			if (typeof max === 'number' && value > Math.round(max)) {
-				return typeof moreThanMaxValue === 'function' ? moreThanMaxValue(max) : moreThanMaxValue;
+				return (errorMessages.moreThanMaxValue ?? defaultErrorMessages.moreThanMaxValue)(max);
 			}
 
 			return undefined;
