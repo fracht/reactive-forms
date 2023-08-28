@@ -136,4 +136,101 @@ describe('String field', () => {
 			);
 		});
 	});
+
+	it('Should set custom error if field is required and empty', async () => {
+		const [{ result: stringFieldBag }] = renderUseStringField({
+			required: true,
+			errorMessages: {
+				required: 'custom',
+			},
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue(null);
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue(undefined);
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('   ');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('a');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+		});
+	});
+
+	it('Should set custom error if value is longer than maxLength', async () => {
+		const [{ result: stringFieldBag }] = renderUseStringField({
+			maxLength: 3,
+			errorMessages: { longerThanMaxLength: () => 'custom' },
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('aaaa');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+	});
+
+	it('Should set custom error if value is shorter than minLength', async () => {
+		const [{ result: stringFieldBag }] = renderUseStringField({
+			minLength: 3,
+			errorMessages: {
+				shorterThanMinLength: () => 'custom',
+			},
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBeUndefined();
+		});
+
+		act(() => {
+			stringFieldBag.current.control.setValue('aa');
+		});
+
+		await waitFor(() => {
+			expect(stringFieldBag.current.meta.error?.$error).toBe('custom');
+		});
+	});
 });

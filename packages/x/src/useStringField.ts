@@ -2,8 +2,8 @@ import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactiv
 
 export type StringFieldErrorMessages = {
 	required: string;
-	shorterThanMinLength: ((minLength: number) => string) | string;
-	longerThanMaxLength: ((maxLength: number) => string) | string;
+	shorterThanMinLength: (minLength: number) => string;
+	longerThanMaxLength: (maxLength: number) => string;
 };
 
 export const defaultErrorMessages: StringFieldErrorMessages = {
@@ -19,7 +19,7 @@ export type StringFieldConfig = FieldConfig<string | undefined | null> & {
 
 	formatter?: (value: string) => string;
 
-	errorMessages?: StringFieldErrorMessages;
+	errorMessages?: Partial<StringFieldErrorMessages>;
 };
 
 export type StringFieldBag = FieldContext<string | undefined | null> & {
@@ -36,8 +36,6 @@ export const useStringField = ({
 	formatter = (val) => val,
 	errorMessages = defaultErrorMessages,
 }: StringFieldConfig) => {
-	const { required: requiredError, shorterThanMinLength, longerThanMaxLength } = errorMessages;
-
 	const fieldBag = useField({ name, validator, schema });
 
 	const {
@@ -51,17 +49,15 @@ export const useStringField = ({
 			const isValueEmpty = !value || value.trim().length === 0;
 
 			if (required && isValueEmpty) {
-				return requiredError;
+				return errorMessages.required ?? defaultErrorMessages.required;
 			}
 
 			if (typeof minLength === 'number' && ((isValueEmpty && minLength > 0) || value!.length < minLength)) {
-				return typeof shorterThanMinLength === 'function'
-					? shorterThanMinLength(minLength)
-					: shorterThanMinLength;
+				return (errorMessages.shorterThanMinLength ?? defaultErrorMessages.shorterThanMinLength)(minLength);
 			}
 
 			if (typeof maxLength === 'number' && value && value.length > maxLength) {
-				return typeof longerThanMaxLength === 'function' ? longerThanMaxLength(maxLength) : longerThanMaxLength;
+				return (errorMessages.longerThanMaxLength ?? defaultErrorMessages.longerThanMaxLength)(maxLength);
 			}
 
 			return undefined;
