@@ -5,8 +5,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import {
 	DecimalFieldConfig,
 	defaultErrorMessages,
-	defaultFormatOptions,
-	defaultLocales,
+	defaultFormat,
+	defaultPrecision,
 	useDecimalField,
 } from '../src/useDecimalField';
 
@@ -46,7 +46,7 @@ describe('Decimal field', () => {
 	it('Should format initial value correctly', () => {
 		const [{ result }] = renderUseDecimalField();
 
-		expect(result.current.text).toBe((0).toLocaleString(defaultLocales, defaultFormatOptions));
+		expect(result.current.text).toBe(defaultFormat(0, defaultPrecision));
 		expect(result.current.value).toBe(0);
 	});
 
@@ -162,7 +162,9 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.lessThanMinValue(0.5));
+			expect(result.current.meta.error?.$error).toBe(
+				defaultErrorMessages.lessThanMinValue(0.5, defaultPrecision),
+			);
 		});
 	});
 
@@ -174,7 +176,9 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.moreThanMaxValue(0.5));
+			expect(result.current.meta.error?.$error).toBe(
+				defaultErrorMessages.moreThanMaxValue(0.5, defaultPrecision),
+			);
 		});
 	});
 
@@ -255,26 +259,27 @@ describe('Decimal field', () => {
 		});
 	});
 
-	it('Should be able to format decimal differently', () => {
-		const formatValue = jest.fn(() => 'custom');
+	it('Should call custom format function', () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const format = jest.fn((_value: number | null | undefined) => 'custom');
 		const initialValue = 3.14;
-		const [{ result }] = renderUseDecimalField({ formatValue, initialValue });
+		const [{ result }] = renderUseDecimalField({ format, initialValue });
 
 		expect(result.current.text).toBe('custom');
-		expect(formatValue).toBeCalledWith(initialValue);
+		expect(format.mock.calls[0][0]).toBe(initialValue);
 	});
 
-	it('Should call custom parseDecimal function', async () => {
-		const parseDecimal = jest.fn();
+	it('Should call custom parse function', async () => {
+		const parse = jest.fn();
 
-		const [{ result }] = renderUseDecimalField({ parseDecimal });
+		const [{ result }] = renderUseDecimalField({ parse });
 
 		await act(() => {
 			result.current.onTextChange('0.0');
 		});
 
 		await waitFor(() => {
-			expect(parseDecimal).toBeCalledWith('0.0');
+			expect(parse).toBeCalledWith('0.0');
 		});
 	});
 });

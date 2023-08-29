@@ -4,40 +4,28 @@ import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
 
 const DECIMAL_REGEX = /^\d*\.?\d*$/;
+export const defaultPrecision = 2;
 
-export const defaultLocales: Intl.LocalesArgument = 'EN';
-
-export const defaultFormatOptions: Intl.NumberFormatOptions = {
-	minimumFractionDigits: 1,
-	maximumFractionDigits: 2,
-};
-
-const formatDecimal = (
-	value: number | null | undefined,
-	locales?: Intl.LocalesArgument,
-	options?: Intl.NumberFormatOptions,
-) => {
+export const defaultFormat = (value: number | null | undefined, precision: number) => {
 	if (typeof value !== 'number' || !Number.isFinite(value)) {
 		return '';
 	}
 
-	return value.toLocaleString(locales, options);
+	return value.toFixed(precision).toString();
 };
 
 export type DecimalFieldErrorMessages = {
 	invalidInput: string;
 	required: string;
-	lessThanMinValue: (min: number, locales?: Intl.LocalesArgument, options?: Intl.NumberFormatOptions) => string;
-	moreThanMaxValue: (max: number, locales?: Intl.LocalesArgument, options?: Intl.NumberFormatOptions) => string;
+	lessThanMinValue: (min: number, precision: number) => string;
+	moreThanMaxValue: (max: number, precision: number) => string;
 };
 
 export const defaultErrorMessages: DecimalFieldErrorMessages = {
 	invalidInput: 'Must be decimal',
 	required: 'Field is required',
-	lessThanMinValue: (min, locales, options) =>
-		`Value should not be less than ${formatDecimal(min, locales, options)}`,
-	moreThanMaxValue: (max, locales, options) =>
-		`Value should not be more than ${formatDecimal(max, locales, options)}`,
+	lessThanMinValue: (min, precision) => `Value should not be less than ${defaultFormat(min, precision)}`,
+	moreThanMaxValue: (max, precision) => `Value should not be more than ${defaultFormat(max, precision)}`,
 };
 
 export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
@@ -45,12 +33,11 @@ export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
 	min?: number;
 	max?: number;
 
-	formatValue?: (value: number | null | undefined) => string;
-	parseDecimal?: (text: string) => number;
+	format?: (value: number | null | undefined, precision: number) => string;
+	parse?: (text: string) => number;
 	errorMessages?: Partial<DecimalFieldErrorMessages>;
 
-	locales?: Intl.LocalesArgument;
-	formatOptions?: Intl.NumberFormatOptions;
+	precision?: number;
 };
 
 export type DecimalFieldBag = ConverterFieldBag<number | null | undefined>;
@@ -62,13 +49,12 @@ export const useDecimalField = ({
 	required,
 	min,
 	max,
-	formatValue,
-	parseDecimal: parseDecimalProps,
+	format,
+	parse,
 	errorMessages = defaultErrorMessages,
-	locales = defaultLocales,
-	formatOptions = defaultFormatOptions,
+	precision = defaultPrecision,
 }: DecimalFieldConfig): DecimalFieldBag => {
-	const parseDecimal = useCallback(
+	const defaultParse = useCallback(
 		(text: string) => {
 			text = text.trim();
 
@@ -98,20 +84,16 @@ export const useDecimalField = ({
 		[errorMessages.invalidInput],
 	);
 
-	const format = useCallback(
+	const formatValue = useCallback(
 		(value: number | null | undefined) => {
-			if (formatValue) {
-				return formatValue(value);
-			}
-
-			return formatDecimal(value, locales, formatOptions);
+			return (format ?? defaultFormat)(value, precision);
 		},
-		[formatOptions, formatValue, locales],
+		[format, precision],
 	);
 
 	const decimalBag = useConverterField({
-		parse: parseDecimalProps ?? parseDecimal,
-		format,
+		parse: parse ?? defaultParse,
+		format: formatValue,
 		name,
 		validator,
 		schema,
@@ -129,11 +111,11 @@ export const useDecimalField = ({
 			}
 
 			if (typeof min === 'number' && value < min) {
-				return (errorMessages.lessThanMinValue ?? defaultErrorMessages.lessThanMinValue)(min);
+				return (errorMessages.lessThanMinValue ?? defaultErrorMessages.lessThanMinValue)(min, precision);
 			}
 
 			if (typeof max === 'number' && value > max) {
-				return (errorMessages.moreThanMaxValue ?? defaultErrorMessages.moreThanMaxValue)(max);
+				return (errorMessages.moreThanMaxValue ?? defaultErrorMessages.moreThanMaxValue)(max, precision);
 			}
 
 			return undefined;
