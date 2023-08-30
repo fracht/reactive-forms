@@ -1,20 +1,14 @@
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 import isFunction from 'lodash/isFunction';
 
-export const defaultRequiredError = 'Field is required';
-export const defaultMinLengthError = (minLength: number) =>
-	`String should not include less than ${minLength} character(s)`;
-export const defaultMaxLengthError = (maxLength: number) =>
-	`String should not include more than ${maxLength} character(s)`;
-
 export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
 export type StringFieldConfig = FieldConfig<string | undefined | null> & {
 	formatter?: (value: string) => string;
 
-	required?: boolean | string;
-	minLength?: number | ErrorTuple<number>;
-	maxLength?: number | ErrorTuple<number>;
+	required?: boolean;
+	minLength?: number;
+	maxLength?: number;
 };
 
 export type StringFieldBag = FieldContext<string | undefined | null> & {
