@@ -59,27 +59,26 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
+			expect(result.current.value).toBe(0);
 			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
 		});
 
 		act(() => {
-			result.current.onTextChange('0');
+			result.current.onTextChange('a0');
 		});
 
 		await waitFor(() => {
+			expect(result.current.value).toBe(0);
+			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+		});
+
+		act(() => {
+			result.current.onTextChange('1');
+		});
+
+		await waitFor(() => {
+			expect(result.current.value).toBe(1);
 			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-	});
-
-	it('Should set default error if text was not parsed successfully', async () => {
-		const [{ result }] = renderUseIntegerField();
-
-		act(() => {
-			result.current.onTextChange('a');
-		});
-
-		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
 		});
 	});
 
@@ -147,23 +146,19 @@ describe('Integer field', () => {
 		});
 
 		act(() => {
+			result.current.onTextChange('a0');
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBe('custom');
+		});
+
+		act(() => {
 			result.current.onTextChange('0');
 		});
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-	});
-
-	it('Should set custom error if text was not parsed successfully', async () => {
-		const [{ result }] = renderUseIntegerField({ invalidInput: 'custom' });
-
-		act(() => {
-			result.current.onTextChange('a');
-		});
-
-		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
 
