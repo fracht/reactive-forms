@@ -88,7 +88,7 @@ describe('Boolean field', () => {
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
-		const [{ result }] = renderUseBooleanField({ required: true, requiredError: 'custom' });
+		const [{ result }] = renderUseBooleanField({ required: 'custom' });
 
 		act(() => {
 			result.current.control.setValue(null);
