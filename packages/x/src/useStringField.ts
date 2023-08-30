@@ -1,5 +1,5 @@
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 
 export const defaultRequiredError = 'Field is required';
 export const defaultMinLengthError = (minLength: number) =>
