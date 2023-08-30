@@ -26,10 +26,10 @@ export const useStringField = ({
 	validator,
 	schema,
 	formatter = (val) => val,
-	...validationOptions
+	required,
+	maxLength,
+	minLength,
 }: StringFieldConfig) => {
-	const { required, minLength, maxLength } = validationOptions;
-
 	const fieldBag = useField({ name, validator, schema });
 
 	const {
