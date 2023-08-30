@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
+import { isFunction, isNil } from 'lodash';
 
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
 
@@ -14,28 +15,23 @@ export const defaultFormat = (value: number | null | undefined, precision: numbe
 	return value.toFixed(precision).toString();
 };
 
-export type DecimalFieldErrorMessages = {
-	invalidInput: string;
-	required: string;
-	lessThanMinValue: (min: number, precision: number) => string;
-	moreThanMaxValue: (max: number, precision: number) => string;
-};
+export const defaultRequiredError = 'Field is required';
+export const defaultInvalidInputError = 'Must be decimal';
+export const defaultMinValueError = (min: number, precision: number) =>
+	`Value should not be less than ${defaultFormat(min, precision)}`;
+export const defaultMaxValueError = (max: number, precision: number) =>
+	`Value should not be more than ${defaultFormat(max, precision)}`;
 
-export const defaultErrorMessages: DecimalFieldErrorMessages = {
-	invalidInput: 'Must be decimal',
-	required: 'Field is required',
-	lessThanMinValue: (min, precision) => `Value should not be less than ${defaultFormat(min, precision)}`,
-	moreThanMaxValue: (max, precision) => `Value should not be more than ${defaultFormat(max, precision)}`,
-};
+export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
 export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
-	required?: boolean;
-	min?: number;
-	max?: number;
+	required?: boolean | string;
+	invalidInput?: string;
+	min?: number | ErrorTuple<number>;
+	max?: number | ErrorTuple<number>;
 
 	format?: (value: number | null | undefined, precision: number) => string;
 	parse?: (text: string) => number;
-	errorMessages?: Partial<DecimalFieldErrorMessages>;
 
 	precision?: number;
 };
@@ -47,11 +43,11 @@ export const useDecimalField = ({
 	validator,
 	schema,
 	required,
+	invalidInput,
 	min,
 	max,
 	format,
 	parse,
-	errorMessages = defaultErrorMessages,
 	precision = defaultPrecision,
 }: DecimalFieldConfig): DecimalFieldBag => {
 	const defaultParse = useCallback(
@@ -62,10 +58,10 @@ export const useDecimalField = ({
 				return null;
 			}
 
-			const errorMessage = errorMessages.invalidInput ?? defaultErrorMessages.invalidInput;
+			const parseError = invalidInput ?? defaultInvalidInputError;
 
 			if (!DECIMAL_REGEX.test(text)) {
-				throw new ConversionError(errorMessage);
+				throw new ConversionError(parseError);
 			}
 
 			const value = Number.parseFloat(text);
@@ -76,12 +72,12 @@ export const useDecimalField = ({
 					return 0;
 				}
 
-				throw new ConversionError(errorMessage);
+				throw new ConversionError(parseError);
 			}
 
 			return value;
 		},
-		[errorMessages.invalidInput],
+		[invalidInput],
 	);
 
 	const formatValue = useCallback(
@@ -103,19 +99,35 @@ export const useDecimalField = ({
 		name,
 		validator: (value) => {
 			if (required && typeof value !== 'number') {
-				return errorMessages.required ?? defaultErrorMessages.required;
+				return required === true ? defaultRequiredError : required;
 			}
 
 			if (typeof value !== 'number') {
 				return undefined;
 			}
 
-			if (typeof min === 'number' && value < min) {
-				return (errorMessages.lessThanMinValue ?? defaultErrorMessages.lessThanMinValue)(min, precision);
+			if (!isNil(min)) {
+				if (Array.isArray(min)) {
+					const [minValue, message] = min;
+
+					if (value < minValue) {
+						return isFunction(message) ? message(value) : message;
+					}
+				} else if (value < min) {
+					return defaultMinValueError(min, precision);
+				}
 			}
 
-			if (typeof max === 'number' && value > max) {
-				return (errorMessages.moreThanMaxValue ?? defaultErrorMessages.moreThanMaxValue)(max, precision);
+			if (!isNil(max)) {
+				if (Array.isArray(max)) {
+					const [maxValue, message] = max;
+
+					if (value > maxValue) {
+						return isFunction(message) ? message(value) : message;
+					}
+				} else if (value > max) {
+					return defaultMaxValueError(max, precision);
+				}
 			}
 
 			return undefined;
