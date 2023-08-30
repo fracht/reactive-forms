@@ -2,7 +2,13 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { defaultErrorMessages, StringFieldConfig, useStringField } from '../src/useStringField';
+import {
+	defaultMaxLengthError,
+	defaultMinLengthError,
+	defaultRequiredError,
+	StringFieldConfig,
+	useStringField,
+} from '../src/useStringField';
 
 type Config = Omit<StringFieldConfig, 'name'> & {
 	initialValue?: string;
@@ -57,7 +63,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
 		});
 
 		act(() => {
@@ -65,7 +71,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
 		});
 
 		act(() => {
@@ -73,7 +79,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
 		});
 
 		act(() => {
@@ -81,7 +87,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
 		});
 
 		act(() => {
@@ -109,7 +115,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.longerThanMaxLength(3));
+			expect(result.current.meta.error?.$error).toBe(defaultMaxLengthError(3));
 		});
 	});
 
@@ -129,16 +135,13 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.shorterThanMinLength(3));
+			expect(result.current.meta.error?.$error).toBe(defaultMinLengthError(3));
 		});
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseStringField({
-			required: true,
-			errorMessages: {
-				required: 'custom',
-			},
+			required: 'custom',
 		});
 
 		act(() => {
@@ -184,8 +187,7 @@ describe('String field', () => {
 
 	it('Should set custom error if value is longer than maxLength', async () => {
 		const [{ result }] = renderUseStringField({
-			maxLength: 3,
-			errorMessages: { longerThanMaxLength: () => 'custom' },
+			maxLength: [3, 'custom'],
 		});
 
 		act(() => {
@@ -207,10 +209,7 @@ describe('String field', () => {
 
 	it('Should set custom error if value is shorter than minLength', async () => {
 		const [{ result }] = renderUseStringField({
-			minLength: 3,
-			errorMessages: {
-				shorterThanMinLength: () => 'custom',
-			},
+			minLength: [3, 'custom'],
 		});
 
 		act(() => {

@@ -1,25 +1,20 @@
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
+import { isFunction } from 'lodash';
 
-export type StringFieldErrorMessages = {
-	required: string;
-	shorterThanMinLength: (minLength: number) => string;
-	longerThanMaxLength: (maxLength: number) => string;
-};
+export const defaultRequiredError = 'Field is required';
+export const defaultMinLengthError = (minLength: number) =>
+	`String should not include less than ${minLength} character(s)`;
+export const defaultMaxLengthError = (maxLength: number) =>
+	`String should not include more than ${maxLength} character(s)`;
 
-export const defaultErrorMessages: StringFieldErrorMessages = {
-	required: 'Field is required',
-	shorterThanMinLength: (minLength: number) => `String should not include less than ${minLength} character(s)`,
-	longerThanMaxLength: (maxLength: number) => `String should not include more than ${maxLength} character(s)`,
-};
+export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
 export type StringFieldConfig = FieldConfig<string | undefined | null> & {
-	required?: boolean;
-	minLength?: number;
-	maxLength?: number;
-
 	formatter?: (value: string) => string;
 
-	errorMessages?: Partial<StringFieldErrorMessages>;
+	required?: boolean | string;
+	minLength?: number | ErrorTuple<number>;
+	maxLength?: number | ErrorTuple<number>;
 };
 
 export type StringFieldBag = FieldContext<string | undefined | null> & {
@@ -30,12 +25,11 @@ export const useStringField = ({
 	name,
 	validator,
 	schema,
-	required,
-	minLength,
-	maxLength,
 	formatter = (val) => val,
-	errorMessages = defaultErrorMessages,
+	...validationOptions
 }: StringFieldConfig) => {
+	const { required, minLength, maxLength } = validationOptions;
+
 	const fieldBag = useField({ name, validator, schema });
 
 	const {
@@ -49,15 +43,27 @@ export const useStringField = ({
 			const isValueEmpty = !value || value.trim().length === 0;
 
 			if (required && isValueEmpty) {
-				return errorMessages.required ?? defaultErrorMessages.required;
+				return required === true ? defaultRequiredError : required;
 			}
 
-			if (typeof minLength === 'number' && ((isValueEmpty && minLength > 0) || value!.length < minLength)) {
-				return (errorMessages.shorterThanMinLength ?? defaultErrorMessages.shorterThanMinLength)(minLength);
+			if (minLength) {
+				if (Array.isArray(minLength)) {
+					const [length, message] = minLength;
+
+					return isFunction(message) ? message(length) : message;
+				}
+
+				return defaultMinLengthError(minLength);
 			}
 
-			if (typeof maxLength === 'number' && value && value.length > maxLength) {
-				return (errorMessages.longerThanMaxLength ?? defaultErrorMessages.longerThanMaxLength)(maxLength);
+			if (maxLength) {
+				if (Array.isArray(maxLength)) {
+					const [length, message] = maxLength;
+
+					return isFunction(message) ? message(length) : message;
+				}
+
+				return defaultMaxLengthError(maxLength);
 			}
 
 			return undefined;
