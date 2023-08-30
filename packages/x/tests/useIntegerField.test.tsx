@@ -2,7 +2,14 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { defaultErrorMessages, IntegerFieldConfig, useIntegerField } from '../src/useIntegerField';
+import {
+	defaultInvalidInputError,
+	defaultMaxValueError,
+	defaultMinValueError,
+	defaultRequiredError,
+	IntegerFieldConfig,
+	useIntegerField,
+} from '../src/useIntegerField';
 
 type Config = Omit<IntegerFieldConfig, 'name'> & {
 	initialValue?: number | null;
@@ -52,7 +59,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
 		});
 
 		act(() => {
@@ -72,7 +79,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
 		});
 	});
 
@@ -84,7 +91,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
 		});
 	});
 
@@ -96,9 +103,15 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(
-				(defaultErrorMessages.lessThanMinValue as (min: number) => string)(0),
-			);
+			expect(result.current.meta.error?.$error).toBe(defaultMinValueError(0));
+		});
+
+		act(() => {
+			result.current.control.setValue(0);
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
@@ -110,14 +123,20 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(
-				(defaultErrorMessages.moreThanMaxValue as (max: number) => string)(0),
-			);
+			expect(result.current.meta.error?.$error).toBe(defaultMaxValueError(0));
+		});
+
+		act(() => {
+			result.current.control.setValue(0);
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
 	it('Should set custom error in case of conversion error and clear it afterwards', async () => {
-		const [{ result }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
+		const [{ result }] = renderUseIntegerField({ invalidInput: 'custom' });
 
 		act(() => {
 			result.current.onTextChange('0a');
@@ -137,7 +156,7 @@ describe('Integer field', () => {
 	});
 
 	it('Should set custom error if text was not parsed successfully', async () => {
-		const [{ result }] = renderUseIntegerField({ errorMessages: { invalidInput: 'custom' } });
+		const [{ result }] = renderUseIntegerField({ invalidInput: 'custom' });
 
 		act(() => {
 			result.current.onTextChange('a');
@@ -150,8 +169,7 @@ describe('Integer field', () => {
 
 	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseIntegerField({
-			required: true,
-			errorMessages: { required: 'custom' },
+			required: 'custom',
 		});
 
 		act(() => {
@@ -165,8 +183,7 @@ describe('Integer field', () => {
 
 	it('Should set custom error if field value is less than min', async () => {
 		const [{ result }] = renderUseIntegerField({
-			min: 0,
-			errorMessages: { lessThanMinValue: () => 'custom' },
+			min: [0, 'custom'],
 		});
 
 		act(() => {
@@ -180,8 +197,7 @@ describe('Integer field', () => {
 
 	it('Should set custom error if field value is more than max', async () => {
 		const [{ result }] = renderUseIntegerField({
-			max: 0,
-			errorMessages: { moreThanMaxValue: () => 'custom' },
+			max: [0, 'custom'],
 		});
 
 		act(() => {

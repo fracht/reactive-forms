@@ -1,7 +1,14 @@
 import { useCallback } from 'react';
 import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
+import isFunction from 'lodash/isFunction';
+import isNil from 'lodash/isNil';
 
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
+
+export const defaultRequiredError = 'Field is required';
+export const defaultInvalidInputError = 'Must be integer';
+export const defaultMinValueError = (min: number) => `Value should not be less than ${min.toFixed(0)}`;
+export const defaultMaxValueError = (max: number) => `Value should not be more than ${max.toFixed(0)}`;
 
 const INTEGER_REGEX = /^-?\d+$/;
 
@@ -13,27 +20,15 @@ const formatInteger = (value: number | null | undefined) => {
 	return value.toFixed(0);
 };
 
-export type IntegerFieldErrorMessages = {
-	invalidInput: string;
-	required: string;
-	lessThanMinValue: (min: number) => string;
-	moreThanMaxValue: (max: number) => string;
-};
-
-export const defaultErrorMessages: IntegerFieldErrorMessages = {
-	invalidInput: 'Must be integer',
-	required: 'Field is required',
-	lessThanMinValue: (min) => `Value should not be less than ${min.toFixed(0)}`,
-	moreThanMaxValue: (max) => `Value should not be more than ${max.toFixed(0)}`,
-};
+export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
 export type IntegerFieldConfig = FieldConfig<number | null | undefined> & {
-	required?: boolean;
-	min?: number;
-	max?: number;
+	required?: boolean | string;
+	invalidInput?: string;
+	min?: number | ErrorTuple<number>;
+	max?: number | ErrorTuple<number>;
 
 	formatValue?: (value: number | null | undefined) => string;
-	errorMessages?: Partial<IntegerFieldErrorMessages>;
 };
 
 export type IntegerFieldBag = ConverterFieldBag<number | null | undefined> & {};
@@ -43,10 +38,10 @@ export const useIntegerField = ({
 	validator,
 	schema,
 	required,
+	invalidInput,
 	min,
 	max,
 	formatValue = formatInteger,
-	errorMessages = defaultErrorMessages,
 }: IntegerFieldConfig): IntegerFieldBag => {
 	const parseInteger = useCallback(
 		(text: string) => {
@@ -56,21 +51,21 @@ export const useIntegerField = ({
 				return null;
 			}
 
-			const errorMessage = errorMessages.invalidInput ?? defaultErrorMessages.invalidInput;
+			const parseError = invalidInput ?? defaultInvalidInputError;
 
 			if (!INTEGER_REGEX.test(text)) {
-				throw new ConversionError(errorMessage);
+				throw new ConversionError(parseError);
 			}
 
 			const value = Number.parseInt(text);
 
 			if (Number.isNaN(value)) {
-				throw new ConversionError(errorMessage);
+				throw new ConversionError(parseError);
 			}
 
 			return value;
 		},
-		[errorMessages.invalidInput],
+		[invalidInput],
 	);
 
 	const integerBag = useConverterField({
@@ -85,19 +80,35 @@ export const useIntegerField = ({
 		name,
 		validator: (value) => {
 			if (required && typeof value !== 'number') {
-				return errorMessages.required ?? defaultErrorMessages.required;
+				return required === true ? defaultRequiredError : required;
 			}
 
 			if (typeof value !== 'number') {
 				return undefined;
 			}
 
-			if (typeof min === 'number' && value < Math.round(min)) {
-				return (errorMessages.lessThanMinValue ?? defaultErrorMessages.lessThanMinValue)(min);
+			if (!isNil(min)) {
+				if (Array.isArray(min)) {
+					const [minValue, message] = min;
+
+					if (value < minValue) {
+						return isFunction(message) ? message(value) : message;
+					}
+				} else if (value < min) {
+					return defaultMinValueError(min);
+				}
 			}
 
-			if (typeof max === 'number' && value > Math.round(max)) {
-				return (errorMessages.moreThanMaxValue ?? defaultErrorMessages.moreThanMaxValue)(max);
+			if (!isNil(max)) {
+				if (Array.isArray(max)) {
+					const [maxValue, message] = max;
+
+					if (value > maxValue) {
+						return isFunction(message) ? message(value) : message;
+					}
+				} else if (value > max) {
+					return defaultMaxValueError(max);
+				}
 			}
 
 			return undefined;
