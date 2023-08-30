@@ -207,6 +207,30 @@ describe('String field', () => {
 		});
 	});
 
+	it('Should set custom error if value is longer than maxLength (with callback)', async () => {
+		const callback = jest.fn(() => 'custom');
+		const [{ result }] = renderUseStringField({
+			maxLength: [3, callback],
+		});
+
+		act(() => {
+			result.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
+		});
+
+		act(() => {
+			result.current.control.setValue('aaaa');
+		});
+
+		await waitFor(() => {
+			expect(callback).toBeCalledWith(3);
+			expect(result.current.meta.error?.$error).toBe('custom');
+		});
+	});
+
 	it('Should set custom error if value is shorter than minLength', async () => {
 		const [{ result }] = renderUseStringField({
 			minLength: [3, 'custom'],
@@ -225,6 +249,30 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBe('custom');
+		});
+	});
+
+	it('Should set custom error if value is shorter than minLength', async () => {
+		const callback = jest.fn(() => 'custom');
+		const [{ result }] = renderUseStringField({
+			minLength: [3, callback],
+		});
+
+		act(() => {
+			result.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
+		});
+
+		act(() => {
+			result.current.control.setValue('aa');
+		});
+
+		await waitFor(() => {
+			expect(callback).toBeCalledWith(3);
 			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
