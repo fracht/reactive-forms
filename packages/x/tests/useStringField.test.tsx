@@ -103,19 +103,19 @@ describe('String field', () => {
 		const [{ result }] = renderUseStringField({ maxLength: 3 });
 
 		act(() => {
-			result.current.control.setValue('aaa');
-		});
-
-		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		act(() => {
 			result.current.control.setValue('aaaa');
 		});
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBe(defaultMaxLengthError(3));
+		});
+
+		act(() => {
+			result.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 
@@ -123,19 +123,19 @@ describe('String field', () => {
 		const [{ result }] = renderUseStringField({ minLength: 3 });
 
 		act(() => {
-			result.current.control.setValue('aaa');
-		});
-
-		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBeUndefined();
-		});
-
-		act(() => {
 			result.current.control.setValue('aa');
 		});
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBe(defaultMinLengthError(3));
+		});
+
+		act(() => {
+			result.current.control.setValue('aaa');
+		});
+
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBeUndefined();
 		});
 	});
 

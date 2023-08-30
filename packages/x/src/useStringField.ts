@@ -46,24 +46,30 @@ export const useStringField = ({
 				return required === true ? defaultRequiredError : required;
 			}
 
+			const valueLength = value?.length ?? 0;
+
 			if (minLength) {
 				if (Array.isArray(minLength)) {
 					const [length, message] = minLength;
 
-					return isFunction(message) ? message(length) : message;
+					if (valueLength < length) {
+						return isFunction(message) ? message(length) : message;
+					}
+				} else if (valueLength < minLength) {
+					return defaultMinLengthError(minLength);
 				}
-
-				return defaultMinLengthError(minLength);
 			}
 
 			if (maxLength) {
 				if (Array.isArray(maxLength)) {
 					const [length, message] = maxLength;
 
-					return isFunction(message) ? message(length) : message;
+					if (valueLength > length) {
+						return isFunction(message) ? message(length) : message;
+					}
+				} else if (valueLength > maxLength) {
+					return defaultMaxLengthError(maxLength);
 				}
-
-				return defaultMaxLengthError(maxLength);
 			}
 
 			return undefined;
