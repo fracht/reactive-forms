@@ -49,9 +49,5 @@
 	"peerDependencies": {
 		"@reactive-forms/core": "< 1.0.0",
 		"react": ">=16"
-	},
-	"files": [
-		"dist"
-	],
-	"source": "src/index.ts"
+	}
 }
