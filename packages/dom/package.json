@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/dom",
 	"description": "> TODO: description",
-	"version": "0.10.2",
+	"version": "0.10.3",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"bugs": "https://github.com/fracht/reactive-forms/issues",
@@ -14,7 +14,8 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc --project tsconfig.build.json && cpy ./src/* ./dist/source-root && rimraf ./prepared-package && clean-publish",
+		"build": "rimraf ./dist && rimraf ./prepared-package && tsc --project tsconfig.build.json && pnpm copy-sources && rimraf ./prepared-package && clean-publish",
+		"copy-sources": "cpy './src/*' './dist/source-root/'",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
@@ -49,9 +50,5 @@
 	"peerDependencies": {
 		"@reactive-forms/core": "< 1.0.0",
 		"react": ">=16"
-	},
-	"files": [
-		"dist"
-	],
-	"source": "src/index.ts"
+	}
 }

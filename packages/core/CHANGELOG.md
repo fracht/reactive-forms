@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.3
+
+### Patch Changes
+
+-   4aa91ac: Updating form dirtiness on reset
+
 ## 0.10.2
 
 ### Patch Changes

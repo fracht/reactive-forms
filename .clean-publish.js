@@ -12,6 +12,7 @@ module.exports = {
 		'coverage',
 		'tests',
 		'tsconfig.test.json',
+		'tsconfig.build.json'
 	],
 	fields: ['scripts'],
 };

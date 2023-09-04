@@ -217,6 +217,10 @@ importers:
     publishDirectory: prepared-package
 
   packages/x:
+    dependencies:
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
     devDependencies:
       '@babel/core':
         specifier: 7.19.6
@@ -227,9 +231,15 @@ importers:
       '@reactive-tools/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
+      '@testing-library/react':
+        specifier: 13.4.0
+        version: 13.4.0(react-dom@18.2.0)(react@18.2.0)
       '@types/jest':
         specifier: 26.0.24
         version: 26.0.24
+      '@types/lodash':
+        specifier: 4.14.161
+        version: 4.14.161
       '@types/react':
         specifier: 18.0.23
         version: 18.0.23
@@ -245,6 +255,12 @@ importers:
       rimraf:
         specifier: 3.0.2
         version: 3.0.2
+      ts-jest:
+        specifier: 29.0.3
+        version: 29.0.3(@babel/core@7.19.6)(esbuild@0.15.12)(jest@29.2.2)(typescript@4.8.4)
+      tslib:
+        specifier: 2.3.1
+        version: 2.3.1
       typescript:
         specifier: 4.8.4
         version: 4.8.4
@@ -3611,7 +3627,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@babel/runtime': 7.19.4
+      '@babel/runtime': 7.20.7
       '@types/aria-query': 4.2.2
       aria-query: 5.1.1
       chalk: 4.1.2
@@ -3627,9 +3643,9 @@ packages:
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      '@babel/runtime': 7.19.4
+      '@babel/runtime': 7.20.7
       '@testing-library/dom': 8.19.0
-      '@types/react-dom': 18.0.7
+      '@types/react-dom': 18.0.6
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
@@ -3760,12 +3776,6 @@ packages:
 
   /@types/react-dom@18.0.6:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
-    dependencies:
-      '@types/react': 18.0.23
-    dev: true
-
-  /@types/react-dom@18.0.7:
-    resolution: {integrity: sha512-HaXc+BbqAZE1RdsK3tC8SbkFy6UL2xF76lT9rQs5JkPrJg3rWA3Ou/Lhw3YJQzEDkBpmJ79nBsfnd05WrBd2QQ==}
     dependencies:
       '@types/react': 18.0.23
     dev: true
@@ -8717,7 +8727,7 @@ packages:
     resolution: {integrity: sha512-2hLFYyvFF9KvfODMbSi1WystAsK7TuwwuimESrT2eVjjv5A/LwWFvfo20jz+c3r/uQIj5td9bb0Uw2oE0CpiWw==}
     dependencies:
       lodash: 4.17.21
-      tiny-invariant: 1.3.1
+      tiny-invariant: 1.2.0
     dev: false
 
   /pxth@0.7.0:
