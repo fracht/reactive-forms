@@ -1,5 +1,11 @@
 # @reactive-forms/dom
 
+## 0.10.5
+
+### Patch Changes
+
+-   8a805a3: Fixed build script
+
 ## 0.10.4
 
 ### Patch Changes
