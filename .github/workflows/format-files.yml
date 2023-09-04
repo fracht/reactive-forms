@@ -3,7 +3,7 @@ name: Format files with prettier and syncpack
 on:
     push:
         branches:
-            - main
+            - v0.10
 jobs:
     format:
         name: Format and commit files

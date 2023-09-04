@@ -5,7 +5,7 @@
 	"fixed": [["@reactive-forms/*"]],
 	"linked": [],
 	"access": "restricted",
-	"baseBranch": "main",
+	"baseBranch": "v0.10",
 	"ignore": [],
 	"privatePackages": {
 		"tag": false,
