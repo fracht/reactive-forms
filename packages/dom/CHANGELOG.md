@@ -1,5 +1,11 @@
 # @reactive-forms/dom
 
+## 0.10.4
+
+### Patch Changes
+
+-   cb0aafc: Fixed sourcemap issues
+
 ## 0.10.3
 
 ## 0.10.2
