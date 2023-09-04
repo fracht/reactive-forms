@@ -14,7 +14,8 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc --project tsconfig.build.json && cpy ./src/* ./dist/source-root && rimraf ./prepared-package && clean-publish",
+		"build": "rimraf ./dist && rimraf ./prepared-package && tsc --project tsconfig.build.json && pnpm copy-sources && rimraf ./prepared-package && clean-publish",
+		"copy-sources": "cpy './src/*' './dist/source-root/'",
 		"dev": "aqu watch",
 		"lint": "eslint .",
 		"lint:fix": "npm run lint --fix",
