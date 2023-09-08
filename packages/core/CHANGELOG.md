@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.4
+
+### Patch Changes
+
+-   5edbd92: Updated pxth version
+
 ## 0.10.3
 
 ### Patch Changes
