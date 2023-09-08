@@ -1,5 +1,6 @@
+import { SetStateAction } from 'react';
 import { Pxth } from 'pxth';
-import { SetStateAction, Stock } from 'stocked';
+import { Stock } from 'stocked';
 
 import { FieldError } from '../typings/FieldError';
 import { FieldTouched } from '../typings/FieldTouched';
