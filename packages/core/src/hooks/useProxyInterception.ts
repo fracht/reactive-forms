@@ -53,17 +53,18 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
 	);
 
 	const interceptedValidateField = useCallback(
-		<V>(name: Pxth<V>, value: V) =>
+		<E>(name: Pxth<E>, value: E) =>
 			intercept(
 				proxy as StockProxy<unknown>,
 				name as Pxth<unknown>,
 				validateField,
-				(name, proxiedValue) => {
+				<V>(name: Pxth<V>, proxiedValue?: V) => {
 					let realValue: unknown = {};
 
-					const normalPath = proxy.getNormalPath(name as Pxth<unknown>);
+					const normalPath = proxy.getNormalPath(name);
 
-					proxy.setValue(name, proxiedValue, <U>(path: Pxth<U>, innerValue: U) => {
+					// FIXME: fix types
+					proxy.setValue(name as unknown as Pxth<V | undefined>, proxiedValue, (path, innerValue) => {
 						realValue = deepSet(
 							realValue as object,
 							relativePxth(normalPath, path as Pxth<unknown>),
