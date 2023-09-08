@@ -1,5 +1,13 @@
 # @reactive-forms/dom
 
+## 0.10.4
+
+### Patch Changes
+
+-   5edbd92: Updated pxth version
+-   bf552a3: Fixed sourcemap issues
+-   c274ec3: Fixed build script
+
 ## 0.10.3
 
 ## 0.10.2

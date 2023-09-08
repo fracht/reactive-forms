@@ -1,5 +1,11 @@
 # @reactive-forms/x
 
+## 0.10.4
+
+### Patch Changes
+
+-   524f4d2: Created useConverterField hook in @reactive-forms/x package
+
 ## 0.10.3
 
 ## 0.10.2
