@@ -1,7 +1,6 @@
-import React, { PropsWithChildren } from 'react';
+import React, { Dispatch, PropsWithChildren } from 'react';
 import { act, renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth, Pxth } from 'pxth';
-import { Dispatch } from 'stocked';
 
 import { FieldError, FormConfig, FormShared, ReactiveFormProvider, useFieldError, useForm } from '../../src';
 

@@ -41,6 +41,9 @@ importers:
       turbo:
         specifier: 1.10.13
         version: 1.10.13
+      typescript:
+        specifier: 4.8.4
+        version: 4.8.4
 
   packages/autosave:
     dependencies:
@@ -92,11 +95,11 @@ importers:
         specifier: 4.17.15
         version: 4.17.15
       pxth:
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       stocked:
-        specifier: 1.0.0-beta.28
-        version: 1.0.0-beta.28(react@18.2.0)
+        specifier: 1.0.0-beta.30
+        version: 1.0.0-beta.30(react@18.2.0)
       tiny-invariant:
         specifier: 1.2.0
         version: 1.2.0
@@ -154,11 +157,11 @@ importers:
   packages/dom:
     dependencies:
       pxth:
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       stocked:
-        specifier: 1.0.0-beta.28
-        version: 1.0.0-beta.28(react@18.2.0)
+        specifier: 1.0.0-beta.30
+        version: 1.0.0-beta.30(react@18.2.0)
       tiny-invariant:
         specifier: 1.2.0
         version: 1.2.0
@@ -6550,6 +6553,7 @@ packages:
 
   /lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: true
 
   /lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
@@ -7437,8 +7441,8 @@ packages:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
     engines: {node: '>=6'}
 
-  /pxth@0.6.0:
-    resolution: {integrity: sha512-2hLFYyvFF9KvfODMbSi1WystAsK7TuwwuimESrT2eVjjv5A/LwWFvfo20jz+c3r/uQIj5td9bb0Uw2oE0CpiWw==}
+  /pxth@0.7.0:
+    resolution: {integrity: sha512-V2bNJNl7FIuvjsnreT7EWaBiqD5akAuGrKAVxgarjmTSDcDIGKLhY39ZFBqMkSTN8OHEBM4pszNUN+rfrojMfw==}
     dependencies:
       lodash: 4.17.21
       tiny-invariant: 1.2.0
@@ -8030,17 +8034,17 @@ packages:
       object-copy: 0.1.0
     dev: true
 
-  /stocked@1.0.0-beta.28(react@18.2.0):
-    resolution: {integrity: sha512-rpPLHrDtm7D3IS/TMI4ylQYk0LGWVYbmBkJnXjFu0HvIdOHiA1kOcW3POfGPgRtrNg/acM7iHUXJiKzNZEBhIA==}
+  /stocked@1.0.0-beta.30(react@18.2.0):
+    resolution: {integrity: sha512-aZuC+4Ni+e2o59zKXDEy5c0keKii0L21eElYqufeMwvOPY7bzNswaKPTtNLBAGqUbk1vyfK7uRWTiAGtdyUZrw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
     dependencies:
       lodash: 4.17.21
-      lodash-es: 4.17.21
-      pxth: 0.6.0
+      lodash-es: 4.17.15
+      pxth: 0.7.0
       react: 18.2.0
-      tiny-invariant: 1.3.1
+      tiny-invariant: 1.2.0
     dev: false
 
   /stream-transform@2.1.3:
@@ -8241,10 +8245,6 @@ packages:
 
   /tiny-invariant@1.2.0:
     resolution: {integrity: sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==}
-    dev: false
-
-  /tiny-invariant@1.3.1:
-    resolution: {integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==}
     dev: false
 
   /tmp@0.0.33:

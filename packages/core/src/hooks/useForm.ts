@@ -183,6 +183,11 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		[runFormValidationSchema, validateAllFields, validateFormFn, disablePureFieldsValidation],
 	);
 
+	const updateFormDirtiness = useCallback(
+		(values: Values) => setFormMeta(formMetaPaths.dirty, !isEqual(values, initialValuesRef.current)),
+		[setFormMeta],
+	);
+
 	const resetForm = useCallback(
 		(initialFormState?: InitialFormState<Values>) => {
 			const nonNullableFormState = {
@@ -202,8 +207,10 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 			initialTouchedRef.current = initialTouched;
 
 			onReset(nonNullableFormState);
+
+			updateFormDirtiness(initialValues);
 		},
-		[setValues, setTouched, setErrors, onReset],
+		[setValues, setTouched, setErrors, onReset, updateFormDirtiness],
 	);
 
 	const helpers: FormHelpers<Values> = useMemo(
@@ -274,12 +281,6 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		],
 	);
 
-	const updateFormDirtiness = useCallback(
-		({ values }: BatchUpdate<unknown>) =>
-			setFormMeta(formMetaPaths.dirty, !isEqual(values, initialValuesRef.current)),
-		[setFormMeta],
-	);
-
 	const updateFormValidness = useCallback(
 		({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
 		[setFormMeta],
@@ -301,7 +302,10 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		[normalizeErrors, setFieldError, validateBranch],
 	);
 
-	useEffect(() => values.watchBatchUpdates(updateFormDirtiness), [values, updateFormDirtiness]);
+	useEffect(
+		() => values.watchBatchUpdates(({ values }) => updateFormDirtiness(values)),
+		[values, updateFormDirtiness],
+	);
 
 	useEffect(
 		() =>
