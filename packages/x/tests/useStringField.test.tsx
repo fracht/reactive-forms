@@ -270,19 +270,4 @@ describe('String field', () => {
 			expect(result.current.meta.error?.$error).toBe('custom');
 		});
 	});
-
-	it('Should set formatted value in form state on blur', async () => {
-		const [{ result }] = renderUseStringField({
-			formatter: (value) => `+${value}`,
-			initialValue: 'hello',
-		});
-
-		await act(() => {
-			result.current.onBlur();
-		});
-
-		await waitFor(() => {
-			expect(result.current.value).toBe('+hello');
-		});
-	});
 });

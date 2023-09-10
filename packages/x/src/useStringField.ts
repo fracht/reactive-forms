@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 import isFunction from 'lodash/isFunction';
 
@@ -10,8 +11,6 @@ export const defaultErrors = {
 export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
 export type StringFieldConfig = FieldConfig<string | undefined | null> & {
-	formatter?: (value: string) => string;
-
 	required?: boolean | string;
 	minLength?: number | ErrorTuple<number>;
 	maxLength?: number | ErrorTuple<number>;
@@ -21,20 +20,11 @@ export type StringFieldBag = FieldContext<string | undefined | null> & {
 	onBlur: () => void;
 };
 
-export const useStringField = ({
-	name,
-	validator,
-	schema,
-	formatter = (val) => val,
-	required,
-	maxLength,
-	minLength,
-}: StringFieldConfig) => {
+export const useStringField = ({ name, validator, schema, required, maxLength, minLength }: StringFieldConfig) => {
 	const fieldBag = useField({ name, validator, schema });
 
 	const {
-		control: { setTouched, setValue },
-		value,
+		control: { setTouched },
 	} = fieldBag;
 
 	useFieldValidator({
@@ -76,10 +66,9 @@ export const useStringField = ({
 		},
 	});
 
-	const onBlur = () => {
+	const onBlur = useCallback(() => {
 		setTouched({ $touched: true });
-		setValue(formatter(value ?? ''));
-	};
+	}, [setTouched]);
 
 	return {
 		onBlur,
