@@ -2,13 +2,7 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import {
-	defaultMaxLengthError,
-	defaultMinLengthError,
-	defaultRequiredError,
-	StringFieldConfig,
-	useStringField,
-} from '../src/useStringField';
+import { defaultErrors, StringFieldConfig, useStringField } from '../src/useStringField';
 
 type Config = Omit<StringFieldConfig, 'name'> & {
 	initialValue?: string;
@@ -63,7 +57,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
 		});
 
 		act(() => {
@@ -71,7 +65,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
 		});
 
 		act(() => {
@@ -79,7 +73,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
 		});
 
 		act(() => {
@@ -87,7 +81,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
 		});
 
 		act(() => {
@@ -107,7 +101,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMaxLengthError(3));
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.maxLength(3));
 		});
 
 		act(() => {
@@ -127,7 +121,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMinLengthError(3));
+			expect(result.current.meta.error?.$error).toBe(defaultErrors.minLength(3));
 		});
 
 		act(() => {

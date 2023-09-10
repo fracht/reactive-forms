@@ -1,11 +1,11 @@
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 import isFunction from 'lodash/isFunction';
 
-export const defaultRequiredError = 'Field is required';
-export const defaultMinLengthError = (minLength: number) =>
-	`String should not include less than ${minLength} character(s)`;
-export const defaultMaxLengthError = (maxLength: number) =>
-	`String should not include more than ${maxLength} character(s)`;
+export const defaultErrors = {
+	required: 'Field is required',
+	minLength: (minLength: number) => `String should not include less than ${minLength} character(s)`,
+	maxLength: (maxLength: number) => `String should not include more than ${maxLength} character(s)`,
+};
 
 export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
 
@@ -43,7 +43,7 @@ export const useStringField = ({
 			const isValueEmpty = !value || value.trim().length === 0;
 
 			if (required && isValueEmpty) {
-				return required === true ? defaultRequiredError : required;
+				return required === true ? defaultErrors.required : required;
 			}
 
 			const valueLength = value?.length ?? 0;
@@ -56,7 +56,7 @@ export const useStringField = ({
 						return isFunction(message) ? message(length) : message;
 					}
 				} else if (valueLength < minLength) {
-					return defaultMinLengthError(minLength);
+					return defaultErrors.minLength(minLength);
 				}
 			}
 
@@ -68,7 +68,7 @@ export const useStringField = ({
 						return isFunction(message) ? message(length) : message;
 					}
 				} else if (valueLength > maxLength) {
-					return defaultMaxLengthError(maxLength);
+					return defaultErrors.maxLength(maxLength);
 				}
 			}
 
