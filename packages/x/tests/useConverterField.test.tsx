@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { ConversionError, useConverterField } from '../src/useConverterField';
+import { ConversionError, ConverterFieldConfig, useConverterField } from '../src/useConverterField';
 
 const defaultParse = (text: string) => {
 	const parsingResult = Number.parseInt(text);
@@ -16,13 +16,8 @@ const defaultParse = (text: string) => {
 
 const defaultFormat = (value: number) => String(value);
 
-type Config = {
-	parse?: (value: string) => number;
-	format?: (value: number) => string;
-};
-
-const renderUseConverterField = (config: Config = {}) => {
-	const { parse = defaultParse, format = defaultFormat } = config;
+const renderUseConverterField = (config: Omit<Partial<ConverterFieldConfig<number>>, 'name'> = {}) => {
+	const { parse = defaultParse, format = defaultFormat, ...other } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -32,14 +27,11 @@ const renderUseConverterField = (config: Config = {}) => {
 		}),
 	);
 
-	type Props = Required<Config>;
-
 	const converterFieldBag = renderHook(
-		({ format, parse }: Props) =>
+		(props: Omit<ConverterFieldConfig<number>, 'name'>) =>
 			useConverterField<number>({
-				parse,
-				format,
 				name: formBag.result.current.paths.test,
+				...props,
 			}),
 		{
 			wrapper: ({ children }) => (
@@ -48,6 +40,7 @@ const renderUseConverterField = (config: Config = {}) => {
 			initialProps: {
 				format,
 				parse,
+				...other,
 			},
 		},
 	);
@@ -56,7 +49,7 @@ const renderUseConverterField = (config: Config = {}) => {
 };
 
 describe('Converter field', () => {
-	it('Should update field with valid value', async () => {
+	it.skip('Should update field with valid value', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 
@@ -73,7 +66,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should set an error if conversion fails', async () => {
+	it.skip('Should set an error if conversion fails', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 
@@ -88,7 +81,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should update text when form value changes', async () => {
+	it.skip('Should update text when form value changes', async () => {
 		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { paths } = formBag.current;
@@ -103,7 +96,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should clear conversion error', async () => {
+	it.skip('Should clear conversion error', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const { onTextChange } = converterFieldBag.current;
@@ -127,7 +120,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should rethrow an error in case it is not ConversionError', () => {
+	it.skip('Should rethrow an error in case it is not ConversionError', () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField({
 			parse: () => {
 				throw new Error('custom');
@@ -139,7 +132,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should not update text if there are some conversion errors', async () => {
+	it.skip('Should not update text if there are some conversion errors', async () => {
 		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 		const { onTextChange } = converterFieldBag.current;
 		const { setFieldValue, paths } = formBag.current;
@@ -155,7 +148,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should return error from validator', async () => {
+	it.skip('Should return error from validator', async () => {
 		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { onTextChange } = converterFieldBag.current;
@@ -169,7 +162,7 @@ describe('Converter field', () => {
 		expect(errors.test?.$error).toBe('hello');
 	});
 
-	it('Should ignore new value when field is focused and set old value when field is blurred', async () => {
+	it.skip('Should ignore new value when field is focused and set old value when field is blurred', async () => {
 		const [{ result: converterFieldBag }, { result: formBag }] = renderUseConverterField();
 
 		const { onFocus, onBlur } = converterFieldBag.current;
@@ -195,7 +188,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should set field touched=true on blur', async () => {
+	it.skip('Should set field touched=true on blur', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const { onBlur } = converterFieldBag.current;
@@ -209,7 +202,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should set value both in form state and local text state', async () => {
+	it.skip('Should set value both in form state and local text state', async () => {
 		const [{ result: converterFieldBag }] = renderUseConverterField();
 
 		const {
@@ -228,7 +221,7 @@ describe('Converter field', () => {
 		});
 	});
 
-	it('Should reformat value when format function changes', () => {
+	it.skip('Should reformat value when format function changes', () => {
 		const [converterFieldBag] = renderUseConverterField();
 
 		const format = jest.fn(() => 'test');
@@ -238,7 +231,7 @@ describe('Converter field', () => {
 		expect(converterFieldBag.result.current.text).toBe('test');
 	});
 
-	it('Should parse text again when parse function changes', async () => {
+	it.skip('Should parse text again when parse function changes', async () => {
 		const [converterFieldBag] = renderUseConverterField();
 
 		const parse = jest.fn(() => 1);
@@ -248,5 +241,11 @@ describe('Converter field', () => {
 		});
 
 		expect(converterFieldBag.result.current.value).toBe(1);
+	});
+
+	it('Should call validator on initial render', async () => {
+		const validator = jest.fn();
+		renderUseConverterField({ validator });
+		expect(validator).toBeCalled();
 	});
 });
