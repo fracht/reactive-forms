@@ -5,7 +5,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { DateFieldI18nContext } from './DateFieldI18n';
 import { formatDate } from './formatDate';
-import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
+import { ConversionError, ConverterFieldBag, useConverterField, ValueConverter } from './useConverterField';
 
 dayjs.extend(customParseFormat);
 
@@ -24,10 +24,7 @@ export type DateFieldConfig = FieldConfig<Date | null | undefined> & {
 	minDate?: Date;
 	maxDate?: Date;
 	pickTime?: boolean;
-
-	formatDate?: (date: Date | null | undefined, pickTime: boolean) => string;
-	parseDate?: (text: string, pickTime: boolean) => Date;
-};
+} & Partial<ValueConverter<Date | null | undefined>>;
 
 export type DateFieldBag = ConverterFieldBag<Date | null | undefined>;
 
@@ -39,18 +36,18 @@ export const useDateField = ({
 	minDate,
 	maxDate,
 	pickTime = false,
-	formatDate: customFormatDate,
-	parseDate: customParseDate,
+	format: customFormatDate,
+	parse: customParseDate,
 }: DateFieldConfig): DateFieldBag => {
 	const i18n = useContext(DateFieldI18nContext);
 
 	const parse = useCallback(
 		(text: string) => {
-			if (customParseDate) {
-				return customParseDate(text, pickTime);
-			}
-
 			text = text.trim();
+
+			if (customParseDate) {
+				return customParseDate(text);
+			}
 
 			if (text.length === 0) {
 				return null;
@@ -70,7 +67,7 @@ export const useDateField = ({
 	const format = useCallback(
 		(value: Date | null | undefined) => {
 			if (customFormatDate) {
-				return customFormatDate(value, pickTime);
+				return customFormatDate(value);
 			}
 
 			return formatDate(value, pickTime);

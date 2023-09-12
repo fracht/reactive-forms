@@ -252,25 +252,25 @@ describe('Date field', () => {
 	});
 
 	it('Should be able to format date differently', () => {
-		const formatDate = jest.fn(() => 'custom');
+		const format = jest.fn(() => 'custom');
 		const initialValue = new Date();
-		const [{ result }] = renderUseDateField({ formatDate, initialValue });
+		const [{ result }] = renderUseDateField({ format, initialValue });
 
 		expect(result.current.text).toBe('custom');
-		expect(formatDate).toBeCalledWith(initialValue, false);
+		expect(format).toBeCalledWith(initialValue);
 	});
 
 	it('Should call custom parseDate function', async () => {
-		const parseDate = jest.fn();
+		const parse = jest.fn();
 
-		const [{ result }] = renderUseDateField({ parseDate });
+		const [{ result }] = renderUseDateField({ parse });
 
 		await act(() => {
 			result.current.onTextChange('2023-09-12');
 		});
 
 		await waitFor(() => {
-			expect(parseDate).toBeCalledWith('2023-09-12', false);
+			expect(parse).toBeCalledWith('2023-09-12');
 		});
 	});
 
