@@ -3,7 +3,7 @@ import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 
 import { DecimalFieldI18nContext } from './DecimalFieldI18n';
 import { formatDecimal } from './formatDecimal';
-import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
+import { ConversionError, ConverterFieldBag, useConverterField, ValueConverter } from './useConverterField';
 
 const DECIMAL_REGEX = /^\d*\.?\d*$/;
 export const defaultPrecision = 2;
@@ -13,11 +13,8 @@ export type DecimalFieldConfig = FieldConfig<number | null | undefined> & {
 	min?: number;
 	max?: number;
 
-	format?: (value: number | null | undefined, precision: number) => string;
-	parse?: (text: string) => number;
-
 	precision?: number;
-};
+} & Partial<ValueConverter<number | null | undefined>>;
 
 export type DecimalFieldBag = ConverterFieldBag<number | null | undefined>;
 
@@ -28,15 +25,19 @@ export const useDecimalField = ({
 	required,
 	min,
 	max,
-	format,
-	parse,
+	format: customFormat,
+	parse: customParse,
 	precision = defaultPrecision,
 }: DecimalFieldConfig): DecimalFieldBag => {
 	const i18n = useContext(DecimalFieldI18nContext);
 
-	const defaultParse = useCallback(
+	const parse = useCallback(
 		(text: string) => {
 			text = text.trim();
+
+			if (customParse) {
+				return customParse(text);
+			}
 
 			if (text.length === 0) {
 				return null;
@@ -54,19 +55,23 @@ export const useDecimalField = ({
 
 			return value;
 		},
-		[i18n.invalidInput],
+		[customParse, i18n.invalidInput],
 	);
 
-	const formatValue = useCallback(
+	const format = useCallback(
 		(value: number | null | undefined) => {
-			return (format ?? formatDecimal)(value, precision);
+			if (customFormat) {
+				return customFormat(value);
+			}
+
+			return formatDecimal(value, precision);
 		},
-		[format, precision],
+		[customFormat, precision],
 	);
 
 	const decimalBag = useConverterField({
-		parse: parse ?? defaultParse,
-		format: formatValue,
+		parse,
+		format,
 		name,
 		validator,
 		schema,
