@@ -2,14 +2,16 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { defaultErrors, StringFieldConfig, useStringField } from '../src/useStringField';
+import { defaultStringFieldI18n, StringFieldI18n, StringFieldI18nContextProvider } from '../src/StringFieldI18n';
+import { StringFieldConfig, useStringField } from '../src/useStringField';
 
 type Config = Omit<StringFieldConfig, 'name'> & {
 	initialValue?: string;
+	i18n?: Partial<StringFieldI18n>;
 };
 
 const renderUseStringField = (config: Config = {}) => {
-	const { initialValue = '', ...initialProps } = config;
+	const { initialValue = '', i18n, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -27,7 +29,9 @@ const renderUseStringField = (config: Config = {}) => {
 			}),
 		{
 			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={formBag.result.current}>{children}</ReactiveFormProvider>
+				<ReactiveFormProvider formBag={formBag.result.current}>
+					<StringFieldI18nContextProvider i18n={i18n}>{children}</StringFieldI18nContextProvider>
+				</ReactiveFormProvider>
 			),
 			initialProps,
 		},
@@ -57,7 +61,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.required);
 		});
 
 		act(() => {
@@ -65,7 +69,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.required);
 		});
 
 		act(() => {
@@ -73,7 +77,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.required);
 		});
 
 		act(() => {
@@ -81,7 +85,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.required);
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.required);
 		});
 
 		act(() => {
@@ -101,7 +105,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.maxLength(3));
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.maxLength(3));
 		});
 
 		act(() => {
@@ -121,7 +125,7 @@ describe('String field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrors.minLength(3));
+			expect(result.current.meta.error?.$error).toBe(defaultStringFieldI18n.minLength(3));
 		});
 
 		act(() => {
@@ -135,7 +139,10 @@ describe('String field', () => {
 
 	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseStringField({
-			required: 'custom',
+			required: true,
+			i18n: {
+				required: 'custom',
+			},
 		});
 
 		act(() => {
@@ -181,7 +188,10 @@ describe('String field', () => {
 
 	it('Should set custom error if value is longer than maxLength', async () => {
 		const [{ result }] = renderUseStringField({
-			maxLength: [3, 'custom'],
+			maxLength: 3,
+			i18n: {
+				maxLength: () => 'custom',
+			},
 		});
 
 		act(() => {
@@ -204,7 +214,10 @@ describe('String field', () => {
 	it('Should set custom error if value is longer than maxLength (with callback)', async () => {
 		const callback = jest.fn(() => 'custom');
 		const [{ result }] = renderUseStringField({
-			maxLength: [3, callback],
+			maxLength: 3,
+			i18n: {
+				maxLength: callback,
+			},
 		});
 
 		act(() => {
@@ -227,7 +240,10 @@ describe('String field', () => {
 
 	it('Should set custom error if value is shorter than minLength', async () => {
 		const [{ result }] = renderUseStringField({
-			minLength: [3, 'custom'],
+			minLength: 3,
+			i18n: {
+				minLength: () => 'custom',
+			},
 		});
 
 		act(() => {
@@ -250,7 +266,10 @@ describe('String field', () => {
 	it('Should set custom error if value is shorter than minLength', async () => {
 		const callback = jest.fn(() => 'custom');
 		const [{ result }] = renderUseStringField({
-			minLength: [3, callback],
+			minLength: 3,
+			i18n: {
+				minLength: callback,
+			},
 		});
 
 		act(() => {
