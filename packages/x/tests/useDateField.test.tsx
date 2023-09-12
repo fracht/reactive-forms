@@ -277,7 +277,7 @@ describe('Date field', () => {
 	it('Should format date with time', () => {
 		const [{ result }] = renderUseDateField({ pickTime: true, initialValue: new Date(2023, 8, 12, 17, 29) });
 
-		expect(result.current.text).toBe('2023-09-12 17:29');
+		expect(result.current.text).toBe('2023.09.12 17:29');
 	});
 
 	it('Should parse date with time', async () => {

@@ -5,5 +5,5 @@ export const formatDate = (value: Date | null | undefined, pickTime: boolean) =>
 		return '';
 	}
 
-	return dayjs(value).format(`YYYY-MM-DD${pickTime ? ' HH:mm' : ''}`);
+	return dayjs(value).format(`YYYY.MM.DD${pickTime ? ' HH:mm' : ''}`);
 };
