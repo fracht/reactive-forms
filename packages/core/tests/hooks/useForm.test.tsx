@@ -84,8 +84,7 @@ describe('validateField', () => {
 
 		const valuePath = result.current.paths.value;
 
-		const validator = jest.fn();
-		validator.mockReturnValueOnce('error');
+		const validator = jest.fn(() => 'error') as jest.Mock<any, any>;
 
 		const unregisterValidator = result.current.registerValidator(valuePath, validator);
 
@@ -96,7 +95,7 @@ describe('validateField', () => {
 		expect(validator).toBeCalledWith('asdf');
 
 		validator.mockClear();
-		validator.mockReturnValueOnce({ $error: 'newError' });
+		validator.mockImplementation(() => ({ $error: 'newError' }));
 
 		await expect(result.current.validateField(valuePath, 'asdf')).resolves.toStrictEqual({
 			$error: 'newError',

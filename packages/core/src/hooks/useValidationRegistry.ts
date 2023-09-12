@@ -4,8 +4,9 @@ import { createPxth, deepGet, deepSet, getPxthSegments, isInnerPxth, Pxth, sameP
 import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';
 
+import { ControlHandlers } from './useControlHandlers';
 import { FieldError } from '../typings/FieldError';
-import { FieldValidator } from '../typings/FieldValidator';
+import { Empty, FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
 import { UnwrapPromise, validatorResultToError } from '../utils/validatorResultToError';
 
@@ -23,28 +24,49 @@ export type ValidationRegistryControl = {
 
 type ValidateBranchOutput<V, T> = { attachPath: Pxth<V>; errors: FieldError<T> };
 
-export const useValidationRegistry = (): ValidationRegistryControl => {
+export type ValidationRegistryConfig = Pick<ControlHandlers<object>, 'getFieldValue' | 'setFieldError'>;
+
+export const useValidationRegistry = ({
+	getFieldValue,
+	setFieldError,
+}: ValidationRegistryConfig): ValidationRegistryControl => {
 	const registry = useRef<ValidationRegistry>(new PxthMap());
 
-	const registerValidator = useCallback(<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
-		if (!registry.current.has(name)) {
-			registry.current.set(name, new FunctionArray());
-		}
-
-		registry.current.get(name).push(validator as FieldValidator<unknown>);
-
-		return () => {
-			const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current.get(name);
-
-			invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
-
-			currentValidators.remove(validator as FieldValidator<unknown>);
-
-			if (currentValidators.isEmpty()) {
-				registry.current.remove(name);
+	const registerValidator = useCallback(
+		<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
+			if (!registry.current.has(name)) {
+				registry.current.set(name, new FunctionArray());
 			}
-		};
-	}, []);
+
+			registry.current.get(name).push(validator as FieldValidator<unknown>);
+
+			const result = validator(getFieldValue(name));
+
+			const setError = (validatorResult: FieldError<V> | string | Empty) => {
+				setFieldError(name, validatorResultToError(validatorResult));
+			};
+
+			if (result instanceof Promise) {
+				result.then(setError);
+			} else {
+				setError(result);
+			}
+
+			return () => {
+				const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined =
+					registry.current.get(name);
+
+				invariant(currentValidators, 'Cannot unregister field validator on field, which was not registered');
+
+				currentValidators.remove(validator as FieldValidator<unknown>);
+
+				if (currentValidators.isEmpty()) {
+					registry.current.remove(name);
+				}
+			};
+		},
+		[getFieldValue, setFieldError],
+	);
 
 	const validateField = useCallback(async <V>(name: Pxth<V>, value: V): Promise<FieldError<V> | undefined> => {
 		if (registry.current.has(name)) {

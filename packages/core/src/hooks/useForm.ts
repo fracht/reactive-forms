@@ -6,7 +6,6 @@ import mergeWith from 'lodash/mergeWith';
 import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
-import type { BaseSchema } from 'yup';
 
 import { useFormControl } from './useFormControl';
 import { usePluginBagDecorators, usePluginConfigDecorators } from './usePlugins';
@@ -21,7 +20,6 @@ import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
 import { overrideMerge } from '../utils/overrideMerge';
-import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
 import { useRefCallback } from '../utils/useRefCallback';
 import { validatorResultToError } from '../utils/validatorResultToError';
@@ -33,7 +31,6 @@ export type InitialFormStateConfig<Values extends object> = {
 };
 
 export interface ExtendableFormConfig<Values extends object> {
-	schema?: BaseSchema<Partial<Values> | undefined>;
 	onSubmit?: SubmitAction<Values>;
 	validateForm?: FieldValidator<Values>;
 	onValidationFailed?: (errors: FieldError<Values>) => void;
@@ -80,7 +77,7 @@ const formMetaPaths = createPxth<FormMeta>([]);
 export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
 	const config = usePluginConfigDecorators(initialConfig);
 
-	const { schema, disablePureFieldsValidation } = config;
+	const { disablePureFieldsValidation } = config;
 
 	const onSubmit = useRefCallback(config.onSubmit);
 	const validateFormFn = useRefCallback(config.validateForm);
@@ -98,7 +95,10 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	} = config;
 
 	const control = useFormControl({ initialValues, initialErrors, initialTouched });
-	const { validateAllFields, hasValidator, validateBranch, registerValidator } = useValidationRegistry();
+	const { validateAllFields, hasValidator, validateBranch, registerValidator } = useValidationRegistry({
+		getFieldValue: control.getFieldValue,
+		setFieldError: control.setFieldError,
+	});
 
 	const initialValuesRef = useRef(initialValues);
 	const initialErrorsRef = useRef(initialErrors);
@@ -157,22 +157,12 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		[getFieldValue, hasValidator, normalizeErrors, validateBranch, values],
 	);
 
-	const runFormValidationSchema = useCallback(
-		(values: Values): Promise<FieldError<Values> | undefined> => {
-			if (!schema) return Promise.resolve(undefined);
-
-			return runYupSchema(schema, values);
-		},
-		[schema],
-	);
-
 	const validateForm = useCallback(
 		async (values: Values): Promise<FieldError<Values>> => {
 			const registryErrors = await validateAllFields(values);
 			const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
-			const schemaErrors = await runFormValidationSchema(values);
 
-			const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
+			const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors)) ?? {};
 
 			if (!disablePureFieldsValidation) {
 				return allErrors as FieldError<Values>;
@@ -180,7 +170,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 				return excludeOverlaps(values, initialValuesRef.current, allErrors) as FieldError<Values>;
 			}
 		},
-		[runFormValidationSchema, validateAllFields, validateFormFn, disablePureFieldsValidation],
+		[validateAllFields, validateFormFn, disablePureFieldsValidation],
 	);
 
 	const updateFormDirtiness = useCallback(

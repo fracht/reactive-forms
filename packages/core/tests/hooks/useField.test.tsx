@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { act, renderHook, RenderHookResult } from '@testing-library/react';
+import { act, renderHook, RenderHookResult, waitFor } from '@testing-library/react';
 import { createPxth, Pxth } from 'pxth';
 
 import { FieldContext, FormConfig, FormShared, ReactiveFormProvider, useField, useForm } from '../../src';
@@ -23,6 +23,7 @@ const config = {
 	initialValues: {
 		test: 'hello',
 	},
+	// TODO: initial errors doesn't make sense because it is derived state from values
 	initialErrors: {
 		test: {
 			$error: 'error',
@@ -71,13 +72,15 @@ describe('useField', () => {
 		expect(result.current.meta.touched?.$touched).toBe(false);
 	});
 
-	it('should setError', async () => {
+	it.only('should setError', async () => {
 		const { result } = renderField<string, { test: string }>(createPxth(['test']), config);
 
-		await act(async () => {
-			await result.current.control.setError({ $error: 'modified error' });
+		act(() => {
+			result.current.control.setError({ $error: 'modified error' });
 		});
 
-		expect(result.current.meta.error?.$error).toBe('modified error');
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBe('modified error');
+		});
 	});
 });

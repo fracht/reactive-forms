@@ -10,12 +10,12 @@ export type FieldConfig<V> = {
 	name: Pxth<V>;
 } & FieldValidationProps<V>;
 
-export const useField = <V>({ name, validator, schema }: FieldConfig<V>): FieldContext<V> => {
+export const useField = <V>({ name, validator }: FieldConfig<V>): FieldContext<V> => {
 	const [value, setValue] = useFieldValue<V>(name);
 	const [touched, setTouched] = useFieldTouched<V>(name);
 	const [error, setError] = useFieldError<V>(name);
 
-	useFieldValidator({ name, validator, schema });
+	useFieldValidator({ name, validator });
 
 	return {
 		value,
