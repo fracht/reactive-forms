@@ -1,10 +1,11 @@
+import { useContext } from 'react';
 import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 
-export type BooleanFieldConfig = FieldConfig<boolean | null | undefined> & {
-	required?: boolean | string;
-};
+import { BooleanFieldI18nContext } from './BooleanFieldI18n';
 
-export const defaultRequiredError = 'Field is required';
+export type BooleanFieldConfig = FieldConfig<boolean | null | undefined> & {
+	required?: boolean;
+};
 
 export type BooleanFieldBag = FieldContext<boolean | null | undefined> & {
 	onBlur: () => void;
@@ -17,6 +18,8 @@ export const useBooleanField = ({ required, ...config }: BooleanFieldConfig) => 
 		control: { setTouched },
 	} = fieldBag;
 
+	const i18n = useContext(BooleanFieldI18nContext);
+
 	const onBlur = () => {
 		setTouched({ $touched: true });
 	};
@@ -25,7 +28,7 @@ export const useBooleanField = ({ required, ...config }: BooleanFieldConfig) => 
 		name: config.name,
 		validator: (value) => {
 			if (required && !value) {
-				return required === true ? defaultRequiredError : required;
+				return i18n.required;
 			}
 
 			return undefined;

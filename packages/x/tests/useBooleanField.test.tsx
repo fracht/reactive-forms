@@ -2,14 +2,16 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { BooleanFieldConfig, defaultRequiredError, useBooleanField } from '../src/useBooleanField';
+import { BooleanFieldI18n, BooleanFieldI18nContextProvider, defaultBooleanFieldI18n } from '../src/BooleanFieldI18n';
+import { BooleanFieldConfig, useBooleanField } from '../src/useBooleanField';
 
 type Config = Omit<BooleanFieldConfig, 'name'> & {
 	initialValue?: boolean;
+	i18n?: Partial<BooleanFieldI18n>;
 };
 
 const renderUseBooleanField = (config: Config = {}) => {
-	const { initialValue = false, ...initialProps } = config;
+	const { initialValue = false, i18n, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -27,7 +29,9 @@ const renderUseBooleanField = (config: Config = {}) => {
 			}),
 		{
 			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={formBag.result.current}>{children}</ReactiveFormProvider>
+				<ReactiveFormProvider formBag={formBag.result.current}>
+					<BooleanFieldI18nContextProvider i18n={i18n}>{children}</BooleanFieldI18nContextProvider>
+				</ReactiveFormProvider>
 			),
 			initialProps,
 		},
@@ -59,7 +63,7 @@ describe('Boolean field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultBooleanFieldI18n.required);
 		});
 
 		act(() => {
@@ -67,7 +71,7 @@ describe('Boolean field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultBooleanFieldI18n.required);
 		});
 
 		act(() => {
@@ -75,7 +79,7 @@ describe('Boolean field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultBooleanFieldI18n.required);
 		});
 
 		act(() => {
@@ -88,7 +92,12 @@ describe('Boolean field', () => {
 	});
 
 	it('Should set custom error if field is required and empty', async () => {
-		const [{ result }] = renderUseBooleanField({ required: 'custom' });
+		const [{ result }] = renderUseBooleanField({
+			required: true,
+			i18n: {
+				required: 'custom',
+			},
+		});
 
 		act(() => {
 			result.current.control.setValue(null);
