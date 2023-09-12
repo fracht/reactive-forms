@@ -2,15 +2,8 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { IntegerFieldI18n, IntegerFieldI18nContextProvider } from '../src/IntegerFieldI18n';
-import {
-	defaultInvalidInputError,
-	defaultMaxValueError,
-	defaultMinValueError,
-	defaultRequiredError,
-	IntegerFieldConfig,
-	useIntegerField,
-} from '../src/useIntegerField';
+import { defaultIntegerFieldI18n, IntegerFieldI18n, IntegerFieldI18nContextProvider } from '../src/IntegerFieldI18n';
+import { IntegerFieldConfig, useIntegerField } from '../src/useIntegerField';
 
 type Config = Omit<IntegerFieldConfig, 'name'> & {
 	initialValue?: number | null;
@@ -64,7 +57,7 @@ describe('Integer field', () => {
 
 		await waitFor(() => {
 			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+			expect(result.current.meta.error?.$error).toBe(defaultIntegerFieldI18n.invalidInput);
 		});
 
 		act(() => {
@@ -73,7 +66,7 @@ describe('Integer field', () => {
 
 		await waitFor(() => {
 			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+			expect(result.current.meta.error?.$error).toBe(defaultIntegerFieldI18n.invalidInput);
 		});
 
 		act(() => {
@@ -94,7 +87,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultIntegerFieldI18n.required);
 		});
 	});
 
@@ -106,7 +99,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMinValueError(0));
+			expect(result.current.meta.error?.$error).toBe(defaultIntegerFieldI18n.minValue(0));
 		});
 
 		act(() => {
@@ -126,7 +119,7 @@ describe('Integer field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMaxValueError(0));
+			expect(result.current.meta.error?.$error).toBe(defaultIntegerFieldI18n.maxValue(0));
 		});
 
 		act(() => {

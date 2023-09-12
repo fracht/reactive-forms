@@ -12,7 +12,7 @@ export const defaultIntegerFieldI18n: IntegerFieldI18n = {
 	required: 'Field is required',
 	invalidInput: 'Must be integer',
 	minValue: (min: number) => `Value should not be less than ${min.toFixed(0)}`,
-	maxValue: (max: number) => `Value should not be more than ${max.toFixed(0)}`,
+	maxValue: (max: number) => `Value should not be greater than ${max.toFixed(0)}`,
 };
 
 export const IntegerFieldI18nContext = createContext<IntegerFieldI18n>(defaultIntegerFieldI18n);

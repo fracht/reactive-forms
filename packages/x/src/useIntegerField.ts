@@ -4,11 +4,6 @@ import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 import { IntegerFieldI18nContext } from './IntegerFieldI18n';
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
 
-export const defaultRequiredError = 'Field is required';
-export const defaultInvalidInputError = 'Must be integer';
-export const defaultMinValueError = (min: number) => `Value should not be less than ${min.toFixed(0)}`;
-export const defaultMaxValueError = (max: number) => `Value should not be more than ${max.toFixed(0)}`;
-
 const INTEGER_REGEX = /^-?\d+$/;
 
 const formatInteger = (value: number | null | undefined) => {
