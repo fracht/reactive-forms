@@ -22,7 +22,7 @@ export type IntegerFieldConfig = FieldConfig<number | null | undefined> & {
 	formatValue?: (value: number | null | undefined) => string;
 };
 
-export type IntegerFieldBag = ConverterFieldBag<number | null | undefined> & {};
+export type IntegerFieldBag = ConverterFieldBag<number | null | undefined>;
 
 export const useIntegerField = ({
 	name,
