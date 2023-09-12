@@ -39,13 +39,17 @@ export const useDateField = ({
 	minDate,
 	maxDate,
 	pickTime = false,
-	formatDate: formatDateProps,
-	parseDate: parseDateProps,
+	formatDate: customFormatDate,
+	parseDate: customParseDate,
 }: DateFieldConfig): DateFieldBag => {
 	const i18n = useContext(DateFieldI18nContext);
 
-	const parseDate = useCallback(
+	const parse = useCallback(
 		(text: string) => {
+			if (customParseDate) {
+				return customParseDate(text, pickTime);
+			}
+
 			text = text.trim();
 
 			if (text.length === 0) {
@@ -60,23 +64,18 @@ export const useDateField = ({
 
 			return date.toDate();
 		},
-		[i18n.invalidInput, pickTime],
+		[customParseDate, i18n.invalidInput, pickTime],
 	);
 
 	const format = useCallback(
 		(value: Date | null | undefined) => {
-			if (formatDateProps) {
-				return formatDateProps(value, pickTime);
+			if (customFormatDate) {
+				return customFormatDate(value, pickTime);
 			}
 
 			return formatDate(value, pickTime);
 		},
-		[formatDateProps, pickTime],
-	);
-
-	const parse = useCallback(
-		(text: string) => (parseDateProps ?? parseDate)(text, pickTime),
-		[parseDate, parseDateProps, pickTime],
+		[customFormatDate, pickTime],
 	);
 
 	const dateBag = useConverterField({
