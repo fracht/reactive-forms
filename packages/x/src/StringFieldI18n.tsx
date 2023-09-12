@@ -1,5 +1,5 @@
 import React, { createContext, PropsWithChildren } from 'react';
-import { merge } from 'lodash';
+import merge from 'lodash/merge';
 
 export type StringFieldI18n = {
 	required: string;
