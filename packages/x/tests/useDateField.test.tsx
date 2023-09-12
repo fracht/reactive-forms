@@ -266,11 +266,29 @@ describe('Date field', () => {
 		const [{ result }] = renderUseDateField({ parseDate });
 
 		await act(() => {
-			result.current.onTextChange('0.0');
+			result.current.onTextChange('2023-09-12');
 		});
 
 		await waitFor(() => {
-			expect(parseDate).toBeCalledWith('0.0', false);
+			expect(parseDate).toBeCalledWith('2023-09-12', false);
+		});
+	});
+
+	it('Should format date with time', () => {
+		const [{ result }] = renderUseDateField({ pickTime: true, initialValue: new Date(2023, 8, 12, 17, 29) });
+
+		expect(result.current.text).toBe('2023-09-12 17:29');
+	});
+
+	it('Should parse date with time', async () => {
+		const [{ result }] = renderUseDateField({ pickTime: true });
+
+		await act(() => {
+			result.current.onTextChange('2023-09-12 17:31');
+		});
+
+		await waitFor(() => {
+			expect(result.current.value?.getTime()).toBe(new Date(2023, 8, 12, 17, 31).getTime());
 		});
 	});
 });
