@@ -1,11 +1,14 @@
 import { renderHook } from '@testing-library/react';
 import { createPxth, getPxthSegments } from 'pxth';
 
-import { FieldError, FieldInnerError } from '../../src';
+import { FieldError, FieldInnerError, useForm } from '../../src';
 import { useValidationRegistry } from '../../src/hooks/useValidationRegistry';
 
 const renderUseValidationRegistry = () => {
-	return renderHook(() => useValidationRegistry());
+	const { result } = renderHook(() => useForm({ initialValues: { value: 42 } }));
+	const { getFieldValue, setFieldError } = result.current;
+
+	return renderHook(() => useValidationRegistry({ getFieldValue, setFieldError }));
 };
 
 describe('useValidationRegistry', () => {
