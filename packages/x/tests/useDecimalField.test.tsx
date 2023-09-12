@@ -3,22 +3,20 @@ import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 import {
-	DecimalFieldConfig,
+	DecimalFieldI18n,
+	DecimalFieldI18nContextProvider,
+	defaultDecimalFieldI18n,
 	defaultFormat,
-	defaultInvalidInputError,
-	defaultMaxValueError,
-	defaultMinValueError,
-	defaultPrecision,
-	defaultRequiredError,
-	useDecimalField,
-} from '../src/useDecimalField';
+} from '../src/DecimalFieldI18n';
+import { DecimalFieldConfig, defaultPrecision, useDecimalField } from '../src/useDecimalField';
 
 type Config = Omit<DecimalFieldConfig, 'name'> & {
 	initialValue?: number | null;
+	i18n?: Partial<DecimalFieldI18n>;
 };
 
 const renderUseDecimalField = (config: Config = {}) => {
-	const { initialValue = 0, ...initialProps } = config;
+	const { initialValue = 0, i18n, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -36,7 +34,9 @@ const renderUseDecimalField = (config: Config = {}) => {
 			}),
 		{
 			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={formBag.result.current}>{children}</ReactiveFormProvider>
+				<ReactiveFormProvider formBag={formBag.result.current}>
+					<DecimalFieldI18nContextProvider i18n={i18n}>{children}</DecimalFieldI18nContextProvider>
+				</ReactiveFormProvider>
 			),
 			initialProps,
 		},
@@ -61,7 +61,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -69,7 +69,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -77,7 +77,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultInvalidInputError);
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -113,8 +113,8 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.value).toBe(0);
-			expect(result.current.meta.error?.$error).toBeUndefined();
+			expect(result.current.value).toBe(null);
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -153,7 +153,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultRequiredError);
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.required);
 		});
 	});
 
@@ -165,7 +165,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMinValueError(0.5, defaultPrecision));
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.minValue(0.5, defaultPrecision));
 		});
 
 		act(() => {
@@ -185,7 +185,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultMaxValueError(0.5, defaultPrecision));
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.maxValue(0.5, defaultPrecision));
 		});
 
 		act(() => {
@@ -199,7 +199,9 @@ describe('Decimal field', () => {
 
 	it('Should set custom conversion error correctly', async () => {
 		const [{ result }] = renderUseDecimalField({
-			invalidInput: 'custom',
+			i18n: {
+				invalidInput: 'custom',
+			},
 		});
 
 		await act(() => {
@@ -229,7 +231,10 @@ describe('Decimal field', () => {
 
 	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseDecimalField({
-			required: 'custom',
+			required: true,
+			i18n: {
+				required: 'custom',
+			},
 		});
 
 		act(() => {
@@ -243,7 +248,10 @@ describe('Decimal field', () => {
 
 	it('Should set custom error if field value is less than min', async () => {
 		const [{ result }] = renderUseDecimalField({
-			min: [0.5, 'custom'],
+			min: 0.5,
+			i18n: {
+				minValue: () => 'custom',
+			},
 		});
 
 		act(() => {
@@ -257,7 +265,10 @@ describe('Decimal field', () => {
 
 	it('Should set custom error if field value is more than max', async () => {
 		const [{ result }] = renderUseDecimalField({
-			max: [0.5, 'custom'],
+			max: 0.5,
+			i18n: {
+				maxValue: () => 'custom',
+			},
 		});
 
 		act(() => {
