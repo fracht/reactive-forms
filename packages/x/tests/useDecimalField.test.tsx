@@ -2,12 +2,8 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import {
-	DecimalFieldI18n,
-	DecimalFieldI18nContextProvider,
-	defaultDecimalFieldI18n,
-	defaultFormat,
-} from '../src/DecimalFieldI18n';
+import { DecimalFieldI18n, DecimalFieldI18nContextProvider, defaultDecimalFieldI18n } from '../src/DecimalFieldI18n';
+import { formatDecimal } from '../src/formatDecimal';
 import { DecimalFieldConfig, defaultPrecision, useDecimalField } from '../src/useDecimalField';
 
 type Config = Omit<DecimalFieldConfig, 'name'> & {
@@ -49,7 +45,7 @@ describe('Decimal field', () => {
 	it('Should format initial value correctly', () => {
 		const [{ result }] = renderUseDecimalField();
 
-		expect(result.current.text).toBe(defaultFormat(0, defaultPrecision));
+		expect(result.current.text).toBe(formatDecimal(0, defaultPrecision));
 		expect(result.current.value).toBe(0);
 	});
 
