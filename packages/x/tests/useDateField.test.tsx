@@ -2,20 +2,17 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import {
-	DateFieldConfig,
-	defaultErrorMessages,
-	defaultFormatOptions,
-	defaultLocales,
-	useDateField,
-} from '../src/useDateField';
+import { DateFieldI18n, DateFieldI18nContextProvider, defaultDateFieldI18n } from '../src/DateFieldI18n';
+import { formatDate } from '../src/formatDate';
+import { DateFieldConfig, useDateField } from '../src/useDateField';
 
 type Config = Omit<DateFieldConfig, 'name'> & {
 	initialValue?: Date | null;
+	i18n?: Partial<DateFieldI18n>;
 };
 
 const renderUseDateField = (config: Config = {}) => {
-	const { initialValue = null, ...initialProps } = config;
+	const { initialValue = null, i18n, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -33,7 +30,9 @@ const renderUseDateField = (config: Config = {}) => {
 			}),
 		{
 			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={formBag.result.current}>{children}</ReactiveFormProvider>
+				<ReactiveFormProvider formBag={formBag.result.current}>
+					<DateFieldI18nContextProvider i18n={i18n}>{children}</DateFieldI18nContextProvider>
+				</ReactiveFormProvider>
 			),
 			initialProps,
 		},
@@ -43,12 +42,12 @@ const renderUseDateField = (config: Config = {}) => {
 };
 
 describe('Date field', () => {
-	it.skip('Should format initial value correctly', () => {
+	it('Should format initial value correctly', () => {
 		const initialValue = new Date();
 
 		const [{ result }] = renderUseDateField({ initialValue });
 
-		expect(result.current.text).toBe(initialValue.toLocaleString(defaultLocales, defaultFormatOptions));
+		expect(result.current.text).toBe(formatDate(initialValue, false));
 		expect(result.current.value?.getTime()).toBe(initialValue.getTime());
 	});
 
@@ -60,7 +59,7 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -68,7 +67,7 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -76,7 +75,7 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.invalidInput);
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.invalidInput);
 		});
 
 		await act(() => {
@@ -115,7 +114,7 @@ describe('Date field', () => {
 		});
 	});
 
-	it.skip('Should set default error if field is required and empty', async () => {
+	it('Should set default error if field is required and empty', async () => {
 		const [{ result }] = renderUseDateField({ required: true });
 
 		act(() => {
@@ -123,11 +122,11 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.required);
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.required);
 		});
 	});
 
-	it.skip('Should set default error if date is earlier than minDate', async () => {
+	it('Should set default error if date is earlier than minDate', async () => {
 		const minDate = new Date(2000, 0, 5);
 		const [{ result }] = renderUseDateField({ minDate });
 
@@ -136,7 +135,7 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.earlierThanMinDate(minDate));
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.minDate(minDate, false));
 		});
 
 		await act(() => {
@@ -148,7 +147,7 @@ describe('Date field', () => {
 		});
 	});
 
-	it.skip('Should set default error if date is later than maxDate', async () => {
+	it('Should set default error if date is later than maxDate', async () => {
 		const maxDate = new Date(2000, 0, 5);
 		const [{ result }] = renderUseDateField({ maxDate });
 
@@ -157,7 +156,7 @@ describe('Date field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultErrorMessages.laterThanMaxDate(maxDate));
+			expect(result.current.meta.error?.$error).toBe(defaultDateFieldI18n.maxDate(maxDate, false));
 		});
 
 		await act(() => {
@@ -169,9 +168,9 @@ describe('Date field', () => {
 		});
 	});
 
-	it.skip('Should set custom conversion error correctly', async () => {
+	it('Should set custom conversion error correctly', async () => {
 		const [{ result }] = renderUseDateField({
-			errorMessages: {
+			i18n: {
 				invalidInput: 'custom',
 			},
 		});
@@ -201,10 +200,12 @@ describe('Date field', () => {
 		});
 	});
 
-	it.skip('Should set custom error if field is required and empty', async () => {
+	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseDateField({
 			required: true,
-			errorMessages: { required: 'custom' },
+			i18n: {
+				required: 'custom',
+			},
 		});
 
 		act(() => {
@@ -216,56 +217,60 @@ describe('Date field', () => {
 		});
 	});
 
-	// it.skip('Should set custom error if field value is less than min', async () => {
-	// 	const [{ result }] = renderUseDateField({
-	// 		min: 0.5,
-	// 		errorMessages: { lessThanMinValue: () => 'custom' },
-	// 	});
+	it('Should set custom error if date is earlier than min date', async () => {
+		const [{ result }] = renderUseDateField({
+			minDate: new Date(42),
+			i18n: {
+				minDate: () => 'custom',
+			},
+		});
 
-	// 	act(() => {
-	// 		result.current.control.setValue(0.25);
-	// 	});
+		act(() => {
+			result.current.control.setValue(new Date(41));
+		});
 
-	// 	await waitFor(() => {
-	// 		expect(result.current.meta.error?.$error).toBe('custom');
-	// 	});
-	// });
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBe('custom');
+		});
+	});
 
-	// it.skip('Should set custom error if field value is more than max', async () => {
-	// 	const [{ result }] = renderUseDateField({
-	// 		max: 0.5,
-	// 		errorMessages: { moreThanMaxValue: () => 'custom' },
-	// 	});
+	it('Should set custom error if date is later than max date', async () => {
+		const [{ result }] = renderUseDateField({
+			maxDate: new Date(42),
+			i18n: {
+				maxDate: () => 'custom',
+			},
+		});
 
-	// 	act(() => {
-	// 		result.current.control.setValue(0.75);
-	// 	});
+		act(() => {
+			result.current.control.setValue(new Date(43));
+		});
 
-	// 	await waitFor(() => {
-	// 		expect(result.current.meta.error?.$error).toBe('custom');
-	// 	});
-	// });
+		await waitFor(() => {
+			expect(result.current.meta.error?.$error).toBe('custom');
+		});
+	});
 
-	// it.skip('Should be able to format decimal differently', () => {
-	// 	const formatValue = jest.fn(() => 'custom');
-	// 	const initialValue = 3.14;
-	// 	const [{ result }] = renderUseDateField({ formatValue, initialValue });
+	it('Should be able to format date differently', () => {
+		const formatDate = jest.fn(() => 'custom');
+		const initialValue = new Date();
+		const [{ result }] = renderUseDateField({ formatDate, initialValue });
 
-	// 	expect(result.current.text).toBe('custom');
-	// 	expect(formatValue).toBeCalledWith(initialValue);
-	// });
+		expect(result.current.text).toBe('custom');
+		expect(formatDate).toBeCalledWith(initialValue, false);
+	});
 
-	// it.skip('Should call custom parseDecimal function', async () => {
-	// 	const parseDecimal = jest.fn();
+	it('Should call custom parseDate function', async () => {
+		const parseDate = jest.fn();
 
-	// 	const [{ result }] = renderUseDateField({ parseDecimal });
+		const [{ result }] = renderUseDateField({ parseDate });
 
-	// 	await act(() => {
-	// 		result.current.onTextChange('0.0');
-	// 	});
+		await act(() => {
+			result.current.onTextChange('0.0');
+		});
 
-	// 	await waitFor(() => {
-	// 		expect(parseDecimal).toBeCalledWith('0.0');
-	// 	});
-	// });
+		await waitFor(() => {
+			expect(parseDate).toBeCalledWith('0.0', false);
+		});
+	});
 });

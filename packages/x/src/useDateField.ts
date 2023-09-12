@@ -1,8 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+import { DateFieldI18nContext } from './DateFieldI18n';
+import { formatDate } from './formatDate';
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
 
 dayjs.extend(customParseFormat);
@@ -17,45 +19,14 @@ const defaultDateTimeFormats = [
 	'DD/MM/YYYY HH:mm',
 ];
 
-export const defaultLocales: Intl.LocalesArgument = 'EN';
-
-export const defaultFormatOptions: Intl.DateTimeFormatOptions = {};
-
-const formatDate = (
-	value: Date | null | undefined,
-	locales?: Intl.LocalesArgument,
-	options?: Intl.DateTimeFormatOptions,
-) => {
-	if (!(value instanceof Date)) {
-		return '';
-	}
-
-	return value.toLocaleString(locales, options);
-};
-
-export type DateFieldErrorMessages = {
-	invalidInput: string;
-	required: string;
-	earlierThanMinDate: (min: Date, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions) => string;
-	laterThanMaxDate: (max: Date, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions) => string;
-};
-
-export const defaultErrorMessages: DateFieldErrorMessages = {
-	invalidInput: 'Must be date',
-	required: 'Field is required',
-	earlierThanMinDate: (min, locales, options) => `Date must not be earlier than ${formatDate(min, locales, options)}`,
-	laterThanMaxDate: (max, locales, options) => `Date must not be later than ${formatDate(max, locales, options)}`,
-};
-
 export type DateFieldConfig = FieldConfig<Date | null | undefined> & {
 	required?: boolean;
 	minDate?: Date;
 	maxDate?: Date;
 	pickTime?: boolean;
 
-	formatDate?: (date: Date | null | undefined) => string;
-	parseDate?: (text: string) => Date;
-	errorMessages?: Partial<DateFieldErrorMessages>;
+	formatDate?: (date: Date | null | undefined, pickTime: boolean) => string;
+	parseDate?: (text: string, pickTime: boolean) => Date;
 
 	locales?: Intl.LocalesArgument;
 	formatOptions?: Intl.DateTimeFormatOptions;
@@ -70,13 +41,12 @@ export const useDateField = ({
 	required,
 	minDate,
 	maxDate,
-	pickTime,
+	pickTime = false,
 	formatDate: formatDateProps,
 	parseDate: parseDateProps,
-	errorMessages = defaultErrorMessages,
-	locales = defaultLocales,
-	formatOptions = defaultFormatOptions,
 }: DateFieldConfig): DateFieldBag => {
+	const i18n = useContext(DateFieldI18nContext);
+
 	const parseDate = useCallback(
 		(text: string) => {
 			text = text.trim();
@@ -85,32 +55,35 @@ export const useDateField = ({
 				return null;
 			}
 
-			const errorMessage = errorMessages.invalidInput ?? defaultErrorMessages.invalidInput;
-
 			const date = dayjs(text, [...defaultDateFormats, ...(pickTime ? defaultDateTimeFormats : [])], true);
 
 			if (!date.isValid()) {
-				throw new ConversionError(errorMessage);
+				throw new ConversionError(i18n.invalidInput);
 			}
 
 			return date.toDate();
 		},
-		[errorMessages.invalidInput, pickTime],
+		[i18n.invalidInput, pickTime],
 	);
 
 	const format = useCallback(
 		(value: Date | null | undefined) => {
 			if (formatDateProps) {
-				return formatDateProps(value);
+				return formatDateProps(value, pickTime);
 			}
 
-			return formatDate(value, locales, formatOptions);
+			return formatDate(value, pickTime);
 		},
-		[formatDateProps, formatOptions, locales],
+		[formatDateProps, pickTime],
+	);
+
+	const parse = useCallback(
+		(text: string) => (parseDateProps ?? parseDate)(text, pickTime),
+		[parseDate, parseDateProps, pickTime],
 	);
 
 	const dateBag = useConverterField({
-		parse: parseDateProps ?? parseDate,
+		parse,
 		format,
 		name,
 		validator,
@@ -121,7 +94,7 @@ export const useDateField = ({
 		name,
 		validator: (value) => {
 			if (required && !(value instanceof Date)) {
-				return errorMessages.required ?? defaultErrorMessages.required;
+				return i18n.required;
 			}
 
 			if (!(value instanceof Date)) {
@@ -129,11 +102,11 @@ export const useDateField = ({
 			}
 
 			if (minDate instanceof Date && dayjs(minDate).diff(dayjs(value)) > 0) {
-				return (errorMessages.earlierThanMinDate ?? defaultErrorMessages.earlierThanMinDate)(minDate);
+				return i18n.minDate(minDate, pickTime);
 			}
 
 			if (maxDate instanceof Date && dayjs(value).diff(dayjs(maxDate)) > 0) {
-				return (errorMessages.laterThanMaxDate ?? defaultErrorMessages.laterThanMaxDate)(maxDate);
+				return i18n.maxDate(maxDate, pickTime);
 			}
 
 			return undefined;
