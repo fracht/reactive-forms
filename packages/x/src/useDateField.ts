@@ -27,9 +27,6 @@ export type DateFieldConfig = FieldConfig<Date | null | undefined> & {
 
 	formatDate?: (date: Date | null | undefined, pickTime: boolean) => string;
 	parseDate?: (text: string, pickTime: boolean) => Date;
-
-	locales?: Intl.LocalesArgument;
-	formatOptions?: Intl.DateTimeFormatOptions;
 };
 
 export type DateFieldBag = ConverterFieldBag<Date | null | undefined>;
