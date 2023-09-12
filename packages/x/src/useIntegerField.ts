@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
-import isFunction from 'lodash/isFunction';
-import isNil from 'lodash/isNil';
 
+import { IntegerFieldI18nContext } from './IntegerFieldI18n';
 import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
 
 export const defaultRequiredError = 'Field is required';
@@ -20,13 +19,10 @@ const formatInteger = (value: number | null | undefined) => {
 	return value.toFixed(0);
 };
 
-export type ErrorTuple<T> = [value: T, message: string | ((value: T) => string)];
-
 export type IntegerFieldConfig = FieldConfig<number | null | undefined> & {
-	required?: boolean | string;
-	invalidInput?: string;
-	min?: number | ErrorTuple<number>;
-	max?: number | ErrorTuple<number>;
+	required?: boolean;
+	min?: number;
+	max?: number;
 
 	formatValue?: (value: number | null | undefined) => string;
 };
@@ -38,11 +34,12 @@ export const useIntegerField = ({
 	validator,
 	schema,
 	required,
-	invalidInput,
 	min,
 	max,
 	formatValue = formatInteger,
 }: IntegerFieldConfig): IntegerFieldBag => {
+	const i18n = useContext(IntegerFieldI18nContext);
+
 	const parseInteger = useCallback(
 		(text: string) => {
 			text = text.trim();
@@ -51,21 +48,19 @@ export const useIntegerField = ({
 				return null;
 			}
 
-			const parseError = invalidInput ?? defaultInvalidInputError;
-
 			if (!INTEGER_REGEX.test(text)) {
-				throw new ConversionError(parseError);
+				throw new ConversionError(i18n.invalidInput);
 			}
 
 			const value = Number.parseInt(text);
 
 			if (Number.isNaN(value)) {
-				throw new ConversionError(parseError);
+				throw new ConversionError(i18n.invalidInput);
 			}
 
 			return value;
 		},
-		[invalidInput],
+		[i18n.invalidInput],
 	);
 
 	const integerBag = useConverterField({
@@ -80,35 +75,19 @@ export const useIntegerField = ({
 		name,
 		validator: (value) => {
 			if (required && typeof value !== 'number') {
-				return required === true ? defaultRequiredError : required;
+				return i18n.required;
 			}
 
 			if (typeof value !== 'number') {
 				return undefined;
 			}
 
-			if (!isNil(min)) {
-				if (Array.isArray(min)) {
-					const [minValue, message] = min;
-
-					if (value < minValue) {
-						return isFunction(message) ? message(value) : message;
-					}
-				} else if (value < min) {
-					return defaultMinValueError(min);
-				}
+			if (typeof min === 'number' && value < min) {
+				return i18n.minValue(min);
 			}
 
-			if (!isNil(max)) {
-				if (Array.isArray(max)) {
-					const [maxValue, message] = max;
-
-					if (value > maxValue) {
-						return isFunction(message) ? message(value) : message;
-					}
-				} else if (value > max) {
-					return defaultMaxValueError(max);
-				}
+			if (typeof max === 'number' && value > max) {
+				return i18n.maxValue(max);
 			}
 
 			return undefined;

@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
+import { IntegerFieldI18n, IntegerFieldI18nContextProvider } from '../src/IntegerFieldI18n';
 import {
 	defaultInvalidInputError,
 	defaultMaxValueError,
@@ -13,10 +14,11 @@ import {
 
 type Config = Omit<IntegerFieldConfig, 'name'> & {
 	initialValue?: number | null;
+	i18n?: Partial<IntegerFieldI18n>;
 };
 
 const renderUseIntegerField = (config: Config = {}) => {
-	const { initialValue = 0, ...initialProps } = config;
+	const { initialValue = 0, i18n, ...initialProps } = config;
 
 	const formBag = renderHook(() =>
 		useForm({
@@ -34,7 +36,9 @@ const renderUseIntegerField = (config: Config = {}) => {
 			}),
 		{
 			wrapper: ({ children }) => (
-				<ReactiveFormProvider formBag={formBag.result.current}>{children}</ReactiveFormProvider>
+				<ReactiveFormProvider formBag={formBag.result.current}>
+					<IntegerFieldI18nContextProvider i18n={i18n}>{children}</IntegerFieldI18nContextProvider>
+				</ReactiveFormProvider>
 			),
 			initialProps,
 		},
@@ -135,7 +139,11 @@ describe('Integer field', () => {
 	});
 
 	it('Should set custom error in case of conversion error and clear it afterwards', async () => {
-		const [{ result }] = renderUseIntegerField({ invalidInput: 'custom' });
+		const [{ result }] = renderUseIntegerField({
+			i18n: {
+				invalidInput: 'custom',
+			},
+		});
 
 		act(() => {
 			result.current.onTextChange('0a');
@@ -164,7 +172,10 @@ describe('Integer field', () => {
 
 	it('Should set custom error if field is required and empty', async () => {
 		const [{ result }] = renderUseIntegerField({
-			required: 'custom',
+			required: true,
+			i18n: {
+				required: 'custom',
+			},
 		});
 
 		act(() => {
@@ -177,8 +188,13 @@ describe('Integer field', () => {
 	});
 
 	it('Should set custom error if field value is less than min', async () => {
+		const minValue = jest.fn(() => 'custom');
+
 		const [{ result }] = renderUseIntegerField({
-			min: [0, 'custom'],
+			min: 0,
+			i18n: {
+				minValue,
+			},
 		});
 
 		act(() => {
@@ -187,12 +203,18 @@ describe('Integer field', () => {
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBe('custom');
+			expect(minValue).toBeCalledWith(0);
 		});
 	});
 
 	it('Should set custom error if field value is more than max', async () => {
+		const maxValue = jest.fn(() => 'custom');
+
 		const [{ result }] = renderUseIntegerField({
-			max: [0, 'custom'],
+			max: 0,
+			i18n: {
+				maxValue,
+			},
 		});
 
 		act(() => {
@@ -201,6 +223,7 @@ describe('Integer field', () => {
 
 		await waitFor(() => {
 			expect(result.current.meta.error?.$error).toBe('custom');
+			expect(maxValue).toBeCalledWith(0);
 		});
 	});
 
