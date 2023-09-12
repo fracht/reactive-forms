@@ -29,11 +29,11 @@ export const useIntegerField = ({
 
 	const parse = useCallback(
 		(text: string) => {
+			text = text.trim();
+
 			if (customParse) {
 				return customParse(text);
 			}
-
-			text = text.trim();
 
 			if (text.length === 0) {
 				return null;
