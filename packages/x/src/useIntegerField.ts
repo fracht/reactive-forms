@@ -1,26 +1,17 @@
 import { useCallback, useContext } from 'react';
 import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 
+import { formatInteger } from './formatInteger';
 import { IntegerFieldI18nContext } from './IntegerFieldI18n';
-import { ConversionError, ConverterFieldBag, useConverterField } from './useConverterField';
+import { ConversionError, ConverterFieldBag, useConverterField, ValueConverter } from './useConverterField';
 
 const INTEGER_REGEX = /^-?\d+$/;
-
-const formatInteger = (value: number | null | undefined) => {
-	if (typeof value !== 'number' || !Number.isFinite(value)) {
-		return '';
-	}
-
-	return value.toFixed(0);
-};
 
 export type IntegerFieldConfig = FieldConfig<number | null | undefined> & {
 	required?: boolean;
 	min?: number;
 	max?: number;
-
-	formatValue?: (value: number | null | undefined) => string;
-};
+} & Partial<ValueConverter<number | null | undefined>>;
 
 export type IntegerFieldBag = ConverterFieldBag<number | null | undefined>;
 
@@ -31,12 +22,17 @@ export const useIntegerField = ({
 	required,
 	min,
 	max,
-	formatValue = formatInteger,
+	parse: customParse,
+	format = formatInteger,
 }: IntegerFieldConfig): IntegerFieldBag => {
 	const i18n = useContext(IntegerFieldI18nContext);
 
-	const parseInteger = useCallback(
+	const parse = useCallback(
 		(text: string) => {
+			if (customParse) {
+				return customParse(text);
+			}
+
 			text = text.trim();
 
 			if (text.length === 0) {
@@ -55,12 +51,12 @@ export const useIntegerField = ({
 
 			return value;
 		},
-		[i18n.invalidInput],
+		[customParse, i18n.invalidInput],
 	);
 
 	const integerBag = useConverterField({
-		parse: parseInteger,
-		format: formatValue,
+		parse,
+		format,
 		name,
 		validator,
 		schema,

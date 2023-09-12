@@ -221,11 +221,25 @@ describe('Integer field', () => {
 	});
 
 	it('Should be able to format integer differently', () => {
-		const formatValue = jest.fn(() => 'custom');
+		const format = jest.fn(() => 'custom');
 		const initialValue = 42;
-		const [{ result }] = renderUseIntegerField({ formatValue, initialValue });
+		const [{ result }] = renderUseIntegerField({ format, initialValue });
 
 		expect(result.current.text).toBe('custom');
-		expect(formatValue).toBeCalledWith(initialValue);
+		expect(format).toBeCalledWith(initialValue);
+	});
+
+	it('Should call custom parse function', async () => {
+		const parse = jest.fn();
+
+		const [{ result }] = renderUseIntegerField({ parse });
+
+		await act(() => {
+			result.current.onTextChange('0');
+		});
+
+		await waitFor(() => {
+			expect(parse).toBeCalledWith('0');
+		});
 	});
 });
