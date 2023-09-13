@@ -5,8 +5,8 @@
 			"name": "Debug Core Tests",
 			"type": "node",
 			"request": "launch",
-			"runtimeArgs": ["--inspect-brk", "${workspaceFolder}/node_modules/aqu/dist/aqu.js", "test", "--runInBand"],
-			"cwd": "${workspaceFolder}/packages/core",
+			"runtimeArgs": ["--inspect-brk", ".\\node_modules\\jest\\bin\\jest.js", "--watch", "useDateField"],
+			"cwd": "${workspaceFolder}/packages/x",
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"port": 9229
