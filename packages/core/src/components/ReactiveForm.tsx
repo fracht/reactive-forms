@@ -16,7 +16,10 @@ export type ReactiveFormProps<Values extends object> = PropsWithChildren<FormCon
  * </ReactiveForm>
  * ```
  */
-export const ReactiveForm = <Values extends object>({ children, ...config }: ReactiveFormProps<Values>) => {
+export const ReactiveForm = <Values extends Record<string, unknown>>({
+	children,
+	...config
+}: ReactiveFormProps<Values>) => {
 	const formBag = useForm<Values>(config);
 
 	return <ReactiveFormProvider formBag={formBag}>{children}</ReactiveFormProvider>;

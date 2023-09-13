@@ -13,12 +13,13 @@ export const useFieldValueArray = <T extends object>(paths: FieldValueArrayConfi
 		getFieldValue,
 	} = useFormContext();
 
-	const [object, setObject] = useState<T>(() =>
-		Object.entries(paths).reduce((acc, [to, from]) => {
-			acc[to] = getFieldValue(from as Pxth<unknown>);
+	const [object, setObject] = useState<T>(
+		() =>
+			Object.entries(paths).reduce((acc, [to, from]) => {
+				acc[to] = getFieldValue(from as Pxth<unknown>);
 
-			return acc;
-		}, {} as T),
+				return acc;
+			}, {} as Record<string, unknown>) as T,
 	);
 
 	useEffect(() => {

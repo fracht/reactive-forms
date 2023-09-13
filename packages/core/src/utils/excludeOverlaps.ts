@@ -3,7 +3,11 @@ import { RootPathToken } from 'pxth';
 
 import { getDifferenceMap } from './getDifferenceMap';
 
-export const excludeOverlaps = <T>(source: object, compare: object, exclusionObject: T): Partial<T> => {
+export const excludeOverlaps = <T>(
+	source: Record<string, unknown>,
+	compare: Record<string, unknown>,
+	exclusionObject: T,
+): Partial<T> => {
 	const diffMap = getDifferenceMap(source, compare);
 
 	if (diffMap[RootPathToken]) return {};

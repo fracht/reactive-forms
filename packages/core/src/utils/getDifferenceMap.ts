@@ -24,7 +24,7 @@ const isInnerPath = (parent: string | RootPath, child: string) => {
 	return child.indexOf(parent + '.') === 0;
 };
 
-export const getDifferenceMap = (obj1: object, obj2: object): DifferenceMap => {
+export const getDifferenceMap = (obj1: Record<string, unknown>, obj2: Record<string, unknown>): DifferenceMap => {
 	const flattenedObj1 = flattenObject(obj1);
 	const flattenedObj2 = flattenObject(obj2);
 

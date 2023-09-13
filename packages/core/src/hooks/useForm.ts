@@ -77,7 +77,9 @@ const deepCustomizer = (src1: unknown, src2: unknown) => {
 
 const formMetaPaths = createPxth<FormMeta>([]);
 
-export const useForm = <Values extends object>(initialConfig: FormConfig<Values>): FormShared<Values> => {
+export const useForm = <Values extends Record<string, unknown>>(
+	initialConfig: FormConfig<Values>,
+): FormShared<Values> => {
 	const config = usePluginConfigDecorators(initialConfig);
 
 	const { schema, disablePureFieldsValidation } = config;
@@ -126,12 +128,19 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	}, []);
 
 	const normalizeErrors = useCallback(
-		<V>(errors: FieldError<V>, source: object, compare: object): FieldError<V> => {
+		<V>(
+			errors: FieldError<V>,
+			source: Record<string, unknown>,
+			compare: Record<string, unknown>,
+		): FieldError<V> => {
 			if (!disablePureFieldsValidation) {
 				return errors;
 			}
 
-			return merge(setNestedValues(errors as object, undefined), excludeOverlaps(source, compare, errors));
+			return merge(
+				setNestedValues(errors as Record<string, unknown>, undefined),
+				excludeOverlaps(source, compare, errors),
+			);
 		},
 		[disablePureFieldsValidation],
 	);
@@ -147,8 +156,8 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 				return normalizeErrors(
 					valueErrors,
-					deepGet(allValues, name) as object,
-					deepGet(initialValuesRef.current, name) as object,
+					deepGet(allValues, name) as Record<string, unknown>,
+					deepGet(initialValuesRef.current, name) as Record<string, unknown>,
 				);
 			}
 
@@ -282,22 +291,23 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	);
 
 	const updateFormValidness = useCallback(
-		({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
+		({ values }: BatchUpdate<Record<string, unknown>>) =>
+			setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
 		[setFormMeta],
 	);
 
 	const validateUpdatedFields = useCallback(
-		async ({ values, origin }: BatchUpdate<object>) => {
+		async ({ values, origin }: BatchUpdate<Record<string, unknown>>) => {
 			const { attachPath, errors } = await validateBranch(origin, values);
 
 			const onlyNecessaryErrors = deepGet(errors, attachPath) as FieldError<unknown>;
 			const normalizedErrors = normalizeErrors(
 				onlyNecessaryErrors,
 				values,
-				deepGet(initialValuesRef.current, attachPath) as object,
+				deepGet(initialValuesRef.current, attachPath) as Record<string, unknown>,
 			);
 
-			setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as object));
+			setFieldError(attachPath, (old) => overrideMerge(old ?? {}, normalizedErrors as Record<string, unknown>));
 		},
 		[normalizeErrors, setFieldError, validateBranch],
 	);

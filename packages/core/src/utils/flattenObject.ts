@@ -2,8 +2,8 @@ import { RootPath, RootPathToken } from 'pxth';
 
 import { joinPaths } from './joinPaths';
 
-export const flattenObject = (obj: object): Record<string, unknown> => {
-	const queue: Array<[string | RootPath, object]> = [[RootPathToken, obj]];
+export const flattenObject = (obj: Record<string, unknown>): Record<string, unknown> => {
+	const queue: Array<[string | RootPath, Record<string, unknown>]> = [[RootPathToken, obj]];
 
 	const result: Record<string, unknown> = {};
 
@@ -16,7 +16,7 @@ export const flattenObject = (obj: object): Record<string, unknown> => {
 			if (typeof item !== 'object' || item === null || Object.keys(item).length === 0) {
 				result[pathToItem] = item;
 			} else {
-				queue.push([pathToItem, item]);
+				queue.push([pathToItem, item as Record<string, unknown>]);
 			}
 		}
 	}

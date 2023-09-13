@@ -22,7 +22,7 @@ importers:
         version: 8.1.0(size-limit@8.1.0)
       aqu:
         specifier: 0.4.3
-        version: 0.4.3(@babel/core@7.19.6)(@types/node@18.11.18)
+        version: 0.4.3(@babel/core@7.19.6)
       clean-publish:
         specifier: 4.2.0
         version: 4.2.0
@@ -68,7 +68,7 @@ importers:
         version: 18.0.23
       aqu:
         specifier: 0.4.3
-        version: 0.4.3(@babel/core@7.19.6)(@types/node@18.11.18)
+        version: 0.4.3(@babel/core@7.19.6)
       jest:
         specifier: 29.2.2
         version: 29.2.2(@types/node@18.11.18)
@@ -125,9 +125,6 @@ importers:
       '@types/react':
         specifier: 18.0.23
         version: 18.0.23
-      aqu:
-        specifier: 0.4.3
-        version: 0.4.3(@babel/core@7.19.6)(@types/node@18.11.18)
       jest:
         specifier: 29.2.2
         version: 29.2.2(@types/node@18.11.18)
@@ -189,7 +186,7 @@ importers:
         version: 18.0.6
       aqu:
         specifier: 0.4.3
-        version: 0.4.3(@babel/core@7.19.6)(@types/node@18.11.18)
+        version: 0.4.3(@babel/core@7.19.6)
       cpy-cli:
         specifier: ^5.0.0
         version: 5.0.0
@@ -251,7 +248,7 @@ importers:
         version: 18.0.23
       aqu:
         specifier: 0.4.3
-        version: 0.4.3(@babel/core@7.19.6)(@types/node@18.11.18)
+        version: 0.4.3(@babel/core@7.19.6)
       jest:
         specifier: 29.2.2
         version: 29.2.2(@types/node@18.11.18)
@@ -3016,7 +3013,7 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /aqu@0.4.3(@babel/core@7.19.6)(@types/node@18.11.18):
+  /aqu@0.4.3(@babel/core@7.19.6):
     resolution: {integrity: sha512-3Jq4rKSL0lRqkMnUtjbFMliGPpCeiOTmWtpY0ryFH1M10igx6Go+TOoa+StADJjgiwgMg6hYUdam+YcnBsn7kQ==}
     engines: {node: ^10.12.0 || >=12.0.0}
     hasBin: true
