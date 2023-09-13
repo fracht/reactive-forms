@@ -3,8 +3,14 @@ import { act, renderHook, RenderHookResult } from '@testing-library/react';
 import { createPxth } from 'pxth';
 import { MappingProxy, StockProxy } from 'stocked';
 
-import { FormProxyProvider, FormShared, ReactiveFormProvider, useForm, useFormContext } from '../../src';
-import { FormControlConfig } from '../../src/hooks/useFormControl';
+import {
+	FormControlConfig,
+	FormProxyProvider,
+	FormShared,
+	ReactiveFormProvider,
+	useForm,
+	useFormContext,
+} from '../../src';
 
 const renderFormContextWithProxy = <T extends Record<string, unknown>>(
 	config: FormControlConfig<T>,

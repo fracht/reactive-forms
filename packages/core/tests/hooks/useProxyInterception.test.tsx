@@ -3,8 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { createPxth, getPxthSegments, Pxth } from 'pxth';
 import { MappingProxy } from 'stocked';
 
-import { FieldError, FieldValidator, ReactiveFormProvider, useForm } from '../../src';
-import { useProxyInterception } from '../../src/hooks/useProxyInterception';
+import { FieldError, FieldValidator, ReactiveFormProvider, useForm, useProxyInterception } from '../../src';
 
 type ProxyValue = {
 	id: number;

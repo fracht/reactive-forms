@@ -10,3 +10,5 @@ export * from './components/ObjectField';
 
 export * from './helpers';
 export * from './typings';
+
+export { ReactiveForm as default } from './components/Form/ReactiveForm';

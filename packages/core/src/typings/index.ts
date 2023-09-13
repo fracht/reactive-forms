@@ -6,7 +6,6 @@ export * from './FieldTouched';
 export * from './FieldValidator';
 export * from './FormHelpers';
 export * from './FormMeta';
-export * from './index.js';
 export * from './NestedObject';
 export * from './Plugin';
 export * from './PluginArray';

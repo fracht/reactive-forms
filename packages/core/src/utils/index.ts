@@ -6,7 +6,6 @@ export * from './formatDecimal';
 export * from './formatInteger';
 export * from './FunctionArray';
 export * from './getDifferenceMap';
-export * from './index.js';
 export * from './isYupError';
 export * from './joinPaths';
 export * from './overrideMerge';

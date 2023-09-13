@@ -6,7 +6,6 @@ import {
 	DecimalFieldI18n,
 	DecimalFieldI18nContextProvider,
 	defaultDecimalFieldI18n,
-	defaultPrecision,
 	ReactiveFormProvider,
 	useDecimalField,
 	useForm,
@@ -52,7 +51,7 @@ describe('Decimal field', () => {
 	it('Should format initial value correctly', () => {
 		const [{ result }] = renderUseDecimalField();
 
-		expect(result.current.text).toBe(formatDecimal(0, defaultPrecision));
+		expect(result.current.text).toBe(formatDecimal(0, 2));
 		expect(result.current.value).toBe(0);
 	});
 
@@ -168,7 +167,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.minValue(0.5, defaultPrecision));
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.minValue(0.5, 2));
 		});
 
 		act(() => {
@@ -188,7 +187,7 @@ describe('Decimal field', () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.maxValue(0.5, defaultPrecision));
+			expect(result.current.meta.error?.$error).toBe(defaultDecimalFieldI18n.maxValue(0.5, 2));
 		});
 
 		act(() => {

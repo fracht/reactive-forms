@@ -1,8 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { createPxth, getPxthSegments } from 'pxth';
 
-import { FieldError, FieldInnerError } from '../../src';
-import { useValidationRegistry } from '../../src/hooks/useValidationRegistry';
+import { FieldError, FieldInnerError, useValidationRegistry } from '../../src';
 
 const renderUseValidationRegistry = () => {
 	return renderHook(() => useValidationRegistry());
