@@ -2,8 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { createPxth } from 'pxth';
 
-import { FormShared, ReactiveFormProvider, useForm } from '../../src';
-import { useControlHandlers } from '../../src/hooks/useControlHandlers';
+import { FormShared, ReactiveFormProvider, useControlHandlers, useForm } from '../../src';
 
 const renderControlHandlers = () => {
 	const {

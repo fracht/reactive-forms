@@ -4,7 +4,7 @@ import { createPxth, Pxth } from 'pxth';
 
 import { ArrayControl, FormConfig, FormShared, ReactiveFormProvider, useArrayControl, useForm } from '../../src';
 
-const renderArrayControl = <T extends object, V>(
+const renderArrayControl = <T extends Record<string, unknown>, V>(
 	name: Pxth<V[]>,
 	config: FormConfig<T>,
 ): [RenderHookResult<ArrayControl<V>, undefined>, FormShared<T>] => {

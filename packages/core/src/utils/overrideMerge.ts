@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 
-export const overrideMerge = (object: object, source: object) => {
+export const overrideMerge = (object: Record<string, unknown>, source: Record<string, unknown>) => {
 	object = cloneDeep(object);
 
 	const queue = [[object, source]];
@@ -19,7 +19,7 @@ export const overrideMerge = (object: object, source: object) => {
 			const compareSourceValue = currentSource[key];
 
 			if (isObject(compareValue) && isObject(compareSourceValue)) {
-				queue.push([compareValue, compareSourceValue]);
+				queue.push([compareValue as Record<string, unknown>, compareSourceValue as Record<string, unknown>]);
 			} else {
 				currentObject[key] = cloneDeep(currentSource[key]);
 			}

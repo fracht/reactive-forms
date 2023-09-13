@@ -4,7 +4,7 @@ import { createPxth, Pxth } from 'pxth';
 
 import { FieldError, FormConfig, FormShared, ReactiveFormProvider, useFieldError, useForm } from '../../src';
 
-const renderFieldError = <V, T extends object>(
+const renderFieldError = <V, T extends Record<string, unknown>>(
 	name: Pxth<V>,
 	config: FormConfig<T>,
 ): RenderHookResult<[FieldError<V> | undefined, Dispatch<FieldError<V>>], undefined> => {

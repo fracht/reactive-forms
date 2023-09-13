@@ -6,7 +6,7 @@ const config = {
 	preset: 'ts-jest',
 	moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'cjs', 'mjs', 'json', 'node'],
 	collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx,cjs,mjs}'],
-	testMatch: ['<rootDir>/**/*.(spec|test).{ts,tsx,js,jsx,cjs,mjs}'],
+	testMatch: ['<rootDir>/tests/**/*.(spec|test).{ts,tsx,js,jsx,cjs,mjs}'],
 	testEnvironmentOptions: {
 		url: 'http://localhost',
 	},

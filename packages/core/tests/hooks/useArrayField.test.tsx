@@ -4,7 +4,7 @@ import { createPxth, Pxth } from 'pxth';
 
 import { ArrayFieldProps, FormConfig, FormShared, ReactiveFormProvider, useArrayField, useForm } from '../../src';
 
-const renderArrayField = <T extends object>(
+const renderArrayField = <T extends Record<string, unknown>>(
 	name: Pxth<T[]>,
 	config: FormConfig<T>,
 ): RenderHookResult<ArrayFieldProps<T>, undefined> => {

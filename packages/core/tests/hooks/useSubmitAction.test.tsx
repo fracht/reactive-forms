@@ -1,8 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { act, renderHook } from '@testing-library/react';
 
-import ReactiveForm from '../../src';
-import { useSubmitAction } from '../../src/hooks/useSubmitAction';
+import ReactiveForm, { useSubmitAction } from '../../src';
 
 describe('useSubmitAction', () => {
 	it('should return default submit', async () => {
