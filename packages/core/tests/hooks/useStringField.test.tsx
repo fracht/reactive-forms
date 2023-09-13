@@ -1,9 +1,15 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { defaultStringFieldI18n, StringFieldI18n, StringFieldI18nContextProvider } from '../src/StringFieldI18n';
-import { StringFieldConfig, useStringField } from '../src/useStringField';
+import {
+	defaultStringFieldI18n,
+	ReactiveFormProvider,
+	StringFieldConfig,
+	StringFieldI18n,
+	StringFieldI18nContextProvider,
+	useForm,
+	useStringField,
+} from '../../src';
 
 type Config = Omit<StringFieldConfig, 'name'> & {
 	initialValue?: string;

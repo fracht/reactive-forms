@@ -1,9 +1,15 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { BooleanFieldI18n, BooleanFieldI18nContextProvider, defaultBooleanFieldI18n } from '../src/BooleanFieldI18n';
-import { BooleanFieldConfig, useBooleanField } from '../src/useBooleanField';
+import {
+	BooleanFieldConfig,
+	BooleanFieldI18n,
+	BooleanFieldI18nContextProvider,
+	defaultBooleanFieldI18n,
+	ReactiveFormProvider,
+	useBooleanField,
+	useForm,
+} from '../../src';
 
 type Config = Omit<BooleanFieldConfig, 'name'> & {
 	initialValue?: boolean;

@@ -1,9 +1,10 @@
 import { useCallback, useContext } from 'react';
-import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 
 import { DecimalFieldI18nContext } from './DecimalFieldI18n';
-import { formatDecimal } from './formatDecimal';
 import { ConversionError, ConverterFieldBag, useConverterField, ValueConverter } from './useConverterField';
+import { FieldConfig } from './useField';
+import { useFieldValidator } from './useFieldValidator';
+import { formatDecimal } from '../utils/formatDecimal';
 
 const DECIMAL_REGEX = /^\d*\.?\d*$/;
 export const defaultPrecision = 2;

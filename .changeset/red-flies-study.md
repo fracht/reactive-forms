@@ -1,5 +1,5 @@
 ---
-'@reactive-forms/x': patch
+'@reactive-forms/core': patch
 ---
 
 Created useDateField hook

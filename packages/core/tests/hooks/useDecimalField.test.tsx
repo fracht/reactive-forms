@@ -1,10 +1,17 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { DecimalFieldI18n, DecimalFieldI18nContextProvider, defaultDecimalFieldI18n } from '../src/DecimalFieldI18n';
-import { formatDecimal } from '../src/formatDecimal';
-import { DecimalFieldConfig, defaultPrecision, useDecimalField } from '../src/useDecimalField';
+import {
+	DecimalFieldConfig,
+	DecimalFieldI18n,
+	DecimalFieldI18nContextProvider,
+	defaultDecimalFieldI18n,
+	defaultPrecision,
+	ReactiveFormProvider,
+	useDecimalField,
+	useForm,
+} from '../../src';
+import { formatDecimal } from '../../src/utils/formatDecimal';
 
 type Config = Omit<DecimalFieldConfig, 'name'> & {
 	initialValue?: number | null;

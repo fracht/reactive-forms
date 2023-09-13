@@ -1,7 +1,9 @@
 import { useCallback, useContext } from 'react';
-import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 
 import { StringFieldI18nContext } from './StringFieldI18n';
+import { FieldConfig, useField } from './useField';
+import { useFieldValidator } from './useFieldValidator';
+import { FieldContext } from '../typings/FieldContext';
 
 export type StringFieldConfig = FieldConfig<string | undefined | null> & {
 	required?: boolean;

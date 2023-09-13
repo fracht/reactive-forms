@@ -1,7 +1,9 @@
 import { useContext } from 'react';
-import { FieldConfig, FieldContext, useField, useFieldValidator } from '@reactive-forms/core';
 
 import { BooleanFieldI18nContext } from './BooleanFieldI18n';
+import { FieldConfig, useField } from './useField';
+import { useFieldValidator } from './useFieldValidator';
+import { FieldContext } from '../typings/FieldContext';
 
 export type BooleanFieldConfig = FieldConfig<boolean | null | undefined> & {
 	required?: boolean;

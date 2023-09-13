@@ -1,7 +1,7 @@
 import React, { createContext, PropsWithChildren } from 'react';
 import merge from 'lodash/merge';
 
-import { formatDate } from './formatDate';
+import { formatDate } from '../utils/formatDate';
 
 export type DateFieldI18n = {
 	required: string;

@@ -1,10 +1,16 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { DateFieldI18n, DateFieldI18nContextProvider, defaultDateFieldI18n } from '../src/DateFieldI18n';
-import { formatDate } from '../src/formatDate';
-import { DateFieldConfig, useDateField } from '../src/useDateField';
+import {
+	DateFieldConfig,
+	DateFieldI18n,
+	DateFieldI18nContextProvider,
+	defaultDateFieldI18n,
+	ReactiveFormProvider,
+	useDateField,
+	useForm,
+} from '../../src';
+import { formatDate } from '../../src/utils/formatDate';
 
 type Config = Omit<DateFieldConfig, 'name'> & {
 	initialValue?: Date | null;

@@ -25,6 +25,23 @@ export * from './hooks/useValidationRegistry';
 export * from './hooks/usePluginAssertion';
 export * from './hooks/useFieldValueArray';
 
+export * from './hooks/DecimalFieldI18n';
+export * from './hooks/useDecimalField';
+
+export * from './hooks/DateFieldI18n';
+export * from './hooks/useDateField';
+
+export * from './hooks/StringFieldI18n';
+export * from './hooks/useStringField';
+
+export * from './hooks/BooleanFieldI18n';
+export * from './hooks/useBooleanField';
+
+export * from './hooks/IntegerFieldI18n';
+export * from './hooks/useIntegerField';
+
+export * from './hooks/useConverterField';
+
 // typings
 export * from './typings/FieldContext';
 export * from './typings/FieldValidator';

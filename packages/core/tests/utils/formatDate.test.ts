@@ -1,4 +1,4 @@
-import { formatDate } from '../src/formatDate';
+import { formatDate } from '../../src/utils/formatDate';
 
 describe('format date', () => {
 	it('should format correctly without pickTime option', () => {

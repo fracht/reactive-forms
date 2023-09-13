@@ -1,7 +1,7 @@
 import React, { createContext, PropsWithChildren } from 'react';
 import merge from 'lodash/merge';
 
-import { formatDecimal } from './formatDecimal';
+import { formatDecimal } from '../utils/formatDecimal';
 
 export type DecimalFieldI18n = {
 	required: string;

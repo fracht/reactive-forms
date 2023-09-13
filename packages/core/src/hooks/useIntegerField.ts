@@ -1,9 +1,10 @@
 import { useCallback, useContext } from 'react';
-import { FieldConfig, useFieldValidator } from '@reactive-forms/core';
 
-import { formatInteger } from './formatInteger';
 import { IntegerFieldI18nContext } from './IntegerFieldI18n';
 import { ConversionError, ConverterFieldBag, useConverterField, ValueConverter } from './useConverterField';
+import { FieldConfig } from './useField';
+import { useFieldValidator } from './useFieldValidator';
+import { formatInteger } from '../utils/formatInteger';
 
 const INTEGER_REGEX = /^-?\d+$/;
 

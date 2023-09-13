@@ -1,9 +1,15 @@
 import React from 'react';
-import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { defaultIntegerFieldI18n, IntegerFieldI18n, IntegerFieldI18nContextProvider } from '../src/IntegerFieldI18n';
-import { IntegerFieldConfig, useIntegerField } from '../src/useIntegerField';
+import {
+	defaultIntegerFieldI18n,
+	IntegerFieldConfig,
+	IntegerFieldI18n,
+	IntegerFieldI18nContextProvider,
+	ReactiveFormProvider,
+	useForm,
+	useIntegerField,
+} from '../../src';
 
 type Config = Omit<IntegerFieldConfig, 'name'> & {
 	initialValue?: number | null;

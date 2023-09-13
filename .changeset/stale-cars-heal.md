@@ -1,5 +1,5 @@
 ---
-'@reactive-forms/x': minor
+'@reactive-forms/core': minor
 ---
 
 Created useBooleanField hook
