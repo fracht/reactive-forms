@@ -11,7 +11,7 @@ import {
 	useForm,
 } from '../../src';
 
-const renderFieldValueArray = <V extends object, T extends object>(
+const renderFieldValueArray = <V extends Record<string, unknown>, T extends Record<string, unknown>>(
 	paths: FieldValueArrayConfig<V>,
 	config: FormConfig<T>,
 ): [RenderHookResult<V, undefined>, FormShared<T>] => {

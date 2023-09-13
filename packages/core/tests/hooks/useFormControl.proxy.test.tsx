@@ -6,7 +6,7 @@ import { MappingProxy, StockProxy } from 'stocked';
 import { FormProxyProvider, FormShared, ReactiveFormProvider, useForm, useFormContext } from '../../src';
 import { FormControlConfig } from '../../src/hooks/useFormControl';
 
-const renderFormContextWithProxy = <T extends object>(
+const renderFormContextWithProxy = <T extends Record<string, unknown>>(
 	config: FormControlConfig<T>,
 	proxy: StockProxy<unknown>,
 ): [RenderHookResult<FormShared<object>, undefined>, FormShared<T>] => {

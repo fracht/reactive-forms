@@ -17,7 +17,7 @@ describe('deepRemoveEmpty', () => {
 	});
 
 	it('should handle nulls', () => {
-		expect(deepRemoveEmpty(null)).toBe(undefined);
+		expect(deepRemoveEmpty(null as unknown as object)).toBe(undefined);
 	});
 
 	it('should shake objects', () => {

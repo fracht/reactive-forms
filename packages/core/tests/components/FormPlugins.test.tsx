@@ -12,13 +12,13 @@ import {
 	useFormContext,
 } from '../../src';
 
-const renderPlugins = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
+const renderPlugins = <T extends Record<string, unknown>>(config: FormConfig<T>, plugins: PluginArray) => {
 	return renderHook(() => useForm(config), {
 		wrapper: ({ children }) => <FormPlugins plugins={plugins}>{children}</FormPlugins>,
 	});
 };
 
-const renderForm = <T extends object>(config: FormConfig<T>, plugins: PluginArray) => {
+const renderForm = <T extends Record<string, unknown>>(config: FormConfig<T>, plugins: PluginArray) => {
 	const {
 		result: { current: bag },
 	} = renderPlugins(config, plugins);

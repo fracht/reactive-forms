@@ -12,7 +12,7 @@ import {
 	useForm,
 } from '../../src';
 
-const renderUseFieldValidator = <V, T extends object>(
+const renderUseFieldValidator = <V, T extends Record<string, unknown>>(
 	config: UseFieldValidatorConfig<V>,
 	formConfig: FormConfig<T>,
 ) => {

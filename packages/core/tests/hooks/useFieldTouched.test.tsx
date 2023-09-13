@@ -4,7 +4,7 @@ import { createPxth, Pxth } from 'pxth';
 
 import { FieldTouched, FormConfig, FormShared, ReactiveFormProvider, useFieldTouched, useForm } from '../../src';
 
-const renderFieldTouched = <V, T extends object>(
+const renderFieldTouched = <V, T extends Record<string, unknown>>(
 	name: Pxth<V>,
 	config: FormConfig<T>,
 ): RenderHookResult<[FieldTouched<V> | undefined, Dispatch<FieldTouched<V>>], undefined> => {
