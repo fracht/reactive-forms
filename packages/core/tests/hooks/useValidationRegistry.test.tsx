@@ -297,7 +297,7 @@ describe('useValidationRegistry', () => {
 		unregisterChildValidator();
 	});
 
-	it('Should merge error, set on array, with array items errors', async () => {
+	it('Should merge error, set on array, with array items error', async () => {
 		const { result } = renderUseValidationRegistry();
 		type TestType = { array: unknown[] };
 		const path = createPxth<{ array: unknown[] }>([]);
@@ -305,8 +305,8 @@ describe('useValidationRegistry', () => {
 		const arrayValidator = jest.fn(() => 'arrayError');
 		const arrayItemValidator = jest.fn(() => 'itemError');
 
-		const unregisterArrayItemValidator = result.current.registerValidator(path.array[0], arrayItemValidator);
 		const unregisterArrayValidator = result.current.registerValidator(path.array, arrayValidator);
+		const unregisterArrayItemValidator = result.current.registerValidator(path.array[0], arrayItemValidator);
 
 		const errors = (await result.current.validateBranch(path, {})).errors as FieldError<TestType>;
 

@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import isArray from 'lodash/isArray';
+import isPlainObject from 'lodash/isPlainObject';
 import merge from 'lodash/merge';
 import mergeWith from 'lodash/mergeWith';
 import { createPxth, deepGet, deepSet, getPxthSegments, isInnerPxth, Pxth, samePxth } from 'pxth';
@@ -9,6 +9,7 @@ import invariant from 'tiny-invariant';
 import { FieldError } from '../typings/FieldError';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
+import { mergeErrors } from '../utils/mergeErrors';
 import { UnwrapPromise, validatorResultToError } from '../utils/validatorResultToError';
 
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
@@ -24,17 +25,6 @@ export type ValidationRegistryControl = {
 };
 
 type ValidateBranchOutput<V, T> = { attachPath: Pxth<V>; errors: FieldError<T> };
-
-const errorsMergeCustomizer = (target: unknown, source: unknown) => {
-	if (isArray(source) && typeof target === 'object' && target !== null && target['$error']) {
-		source['$error'] = target['$error'];
-		return source;
-	}
-	if (isArray(target) && typeof source === 'object' && source !== null && source['$error']) {
-		target['$error'] = source['$error'];
-		return target;
-	}
-};
 
 export const useValidationRegistry = (): ValidationRegistryControl => {
 	const registry = useRef<ValidationRegistry>(new PxthMap());
@@ -85,8 +75,8 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
-				const newErrors = deepSet({}, path, error);
-				errors = mergeWith(errors, newErrors, errorsMergeCustomizer);
+				const newErrors = deepSet({}, path, error) as FieldError<T>;
+				errors = mergeErrors(errors, newErrors);
 			}
 
 			return errors;

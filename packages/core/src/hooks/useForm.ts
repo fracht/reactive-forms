@@ -20,6 +20,7 @@ import { FormMeta } from '../typings/FormMeta';
 import { SubmitAction } from '../typings/SubmitAction';
 import { deepRemoveEmpty } from '../utils/deepRemoveEmpty';
 import { excludeOverlaps } from '../utils/excludeOverlaps';
+import { mergeErrors } from '../utils/mergeErrors';
 import { overrideMerge } from '../utils/overrideMerge';
 import { runYupSchema } from '../utils/runYupSchema';
 import { setNestedValues } from '../utils/setNestedValues';
@@ -172,7 +173,8 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 			const validateFormFnErrors: FieldError<Values> = validatorResultToError(await validateFormFn?.(values));
 			const schemaErrors = await runFormValidationSchema(values);
 
-			const allErrors = deepRemoveEmpty(merge({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
+			const allErrors =
+				deepRemoveEmpty(mergeErrors({}, registryErrors, validateFormFnErrors, schemaErrors)) ?? {};
 
 			if (!disablePureFieldsValidation) {
 				return allErrors as FieldError<Values>;
