@@ -486,4 +486,45 @@ describe('should merge errors correctly', () => {
 		expect(result.current.getFieldError(createPxth(['load_models'])).$error).toBe('Error');
 		expect(onSubmit).toBeCalledTimes(0);
 	});
+
+	it('Should merge error, set on array item in validateForm, with array error', async () => {
+		const onSubmit = jest.fn();
+		type ValueType = { emails: { email: string; checked: boolean }[] };
+
+		const { result } = renderHook(() =>
+			useForm<ValueType>({
+				initialValues: {
+					emails: [{ email: '', checked: false }],
+				},
+				validateForm: ({ emails }) => {
+					const errors: FieldError<ValueType> = { emails: [] };
+					for (let i = 0; i < emails.length; i++) {
+						if (!emails[i].email) {
+							errors.emails![i] = { email: { $error: 'EmailInvalid' } };
+						}
+					}
+					return errors;
+				},
+				onSubmit,
+			}),
+		);
+
+		const emailsPath = createPxth<ValueType['emails']>(['emails']);
+
+		const emailsFieldValidator = jest.fn((value: ValueType['emails']) =>
+			!value.some((email) => email.checked) ? 'ArrError' : '',
+		);
+
+		const unregisterEmailsValidator = result.current.registerValidator(emailsPath, emailsFieldValidator);
+
+		await act(async () => {
+			await result.current.submit();
+		});
+
+		expect(result.current.getFieldError(emailsPath).$error).toBe('ArrError');
+		expect(result.current.getFieldError(createPxth(['emails', '0', 'email'])).$error).toBe('EmailInvalid');
+		expect(onSubmit).toBeCalledTimes(0);
+
+		unregisterEmailsValidator();
+	});
 });

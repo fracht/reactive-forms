@@ -7,6 +7,7 @@ import invariant from 'tiny-invariant';
 import { FieldError } from '../typings/FieldError';
 import { FieldValidator } from '../typings/FieldValidator';
 import { FunctionArray } from '../utils/FunctionArray';
+import { mergeErrors } from '../utils/mergeErrors';
 import { UnwrapPromise, validatorResultToError } from '../utils/validatorResultToError';
 
 export type ValidationRegistry = PxthMap<FunctionArray<FieldValidator<unknown>>>;
@@ -72,8 +73,8 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 
 			for (const path of pathsToValidate) {
 				const error = await validateField(path, deepGet(values, path));
-				const newErrors = deepSet({}, path, error);
-				errors = merge(errors, newErrors);
+				const newErrors = deepSet({}, path, error) as FieldError<T>;
+				errors = mergeErrors(errors, newErrors);
 			}
 
 			return errors;
