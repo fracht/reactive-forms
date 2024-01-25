@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.10.7
+
+### Patch Changes
+
+-   225ac9e: Fixed bug when error set on array type was overwritten by errors from any item in array (error object was replaced with array)
+
 ## 0.10.4
 
 ### Patch Changes
