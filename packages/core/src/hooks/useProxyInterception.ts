@@ -38,9 +38,14 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
 							),
 						);
 
-						proxy.setValue<unknown>(name, proxiedError, <U>(path: Pxth<U>, innerValue: U) => {
-							realError = deepSet(realError as object, relativePxth(normalPath, path), innerValue);
-						});
+						proxy.setValue<unknown>(
+							name,
+							proxiedError,
+							(path, innerValue) => {
+								realError = deepSet(realError as object, relativePxth(normalPath, path), innerValue);
+							},
+							errors.getValue,
+						);
 
 						return realError as ReturnType<FieldValidator<V>>;
 					};
@@ -49,7 +54,7 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
 				},
 				[name as Pxth<unknown>, validator as FieldValidator<unknown>],
 			),
-		[proxy, registerValidator],
+		[errors.getValue, proxy, registerValidator],
 	);
 
 	const interceptedValidateField = useCallback(
@@ -64,19 +69,24 @@ export const useProxyInterception = <V>(proxy: StockProxy<V>): FormShared<object
 					const normalPath = proxy.getNormalPath(name);
 
 					// FIXME: fix types
-					proxy.setValue(name as unknown as Pxth<V | undefined>, proxiedValue, (path, innerValue) => {
-						realValue = deepSet(
-							realValue as object,
-							relativePxth(normalPath, path as Pxth<unknown>),
-							innerValue,
-						);
-					});
+					proxy.setValue(
+						name as unknown as Pxth<V | undefined>,
+						proxiedValue,
+						(path, innerValue) => {
+							realValue = deepSet(
+								realValue as object,
+								relativePxth(normalPath, path as Pxth<unknown>),
+								innerValue,
+							);
+						},
+						values.getValue,
+					);
 
 					return validateField(normalPath, realValue);
 				},
 				[name as Pxth<unknown>, value],
 			),
-		[proxy, validateField],
+		[proxy, validateField, values.getValue],
 	);
 
 	return {
