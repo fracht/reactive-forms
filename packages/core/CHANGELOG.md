@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.11.0
+
+### Minor Changes
+
+-   8c8928e: Bump stocked version
+
 ## 0.10.7
 
 ### Patch Changes
