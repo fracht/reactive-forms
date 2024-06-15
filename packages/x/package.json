@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/x",
 	"description": "Advanced Reactive Forms components for rich eXperience",
-	"version": "0.11.0",
+	"version": "0.11.1",
 	"main": "dist/index.js",
 	"module": "dist/x.esm.js",
 	"types": "dist/x.d.ts",
