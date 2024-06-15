@@ -28,11 +28,14 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 	const registry = useRef<ValidationRegistry>(new PxthMap());
 
 	const registerValidator = useCallback(<V>(name: Pxth<V>, validator: FieldValidator<V>) => {
-		if (!registry.current.has(name)) {
-			registry.current.set(name, new FunctionArray());
+		let validators = registry.current.get(name);
+
+		if (!validators) {
+			validators = new FunctionArray();
+			registry.current.set(name, validators);
 		}
 
-		registry.current.get(name).push(validator as FieldValidator<unknown>);
+		validators.push(validator as FieldValidator<unknown>);
 
 		return () => {
 			const currentValidators: FunctionArray<FieldValidator<unknown>> | undefined = registry.current.get(name);
