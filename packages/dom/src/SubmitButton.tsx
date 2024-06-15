@@ -13,13 +13,15 @@ export type SubmitButtonProps<Values extends object, C extends ComponentType | E
 	submitAction?: SubmitAction<Values>;
 } & RenderHelpers<SubmitButtonBag, C>;
 
+const isSubmittingPath = createPxth<boolean>(['isSubmitting']);
+
 export const SubmitButton = <Values extends object, C extends ComponentType | ElementType = 'button'>({
 	submitAction,
 	as,
 	...other
 }: SubmitButtonProps<Values, C>) => {
 	const { submit } = useFormContext<Values>();
-	const isSubmitting = useFormMeta(createPxth<boolean>(['isSubmitting']));
+	const isSubmitting = useFormMeta(isSubmittingPath);
 
 	const onClick = useCallback(() => {
 		submit(submitAction);

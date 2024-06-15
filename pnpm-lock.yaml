@@ -98,8 +98,8 @@ importers:
         specifier: 0.7.0
         version: 0.7.0
       stocked:
-        specifier: 1.0.0-beta.32
-        version: 1.0.0-beta.32(react@18.2.0)
+        specifier: 1.0.0-beta.33
+        version: 1.0.0-beta.33(react@18.2.0)
       tiny-invariant:
         specifier: 1.2.0
         version: 1.2.0
@@ -160,8 +160,8 @@ importers:
         specifier: 0.7.0
         version: 0.7.0
       stocked:
-        specifier: 1.0.0-beta.32
-        version: 1.0.0-beta.32(react@18.2.0)
+        specifier: 1.0.0-beta.33
+        version: 1.0.0-beta.33(react@18.2.0)
       tiny-invariant:
         specifier: 1.2.0
         version: 1.2.0
@@ -4661,7 +4661,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001634
-      electron-to-chromium: 1.4.802
+      electron-to-chromium: 1.4.803
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
     dev: true
@@ -5368,8 +5368,8 @@ packages:
     resolution: {integrity: sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==}
     dev: true
 
-  /electron-to-chromium@1.4.802:
-    resolution: {integrity: sha512-TnTMUATbgNdPXVSHsxvNVSG0uEd6cSZsANjm8c9HbvflZVVn1yTRcmVXYT1Ma95/ssB/Dcd30AHweH2TE+dNpA==}
+  /electron-to-chromium@1.4.803:
+    resolution: {integrity: sha512-61H9mLzGOCLLVsnLiRzCbc63uldP0AniRYPV3hbGVtONA1pI7qSGILdbofR7A8TMbOypDocEAjH/e+9k1QIe3g==}
     dev: true
 
   /emittery@0.13.1:
@@ -7877,7 +7877,6 @@ packages:
 
   /lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
-    dev: true
 
   /lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
@@ -9393,14 +9392,14 @@ packages:
       object-copy: 0.1.0
     dev: true
 
-  /stocked@1.0.0-beta.32(react@18.2.0):
-    resolution: {integrity: sha512-5+JkfsvREmSxre5+RlCJddZvVYe48yTxzGs70HiRTzheonidD8EOg7bSlAoG0uZI5IZRIjdhgS9bpKLX3elolQ==}
+  /stocked@1.0.0-beta.33(react@18.2.0):
+    resolution: {integrity: sha512-ZXH3cnMrIsc0ULmgXIgJnkHhf7iimUDsYoAZqZXmWw2xwKbv0qhc/FMuuVMHG2G7Z3S7cG34fowDkJSNnzkBgg==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
     dependencies:
       lodash: 4.17.21
-      lodash-es: 4.17.15
+      lodash-es: 4.17.21
       pxth: 0.7.0
       react: 18.2.0
       tiny-invariant: 1.2.0
