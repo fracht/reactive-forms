@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "composite": true,
+    },
+    "references": [{ "path": "./tsconfig.lib.json" }],
+    "include": ["test", "src/testUtils.ts"]
+}

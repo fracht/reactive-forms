@@ -6,6 +6,7 @@ dist
 prepared-package
 build
 .rpt2_cache
+.tsup
 
 # misc
 .DS_Store
