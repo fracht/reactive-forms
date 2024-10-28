@@ -59,10 +59,18 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
+            - name: Use Node 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
             - name: Install pnpm 9.12.3
               uses: pnpm/action-setup@v4
               with:
                   version: 9.12.3
+
+            - name: Install dependencies (with cache)
+              uses: covbot/pnpm-install-with-cache@v1
 
             - name: Size limit
               uses: andresz1/size-limit-action@dd31dce7dcc72a041fd3e49abf0502b13fc4ce05
