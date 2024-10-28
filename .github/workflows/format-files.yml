@@ -11,22 +11,22 @@ jobs:
         if: github.actor != 'frachtbot'
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-            - name: Use Node 18
-              uses: actions/setup-node@v3
+            - name: Use Node 20
+              uses: actions/setup-node@v4
               with:
-                  node-version: 18
+                  node-version: 20
 
-            - name: Install pnpm 8.x.x
-              uses: pnpm/action-setup@v2.2.4
+            - name: Install pnpm 9.12.3
+              uses: pnpm/action-setup@v4
               with:
-                  version: 8.x.x
+                  version: 9.12.3
 
-            - name: Install global dependencies
-              run: pnpm install
+            - name: Install dependencies (with cache)
+              uses: covbot/pnpm-install-with-cache@v1
 
             - name: Format files
               run: pnpm run format
