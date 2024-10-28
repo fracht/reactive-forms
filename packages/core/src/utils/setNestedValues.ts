@@ -9,17 +9,17 @@ export const setNestedValues = <Example extends object, Value>(
 	output: NestedObject<Value, Example> = {} as NestedObject<Value, Example>,
 ): NestedObject<Value, Example> =>
 	Object.keys(exampleObject).reduce<NestedObject<Value, Example>>((acc, key) => {
-		const part = exampleObject[key];
+		const part = (exampleObject as Record<string, unknown>)[key];
 
 		if (isObject(part)) {
 			if (!visited.get(part)) {
 				visited.set(part, true);
-				acc[key] = Array.isArray(part) ? [] : {};
-				acc[key] = Object.assign(acc[key], value);
-				setNestedValues(part, value, visited, acc[key]);
+				(acc as Record<string, unknown>)[key] = Array.isArray(part) ? [] : {};
+				(acc as Record<string, unknown>)[key] = Object.assign((acc as Record<string, object>)[key], value);
+				setNestedValues(part, value, visited, (acc as Record<string, (object & Value) | undefined>)[key]);
 			}
 		} else {
-			acc[key] = value;
+			(acc as Record<string, unknown>)[key] = value;
 		}
 
 		return acc;

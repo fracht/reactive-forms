@@ -15,7 +15,7 @@ export const useFieldValueArray = <T extends object>(paths: FieldValueArrayConfi
 
 	const [object, setObject] = useState<T>(() =>
 		Object.entries(paths).reduce((acc, [to, from]) => {
-			acc[to] = getFieldValue(from as Pxth<unknown>);
+			(acc as Record<string, unknown>)[to] = getFieldValue(from as Pxth<unknown>);
 
 			return acc;
 		}, {} as T),

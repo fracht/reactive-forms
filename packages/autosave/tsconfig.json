@@ -18,7 +18,8 @@
 		"noFallthroughCasesInSwitch": true,
 		"rootDir": "./src",
 		"strict": true,
-		"importHelpers": true
+		"importHelpers": true,
+		"skipLibCheck": true
 	},
 	"include": ["src", "types"]
 }

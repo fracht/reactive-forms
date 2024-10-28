@@ -11,7 +11,7 @@ export type FormPluginsProps = PropsWithChildren<{
 }>;
 
 export const FormPlugins = ({ plugins, children }: FormPluginsProps) => {
-	const tokenRef = useRef<symbol>();
+	const tokenRef = useRef<Symbol>();
 
 	if (tokenRef.current === undefined) {
 		tokenRef.current = plugins.token;

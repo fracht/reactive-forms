@@ -9,13 +9,13 @@
 		"noImplicitThis": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,
-		"suppressImplicitAnyIndexErrors": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"allowSyntheticDefaultImports": true,
 		"noFallthroughCasesInSwitch": true,
 		"strict": true,
-		"importHelpers": true
+		"importHelpers": true,
+		"skipLibCheck": true
 	},
 	"include": ["src", "tests"]
 }
