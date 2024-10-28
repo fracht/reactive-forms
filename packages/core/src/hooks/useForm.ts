@@ -6,7 +6,7 @@ import mergeWith from 'lodash/mergeWith';
 import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';
-import type { BaseSchema } from 'yup';
+import type { Schema } from 'yup';
 
 import { useFormControl } from './useFormControl';
 import { usePluginBagDecorators, usePluginConfigDecorators } from './usePlugins';
@@ -34,7 +34,7 @@ export type InitialFormStateConfig<Values extends object> = {
 };
 
 export interface ExtendableFormConfig<Values extends object> {
-	schema?: BaseSchema<Partial<Values> | undefined>;
+	schema?: Schema<Partial<Values> | undefined>;
 	onSubmit?: SubmitAction<Values>;
 	validateForm?: FieldValidator<Values>;
 	onValidationFailed?: (errors: FieldError<Values>) => void;
