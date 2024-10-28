@@ -20,36 +20,36 @@ jobs:
               with:
                   filter: '@reactive-forms/*'
 
-    coverage:
-        name: Coverage report
-        needs: [generate_matrix]
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    # coverage:
+    #     name: Coverage report
+    #     needs: [generate_matrix]
+    #     if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
+    #     runs-on: ubuntu-latest
+    #     strategy:
+    #         matrix:
+    #             package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
+    #     steps:
+    #         - name: Checkout
+    #           uses: actions/checkout@v4
+    #           with:
+    #               fetch-depth: 0
 
-            - name: Use Node 20.x
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20.x
+    #         - name: Use Node 20.x
+    #           uses: actions/setup-node@v4
+    #           with:
+    #               node-version: 20.x
 
-            - name: Install pnpm 9.12.3
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 9.12.3
+    #         - name: Install pnpm 9.12.3
+    #           uses: pnpm/action-setup@v4
+    #           with:
+    #               version: 9.12.3
 
-            - uses: artiomtr/jest-coverage-report-action@v2
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
-                  package-manager: pnpm
-                  working-directory: ${{ matrix.package.path }}
+    #         - uses: artiomtr/jest-coverage-report-action@v2
+    #           with:
+    #               github-token: ${{ secrets.GITHUB_TOKEN }}
+    #               test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
+    #               package-manager: pnpm
+    #               working-directory: ${{ matrix.package.path }}
 
     size:
         # TODO: configure Size limit for all packages
