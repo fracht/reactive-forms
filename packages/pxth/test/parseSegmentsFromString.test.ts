@@ -1,14 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { parseSegmentsFromString, RootPathToken } from '../src';
 
 describe('parseSegmentsFromString', () => {
-    it('should return array of segments', () => {
-        expect(
-            parseSegmentsFromString('hello.world.this.is.something'),
-        ).toStrictEqual(['hello', 'world', 'this', 'is', 'something']);
-    });
+	it('should return array of segments', () => {
+		expect(parseSegmentsFromString('hello.world.this.is.something')).toStrictEqual([
+			'hello',
+			'world',
+			'this',
+			'is',
+			'something',
+		]);
+	});
 
-    it('should return empty array of segments', () => {
-        expect(parseSegmentsFromString(RootPathToken)).toStrictEqual([]);
-    });
+	it('should return empty array of segments', () => {
+		expect(parseSegmentsFromString(RootPathToken)).toStrictEqual([]);
+	});
 });

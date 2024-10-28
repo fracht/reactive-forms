@@ -3,5 +3,5 @@ export type NestedObject<Inner, V> = V extends object
 		? NestedObject<Inner, V[number]>[] & Inner
 		: {
 				[K in keyof V]?: NestedObject<Inner, V[K]>;
-		  } & Inner
+			} & Inner
 	: Inner;

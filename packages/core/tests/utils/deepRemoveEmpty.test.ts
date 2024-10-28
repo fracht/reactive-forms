@@ -17,7 +17,8 @@ describe('deepRemoveEmpty', () => {
 	});
 
 	it('should handle nulls', () => {
-		expect(deepRemoveEmpty(null)).toBe(undefined);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		expect(deepRemoveEmpty(null as any)).toBe(undefined);
 	});
 
 	it('should shake objects', () => {
@@ -59,6 +60,7 @@ describe('deepRemoveEmpty', () => {
 	});
 
 	it('should keep all properties of arrays', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const arrayWithProps: any = [12, undefined];
 
 		arrayWithProps.$error = 'test1';
@@ -68,6 +70,7 @@ describe('deepRemoveEmpty', () => {
 			arr: arrayWithProps,
 		};
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const newArray: any = [12, undefined];
 		newArray.$error = 'test1';
 		newArray.anyValue = 'test2';

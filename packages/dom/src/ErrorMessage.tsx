@@ -31,6 +31,6 @@ export const ErrorMessage = <C extends ComponentType | ElementType = 'span'>({
 				as: as ?? 'span',
 				children: children ?? message,
 				...(renderComponentProps as RenderHelpers<ErrorMessageBag, C>),
-		  })
+			})
 		: null;
 };

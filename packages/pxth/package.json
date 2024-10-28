@@ -26,16 +26,6 @@
 	"files": [
 		"dist"
 	],
-	"size-limit": [
-		{
-			"path": "dist/index.js",
-			"limit": "10 KB"
-		},
-		{
-			"path": "dist/index.cjs",
-			"limit": "10 KB"
-		}
-	],
 	"scripts": {
 		"build": "tsup",
 		"start": "pnpm build --watch",
@@ -60,19 +50,11 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.16.4",
-		"@eslint/eslintrc": "^3.1.0",
-		"@eslint/js": "^9.13.0",
 		"@microsoft/api-extractor": "^7.47.11",
-		"@size-limit/preset-small-lib": "^11.1.6",
 		"@types/lodash": "^4.17.12",
 		"@types/node": "^14.14.31",
-		"@typescript-eslint/eslint-plugin": "^8.11.0",
 		"eslint": "^9.13.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-prettier": "^5.2.1",
-		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"np": "^10.0.7",
-		"size-limit": "^11.1.6",
 		"tsup": "^8.3.5",
 		"typescript": "^5.6.3",
 		"vitest": "^2.1.3"

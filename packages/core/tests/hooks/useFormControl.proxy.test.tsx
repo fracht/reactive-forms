@@ -168,6 +168,7 @@ describe('errors control', () => {
 		);
 
 		act(() => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			result.current.setErrors({ user: { name: { $error: 'Nested error' } } } as any);
 		});
 
@@ -281,6 +282,7 @@ describe('touched control', () => {
 					},
 				},
 				$touched: true,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} as any);
 		});
 

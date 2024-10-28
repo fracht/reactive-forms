@@ -9,23 +9,23 @@ import type { Pxth } from './Pxth';
  * [['a'], ['b'], ['c']] -> RootPathToken
  */
 export const longestCommonPxth = (paths: Pxth<unknown>[]): Pxth<unknown> => {
-    if (paths.length === 0) {
-        return createPxth([]);
-    }
+	if (paths.length === 0) {
+		return createPxth([]);
+	}
 
-    const segmentedPaths = paths.map(getPxthSegments);
+	const segmentedPaths = paths.map(getPxthSegments);
 
-    const somePath = segmentedPaths[0]!;
+	const somePath = segmentedPaths[0]!;
 
-    for (let i = 0; i < somePath.length; i++) {
-        const segment = somePath[i];
+	for (let i = 0; i < somePath.length; i++) {
+		const segment = somePath[i];
 
-        for (let j = 1; j < segmentedPaths.length; j++) {
-            if (segmentedPaths[j]![i] !== segment) {
-                return createPxth(somePath.slice(0, i));
-            }
-        }
-    }
+		for (let j = 1; j < segmentedPaths.length; j++) {
+			if (segmentedPaths[j]![i] !== segment) {
+				return createPxth(somePath.slice(0, i));
+			}
+		}
+	}
 
-    return paths[0];
+	return paths[0];
 };

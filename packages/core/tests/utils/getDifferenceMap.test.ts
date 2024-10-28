@@ -4,6 +4,7 @@ import { getDifferenceMap } from '../../src/utils/getDifferenceMap';
 
 describe('getDifferenceMap', () => {
 	it('should return map when objects are same', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let obj: any = {
 			hello: 'a',
 		};

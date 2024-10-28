@@ -15,29 +15,22 @@ import { samePxth } from './samePxth';
  * relativePxth(['a', 'b', 'c'], ['a', 'b', 'c']) -> RootPathToken,
  * relativePxth(['a'], ['b']) -> Error
  */
-export const relativePxth = (
-    basePath: Pxth<unknown>,
-    subPath: Pxth<unknown>,
-): Pxth<unknown> => {
-    const basePathSegments = getPxthSegments(basePath);
-    const subPathSegments = getPxthSegments(subPath);
+export const relativePxth = (basePath: Pxth<unknown>, subPath: Pxth<unknown>): Pxth<unknown> => {
+	const basePathSegments = getPxthSegments(basePath);
+	const subPathSegments = getPxthSegments(subPath);
 
-    if (samePxth(basePath as Pxth<unknown>, subPath as Pxth<unknown>)) {
-        return createPxth([]);
-    }
+	if (samePxth(basePath as Pxth<unknown>, subPath as Pxth<unknown>)) {
+		return createPxth([]);
+	}
 
-    if (basePathSegments.length === 0) {
-        return subPath;
-    }
+	if (basePathSegments.length === 0) {
+		return subPath;
+	}
 
-    invariant(
-        isInnerPxth(basePath, subPath),
-        `"${pxthToString(
-            subPath,
-        ).toString()}" is not innner path of "${pxthToString(
-            basePath,
-        ).toString()}"`,
-    );
+	invariant(
+		isInnerPxth(basePath, subPath),
+		`"${pxthToString(subPath).toString()}" is not innner path of "${pxthToString(basePath).toString()}"`,
+	);
 
-    return createPxth(subPathSegments.slice(basePathSegments.length));
+	return createPxth(subPathSegments.slice(basePathSegments.length));
 };

@@ -4,6 +4,7 @@ import { excludeOverlaps } from '../../src/utils/excludeOverlaps';
 
 describe('excludeOverlaps', () => {
 	it('should return empty object, when objects same', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let obj: any = {
 			d: {
 				c: {

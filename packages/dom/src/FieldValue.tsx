@@ -12,7 +12,7 @@ export type FieldValueProps<V, C extends ComponentType | ElementType = 'div'> = 
 	name: Pxth<V>;
 } & RenderHelpers<FieldValueBag<V>, C, V>;
 
-const DefaultFieldValueRenderer = ({ children }: PropsWithChildren<{}>) => <Fragment>{children}</Fragment>;
+const DefaultFieldValueRenderer = ({ children }: PropsWithChildren) => <Fragment>{children}</Fragment>;
 
 export const FieldValue = <V, C extends ComponentType | ElementType = 'div'>({
 	name,
