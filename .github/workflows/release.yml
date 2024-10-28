@@ -15,7 +15,7 @@ jobs:
             contents: write
         timeout-minutes: 5
         name: Release
-        runs-on: ubuntu-latest
+        runs-on: windows-latest
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v4
