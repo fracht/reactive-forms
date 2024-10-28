@@ -241,6 +241,7 @@ describe('useValidationRegistry', () => {
 	it('Should merge (not override) errors from multiple validators on the same field (with primitives)', async () => {
 		const { result } = renderUseValidationRegistry();
 
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		const path = createPxth<{}>([]);
 
 		const firstValidator = jest.fn(() => null);
@@ -256,6 +257,7 @@ describe('useValidationRegistry', () => {
 		expect(firstValidator).toBeCalledTimes(1);
 		expect(secondValidator).toBeCalledTimes(1);
 		expect(thirdValidator).toBeCalledTimes(1);
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		expect(output.errors as FieldError<{}>).toStrictEqual({
 			$error: 'error',
 		});

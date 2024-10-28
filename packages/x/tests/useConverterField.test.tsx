@@ -1,6 +1,7 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { ReactiveFormProvider, useForm } from '@reactive-forms/core';
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 
 import { ConversionError, useConverterField } from '../src/useConverterField';
 

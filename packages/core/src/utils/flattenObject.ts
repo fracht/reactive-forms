@@ -11,7 +11,7 @@ export const flattenObject = (obj: object): Record<string, unknown> => {
 		const [pathToObject, innerObject] = queue.shift()!;
 
 		for (const key in innerObject) {
-			const item = innerObject[key];
+			const item = (innerObject as Record<string, unknown>)[key];
 			const pathToItem = joinPaths(pathToObject, key);
 			if (typeof item !== 'object' || item === null || Object.keys(item).length === 0) {
 				result[pathToItem] = item;

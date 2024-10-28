@@ -20,49 +20,57 @@ jobs:
               with:
                   filter: '@reactive-forms/*'
 
-    coverage:
-        name: Coverage report
-        needs: [generate_matrix]
-        if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
+    # coverage:
+    #     name: Coverage report
+    #     needs: [generate_matrix]
+    #     if: ${{ !fromJson(needs.generate_matrix.outputs.empty) }}
+    #     runs-on: ubuntu-latest
+    #     strategy:
+    #         matrix:
+    #             package: ${{ fromJson(needs.generate_matrix.outputs.packages) }}
+    #     steps:
+    #         - name: Checkout
+    #           uses: actions/checkout@v4
+    #           with:
+    #               fetch-depth: 0
 
-            - name: Use Node 18.x
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18.x
+    #         - name: Use Node 20.x
+    #           uses: actions/setup-node@v4
+    #           with:
+    #               node-version: 20.x
 
-            - name: Install pnpm 8.x.x
-              uses: pnpm/action-setup@v2.2.4
-              with:
-                  version: 8.x.x
+    #         - name: Install pnpm 9.12.3
+    #           uses: pnpm/action-setup@v4
+    #           with:
+    #               version: 9.12.3
 
-            - uses: artiomtr/jest-coverage-report-action@v2
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
-                  package-manager: pnpm
-                  working-directory: ${{ matrix.package.path }}
+    #         - uses: artiomtr/jest-coverage-report-action@v2
+    #           with:
+    #               github-token: ${{ secrets.GITHUB_TOKEN }}
+    #               test-script: pnpm run --prefix ../.. turbo run test --filter ${{ matrix.package.name }}
+    #               package-manager: pnpm
+    #               working-directory: ${{ matrix.package.path }}
 
     size:
         # TODO: configure Size limit for all packages
         name: Size limit
-        runs-on: ubuntu-latest
+        runs-on: windows-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
-            - name: Install pnpm 8.x.x
-              uses: pnpm/action-setup@v2.2.4
+            - name: Use Node 20
+              uses: actions/setup-node@v4
               with:
-                  version: 8.x.x
+                  node-version: 20
+
+            - name: Install pnpm 9.12.3
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9.12.3
+
+            - name: Install dependencies (with cache)
+              uses: covbot/pnpm-install-with-cache@v1
 
             - name: Size limit
               uses: andresz1/size-limit-action@dd31dce7dcc72a041fd3e49abf0502b13fc4ce05
@@ -71,27 +79,27 @@ jobs:
                   package_manager: pnpm
 
     build:
-        name: Build, lint, and test changed packages on Node 18
-        runs-on: ubuntu-latest
+        name: Build, lint, and test changed packages on Node 20
+        runs-on: windows-latest
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
-            - name: Use Node 18
-              uses: actions/setup-node@v3
+            - name: Use Node 20
+              uses: actions/setup-node@v4
               with:
-                  node-version: 18
+                  node-version: 20
 
-            - name: Install pnpm 8.x.x
-              uses: pnpm/action-setup@v2.2.4
+            - name: Install pnpm 9.12.3
+              uses: pnpm/action-setup@v4
               with:
-                  version: 8.x.x
+                  version: 9.12.3
 
-            - name: Install global dependencies
-              run: pnpm install
+            - name: Install dependencies (with cache)
+              uses: covbot/pnpm-install-with-cache@v1
 
             - name: Linting, testing & building changed packages
               run: pnpm turbo run lint test build --filter=...[origin/${{ github.base_ref }}]

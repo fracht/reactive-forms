@@ -15,10 +15,13 @@ export const deepRemoveEmpty = (obj: object): object | undefined => {
 		return Object.values(newArr).every(isNil) ? undefined : newArr;
 	} else if (obj !== null && typeof obj === 'object') {
 		const newObj = Object.keys(obj).reduce((acc, key) => {
-			const value = typeof obj[key] === 'object' ? deepRemoveEmpty(obj[key]) : obj[key];
+			const value =
+				typeof (obj as Record<string, unknown>)[key] === 'object'
+					? deepRemoveEmpty((obj as Record<string, object>)[key])
+					: (obj as Record<string, object>)[key];
 
 			if (!isNil(value)) {
-				acc[key] = value;
+				(acc as Record<string, object>)[key] = value;
 			}
 
 			return acc;

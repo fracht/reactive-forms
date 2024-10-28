@@ -1,12 +1,11 @@
-import type { BaseSchema } from 'yup';
-import type { ValidateOptions } from 'yup/lib/types';
+import type { Schema, ValidateOptions } from 'yup';
 
 import { isYupError } from './isYupError';
 import { yupToFormErrors } from './yupToFormErrors';
 import { FieldError } from '../typings/FieldError';
 
 export const runYupSchema = async <V>(
-	schema: BaseSchema<Partial<V> | undefined>,
+	schema: Schema<Partial<V> | undefined>,
 	value: V,
 	options?: ValidateOptions,
 ): Promise<FieldError<V> | undefined> => {

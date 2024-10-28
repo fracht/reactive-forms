@@ -15,6 +15,7 @@ describe('validatorResultToError', () => {
 			$error: undefined,
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expect(validatorResultToError(15 as any)).toStrictEqual({
 			$error: undefined,
 		});
@@ -25,6 +26,7 @@ describe('validatorResultToError', () => {
 			$error: 'lasdf',
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expect(validatorResultToError({ a: { b: { $error: 'hello' } } } as FieldError<any>)).toStrictEqual({
 			a: {
 				b: {

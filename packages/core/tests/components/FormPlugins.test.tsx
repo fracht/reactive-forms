@@ -77,6 +77,7 @@ describe('FormPlugins', () => {
 		expect(dummyDecorator).toBeCalledWith(expect.any(Object), {
 			initialValues: {},
 		});
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expect((result.current as any).hello).toBe('Hello world!');
 	});
 

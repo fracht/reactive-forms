@@ -15,7 +15,7 @@ describe('yupToFormErrors', () => {
 			params: { path: 'hello' },
 		};
 
-		expect(yupToFormErrors(error)).toStrictEqual({
+		expect(yupToFormErrors(error as unknown as ValidationError)).toStrictEqual({
 			hello: {
 				$error: 'hello is a required field',
 			},
@@ -65,7 +65,7 @@ describe('yupToFormErrors', () => {
 			message: '2 errors occurred',
 		};
 
-		expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
+		expect(yupToFormErrors(error as unknown as ValidationError)).toStrictEqual({
 			hello: {
 				a: {
 					$error: 'hello.a is a required field',
@@ -106,7 +106,7 @@ describe('yupToFormErrors', () => {
 			message: '2 errors occurred',
 		};
 
-		expect(yupToFormErrors(error as ValidationError)).toStrictEqual({
+		expect(yupToFormErrors(error as unknown as ValidationError)).toStrictEqual({
 			hello: {
 				b: {
 					$error: 'hello.b is a required field',
