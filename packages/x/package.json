@@ -2,9 +2,6 @@
 	"name": "@reactive-forms/x",
 	"description": "Advanced Reactive Forms components for rich eXperience",
 	"version": "0.11.1",
-	"main": "dist/index.js",
-	"module": "dist/x.esm.js",
-	"types": "dist/x.d.ts",
 	"bugs": "https://github.com/fracht/reactive-forms/issues",
 	"homepage": "https://github.com/fracht/reactive-forms#readme",
 	"repository": "fracht/reactive-forms.git",
@@ -14,32 +11,48 @@
 		"access": "public",
 		"directory": "prepared-package"
 	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": {
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs"
+		},
+		"require": {
+			"types": "./dist/index.d.ts",
+			"require": "./dist/index.js"
+		}
+	},
 	"scripts": {
-		"build": "aqu build && rimraf ./prepared-package && clean-publish",
-		"lint": "eslint .",
-		"lint:fix": "npm run lint --fix",
-		"start": "aqu watch",
+		"build": "tsup && rimraf ./prepared-package && clean-publish",
+		"lint": "eslint . && attw --pack .",
+		"lint:fix": "eslint . --fix",
+		"start": "tsup --watch",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
 		"test:watch": "jest --passWithNoTests --watch"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.16.4",
 		"@babel/core": "7.19.6",
+		"@microsoft/api-extractor": "^7.47.11",
 		"@reactive-forms/core": "workspace:*",
 		"@reactive-tools/eslint-config": "workspace:*",
 		"@testing-library/react": "13.4.0",
 		"@types/jest": "26.0.24",
 		"@types/lodash": "4.14.161",
-		"@types/react": "18.0.23",
-		"@types/react-dom": "18.0.6",
+		"@types/react": "18.3.12",
+		"@types/react-dom": "18.3.1",
 		"aqu": "0.4.3",
 		"eslint": "^9.13.0",
 		"jest": "29.2.2",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
+		"react": "18.3.1",
+		"react-dom": "18.3.1",
 		"rimraf": "3.0.2",
 		"ts-jest": "29.0.3",
 		"tslib": "2.3.1",
+		"tsup": "^8.3.5",
 		"typescript": "4.8.4"
 	},
 	"peerDependencies": {

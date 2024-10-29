@@ -1,25 +1,10 @@
 {
-	"compilerOptions": {
-		"outDir": "dist",
-		"module": "esnext",
-		"lib": ["dom", "esnext"],
-		"moduleResolution": "node",
-		"jsx": "react",
-		"sourceMap": true,
-		"declaration": true,
-		"esModuleInterop": true,
-		"noImplicitReturns": true,
-		"noImplicitThis": true,
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"allowSyntheticDefaultImports": true,
-		"noFallthroughCasesInSwitch": true,
-		"rootDir": "./src",
-		"strict": true,
-		"importHelpers": true,
-		"skipLibCheck": true
-	},
-	"include": ["src", "tests"]
+	"references": [
+		{
+			"path": "./tsconfig.lib.json"
+		},
+		{
+			"path": "./tsconfig.test.json"
+		}
+	]
 }

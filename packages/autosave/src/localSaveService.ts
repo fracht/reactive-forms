@@ -4,7 +4,7 @@ import { AutoSaveService } from './AutoSaveService';
 
 const prefix = 'reactiveForms.';
 
-const isServer = () => typeof global.window === 'undefined';
+const isServer = () => !(typeof window !== 'undefined' && window.document);
 
 export const localSaveService: AutoSaveService<unknown> = {
 	save: (key, value) => {
