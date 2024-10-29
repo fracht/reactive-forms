@@ -52,7 +52,7 @@
 		"@arethetypeswrong/cli": "^0.16.4",
 		"@microsoft/api-extractor": "^7.47.11",
 		"@types/lodash": "^4.17.12",
-		"@types/node": "^14.14.31",
+		"@types/node": "^20.17.2",
 		"eslint": "^9.13.0",
 		"np": "^10.0.7",
 		"tsup": "^8.3.5",

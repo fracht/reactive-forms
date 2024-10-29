@@ -26,8 +26,8 @@
 	"dependencies": {
 		"lodash": "4.17.21",
 		"lodash-es": "4.17.15",
-		"pxth": "0.7.0",
-		"stocked": "1.0.0-beta.33",
+		"pxth": "workspace:*",
+		"stocked": "workspace:*",
 		"tiny-invariant": "1.2.0"
 	},
 	"devDependencies": {

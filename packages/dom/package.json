@@ -24,8 +24,8 @@
 		"test:watch": "jest --passWithNoTests --watch"
 	},
 	"dependencies": {
-		"pxth": "0.7.0",
-		"stocked": "1.0.0-beta.33",
+		"pxth": "workspace:*",
+		"stocked": "workspace:*",
 		"tiny-invariant": "1.2.0"
 	},
 	"devDependencies": {
