@@ -37,7 +37,7 @@
 		"@types/jest": "26.0.24",
 		"@types/lodash": "4.14.161",
 		"@types/node": "^18.11.18",
-		"@types/react": "18.0.23",
+		"@types/react": "18.3.12",
 		"aqu": "0.4.3",
 		"eslint": "^9.13.0",
 		"jest": "29.2.2",
