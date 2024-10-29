@@ -10,6 +10,9 @@
 		"alwaysStrict": false,
 		"jsx": "react",
 		"esModuleInterop": true,
-		"skipLibCheck": true
-	}
+		"skipLibCheck": true,
+		"composite": true
+	},
+	"include": ["tests"],
+	"references": [{ "path": "./tsconfig.lib.json" }]
 }

@@ -39,11 +39,11 @@
 	},
 	"size-limit": [
 		{
-			"path": "packages/core/dist/core.cjs.production.min.js",
+			"path": "packages/core/dist/index.js",
 			"limit": "30 KB"
 		},
 		{
-			"path": "packages/core/dist/core.esm.js",
+			"path": "packages/core/dist/index.mjs",
 			"limit": "30 KB"
 		}
 	]
