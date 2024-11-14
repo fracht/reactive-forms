@@ -1,5 +1,11 @@
 # @reactive-forms/autosave
 
+## 0.11.2
+
+### Patch Changes
+
+-   4baad08: Upgraded pxth - make Pxth<any> assignable to any Pxth
+
 ## 0.11.1
 
 ## 0.11.0
