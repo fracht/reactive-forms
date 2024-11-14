@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/x",
 	"description": "Advanced Reactive Forms components for rich eXperience",
-	"version": "0.11.1",
+	"version": "0.11.2",
 	"bugs": "https://github.com/fracht/reactive-forms/issues",
 	"homepage": "https://github.com/fracht/reactive-forms#readme",
 	"repository": "fracht/reactive-forms.git",
