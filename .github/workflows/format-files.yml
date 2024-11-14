@@ -7,7 +7,7 @@ on:
 jobs:
     format:
         name: Format and commit files
-        runs-on: windows-latest
+        runs-on: ubuntu-latest
         if: github.actor != 'frachtbot'
         steps:
             - name: Checkout
