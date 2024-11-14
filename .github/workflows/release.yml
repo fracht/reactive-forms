@@ -34,10 +34,7 @@ jobs:
               uses: covbot/pnpm-install-with-cache@v1
 
             - name: Creating .npmrc
-              run: |
-                  cat << EOF > "$HOME/.npmrc"
-                    //registry.npmjs.org/:_authToken=$NPM_TOKEN
-                  EOF
+              run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
               env:
                   NPM_TOKEN: ${{ secrets.NPM_BOT_TOKEN }}
 
