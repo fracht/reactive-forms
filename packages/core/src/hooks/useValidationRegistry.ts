@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { createPxth, deepGet, deepSet, getPxthSegments, isInnerPxth, Pxth, samePxth } from 'pxth';
 import { PxthMap } from 'stocked';
 import invariant from 'tiny-invariant';

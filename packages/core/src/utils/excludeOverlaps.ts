@@ -1,4 +1,4 @@
-import unset from 'lodash/unset';
+import unset from 'lodash/unset.js';
 import { RootPathToken } from 'pxth';
 
 import { getDifferenceMap } from './getDifferenceMap';

@@ -1,6 +1,6 @@
 import { SetStateAction } from 'react';
-import isFunction from 'lodash/isFunction';
-import isNil from 'lodash/isNil';
+import isFunction from 'lodash/isFunction.js';
+import isNil from 'lodash/isNil.js';
 import { deepGet, deepSet, isInnerPxth, joinPxths, longestCommonPxth, Pxth, relativePxth, samePxth } from 'pxth';
 import invariant from 'tiny-invariant';
 

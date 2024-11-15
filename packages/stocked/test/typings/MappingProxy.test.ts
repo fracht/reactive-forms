@@ -1,5 +1,5 @@
 import { SetStateAction } from 'react';
-import isFunction from 'lodash/isFunction';
+import isFunction from 'lodash/isFunction.js';
 import { createPxth, deepGet, deepSet, getPxthSegments, Pxth, samePxth } from 'pxth';
 import { describe, expect, it, Mock, vi } from 'vitest';
 

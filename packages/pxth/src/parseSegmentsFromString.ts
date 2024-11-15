@@ -1,4 +1,4 @@
-import toPath from 'lodash/toPath';
+import toPath from 'lodash/toPath.js';
 
 import type { RootPath } from './RootPath';
 import { RootPathToken } from '.';

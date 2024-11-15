@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { Pxth } from 'pxth';
 import type { BaseSchema } from 'yup';
 

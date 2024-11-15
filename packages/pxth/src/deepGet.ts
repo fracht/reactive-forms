@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import get from 'lodash/get.js';
 
 import { getPxthSegments } from './getPxthSegments';
 import type { Pxth } from './Pxth';

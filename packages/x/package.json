@@ -25,7 +25,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup && rimraf ./prepared-package && clean-publish",
+		"build": "tsup && cpy ./dist/index.d.ts . --rename index.d.mts && rimraf ./prepared-package && clean-publish",
 		"lint": "eslint . && attw --pack .",
 		"lint:fix": "eslint . --fix",
 		"start": "tsup --watch",
@@ -45,6 +45,7 @@
 		"@types/react": "18.3.12",
 		"@types/react-dom": "18.3.1",
 		"aqu": "0.4.3",
+		"cpy-cli": "^5.0.0",
 		"eslint": "^9.13.0",
 		"jest": "29.2.2",
 		"react": "18.3.1",

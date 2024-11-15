@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldConfig, FieldContext, FieldError, FieldTouched, useField, useFieldValidator } from '@reactive-forms/core';
-import isObject from 'lodash/isObject';
+import isObject from 'lodash/isObject.js';
 
 export class ConversionError extends Error {
 	public constructor(errorMessage: string) {
