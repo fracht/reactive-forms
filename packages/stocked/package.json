@@ -12,7 +12,7 @@
 			"import": "./dist/index.js"
 		},
 		"require": {
-			"types": "./dist/types.d.cts",
+			"types": "./dist/index.d.cts",
 			"require": "./dist/index.cjs"
 		}
 	},
