@@ -1,5 +1,11 @@
 # @reactive-forms/x
 
+## 0.12.0
+
+### Minor Changes
+
+-   95a44c8: Fix double Pxth BrandKey declaration
+
 ## 0.11.2
 
 ### Patch Changes

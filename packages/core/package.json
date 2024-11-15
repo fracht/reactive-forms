@@ -1,7 +1,7 @@
 {
 	"name": "@reactive-forms/core",
 	"description": "Core package of Reactive Forms framework",
-	"version": "0.11.2",
+	"version": "0.12.0",
 	"type": "commonjs",
 	"bugs": "https://github.com/fracht/reactive-forms/issues",
 	"homepage": "https://github.com/fracht/reactive-forms#readme",
