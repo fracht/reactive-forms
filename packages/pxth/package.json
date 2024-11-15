@@ -12,7 +12,7 @@
 			"import": "./dist/index.js"
 		},
 		"require": {
-			"types": "./dist/index.d.ts",
+			"types": "./dist/index.d.cts",
 			"require": "./dist/index.cjs"
 		}
 	},
@@ -27,7 +27,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsup && cpy ./dist/index.d.ts . --rename index.d.cts",
 		"start": "pnpm build --watch",
 		"lint": "eslint . && attw --pack .",
 		"lint:fix": "eslint . --fix",
@@ -53,6 +53,7 @@
 		"@microsoft/api-extractor": "^7.47.11",
 		"@types/lodash": "^4.17.12",
 		"@types/node": "^20.17.2",
+		"cpy-cli": "^5.0.0",
 		"eslint": "^9.13.0",
 		"np": "^10.0.7",
 		"tsup": "^8.3.5",
