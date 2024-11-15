@@ -1,5 +1,13 @@
 # @reactive-forms/dom
 
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [c743105]
+    -   stocked@1.1.2
+    -   pxth@0.9.2
+
 ## 0.12.1
 
 ### Patch Changes

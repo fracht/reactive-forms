@@ -1,5 +1,11 @@
 # pxth
 
+## 0.9.2
+
+### Patch Changes
+
+-   c743105: Remove exports conditions
+
 ## 0.9.1
 
 ### Patch Changes

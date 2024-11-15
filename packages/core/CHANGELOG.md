@@ -1,5 +1,14 @@
 # @reactive-forms/core
 
+## 0.12.2
+
+### Patch Changes
+
+-   c743105: Remove exports conditions
+-   Updated dependencies [c743105]
+    -   stocked@1.1.2
+    -   pxth@0.9.2
+
 ## 0.12.1
 
 ### Patch Changes

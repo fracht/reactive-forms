@@ -1,5 +1,13 @@
 # stocked
 
+## 1.1.2
+
+### Patch Changes
+
+-   c743105: Remove exports conditions
+-   Updated dependencies [c743105]
+    -   pxth@0.9.2
+
 ## 1.1.1
 
 ### Patch Changes

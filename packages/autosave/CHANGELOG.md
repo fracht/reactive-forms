@@ -1,5 +1,11 @@
 # @reactive-forms/autosave
 
+## 0.12.2
+
+### Patch Changes
+
+-   c743105: Remove exports conditions
+
 ## 0.12.1
 
 ## 0.12.0
