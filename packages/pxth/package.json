@@ -6,16 +6,6 @@
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		"import": {
-			"types": "./dist/index.d.mts",
-			"import": "./dist/index.mjs"
-		},
-		"require": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.js"
-		}
-	},
 	"keywords": [
 		"deep",
 		"object",
@@ -27,9 +17,9 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup && cpy ./dist/index.d.ts . --rename index.d.cts",
+		"build": "tsup",
 		"start": "pnpm build --watch",
-		"lint": "eslint . && attw --pack .",
+		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"test": "vitest run --typecheck",
 		"prepare": "pnpm build",

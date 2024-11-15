@@ -6,16 +6,6 @@
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		"import": {
-			"types": "./dist/index.d.mts",
-			"import": "./dist/index.mjs"
-		},
-		"require": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.js"
-		}
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/fracht/reactive-forms.git",
@@ -25,11 +15,11 @@
 	"license": "MIT",
 	"scripts": {
 		"analyze": "size-limit --why",
-		"build": "tsup && cpy ./dist/index.d.ts . --rename index.d.cts",
+		"build": "tsup",
 		"build:docs": "vitepress build new-docs",
 		"dev:docs": "vitepress dev new-docs",
 		"format": "syncpack format && prettier --write \"**/*.{ts,tsx,cjs,mjs,js,jsx,json,yml,yaml,clean-publish}\"",
-		"lint": "eslint . && attw --pack .",
+		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"prepublishOnly": "tsup",
 		"serve:docs": "vitepress serve new-docs",

@@ -5,16 +5,6 @@
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		"import": {
-			"types": "./dist/index.d.mts",
-			"import": "./dist/index.mjs"
-		},
-		"require": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.js"
-		}
-	},
 	"homepage": "https://github.com/fracht/reactive-forms#readme",
 	"repository": "fracht/reactive-forms.git",
 	"author": "ReactiveForms team",
@@ -25,9 +15,9 @@
 		"directory": "prepared-package"
 	},
 	"scripts": {
-		"build": "tsup && cpy ./dist/index.d.ts . --rename index.d.mts && rimraf ./prepared-package && clean-publish",
+		"build": "tsup && rimraf ./prepared-package && clean-publish",
 		"dev": "tsup --watch",
-		"lint": "eslint . && attw --pack .",
+		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"test": "jest --passWithNoTests",
 		"test:log-coverage": "jest --passWithNoTests --coverage --silent --ci --coverageReporters=text",
