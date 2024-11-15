@@ -1,5 +1,5 @@
-import isEmpty from 'lodash/isEmpty';
-import isNil from 'lodash/isNil';
+import isEmpty from 'lodash/isEmpty.js';
+import isNil from 'lodash/isNil.js';
 
 export const deepRemoveEmpty = (obj: object): object | undefined => {
 	if (Array.isArray(obj)) {

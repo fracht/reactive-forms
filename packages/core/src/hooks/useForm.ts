@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
-import isEqual from 'lodash/isEqual';
-import merge from 'lodash/merge';
-import mergeWith from 'lodash/mergeWith';
+import cloneDeep from 'lodash/cloneDeep.js';
+import isEqual from 'lodash/isEqual.js';
+import merge from 'lodash/merge.js';
+import mergeWith from 'lodash/mergeWith.js';
 import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
 import { BatchUpdate } from 'stocked';
 import invariant from 'tiny-invariant';

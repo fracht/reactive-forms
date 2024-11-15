@@ -1,5 +1,5 @@
-import isEqual from 'lodash/isEqual';
-import uniq from 'lodash/uniq';
+import isEqual from 'lodash/isEqual.js';
+import uniq from 'lodash/uniq.js';
 import { RootPath, RootPathToken } from 'pxth';
 
 import { flattenObject } from './flattenObject';

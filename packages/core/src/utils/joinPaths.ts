@@ -1,4 +1,4 @@
-import isNil from 'lodash/isNil';
+import isNil from 'lodash/isNil.js';
 import { RootPath, RootPathToken } from 'pxth';
 
 export const joinPaths = (...parts: Array<string | null | false | RootPath | number>) =>

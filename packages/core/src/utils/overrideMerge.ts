@@ -1,5 +1,5 @@
-import cloneDeep from 'lodash/cloneDeep';
-import isObject from 'lodash/isObject';
+import cloneDeep from 'lodash/cloneDeep.js';
+import isObject from 'lodash/isObject.js';
 
 export const overrideMerge = (object: object, source: object) => {
 	object = cloneDeep(object);

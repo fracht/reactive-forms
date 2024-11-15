@@ -1,6 +1,6 @@
 import { SetStateAction, useCallback, useMemo } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
-import isFunction from 'lodash/isFunction';
+import cloneDeep from 'lodash/cloneDeep.js';
+import isFunction from 'lodash/isFunction.js';
 import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
 
 import { useDebugStock } from './useDebugStock';

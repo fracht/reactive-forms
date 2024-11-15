@@ -1,7 +1,7 @@
 import { SetStateAction, useCallback, useEffect } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
-import isFunction from 'lodash/isFunction';
-import unset from 'lodash/unset';
+import cloneDeep from 'lodash/cloneDeep.js';
+import isFunction from 'lodash/isFunction.js';
+import unset from 'lodash/unset.js';
 import { deepGet, deepSet, getPxthSegments, isInnerPxth, Pxth, samePxth } from 'pxth';
 import invariant from 'tiny-invariant';
 

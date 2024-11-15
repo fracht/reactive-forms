@@ -1,5 +1,5 @@
-import isPlainObject from 'lodash/isPlainObject';
-import mergeWith from 'lodash/mergeWith';
+import isPlainObject from 'lodash/isPlainObject.js';
+import mergeWith from 'lodash/mergeWith.js';
 
 const errorsMergeCustomizer = (target: unknown, source: unknown): unknown => {
 	if (Array.isArray(target) && isPlainObject(source)) {

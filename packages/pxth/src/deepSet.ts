@@ -1,4 +1,4 @@
-import set from 'lodash/set';
+import set from 'lodash/set.js';
 
 import { getPxthSegments } from './getPxthSegments';
 import type { Pxth } from './Pxth';

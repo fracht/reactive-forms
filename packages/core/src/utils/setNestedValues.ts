@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import isObject from 'lodash/isObject.js';
 
 import { NestedObject } from '../typings/NestedObject';
 
