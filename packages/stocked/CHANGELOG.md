@@ -1,5 +1,13 @@
 # stocked
 
+## 1.1.1
+
+### Patch Changes
+
+-   de2804c: Make packages commonjs by default
+-   Updated dependencies [de2804c]
+    -   pxth@0.9.1
+
 ## 1.1.0
 
 ### Minor Changes
