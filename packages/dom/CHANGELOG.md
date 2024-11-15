@@ -1,5 +1,14 @@
 # @reactive-forms/dom
 
+## 0.12.1
+
+### Patch Changes
+
+-   de2804c: Make packages commonjs by default
+-   Updated dependencies [de2804c]
+    -   stocked@1.1.1
+    -   pxth@0.9.1
+
 ## 0.12.0
 
 ### Patch Changes

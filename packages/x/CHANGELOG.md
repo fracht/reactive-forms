@@ -1,5 +1,11 @@
 # @reactive-forms/x
 
+## 0.12.1
+
+### Patch Changes
+
+-   de2804c: Make packages commonjs by default
+
 ## 0.12.0
 
 ### Minor Changes

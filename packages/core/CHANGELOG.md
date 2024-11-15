@@ -1,5 +1,13 @@
 # @reactive-forms/core
 
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [de2804c]
+    -   stocked@1.1.1
+    -   pxth@0.9.1
+
 ## 0.12.0
 
 ### Minor Changes
