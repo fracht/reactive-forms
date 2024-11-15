@@ -1,5 +1,16 @@
 # stocked
 
+## 1.1.0
+
+### Minor Changes
+
+-   95a44c8: Fix double Pxth BrandKey declaration
+
+### Patch Changes
+
+-   Updated dependencies [95a44c8]
+    -   pxth@0.9.0
+
 ## 1.0.0
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # pxth
 
+## 0.9.0
+
+### Minor Changes
+
+-   95a44c8: Fix double Pxth BrandKey declaration
+
 ## 0.8.0
 
 ### Minor Changes

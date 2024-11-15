@@ -1,5 +1,17 @@
 # @reactive-forms/core
 
+## 0.12.0
+
+### Minor Changes
+
+-   95a44c8: Fix double Pxth BrandKey declaration
+
+### Patch Changes
+
+-   Updated dependencies [95a44c8]
+    -   stocked@1.1.0
+    -   pxth@0.9.0
+
 ## 0.11.2
 
 ### Patch Changes
