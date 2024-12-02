@@ -7,6 +7,7 @@ export * from './components/ReactiveFormProvider';
 export * from './components/ReactiveFormConsumer';
 export * from './components/FormProxyProvider';
 export * from './components/FormPlugins';
+export { type FormContextType } from './components/FormContext';
 
 // hooks
 export * from './hooks/useField';
