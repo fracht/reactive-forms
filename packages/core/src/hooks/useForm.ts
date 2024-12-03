@@ -312,7 +312,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 
 	useEffect(() => {
 		updateFormValidness(errors.getValues());
-		errors.watchBatchUpdates((batchUpdate) => {
+		return errors.watchBatchUpdates((batchUpdate) => {
 			if (batchUpdate.paths.length > 0) {
 				updateFormValidness(batchUpdate.values);
 			}
