@@ -1,5 +1,7 @@
 # @reactive-forms/autosave
 
+## 0.12.3
+
 ## 0.12.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @reactive-forms/core
 
+## 0.12.3
+
+### Patch Changes
+
+-   f01b66e: Fix bug with incosistent dirty/validation state of form
+-   df4db1e: Expose FormContext type
+
 ## 0.12.2
 
 ### Patch Changes
