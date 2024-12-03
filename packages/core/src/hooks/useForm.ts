@@ -284,7 +284,7 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 	);
 
 	const updateFormValidness = useCallback(
-		({ values }: BatchUpdate<object>) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
+		(values: object) => setFormMeta(formMetaPaths.isValid, deepRemoveEmpty(values) === undefined),
 		[setFormMeta],
 	);
 
@@ -304,20 +304,20 @@ export const useForm = <Values extends object>(initialConfig: FormConfig<Values>
 		[normalizeErrors, setFieldError, validateBranch],
 	);
 
-	useEffect(
-		() => values.watchBatchUpdates(({ values }) => updateFormDirtiness(values)),
-		[values, updateFormDirtiness],
-	);
+	useEffect(() => {
+		updateFormDirtiness(values.getValues());
 
-	useEffect(
-		() =>
-			errors.watchBatchUpdates((batchUpdate) => {
-				if (batchUpdate.paths.length > 0) {
-					updateFormValidness(batchUpdate);
-				}
-			}),
-		[errors, updateFormValidness],
-	);
+		return values.watchBatchUpdates(({ values }) => updateFormDirtiness(values));
+	}, [values, updateFormDirtiness]);
+
+	useEffect(() => {
+		updateFormValidness(errors.getValues());
+		errors.watchBatchUpdates((batchUpdate) => {
+			if (batchUpdate.paths.length > 0) {
+				updateFormValidness(batchUpdate.values);
+			}
+		});
+	}, [errors, updateFormValidness]);
 
 	useEffect(() => values.watchBatchUpdates(validateUpdatedFields), [values, validateUpdatedFields]);
 
