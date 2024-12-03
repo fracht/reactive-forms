@@ -1,4 +1,4 @@
-import { SetStateAction, useCallback, useMemo } from 'react';
+import { SetStateAction, useCallback, useMemo, useRef } from 'react';
 import cloneDeep from 'lodash/cloneDeep.js';
 import isFunction from 'lodash/isFunction.js';
 import { createPxth, deepGet, deepSet, Pxth } from 'pxth';
@@ -40,6 +40,8 @@ export type StockConfig<T extends object> = {
  */
 export const useStock = <T extends object>({ initialValues, debugName }: StockConfig<T>): Stock<T> => {
 	const values = useLazyRef<T>(() => cloneDeep(initialValues));
+	const initialValuesRef = useRef(initialValues);
+	initialValuesRef.current = initialValues;
 	const { notifySubTree, notifyAll, watch, watchAll, watchEffect, watchBatchUpdates, isObserved } =
 		useObservers<T>(values);
 
@@ -68,7 +70,7 @@ export const useStock = <T extends object>({ initialValues, debugName }: StockCo
 
 	const getValues = useCallback(() => values.current, [values]);
 
-	const resetValues = useCallback(() => setValues(cloneDeep(initialValues)), [initialValues, setValues]);
+	const resetValues = useCallback(() => setValues(cloneDeep(initialValuesRef.current)), [setValues]);
 
 	const stock: Stock<T> = useMemo(
 		() => ({
