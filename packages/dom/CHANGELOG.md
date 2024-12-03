@@ -1,5 +1,12 @@
 # @reactive-forms/dom
 
+## 0.12.4
+
+### Patch Changes
+
+-   Updated dependencies [2f2aa13]
+    -   stocked@1.1.3
+
 ## 0.12.3
 
 ## 0.12.2

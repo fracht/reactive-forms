@@ -1,5 +1,13 @@
 # @reactive-forms/core
 
+## 0.12.4
+
+### Patch Changes
+
+-   5ccf8e0: Add cleanup for batch observer
+-   Updated dependencies [2f2aa13]
+    -   stocked@1.1.3
+
 ## 0.12.3
 
 ### Patch Changes
