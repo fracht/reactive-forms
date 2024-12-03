@@ -1,5 +1,11 @@
 # stocked
 
+## 1.1.3
+
+### Patch Changes
+
+-   2f2aa13: Memoize resetValues function
+
 ## 1.1.2
 
 ### Patch Changes
