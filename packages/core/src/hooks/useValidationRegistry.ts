@@ -66,7 +66,11 @@ export const useValidationRegistry = (): ValidationRegistryControl => {
 		return undefined;
 	}, []);
 
-	const hasValidator = useCallback(<V>(name: Pxth<V>) => registry.current.has(name), []);
+	const hasValidator = useCallback(
+		<V>(name: Pxth<V>) =>
+			registry.current.keys().some((k) => isInnerPxth(name, k) || isInnerPxth(k, name) || samePxth(name, k)),
+		[],
+	);
 
 	const validatePaths = useCallback(
 		async <T>(pathsToValidate: Array<Pxth<unknown>>, values: T): Promise<FieldError<T>> => {

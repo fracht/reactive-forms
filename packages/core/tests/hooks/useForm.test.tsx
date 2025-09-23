@@ -310,6 +310,92 @@ describe('validateField', () => {
 		unregisterValidator();
 		unregisterArrayValidator();
 	});
+
+	it('should run parent validators, even when direct validator exist', async () => {
+		type TestValues = {
+			value: {
+				inner: string;
+			};
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					value: {
+						inner: 'Test value',
+					},
+				},
+			}),
+		);
+
+		const validator = jest.fn(() => ({ inner: { $error: 'some error' } }));
+		const unregisterValidator = result.current.registerValidator(result.current.paths.value, validator);
+
+		await expect(result.current.validateField(result.current.paths.value.inner)).resolves.toStrictEqual({
+			$error: 'some error',
+		});
+
+		expect(validator).toBeCalled();
+		unregisterValidator();
+	});
+
+	it('should run child validators, even when direct validator exist', async () => {
+		type TestValues = {
+			value: {
+				inner: string;
+			};
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					value: {
+						inner: 'Test value',
+					},
+				},
+			}),
+		);
+
+		const validator = jest.fn(() => ({ $error: 'some error' }));
+		const unregisterValidator = result.current.registerValidator(result.current.paths.value.inner, validator);
+
+		await expect(result.current.validateField(result.current.paths.value)).resolves.toStrictEqual({
+			inner: {
+				$error: 'some error',
+			},
+		});
+
+		expect(validator).toBeCalled();
+		unregisterValidator();
+	});
+
+	it('should run parent validators, but ignore their output if not set to origin field', async () => {
+		type TestValues = {
+			value: {
+				inner: string;
+				other: number;
+			};
+		};
+
+		const { result } = renderHook(() =>
+			useForm<TestValues>({
+				initialValues: {
+					value: {
+						inner: 'Test value',
+						other: 0,
+					},
+				},
+			}),
+		);
+
+		const validator = jest.fn(() => ({ other: { $error: 'some error' } }));
+		const unregisterValidator = result.current.registerValidator(result.current.paths.value, validator);
+
+		await expect(result.current.validateField(result.current.paths.value.inner)).resolves.toBe(undefined);
+
+		expect(validator).toBeCalled();
+		unregisterValidator();
+	});
 });
 
 describe('validateForm', () => {
