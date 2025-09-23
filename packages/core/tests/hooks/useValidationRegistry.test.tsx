@@ -302,7 +302,7 @@ describe('useValidationRegistry', () => {
 	it('Should merge error, set on array, with array items error', async () => {
 		const { result } = renderUseValidationRegistry();
 		type TestType = { array: unknown[] };
-		const path = createPxth<{ array: unknown[] }>([]);
+		const path = createPxth<TestType>([]);
 
 		const arrayValidator = jest.fn(() => 'arrayError');
 		const arrayItemValidator = jest.fn(() => 'itemError');
@@ -317,5 +317,44 @@ describe('useValidationRegistry', () => {
 
 		unregisterArrayValidator();
 		unregisterArrayItemValidator();
+	});
+
+	it('Should signal that validator exists', async () => {
+		const { result } = renderUseValidationRegistry();
+		const path = createPxth<{ value: unknown }>([]);
+
+		const someValidator = jest.fn();
+
+		const unregisterValidator = result.current.registerValidator(path.value, someValidator);
+		expect(result.current.hasValidator(path.value)).toBe(true);
+
+		unregisterValidator();
+		expect(result.current.hasValidator(path.value)).toBe(false);
+	});
+
+	it('Should signal that validator exists, when parent validator exists', async () => {
+		const { result } = renderUseValidationRegistry();
+		const path = createPxth<{ value: { inner: unknown } }>([]);
+
+		const someValidator = jest.fn();
+
+		const unregisterValidator = result.current.registerValidator(path.value, someValidator);
+		expect(result.current.hasValidator(path.value.inner)).toBe(true);
+
+		unregisterValidator();
+		expect(result.current.hasValidator(path.value.inner)).toBe(false);
+	});
+
+	it('Should signal that validator exists, when child validator exists', async () => {
+		const { result } = renderUseValidationRegistry();
+		const path = createPxth<{ value: { inner: unknown } }>([]);
+
+		const someValidator = jest.fn();
+
+		const unregisterValidator = result.current.registerValidator(path.value.inner, someValidator);
+		expect(result.current.hasValidator(path.value)).toBe(true);
+
+		unregisterValidator();
+		expect(result.current.hasValidator(path.value)).toBe(false);
 	});
 });
