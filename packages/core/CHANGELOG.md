@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.12.5
+
+### Patch Changes
+
+-   082ab4e: Improved validateField function soundness: now validations are not skipped, if field doesn't have direct validator registered
+
 ## 0.12.4
 
 ### Patch Changes
