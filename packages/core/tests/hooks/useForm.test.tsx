@@ -614,3 +614,24 @@ describe('should merge errors correctly', () => {
 		unregisterEmailsValidator();
 	});
 });
+
+describe('submit', () => {
+	it('should set isValid to true after successful submit when there is no registered validators', async () => {
+		const { result } = renderHook(() =>
+			useForm({
+				initialValues: {
+					value: '',
+				},
+				onSubmit: () => {
+					// noop
+				},
+			}),
+		);
+
+		await act(async () => {
+			await result.current.submit();
+		});
+
+		expect(result.current.formMeta.getValue(result.current.formMeta.paths.isValid)).toBe(true);
+	});
+});
