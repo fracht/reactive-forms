@@ -1,5 +1,11 @@
 # @reactive-forms/core
 
+## 0.12.6
+
+### Patch Changes
+
+-   2afe408: Fixed form validness update on form submit when there are no registered validators
+
 ## 0.12.5
 
 ### Patch Changes
