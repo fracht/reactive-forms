@@ -1,5 +1,7 @@
 # @reactive-forms/autosave
 
+## 0.12.6
+
 ## 0.12.5
 
 ## 0.12.4
