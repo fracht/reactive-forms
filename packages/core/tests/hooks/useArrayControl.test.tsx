@@ -519,3 +519,21 @@ describe('removeAt', () => {
 		expect(bag.getFieldTouched(createPxth(['arr']))).toStrictEqual([emptyTouched, emptyTouched]);
 	});
 });
+
+describe('reference updates after changing value', () => {
+	it('setItem should update array reference', () => {
+		const [{ result }, bag] = renderArrayControl(createPxth<unknown[]>(['arr']), {
+			initialValues: {
+				arr: [1, 2, 3, 4],
+			},
+		});
+
+		const prevRef = bag.getFieldValue(bag.paths.arr);
+
+		act(() => {
+			result.current.setItem(2, 1);
+		});
+
+		expect(bag.getFieldValue(bag.paths.arr)).not.toBe(prevRef);
+	});
+});

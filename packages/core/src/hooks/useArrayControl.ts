@@ -41,7 +41,7 @@ export const useArrayControl = <V>({ name }: ArrayControlConfig<V>): ArrayContro
 
 		const [newItems, output] = update(items);
 
-		setItems(newItems);
+		setItems([...newItems]);
 
 		if (updateErrors && Array.isArray(errors)) {
 			setErrors(typeof updateErrors === 'function' ? updateErrors(errors, items) : update(errors)[0]);
